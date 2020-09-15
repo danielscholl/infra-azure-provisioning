@@ -1,0 +1,32 @@
+{
+  "name": "appinsights-statsd",
+  "version": "0.0.1",
+  "description": "Application Insights StatsD backend",
+  "main": "./lib/appinsights.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "engines": {
+    "node": ">=4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:binroon/ApplicationInsights-statsd.git"
+  },
+  "keywords": [
+    "application",
+    "insights",
+    "appinsights",
+    "statsd"
+  ],
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "lib/appinsights.js"
+  ],
+  "dependencies": {
+    "applicationinsights": "1.8.2"
+  }
+}
