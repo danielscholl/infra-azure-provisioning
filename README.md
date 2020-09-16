@@ -3,10 +3,13 @@
 Azure Infrastructure provisioning scripts and templates are hosted in a Github repository that is accessible here:
 [Azure Infrastructure Templates](https://github.com/azure/osdu-infrastructure)
 
-The repository contains the infrastructure as code implementation and pipelines necessary for the required infrastructure in Azure to host OSDU. The infrastructure code is very closely tied to Azure, and requires degree of priviledges and access and leverages capability inherent to Azure DevOps, hence the GitHub hosting. Unfortunately this high level of integration could not be entirely accomodated out of Gitlab.
+The repository contains the infrastructure as code implementation and pipelines necessary for the required infrastructure in Azure to host OSDU. We've chosen to host the infrastructure code in Github because the infrastructure code is very closely tied to Azure, requires a high degree of priviledges and access to our Azure instance and leverages capability inherent to Azure DevOps. Unfortunately this high level of integration could not be entirely accomodated out of Gitlab, and therefore led us to choose to host the code in Github.
 
-The current approach to deploying OSDU into your own Azure tenant involves the following step:
-1- Follow the directions in the infrastructure repository to deploy the infrastructure
+The current approach to deploying OSDU into your own Azure tenant involves the following steps:
+1- Follow the directions in the infrastructure repository to deploy the infrastructure, there are 3 possible deployment options you can choose from:
+- R3 MVP which includes latest from master and the most up-to-date master branch deployment.It can be found [here](https://github.com/Azure/osdu-infrastructure/blob/master/infra/templates/osdu-r3-mvp). There is a risk of using the latest if you don't want to deal with potential inconsistencies.
+- R3 infrastructure templates for OSDU services only which can be found [here](https://github.com/Azure/osdu-infrastructure/blob/master/infra/templates/osdu-r3-resources). This offers the latest stable infrastructure code.
+
 2- Deploy the services using a mirrored Azure Devops project (instructions in [here](https://github.com/azure/osdu-infrastructure))
 3- Load the data
 
