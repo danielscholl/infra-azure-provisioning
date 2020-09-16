@@ -1,6 +1,6 @@
 # infra-azure-provisioning
 
-Azure Infrastructure provisioning scripts and templates are hosted in a Gihthub repository that is accessible here:
+Azure Infrastructure provisioning scripts and templates are hosted in a Github repository that is accessible here:
 [Azure Infrastructure Templates](https://github.com/azure/osdu-infrastructure)
 
 The repository contains the infrastructure as code implementation and pipelines necessary for the required infrastructure in Azure to host OSDU. The infrastructure code is very closely tied to Azure, and requires degree of priviledges and access and leverages capability inherent to Azure DevOps, hence the GitHub hosting. Unfortunately this high level of integration could not be entirely accomodated out of Gitlab.
