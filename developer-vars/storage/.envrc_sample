@@ -1,0 +1,94 @@
+# ------------------------------------------------------------------------------------------------------
+# Common Settings
+# ------------------------------------------------------------------------------------------------------
+export OSDU_TENANT="opendes"
+export OSDU_TENANT2="common"
+export OSDU_TENANT3="othertenant2"
+export COMPANY_DOMAIN="contoso.com"
+export COSMOS_DB_NAME="osdu-db"
+export LEGAL_SERVICE_BUS_TOPIC="legaltags"
+export RECORD_SERVICE_BUS_TOPIC="recordstopic"
+export LEGAL_STORAGE_CONTAINER="legal-service-azure-configuration"
+export TENANT_ID=""                                                       #  <-- Retrieve from Portal
+export INVALID_JWT=""                                                     #  <-- Created
+
+export NO_ACCESS_ID=""                                                    #  <-- Retrieve from Common KeyVault
+export NO_ACCESS_SECRET=""                                                #  <-- Retrieve from Common KeyVault
+export OTHER_APP_ID=""
+export OTHER_APP_OID=""
+
+## These values have to be setup in the Azure Tenant for testing MS Graph Items
+export AD_USER_EMAIL=""                                                   # integration.test@<your_tenant>.onmicrosoft.com
+export AD_USER_OID=""
+export AD_GUEST_EMAIL=""                                                  # integration.test@email.com
+export AD_GUEST_OID=""
+
+# ------------------------------------------------------------------------------------------------------
+# Environment Settings
+# ------------------------------------------------------------------------------------------------------
+export ENV_SUBSCRIPTION_NAME=""                                           #  <-- Retrieve from Portal
+export ENV_APP_ID=""                                                      #  <-- Retrieve from Env KeyVault
+export ENV_PRINCIPAL_ID=""                                                #  <-- Retrieve from Env KeyVault
+export ENV_PRINCIPAL_SECRET=""                                            #  <-- Retrieve from Env KeyVault
+export ENV_APPINSIGHTS_KEY=""                                             #  <-- Retrieve from Env KeyVault
+export ENV_REGISTRY=""                                                    #  <-- Retrieve from Portal
+export ENV_STORAGE=""                                                     #  <-- Retrieve from Portal
+export ENV_STORAGE_KEY=""                                                 #  <-- Retrieve from Portal
+export ENV_STORAGE_CONNECTION=""                                          #  <-- Retrieve from Portal
+export ENV_COSMOSDB_HOST=""
+export ENV_COSMOSDB_KEY=""                                                #  <-- Retrieve from Portal
+export ENV_SERVICEBUS_NAMESPACE=""
+export ENV_SERVICEBUS_CONNECTION=""                                       #  <-- Retrieve from Portal
+export ENV_KEYVAULT=""
+export ENV_HOST=""
+export ENV_REGION="centralus"
+export ENV_ELASTIC_HOST=""                                                #  <-- Retrieve from Env KeyVault (http://{hostname}:9243)
+export ENV_ELASTIC_PORT="9243"                                            #  <-- Retrieve from Env KeyVault (http://{hostname}:9243)
+export ENV_ELASTIC_USERNAME=""                                            #  <-- Retrieve from Env KeyVault
+export ENV_ELASTIC_PASSWORD=""                                            #  <-- Retrieve from Env KeyVault
+
+
+
+
+# ------------------------------------------------------------------------------------------------------
+# LocalHost Run Settings
+# ------------------------------------------------------------------------------------------------------
+export AZURE_TENANT_ID="${TENANT_ID}"
+export AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
+export AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
+export KEYVAULT_URI="${ENV_KEYVAULT}"
+export aad_client_id="${ENV_APP_ID}"
+export appinsights_key="${ENV_APPINSIGHTS_KEY}"
+export cosmosdb_account="${ENV_COSMOSDB_HOST}"
+export cosmosdb_database="${COSMOS_DB_NAME}"
+export cosmosdb_key="${ENV_COSMOSDB_KEY}"
+export entitlements_app_key="${API_KEY}"
+export entitlements_service_api_key="${API_KEY}"
+export entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
+export legal_service_endpoint="https://${ENV_HOST}/api/legal/v1/"
+export legal_service_region="${ENV_REGION}"
+export search_service_endpoint="https://${ENV_HOST}/api/search/v2/query"
+export servicebus_namespace_name="${ENV_SERVICEBUS_NAMESPACE}"
+export servicebus_connection_string="${ENV_SERVICEBUS_CONNECTION}"
+export servicebus_topic_name="${RECORD_SERVICE_BUS_TOPIC}"
+export storage_account="${ENV_STORAGE}"
+export storage_account_key="${ENV_STORAGE_KEY}"
+export server_port="8082"
+
+
+# ------------------------------------------------------------------------------------------------------
+# Integration Test Settings
+# ------------------------------------------------------------------------------------------------------
+export STORAGE_URL="https://${ENV_HOST}/api/storage/v2/"
+export LEGAL_URL="https://${ENV_HOST}/api/legal/v1/"
+export TENANT_NAME="${OSDU_TENANT}"
+export AZURE_AD_TENANT_ID="${TENANT_ID}"
+export INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
+export TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
+export AZURE_STORAGE_ACCOUNT="${ENV_STORAGE}"
+export AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
+export NO_DATA_ACCESS_TESTER="${NO_ACCESS_ID}"
+export NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET="${NO_ACCESS_SECRET}"
+export DOMAIN="${COMPANY_DOMAIN}"
+export PUBSUB_TOKEN="az"
+export DEPLOY_ENV="empty"
