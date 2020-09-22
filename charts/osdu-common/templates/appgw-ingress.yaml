@@ -21,6 +21,10 @@ spec:
               servicePort: 80
             path: /*
           - backend:
+              serviceName: partition
+              servicePort: 80
+            path: /api/partition/v1/*
+          - backend:
               serviceName: entitlements-azure
               servicePort: 80
             path: /entitlements/v1/*
