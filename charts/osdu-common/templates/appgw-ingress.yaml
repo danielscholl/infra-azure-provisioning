@@ -56,3 +56,15 @@ spec:
               serviceName: register
               servicePort: 80
             path: /api/register/v1/*
+          - backend:
+              serviceName: crs-catalog-service
+              servicePort: 80
+            path: /api/crs/catalog/*
+          - backend:
+              serviceName: crs-conversion-service
+              servicePort: 80
+            path: /api/crs/converter/*
+          - backend:
+              serviceName: unit-service
+              servicePort: 80
+            path: /api/unit/*            
