@@ -40,10 +40,11 @@ stages:
                 steps:
                 - download: none
 
-                - template: aks-deployment-steps.yml
+                - template: aks-deploy-steps.yml
                   parameters:
                     providerName: ${{ provider.name }}
                     environment: ${{ environment }}
                     skipDeploy: ${{ parameters.skipDeploy }}
                     generateName: ${{ parameters.generateName }}
                     hldRegPath: ${{ parameters.hldRegPath }}
+
