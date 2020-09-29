@@ -60,7 +60,7 @@ variables:
     value: "osdu-common"
 
 stages:
-  - template: devops/service-pipelines/aks-deploy-stages.yml@infrastructure-templates
+  - template: devops/service-pipelines/aks-deployment-stages.yml@osdu-infrastructure
     parameters:
       generateName: ${{ variables.generateName }}
       providers:
