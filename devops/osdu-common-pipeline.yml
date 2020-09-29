@@ -46,10 +46,6 @@ pr:
 
 resources:
   repositories:
-  - repository: osdu-infrastructure
-    type: github
-    endpoint: github-azure
-    name: azure/osdu-infrastructure
   - repository: K8ManifestsRepo
     type: git
     name: k8-gitops-manifests
@@ -70,7 +66,7 @@ variables:
     value: "osdu-common"
 
 stages:
-  - template: devops/service-pipelines/aks-deploy-stages.yml@osdu-infrastructure
+  - template: tasks/aks-deploy-stages.yml
     parameters:
       generateName: ${{ variables.generateName }}
       providers:
