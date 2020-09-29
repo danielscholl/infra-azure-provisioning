@@ -40,7 +40,7 @@ stages:
                 steps:
                 - download: none
 
-                - template: aks-deploy-steps.yml
+                - template: aks-deployment-steps.yml
                   parameters:
                     providerName: ${{ provider.name }}
                     environment: ${{ environment }}
