@@ -69,7 +69,7 @@ variables:
 
 
 stages:
-  - template: tasks/aks-deploy-stages.yml
+  - template: devops/tasks/aks-deploy-stages.yml
     parameters:
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
