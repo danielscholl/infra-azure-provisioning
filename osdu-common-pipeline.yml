@@ -41,7 +41,7 @@ pr:
   paths:
     include:
       - /charts/osdu-common/*
-      - /devops/osdu-common-pipeline.yml
+      - /osdu-common-pipeline.yml
     exclude:
       - /**/*.md
 
@@ -55,21 +55,25 @@ variables:
   - group: 'Azure Common Secrets'
   - group: 'Azure - Common'
 
+  - name: serviceName
+    value: "osdu-common"
+  - name: chartPath
+    value: "charts/osdu-common"
+  - name: valuesFile
+    value: "charts/helm-config.yaml"
+
   - name: 'MANIFEST_REPO'
     value: $[ resources.repositories['K8ManifestsRepo'].name ]
-  - name: 'HELM_VERSION'
-    value: '3.3.0'
-  - name: 'HELM_CHART_PATH'
-    value: 'charts/osdu-common'
   - name: 'MANIFEST_GENERATION_PATH'
     value: 'generated'
-  - name: generateName
-    value: "osdu-common"
+
 
 stages:
   - template: tasks/aks-deploy-stages.yml
     parameters:
-      generateName: ${{ variables.generateName }}
+      serviceName: ${{ variables.serviceName }}
+      chartPath: ${{ variables.chartPath }}
+      valuesFile: ${{ variables.valuesFile }}
       providers:
         - name: Azure
           environments: ["dev"]

@@ -15,7 +15,7 @@
 
 parameters:
   providers: []
-  generateName: ""
+  serviceName: ""
   skipDeploy: "false"
   hldRegPath: "providers/azure/hld-registry"
 
@@ -42,9 +42,11 @@ stages:
 
                 - template: aks-deployment-steps.yml
                   parameters:
+                    serviceName: ${{ parameters.serviceName }}
                     providerName: ${{ provider.name }}
                     environment: ${{ environment }}
+                    chartPath: ${{ parameters.chartPath }}
+                    valuesFile: ${{ parameters.valuesFile }}
                     skipDeploy: ${{ parameters.skipDeploy }}
-                    generateName: ${{ parameters.generateName }}
                     hldRegPath: ${{ parameters.hldRegPath }}
 

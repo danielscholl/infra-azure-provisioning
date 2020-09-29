@@ -28,7 +28,7 @@ steps:
     env:
       BRANCH_NAME: ${{ parameters.branchName }}
       skipDeploy: ${{parameters.skipDeploy}}
-      GENERATE_NAME: ${{parameters.generateName}}
+      GENERATE_NAME: ${{parameters.serviceName}}
       HLD_REG_PATH: ${{parameters.hldRegPath}}
     inputs:
       targetType: "inline"

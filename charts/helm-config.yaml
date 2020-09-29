@@ -1,0 +1,47 @@
+# This file contains the essential configs for the osdu on azure helm chart
+global:
+
+  # Service(s) Replica Count
+  replicaCount: 2
+
+  ################################################################################
+  # Specify the azure environment specific values
+  #
+  azure:
+    tenant: ${AZURE_TENANT_ID}
+    subscription: ${ENV_SUBSCRIPTION_ID}
+    resourcegroup: ${ENV_BASE_NAME_21}-rg
+    identity: ${ENV_BASE_NAME_21}-osdu-identity
+    identity_id: ${ENV_IDENTITY_ID}
+    keyvault: ${ENV_BASE_NAME_21}-kv
+    appid: ${ENV_APP_ID}
+
+  ################################################################################
+  # Specify the Ingress Settings
+  # DNS Hostname for thet Gateway
+  # Admin Email Address to be notified for SSL expirations
+  # Lets Encrypt SSL Server
+  #     https://acme-staging-v02.api.letsencrypt.org/directory  --> Staging Server
+  #     https://acme-v02.api.letsencrypt.org/directory --> Production Server
+  #
+  ingress:
+    hostname: ${ENV_HOST}
+    admin: ${ADMIN_EMAIL}
+    sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
+
+################################################################################
+# Specify the Gitlab branch being used for image creation
+# ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
+#
+image:
+  repository: ${ENV_REGISTRY}
+  branch: ${BRANCH}
+  tag: ${TAG}
+
+################################################################################
+# Specify the istio specific values
+# based64 encoded username and password
+#
+istio:
+  username: $ISTIO_USERNAME
+  password: $ISTIO_PASSWORD
