@@ -12,6 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# Required Group Variables - `Infrastructure Pipeline Variables`
+  # AGENT_POOL
+  # AZURE_REGISTRY
+  # HELM_REPO
+  # K8_ENV_PREFIX
+
 
 trigger:
   batch: true
@@ -47,6 +53,9 @@ resources:
     name: k8-gitops-manifests
 
 variables:
+  - group: 'Azure Common Secrets'
+  - group: 'Azure - Common'
+
   - name: 'MANIFEST_REPO'
     value: $[ resources.repositories['K8ManifestsRepo'].name ]
   - name: 'HELM_VERSION'
@@ -55,7 +64,6 @@ variables:
     value: 'charts/osdu-common'
   - name: 'MANIFEST_GENERATION_PATH'
     value: 'generated'
-  - group: "Test-GitOPS Variables"
   - name: generateName
     value: "osdu-common"
 
@@ -65,4 +73,4 @@ stages:
       generateName: ${{ variables.generateName }}
       providers:
         - name: Azure
-          environments: ["test"]
+          environments: ["dev"]
