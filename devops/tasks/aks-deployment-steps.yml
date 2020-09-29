@@ -15,11 +15,11 @@
 parameters:
   serviceName: ""
   providerName: ""
-  environment: ${{ parameters.environment }}
-  chartPath: ${{ parameters.chartPath }}
-  valuesFile: ${{ parameters.valuesFile }}
-  skipDeploy: ${{ parameters.skipDeploy }}
-  hldRegPath: ${{ parameters.hldRegPath }}
+  environment: ""
+  chartPath: ""
+  valuesFile: ""
+  skipDeploy: ""
+  hldRegPath: ""
   generationPath: "generated"
 
 steps:
