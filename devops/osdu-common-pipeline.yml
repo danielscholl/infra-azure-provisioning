@@ -48,6 +48,7 @@ resources:
   repositories:
   - repository: osdu-infrastructure
     type: github
+    endpoint: github-azure
     name: azure/osdu-infrastructure
   - repository: K8ManifestsRepo
     type: git
