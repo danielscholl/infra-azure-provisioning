@@ -1,0 +1,68 @@
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - /charts/osdu-common/*
+    exclude:
+      - /**/*.md
+
+pr:
+  autoCancel: false
+  branches:
+    include:
+      - "*"
+    exclude:
+      - master
+  paths:
+    include:
+      - /charts/osdu-common/*
+    exclude:
+      - /**/*.md
+
+resources:
+  repositories:
+  - repository: osdu-infrastructure
+      type: github
+      name: azure/osdu-infrastructure
+  - repository: K8ManifestsRepo
+    type: git
+    name: k8-gitops-manifests
+
+variables:
+  - name: 'MANIFEST_REPO'
+    value: $[ resources.repositories['K8ManifestsRepo'].name ]
+  - name: 'HELM_VERSION'
+    value: '3.3.0'
+  - name: 'HELM_CHART_PATH'
+    value: 'charts/osdu-common'
+  - name: 'MANIFEST_GENERATION_PATH'
+    value: 'generated'
+  - group: "Test-GitOPS Variables"
+  - name: generateName
+    value: "osdu-common"
+
+stages:
+  - template: devops/service-pipelines/aks-deploy-stages.yml@infrastructure-templates
+    parameters:
+      generateName: ${{ variables.generateName }}
+      providers:
+        - name: Azure
+          environments: ["test"]
