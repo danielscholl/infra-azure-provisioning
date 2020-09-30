@@ -44,7 +44,7 @@ steps:
       providerName: ${{ parameters.providerName }}
       imageRepoName: 'svc-${{ parameters.serviceName }}'
 
-  - template: tasks/aks-deployment-steps.yml
+  - template: aks-deployment-steps.yml
     parameters:
       serviceName: ${{ parameters.serviceName }}
       providerName: ${{ parameters.providerName }}
