@@ -28,9 +28,7 @@ steps:
       script: |
         #!/usr/bin/env bash
 
-          pwd
-          ls -l
-          # cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
+          cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
 
           echo "Creating Helm Values File"
