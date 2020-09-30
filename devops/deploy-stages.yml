@@ -68,7 +68,7 @@ stages:
                   testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
                   artifactName: ${{ variables.artifactName }}
                   elasticEndpoint: $(elastic-endpoint)
-                  environment: ${{ provider.environment }}
+                  environment: ${{ environment }}
                   chartPath: ${{ parameters.chartPath }}
                   valuesFile: ${{ parameters.valuesFile }}
                   skipDeploy: ${{ parameters.skipDeploy }}
