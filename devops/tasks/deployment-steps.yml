@@ -77,7 +77,7 @@ steps:
 
   - task: Maven@3
     displayName: 'Maven run integration test'
-    condition: ne(${{ parameters.skipTest }}, false)
+    condition: ${{ parameters.skipTest }}
     inputs:
       mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
       goals: ${{ parameters.integrationTestMavenGoal }}
