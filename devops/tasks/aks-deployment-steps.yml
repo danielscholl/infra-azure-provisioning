@@ -26,7 +26,7 @@ steps:
     # self to trigger clone of the current repo.
     - checkout: self
       persistCredentials: true
-    - checkout: K8ManifestsRepo
+    - checkout: FluxRepo
       persistCredentials: true
     - task: "HelmInstaller@1"
       inputs:
