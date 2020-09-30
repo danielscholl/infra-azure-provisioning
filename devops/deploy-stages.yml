@@ -58,7 +58,7 @@ stages:
                   artifactName: '${{ variables.artifactName }}'
                   downloadPath: '$(System.DefaultWorkingDirectory)'
 
-              - template: tasks/app-service-deployment-steps.yml
+              - template: tasks/deployment-steps.yml
                 parameters:
                   serviceName: ${{ parameters.serviceName }}
                   providerName: ${{ provider.name }}
