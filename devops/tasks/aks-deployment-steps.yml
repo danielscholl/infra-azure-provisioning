@@ -18,7 +18,7 @@ parameters:
   environment: ""
   chartPath: ""
   valuesFile: ""
-  skipDeploy: "false"
+  skipDeploy: false
   hldRegPath: ""
   generationPath: "generated"
 
