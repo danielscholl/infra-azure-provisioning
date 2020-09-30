@@ -71,6 +71,7 @@ stages:
         archiveFile: $(Build.ArtifactStagingDirectory)/${{ parameters.serviceBase }}-integration-tests.zip
         replaceExistingArchive: true
 
+
     - task: CopyFiles@2
       condition: ne('${{ parameters.copyFileContentsToFlatten }}', '')
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
@@ -85,6 +86,13 @@ stages:
       inputs:
         SourceFolder:
         Contents: ${{ parameters.copyFileContents }}
+        TargetFolder: '$(build.artifactstagingdirectory)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy helm chart to: $(build.artifactstagingdirectory)'
+      inputs:
+        SourceFolder:
+        Contents: ${{ parameters.chartPath }}
         TargetFolder: '$(build.artifactstagingdirectory)'
 
     - task: PublishBuildArtifacts@1
