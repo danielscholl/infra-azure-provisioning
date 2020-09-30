@@ -45,9 +45,7 @@ stages:
                     serviceName: ${{ parameters.serviceName }}
                     providerName: ${{ provider.name }}
                     environment: ${{ environment }}
-                    manifestRepo: ${{ parameters.manifestRepo }}
                     chartPath: ${{ parameters.chartPath }}
                     valuesFile: ${{ parameters.valuesFile }}
                     skipDeploy: ${{ parameters.skipDeploy }}
                     hldRegPath: ${{ parameters.hldRegPath }}
-

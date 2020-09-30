@@ -62,7 +62,7 @@ variables:
     value: "charts/osdu-common"
   - name: valuesFile
     value: "charts/helm-config.yaml"
-  - name: 'manifestRepo'
+  - name: 'MANIFEST_REPO'
     value: $[ resources.repositories['K8ManifestsRepo'].name ]
 
 stages:
@@ -71,7 +71,6 @@ stages:
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
       valuesFile: ${{ variables.valuesFile }}
-      manifestRepo: ${{ variables.manifestRepo }}
       providers:
         - name: Azure
           environments: ["dev"]

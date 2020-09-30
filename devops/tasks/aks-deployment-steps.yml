@@ -16,7 +16,6 @@ parameters:
   serviceName: ""
   providerName: ""
   environment: ""
-  manifestRepo: ""
   chartPath: ""
   valuesFile: ""
   skipDeploy: ""
@@ -41,7 +40,6 @@ steps:
     - template: gitops.yml
       parameters:
         serviceName: ${{parameters.serviceName}}
-        manifestRepo: ${{parameters.manifestRepo}}
         branchName: ${{parameters.environment}}
         hldRegPath: ${{parameters.hldRegPath}}
         skipDeploy: ${{parameters.skipDeploy}}
