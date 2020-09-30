@@ -32,8 +32,8 @@ stages:
       variables:
       - group: 'Azure - Common'
       - group: 'Azure Common Secrets'
-      - group: '${{ provider.name }} Target Env - ${{ environment }}'
       - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
+      - group: '${{ provider.name }} Target Env - ${{ environment }}'
       - group: '${{ provider.name }} Service Release - ${{ parameters.serviceName }}'
 
       - name: artifactName

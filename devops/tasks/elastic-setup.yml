@@ -33,6 +33,7 @@ steps:
       script: |
         #!/bin/bash
         set -euo pipefail
+
         # extract the protocol
         proto="$(echo $ENDPOINT | grep :// | sed -e's,^\(.*://\).*,\1,g')"
         # remove the protocol -- updated
