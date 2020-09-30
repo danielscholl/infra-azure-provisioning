@@ -63,7 +63,8 @@ steps:
           if [[ $SKIP_DEPLOY == "false" ]]
           then
               echo "COPYING YAML FILES TO HLD-REGISTRY..."
-              mkdir ./$HLD_REG_PATH/$SERVICE_NAME
+              mkdir -p ./$HLD_REG_PATH/$SERVICE_NAME
+              rm -rf /$HLD_REG_PATH/$SERVICE_NAME/*
               cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/templates/* ./$HLD_REG_PATH/$SERVICE_NAME
           else
               echo "Deploy through flux skipped."
