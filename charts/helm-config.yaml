@@ -29,19 +29,19 @@ global:
     admin: ${ADMIN_EMAIL}
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
 
-################################################################################
-# Specify the Gitlab branch being used for image creation
-# ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
-#
-image:
-  repository: ${ENV_REGISTRY}
-  branch: ${BRANCH}
-  tag: ${TAG}
+  ################################################################################
+  # Specify the Gitlab branch being used for image creation
+  # ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
+  #
+  image:
+    repository: ${ENV_REGISTRY}
+    branch: ${BRANCH}
+    tag: ${TAG}
 
-################################################################################
-# Specify the istio specific values
-# based64 encoded username and password
-#
-istio:
-  username: $ISTIO_USERNAME
-  password: $ISTIO_PASSWORD
+  ################################################################################
+  # Specify the istio specific values
+  # based64 encoded username and password
+  #
+  istio:
+    username: ${ISTIO_USERNAME}
+    password: ${ISTIO_PASSWORD}
