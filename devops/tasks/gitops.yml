@@ -16,10 +16,6 @@
 # README: GitOPS operations manifest repo tasks.
 #####################
 
-parameters:
-  skipDeploy: "false"
-  hldRegPath: "providers/azure/hld-registry"
-
 steps:
   - task: Bash@3
     displayName: "Commit to Branch"
@@ -27,7 +23,7 @@ steps:
       CHART_PATH: ${{parameters.chartPath}}
       BRANCH_NAME: ${{ parameters.branchName }}
       SKIP_DEPLOY: ${{parameters.skipDeploy}}
-      GENERATE_NAME: ${{parameters.serviceName}}
+      SERVICE_NAME: ${{parameters.serviceName}}
       HLD_REG_PATH: ${{parameters.hldRegPath}}
       GENERATION_PATH: ${{parameters.generationPath}}
     inputs:
@@ -67,7 +63,10 @@ steps:
           if [[ $SKIP_DEPLOY == "false" ]]
           then
               echo "COPYING YAML FILES TO HLD-REGISTRY..."
-              cp -rf $GITOPS_MANIFEST_DIRECTORY/$GENERATE_NAME/templates/* ./$HLD_REG_PATH
+              pwd
+              ls -l
+              ls -l $GITOPS_MANIFEST_DIRECTORY
+              cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/templates/* ./$HLD_REG_PATH
           else
               echo "Deploy through flux skipped."
           fi
