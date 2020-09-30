@@ -37,9 +37,9 @@ steps:
         valuesFile: ${{ parameters.valuesFile }}
         serviceName: ${{parameters.serviceName}}
         generationPath: ${{parameters.generationPath}}
-    # - template: gitops.yml
-    #   parameters:
-    #     branchName: "$(K8_ENV_PREFIX)-${{parameters.environment}}"
-    #     skipDeploy: ${{parameters.skipDeploy}}
-    #     generateName: ${{parameters.serviceName}}
-    #     hldRegPath: ${{parameters.hldRegPath}}
+    - template: gitops.yml
+      parameters:
+        branchName: "$(K8_ENV_PREFIX)-${{parameters.environment}}"
+        skipDeploy: ${{parameters.skipDeploy}}
+        serviceName: ${{parameters.serviceName}}
+        hldRegPath: ${{parameters.hldRegPath}}

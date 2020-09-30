@@ -17,27 +17,27 @@
 #####################
 
 parameters:
-  branchName: "azure-evd"
   skipDeploy: "false"
-  generateName: "osdu-common"
   hldRegPath: "providers/azure/hld-registry"
 
 steps:
   - task: Bash@3
     displayName: "Commit to Branch"
     env:
+      CHART_PATH: ${{parameters.chartPath}}
       BRANCH_NAME: ${{ parameters.branchName }}
-      skipDeploy: ${{parameters.skipDeploy}}
+      SKIP_DEPLOY: ${{parameters.skipDeploy}}
       GENERATE_NAME: ${{parameters.serviceName}}
       HLD_REG_PATH: ${{parameters.hldRegPath}}
+      GENERATION_PATH: ${{parameters.generationPath}}
     inputs:
       targetType: "inline"
       script: |
         #!/usr/bin/env bash
         set -euo pipefail
 
-        GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$(HELM_CHART_PATH)/$(MANIFEST_GENERATION_PATH)
-        cd $(Build.SourcesDirectory)/$(manifestRepo)
+        GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$CHART_PATH/$GENERATION_PATH
+        cd $(Build.SourcesDirectory)/$(MANIFEST_REPO)
 
         function configure_git_profile() {
           git config --global user.email "gitops@azure.com"
@@ -63,8 +63,8 @@ steps:
           echo "COPY YAML FILES FROM $GITOPS_MANIFEST_DIRECTORY..."
           cp -rf $GITOPS_MANIFEST_DIRECTORY .
 
-          echo "SKIP DEPLOY SET TO: $skipDeploy, HLD-REG SET TO: $HLD_REG_PATH"
-          if [[ $skipDeploy == "false" ]]
+          echo "SKIP DEPLOY SET TO: $SKIP_DEPLOY, HLD-REG SET TO: $HLD_REG_PATH"
+          if [[ $SKIP_DEPLOY == "false" ]]
           then
               echo "COPYING YAML FILES TO HLD-REGISTRY..."
               cp -rf $GITOPS_MANIFEST_DIRECTORY/$GENERATE_NAME/templates/* ./$HLD_REG_PATH
