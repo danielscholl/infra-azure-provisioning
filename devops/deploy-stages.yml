@@ -23,6 +23,8 @@ parameters:
   testCoreMavenPomFile: ''
   testCoreMavenOptions: ''
   testCoreMavenGoal: 'install'
+  skipDeploy: false
+  skipTest: false
 
 stages:
 
@@ -71,5 +73,6 @@ stages:
                   environment: ${{ environment }}
                   chartPath: ${{ parameters.chartPath }}
                   valuesFile: ${{ parameters.valuesFile }}
-                  skipDeploy: ${{ parameters.skipDeploy }}
                   hldRegPath: ${{ parameters.hldRegPath }}
+                  skipDeploy: ${{ parameters.skipDeploy }}
+                  skipTest: ${{ parameters.skipTest }}

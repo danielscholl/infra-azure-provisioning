@@ -51,8 +51,8 @@ steps:
       environment: ${{ parameters.environment }}
       chartPath: ${{ parameters.chartPath }}
       valuesFile: ${{ parameters.valuesFile }}
-      skipDeploy: ${{ parameters.skipDeploy }}
       hldRegPath: ${{ parameters.hldRegPath }}
+      skipDeploy: ${{ parameters.skipDeploy }}
 
   - task: ExtractFiles@1
     displayName: 'Extract ${{parameters.serviceName}} integration test suite '
@@ -75,11 +75,12 @@ steps:
       options: ${{ parameters.testCoreMavenOptions }}
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
-  # - task: Maven@3
-  #   displayName: 'Maven run integration test'
-  #   inputs:
-  #     mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
-  #     goals: ${{ parameters.integrationTestMavenGoal }}
-  #     options: $(MAVEN_INTEGRATION_TEST_OPTIONS)
-  #     publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
+  - task: Maven@3
+    displayName: 'Maven run integration test'
+    condition: ne(${{ parameters.skipTest }}, false)
+    inputs:
+      mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
+      goals: ${{ parameters.integrationTestMavenGoal }}
+      options: $(MAVEN_INTEGRATION_TEST_OPTIONS)
+      publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
