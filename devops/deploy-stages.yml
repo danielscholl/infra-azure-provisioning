@@ -58,13 +58,13 @@ stages:
                   artifactName: '${{ variables.artifactName }}'
                   downloadPath: '$(System.DefaultWorkingDirectory)'
 
-              # - template: tasks/app-service-deployment-steps.yml
-              #   parameters:
-              #     serviceName: ${{ parameters.serviceName }}
-              #     providerName: ${{ provider.name }}
-              #     testCoreMavenPomFile: ${{ parameters.testCoreMavenPomFile }}
-              #     testCoreMavenGoal: ${{ parameters.testCoreMavenGoal }}
-              #     testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
-              #     artifactName: ${{ variables.artifactName }}
-              #     elasticEndpoint: $(elastic-endpoint)
-              #     environment: ${{ environment }}
+              - template: tasks/app-service-deployment-steps.yml
+                parameters:
+                  serviceName: ${{ parameters.serviceName }}
+                  providerName: ${{ provider.name }}
+                  testCoreMavenPomFile: ${{ parameters.testCoreMavenPomFile }}
+                  testCoreMavenGoal: ${{ parameters.testCoreMavenGoal }}
+                  testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
+                  artifactName: ${{ variables.artifactName }}
+                  elasticEndpoint: $(elastic-endpoint)
+                  environment: ${{ environment }}
