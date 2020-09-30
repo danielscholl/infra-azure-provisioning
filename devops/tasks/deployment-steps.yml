@@ -23,7 +23,6 @@ parameters:
   jarFilePattern: '*-SNAPSHOT*.jar'
   integrationTestMavenGoal: 'package'
   mavenPublishJUnitResults: false
-  environment: ''
   testCoreMavenPomFile: ''
   testCoreMavenGoal: 'install'
   testCoreMavenOptions: ''
@@ -49,7 +48,7 @@ steps:
     parameters:
       serviceName: ${{ parameters.serviceName }}
       providerName: ${{ parameters.providerName }}
-      environment: ${{ environment }}
+      environment: ${{ parameters.environment }}
       chartPath: ${{ parameters.chartPath }}
       valuesFile: ${{ parameters.valuesFile }}
       skipDeploy: ${{ parameters.skipDeploy }}
