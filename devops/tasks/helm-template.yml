@@ -17,10 +17,10 @@ steps:
     name: GenerateHelmTemplate
     displayName: Generate Template
     env:
-        CHART_PATH: ${{parameters.chartPath}}
-        VALUES_FILE: ${{parameters.valuesFile}}
-        SERVICE_NAME: ${{parameters.serviceName}}
-        GENERATION_PATH: ${{parameters.generationPath}}
+      CHART_PATH: ${{parameters.chartPath}}
+      VALUES_FILE: ${{parameters.valuesFile}}
+      SERVICE_NAME: ${{parameters.serviceName}}
+      GENERATION_PATH: ${{parameters.generationPath}}
     inputs:
       targetType: 'inline'
       script: |
