@@ -88,13 +88,6 @@ stages:
         Contents: ${{ parameters.copyFileContents }}
         TargetFolder: '$(build.artifactstagingdirectory)'
 
-    - task: CopyFiles@2
-      displayName: 'Copy helm chart to: $(build.artifactstagingdirectory)'
-      inputs:
-        SourceFolder:
-        Contents: ${{ parameters.chartPath }}
-        TargetFolder: '$(build.artifactstagingdirectory)'
-
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: ${{ variables.artifactName }}'
       inputs:
