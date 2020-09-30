@@ -21,6 +21,8 @@ steps:
       VALUES_FILE: ${{parameters.valuesFile}}
       SERVICE_NAME: ${{parameters.serviceName}}
       GENERATION_PATH: ${{parameters.generationPath}}
+      BRANCH: $(Build.SourceBranchName)
+      TAG: $(Build.SourceVersion)
     inputs:
       targetType: 'inline'
       script: |
