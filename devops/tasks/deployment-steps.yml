@@ -28,7 +28,6 @@ parameters:
   testCoreMavenOptions: ''
   testArtifactLocation: 'drop/deploy'
   elasticEndpoint: ''
-  skipDeploy: false
 
 steps:
   - template: detect-jar.yml
