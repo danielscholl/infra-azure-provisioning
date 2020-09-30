@@ -34,4 +34,4 @@ steps:
           envsubst < $VALUES_FILE > $CHART_PATH/values.yml
 
           echo "Extracting Manifest"
-          helm template $SERVICE_NAME $CHART_PATH -f $CHART_PATH/values.yml --output-dir $CHART_PATH/$GENERATION_PATH/$SERVICE_NAME
+          helm template $SERVICE_NAME $CHART_PATH -f $CHART_PATH/values.yml --output-dir $CHART_PATH/$GENERATION_PATH
