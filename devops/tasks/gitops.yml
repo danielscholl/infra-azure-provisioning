@@ -37,7 +37,7 @@ steps:
         set -euo pipefail
 
         GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$(HELM_CHART_PATH)/$(MANIFEST_GENERATION_PATH)
-        cd $(Build.SourcesDirectory)/$(MANIFEST_REPO)
+        cd $(Build.SourcesDirectory)/$(manifestRepo)
 
         function configure_git_profile() {
           git config --global user.email "gitops@azure.com"

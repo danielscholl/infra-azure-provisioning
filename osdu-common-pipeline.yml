@@ -27,7 +27,8 @@ trigger:
   paths:
     include:
       - /charts/osdu-common/*
-      - /devops/osdu-common-pipeline.yml
+      - /devops/tasks/*
+      - /osdu-common-pipeline.yml
     exclude:
       - /**/*.md
 
@@ -41,6 +42,7 @@ pr:
   paths:
     include:
       - /charts/osdu-common/*
+      - /devops/tasks/*
       - /osdu-common-pipeline.yml
     exclude:
       - /**/*.md
@@ -52,8 +54,7 @@ resources:
     name: k8-gitops-manifests
 
 variables:
-  - group: 'Azure Common Secrets'
-  - group: 'Azure - Common'
+  - group: 'Azure - OSDU'
 
   - name: serviceName
     value: "osdu-common"
@@ -61,12 +62,8 @@ variables:
     value: "charts/osdu-common"
   - name: valuesFile
     value: "charts/helm-config.yaml"
-
-  - name: 'MANIFEST_REPO'
+  - name: 'manifestRepo'
     value: $[ resources.repositories['K8ManifestsRepo'].name ]
-  - name: 'MANIFEST_GENERATION_PATH'
-    value: 'generated'
-
 
 stages:
   - template: devops/tasks/aks-deploy-stages.yml
