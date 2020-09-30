@@ -72,7 +72,7 @@ variables:
     value: $[ resources.repositories['FluxRepo'].name ]
 
 stages:
-  - template: devops/chart-stages.yml
+  - template: /devops/chart-stages.yml
     parameters:
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
