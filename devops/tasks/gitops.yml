@@ -32,8 +32,6 @@ steps:
         #!/usr/bin/env bash
         set -euo pipefail
 
-        ls -l $(Build.SourcesDirectory)
-
         GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$CHART_PATH/$GENERATION_PATH
         cd $(Build.SourcesDirectory)/$(MANIFEST_REPO)
 
@@ -58,7 +56,6 @@ steps:
           # Cannot delete as all the manifests from multiple repos would be coming over to here.
           # rm -rf ./$(MANIFEST_GENERATION_PATH)/*/
 
-          pwd
           ls -l $GITOPS_MANIFEST_DIRECTORY
 
           echo "COPY YAML FILES FROM $GITOPS_MANIFEST_DIRECTORY..."
