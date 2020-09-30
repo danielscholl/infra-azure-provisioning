@@ -71,6 +71,7 @@ stages:
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
       valuesFile: ${{ variables.valuesFile }}
+      manifestRepo: ${{ variables.manifestRepo }}
       providers:
         - name: Azure
           environments: ["dev"]

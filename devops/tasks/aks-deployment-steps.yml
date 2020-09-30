@@ -16,6 +16,7 @@ parameters:
   serviceName: ""
   providerName: ""
   environment: ""
+  manifestRepo: ""
   chartPath: ""
   valuesFile: ""
   skipDeploy: ""
@@ -39,7 +40,8 @@ steps:
         generationPath: ${{parameters.generationPath}}
     - template: gitops.yml
       parameters:
-        branchName: "$(K8_ENV_PREFIX)-${{parameters.environment}}"
-        skipDeploy: ${{parameters.skipDeploy}}
         serviceName: ${{parameters.serviceName}}
+        manifestRepo: ${{parameters.manifestRepo}}
+        branchName: ${{parameters.environment}}
         hldRegPath: ${{parameters.hldRegPath}}
+        skipDeploy: ${{parameters.skipDeploy}}

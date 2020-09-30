@@ -24,6 +24,7 @@ steps:
   - task: Bash@3
     displayName: "Commit to Branch"
     env:
+      MANIFEST_REPO: ${{parameters.manifestRepo}}
       CHART_PATH: ${{parameters.chartPath}}
       BRANCH_NAME: ${{ parameters.branchName }}
       SKIP_DEPLOY: ${{parameters.skipDeploy}}
@@ -37,7 +38,7 @@ steps:
         set -euo pipefail
 
         GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$CHART_PATH/$GENERATION_PATH
-        cd $(Build.SourcesDirectory)/$(MANIFEST_REPO)
+        cd $(Build.SourcesDirectory)/$MANIFEST_REPO
 
         function configure_git_profile() {
           git config --global user.email "gitops@azure.com"
