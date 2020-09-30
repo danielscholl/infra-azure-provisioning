@@ -43,5 +43,5 @@ image:
 # based64 encoded username and password
 #
 istio:
-  username: ${ISTIO_USERNAME}
-  password: ${ISTIO_PASSWORD}
+  username: $ISTIO_USERNAME
+  password: $ISTIO_PASSWORD
