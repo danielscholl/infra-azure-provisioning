@@ -19,6 +19,7 @@
 parameters:
   providers: []
   serviceName: ''
+  hldRegPath: "providers/azure/hld-registry"
   testCoreMavenPomFile: ''
   testCoreMavenOptions: ''
   testCoreMavenGoal: 'install'
@@ -68,3 +69,7 @@ stages:
                   artifactName: ${{ variables.artifactName }}
                   elasticEndpoint: $(elastic-endpoint)
                   environment: ${{ environment }}
+                  chartPath: ${{ parameters.chartPath }}
+                  valuesFile: ${{ parameters.valuesFile }}
+                  skipDeploy: ${{ parameters.skipDeploy }}
+                  hldRegPath: ${{ parameters.hldRegPath }}

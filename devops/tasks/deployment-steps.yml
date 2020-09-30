@@ -45,7 +45,15 @@ steps:
       providerName: ${{ parameters.providerName }}
       imageRepoName: 'svc-${{ parameters.serviceName }}'
 
-# HERE GOES DEPLOY STEPS
+  - template: tasks/aks-deployment-steps.yml
+    parameters:
+      serviceName: ${{ parameters.serviceName }}
+      providerName: ${{ provider.name }}
+      environment: ${{ environment }}
+      chartPath: ${{ parameters.chartPath }}
+      valuesFile: ${{ parameters.valuesFile }}
+      skipDeploy: ${{ parameters.skipDeploy }}
+      hldRegPath: ${{ parameters.hldRegPath }}
 
   - task: ExtractFiles@1
     displayName: 'Extract ${{parameters.serviceName}} integration test suite '
@@ -59,21 +67,20 @@ steps:
       providerName: ${{ parameters.providerName }}
       elasticEndpoint: ${{ parameters.elasticEndpoint }}
 
-  # - task: Maven@3
-  #   displayName: 'Maven build, test, and install ${{parameters.providerName}}-test-core'
-  #   condition: ne('${{ parameters.testCoreMavenPomFile }}', '')
-  #   inputs:
-  #     mavenPomFile: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testCoreMavenPomFile }}'
-  #     goals: ${{ parameters.testCoreMavenGoal }}
-  #     options: ${{ parameters.testCoreMavenOptions }}
-  #     publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
-
-
   - task: Maven@3
-    displayName: 'Maven run integration test'
+    displayName: 'Maven build, test, and install ${{parameters.providerName}}-test-core'
+    condition: ne('${{ parameters.testCoreMavenPomFile }}', '')
     inputs:
-      mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
-      goals: ${{ parameters.integrationTestMavenGoal }}
-      options: $(MAVEN_INTEGRATION_TEST_OPTIONS)
+      mavenPomFile: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testCoreMavenPomFile }}'
+      goals: ${{ parameters.testCoreMavenGoal }}
+      options: ${{ parameters.testCoreMavenOptions }}
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
+
+  # - task: Maven@3
+  #   displayName: 'Maven run integration test'
+  #   inputs:
+  #     mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
+  #     goals: ${{ parameters.integrationTestMavenGoal }}
+  #     options: $(MAVEN_INTEGRATION_TEST_OPTIONS)
+  #     publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 

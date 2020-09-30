@@ -34,6 +34,8 @@ steps:
         #!/bin/bash
         set -euo pipefail
 
+        env
+
         # extract the protocol
         proto="$(echo $ENDPOINT | grep :// | sed -e's,^\(.*://\).*,\1,g')"
         # remove the protocol -- updated
