@@ -48,7 +48,7 @@ steps:
   - template: tasks/aks-deployment-steps.yml
     parameters:
       serviceName: ${{ parameters.serviceName }}
-      providerName: ${{ provider.name }}
+      providerName: ${{ parameters.providerName }}
       environment: ${{ environment }}
       chartPath: ${{ parameters.chartPath }}
       valuesFile: ${{ parameters.valuesFile }}
