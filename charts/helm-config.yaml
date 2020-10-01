@@ -9,12 +9,12 @@ global:
   #
   azure:
     tenant: ${AZURE_TENANT_ID}
-    subscription: ${ENV_SUBSCRIPTION_ID}
-    resourcegroup: ${ENV_BASE_NAME_21}-rg
-    identity: ${ENV_BASE_NAME_21}-osdu-identity
-    identity_id: ${ENV_IDENTITY_ID}
-    keyvault: ${ENV_BASE_NAME_21}-kv
-    appid: ${ENV_APP_ID}
+    subscription: ${AZURE_DEPLOY_SUBSCRIPTION}
+    resourcegroup: ${CR_RESOURCE_GROUP}
+    identity: ${BASE_NAME_21}-osdu-identity
+    identity_id: ${IDENTITY_ID}
+    keyvault: ${BASE_NAME_21}-kv
+    appid: ${APPLICATION_ID}
 
   ################################################################################
   # Specify the Ingress Settings
@@ -25,7 +25,7 @@ global:
   #     https://acme-v02.api.letsencrypt.org/directory --> Production Server
   #
   ingress:
-    hostname: ${ENV_HOST}
+    hostname: ${DNS_HOST}
     admin: ${ADMIN_EMAIL}
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
 
