@@ -27,6 +27,7 @@ steps:
       targetType: 'inline'
       script: |
         #!/usr/bin/env bash
+
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
 

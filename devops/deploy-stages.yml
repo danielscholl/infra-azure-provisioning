@@ -19,9 +19,12 @@
 parameters:
   providers: []
   serviceName: ''
+  hldRegPath: "providers/azure/hld-registry"
   testCoreMavenPomFile: ''
   testCoreMavenOptions: ''
   testCoreMavenGoal: 'install'
+  skipDeploy: false
+  skipTest: false
 
 stages:
 
@@ -32,8 +35,8 @@ stages:
       variables:
       - group: 'Azure - Common'
       - group: 'Azure Common Secrets'
-      - group: '${{ provider.name }} Target Env - ${{ environment }}'
       - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
+      - group: '${{ provider.name }} Target Env - ${{ environment }}'
       - group: '${{ provider.name }} Service Release - ${{ parameters.serviceName }}'
 
       - name: artifactName
@@ -58,13 +61,18 @@ stages:
                   artifactName: '${{ variables.artifactName }}'
                   downloadPath: '$(System.DefaultWorkingDirectory)'
 
-              # - template: tasks/app-service-deployment-steps.yml
-              #   parameters:
-              #     serviceName: ${{ parameters.serviceName }}
-              #     providerName: ${{ provider.name }}
-              #     testCoreMavenPomFile: ${{ parameters.testCoreMavenPomFile }}
-              #     testCoreMavenGoal: ${{ parameters.testCoreMavenGoal }}
-              #     testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
-              #     artifactName: ${{ variables.artifactName }}
-              #     elasticEndpoint: $(elastic-endpoint)
-              #     environment: ${{ environment }}
+              - template: tasks/deployment-steps.yml
+                parameters:
+                  serviceName: ${{ parameters.serviceName }}
+                  providerName: ${{ provider.name }}
+                  testCoreMavenPomFile: ${{ parameters.testCoreMavenPomFile }}
+                  testCoreMavenGoal: ${{ parameters.testCoreMavenGoal }}
+                  testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
+                  artifactName: ${{ variables.artifactName }}
+                  elasticEndpoint: $(elastic-endpoint)
+                  environment: ${{ environment }}
+                  chartPath: ${{ parameters.chartPath }}
+                  valuesFile: ${{ parameters.valuesFile }}
+                  hldRegPath: ${{ parameters.hldRegPath }}
+                  skipDeploy: ${{ parameters.skipDeploy }}
+                  skipTest: ${{ parameters.skipTest }}

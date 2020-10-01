@@ -71,6 +71,7 @@ stages:
         archiveFile: $(Build.ArtifactStagingDirectory)/${{ parameters.serviceBase }}-integration-tests.zip
         replaceExistingArchive: true
 
+
     - task: CopyFiles@2
       condition: ne('${{ parameters.copyFileContentsToFlatten }}', '')
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
