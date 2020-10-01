@@ -42,7 +42,7 @@ steps:
       environment: ${{ parameters.environment }}
       jarFilePath: $(DetectJarScript.JAR_FILE_PATH)
       providerName: ${{ parameters.providerName }}
-      imageRepoName: 'svc-${{ parameters.serviceName }}'
+      imageRepoName: '${{ parameters.serviceName }}'
 
   - template: aks-deployment-steps.yml
     parameters:
