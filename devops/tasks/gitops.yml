@@ -61,16 +61,16 @@ steps:
           cp -rf $GITOPS_MANIFEST_DIRECTORY .
 
           echo "SKIP DEPLOY: $SKIP_DEPLOY, HLD-REG: $HLD_REG_PATH"
-          if [[ $SKIP_DEPLOY == false ]]
+          if [[ $SKIP_DEPLOY == true ]]
           then
+              echo "***********************"
+              echo "FLUX DEPLOYMENT SKIPPED"
+              echo "***********************"
+          else
               echo "COPYING YAML FILES TO $HLD_REG_PATH/$SERVICE_NAME"
               mkdir -p ./$HLD_REG_PATH/$SERVICE_NAME
               rm -rf ./$HLD_REG_PATH/$SERVICE_NAME/*
               cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/templates/* ./$HLD_REG_PATH/$SERVICE_NAME
-          else
-              echo "***********************"
-              echo "FLUX DEPLOYMENT SKIPPED"
-              echo "***********************"
           fi
 
           git add -A
