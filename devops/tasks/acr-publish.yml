@@ -25,7 +25,7 @@ steps:
     condition: and(succeeded(), eq('${{ parameters.providerName }}', 'Azure'))
     env:
       JAR_FILE_PATH: ${{ parameters.jarFilePath }}
-      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}:$(Build.BuildId)-${{ parameters.environment }}
+      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.BuildId)
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
