@@ -67,4 +67,8 @@ spec:
           - backend:
               serviceName: unit-service
               servicePort: 80
-            path: /api/unit/*            
+            path: /api/unit/*     
+          - backend:
+              serviceName: file
+              servicePort: 80
+            path: /api/file/v2/*       
