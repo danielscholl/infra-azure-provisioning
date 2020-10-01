@@ -34,7 +34,7 @@ global:
 # ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
 #
 image:
-  repository: ${ENV_REGISTRY}
+  repository: ${CONTAINER_REGISTRY_NAME}.azurecr.io
   branch: ${BRANCH}
   tag: ${TAG}
 
