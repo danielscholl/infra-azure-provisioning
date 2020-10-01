@@ -28,11 +28,13 @@ steps:
       script: |
         #!/usr/bin/env bash
 
+          env
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
 
           echo "Creating Helm Values File"
           envsubst < $VALUES_FILE > $CHART_PATH/values.yml
+          envsubst < $CHART_PATH/values.yml > $CHART_PATH/values.yml  # Need to do twice so we get second substition
 
           echo "Extracting Manifest"
           helm template $SERVICE_NAME $CHART_PATH -f $CHART_PATH/values.yml --output-dir $CHART_PATH/$GENERATION_PATH
