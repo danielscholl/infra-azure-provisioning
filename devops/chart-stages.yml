@@ -16,7 +16,7 @@
 parameters:
   providers: []
   serviceName: ""
-  skipDeploy: "false"
+  skipDeploy: false
   hldRegPath: "providers/azure/hld-registry"
 
 stages:
@@ -25,8 +25,6 @@ stages:
       - stage: 'Deploy_${{ provider.name }}_${{ environment }}'
 
         variables:
-          - group: 'Azure - Common'
-          - group: 'Azure Common Secrets'
           - group: '${{ provider.name }} Target Env - ${{ environment }}'
 
         jobs:

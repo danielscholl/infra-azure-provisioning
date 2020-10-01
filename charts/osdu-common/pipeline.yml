@@ -61,6 +61,7 @@ resources:
 
 variables:
   - group: 'Azure - OSDU'
+  - group: 'Azure - OSDU secrets'
 
   - name: serviceName
     value: "osdu-common"
@@ -77,6 +78,7 @@ stages:
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
       valuesFile: ${{ variables.valuesFile }}
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
       providers:
         - name: Azure
           environments: ["dev"]
