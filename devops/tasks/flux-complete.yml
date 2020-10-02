@@ -15,8 +15,7 @@
 # This template is responsible for detecting a service being alive.
 steps:
   - task: AzureCLI@1
-    displayName: 'Flux Completed'
-    condition: and(succeeded(), eq('${{ parameters.providerName }}', 'Azure'))
+    displayName: 'Flux Wait'
     env:
       IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.BuildId)
       SERVICE_NAME: ${{parameters.serviceName}}

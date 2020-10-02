@@ -15,7 +15,7 @@
 steps:
   - task: Bash@3
     name: GenerateHelmTemplate
-    displayName: Generate Template
+    displayName: Extract Template
     env:
       CHART_PATH: ${{parameters.chartPath}}
       VALUES_FILE: ${{parameters.valuesFile}}
