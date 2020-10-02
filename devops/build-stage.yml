@@ -45,8 +45,6 @@ stages:
     steps:
     - download: none
 
-    - script: env
-
     - task: Maven@3
       displayName: 'Maven Core Build'
       condition: ne('${{ parameters.serviceCoreMavenOptions }}', '')

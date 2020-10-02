@@ -55,6 +55,8 @@ stages:
               steps:
               - download: none
 
+              - script: env
+
               - task: DownloadBuildArtifacts@0
                 displayName: 'Pull Build Artifacts'
                 inputs:
