@@ -47,7 +47,7 @@ stages:
 
     - script: env
       displayName: 'Debug'
-      condition: eq('${{ parameters.debug }}', true)
+      condition: eq('$(DEBUG)', true)
 
     - task: Maven@3
       displayName: 'Maven Core Build'
