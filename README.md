@@ -395,7 +395,6 @@ done
 | BASE_NAME_CR                                  |   _(ie:  osdu-mvp-crdemo-0knr)_   |
 | BASE_NAME_SR                                  |   _(ie:  osdu-mvp-srdemo-wzjm)_   |
 | CONTAINER_REGISTRY_NAME                       |   _(ie:  osdumvpcrdemo0knrcr)_   |
-| CR_RESOURCE_GROUP                             |   _(ie:  osdu-mvp-crdemo-0knr-rg)_   |
 | DNS_HOST                                      | <your_FQDN> |
 | IDENTITY_CLIENT_ID                            | <your_osdu_identity_client_id> |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)` |
