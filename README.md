@@ -362,16 +362,14 @@ done
 |-----------------------------------------------|-------|
 | ADMIN_EMAIL                                   | <your_sslcert_admin_email> |
 | AGENT_POOL                                    | `Hosted Ubuntu 1604` |
-| SERVICE_CONNECTION_NAME                       | <your_service_connection_name> |
-| AZURE_TENANT_ID                               | <your_ad_tenant_id> |
-| NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)` |
-| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-infra-azg-test-app-noaccess-key)` |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-infra-<your_unique>-test-app-id)` |
 | AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-app-oid)` |
+| AZURE_TENANT_ID                               | <your_ad_tenant_id> |
+| elastic-endpoint                              | `$(opendes-elastic-endpoint)` |
 | HOST_URL                                      | `https://$(DNS_HOST)/` |
-
-
-
+| NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)` |
+| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-infra-azg-test-app-noaccess-key)` |
+| SERVICE_CONNECTION_NAME                       | <your_service_connection_name> |
 
 - Setup and Configure the ADO Library `Azure - OSDU Secrets`
 > This Library is linked to the Common Key Vault
@@ -391,19 +389,17 @@ done
 
 | Variable | Value |
 |----------|-------|
-| APPLICATION_ID |  `$(aad-client-id)` |
-| AZURE_DEPLOY_SUBSCRIPTION   | <your_subscription_id> |
-| BASE_NAME_21 |   _(ie:  osdu-mvp-crdemo-0knr)_   |
-| CONTAINER_REGISTRY_NAME | _(ie:  osdumvpcrdemo0knrcr)_   |
-| CR_RESOURCE_GROUP |   _(ie:  osdu-mvp-crdemo-0knr-rg)_   |
-| DNS_HOST | <your_FQDN> |
-| elastic-endpoint | `$(opendes-elastic-endpoint)` |
-| IDENTITY_CLIENT_ID | <your_osdu_identity_client_id> |
-| ISTIO_USERNAME | <your_istio_ui_username> |
-| ISTIO_PASSWORD | <your_istio_ui_password> |
-| INTEGRATION_TESTER                            | `$(app-dev-sp-username)` |
-| AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)` |
 | AZURE_AD_APP_RESOURCE_ID                      | `$(aad-client-id)` |
+| AZURE_DEPLOY_SUBSCRIPTION                     | <your_subscription_id> |
+| AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)` |
+| BASE_NAME_21                                  |   _(ie:  osdu-mvp-crdemo-0knr)_   |
+| CONTAINER_REGISTRY_NAME                       |   _(ie:  osdumvpcrdemo0knrcr)_   |
+| CR_RESOURCE_GROUP                             |   _(ie:  osdu-mvp-crdemo-0knr-rg)_   |
+| DNS_HOST                                      | <your_FQDN> |
+| IDENTITY_CLIENT_ID                            | <your_osdu_identity_client_id> |
+| INTEGRATION_TESTER                            | `$(app-dev-sp-username)` |
+| ISTIO_PASSWORD                                | <your_istio_ui_password> |
+| ISTIO_USERNAME                                | <your_istio_ui_username> |
 | MY_TENANT                                     | `opendes` |
 
 
@@ -436,7 +432,7 @@ done
 |----------|-------|
 | MAVEN_DEPLOY_GOALS | `azure-webapp:deploy` |
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/partition-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DHOST_URL=$(HOST_URL) -DMY_TENANT=$(MY_TENANT) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_OTHER_APP_RESOURCE_ID=$(AZURE_AD_OTHER_APP_RESOURCE_ID)` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DPARTITION_BASE_URL=$(HOST_URL) -DMY_TENANT=$(MY_TENANT) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_OTHER_APP_RESOURCE_ID=$(AZURE_AD_OTHER_APP_RESOURCE_ID) -DENVIRONMENT=HOSTED` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/partition-test-azure/pom.xml` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_PARTITION_SERVICE_NAME)` |
 
