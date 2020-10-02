@@ -45,6 +45,10 @@ stages:
     steps:
     - download: none
 
+    - script: env
+      displayName: 'Debug'
+      condition: eq('${{ parameters.debug }}', true)
+
     - task: Maven@3
       displayName: 'Maven Core Build'
       condition: ne('${{ parameters.serviceCoreMavenOptions }}', '')
