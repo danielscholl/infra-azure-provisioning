@@ -392,7 +392,8 @@ done
 | AZURE_AD_APP_RESOURCE_ID                      | `$(aad-client-id)` |
 | AZURE_DEPLOY_SUBSCRIPTION                     | <your_subscription_id> |
 | AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)` |
-| BASE_NAME_21                                  |   _(ie:  osdu-mvp-crdemo-0knr)_   |
+| BASE_NAME_CR                                  |   _(ie:  osdu-mvp-crdemo-0knr)_   |
+| BASE_NAME_SR                                  |   _(ie:  osdu-mvp-srdemo-wzjm)_   |
 | CONTAINER_REGISTRY_NAME                       |   _(ie:  osdumvpcrdemo0knrcr)_   |
 | CR_RESOURCE_GROUP                             |   _(ie:  osdu-mvp-crdemo-0knr-rg)_   |
 | DNS_HOST                                      | <your_FQDN> |
