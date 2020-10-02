@@ -420,6 +420,7 @@ done
 ### Setup Service ADO Libraries
 
 - __Setup and Configure the ADO Library__ `Azure Service Release - partition`
+
 | Variable | Value |
 |----------|-------|
 | MAVEN_DEPLOY_GOALS | `azure-webapp:deploy` |
