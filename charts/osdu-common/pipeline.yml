@@ -33,8 +33,6 @@ trigger:
   paths:
     include:
       - /charts/osdu-common/*
-      - /devops/tasks/*
-      - /osdu-common-pipeline.yml
     exclude:
       - /**/*.md
 
@@ -48,8 +46,6 @@ pr:
   paths:
     include:
       - /charts/osdu-common/*
-      - /devops/tasks/*
-      - /osdu-common-pipeline.yml
     exclude:
       - /**/*.md
 
