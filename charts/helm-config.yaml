@@ -14,7 +14,7 @@ global:
     identity: ${BASE_NAME_21}-osdu-identity
     identity_id: ${IDENTITY_CLIENT_ID}
     keyvault: ${BASE_NAME_21}-kv
-    appid: ${APPLICATION_ID}
+    appid: ${AZURE_AD_APP_RESOURCE_ID}
 
   ################################################################################
   # Specify the Ingress Settings
