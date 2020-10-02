@@ -29,7 +29,7 @@ steps:
 
         echo "Logging in to AKS"
         echo "------------------------------------"
-        az aks install-cli
+        sudo az aks install-cli
         az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
 
         echo "Checking Deployment $IMAGE updated"
