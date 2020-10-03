@@ -413,15 +413,18 @@ done
 - app-dev-sp-tenant-id
 - app-dev-sp-username
 - appinsights-key
-- base-name-21
+- base-name-cr
+- base-name-sr
 - container-registry
-- cr-resource-group
 - opendes-cosmos-connection
 - opendes-cosmos-endpoint
 - opendes-cosmos-primary-key
 - opendes-elastic-endpoint
 - opendes-elastic-password
 - opendes-elastic-username
+- osdu-identity-id
+- subscription-id
+- tenant-id
 
 
 ### Setup Service ADO Libraries
