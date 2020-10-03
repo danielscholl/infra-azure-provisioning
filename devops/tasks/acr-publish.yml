@@ -57,4 +57,4 @@ steps:
 
         docker push $IMAGE
         echo "Show recent tags of repository ${{ parameters.imageRepoName }}"
-        az acr repository show-tags -n $(CONTAINER_REGISTRY_NAME) --repository ${{ parameters.imageRepoName }} --top 10 --orderby time_desc
+        az acr repository show-tags -n $(CONTAINER_REGISTRY_NAME) --repository ${{ parameters.imageRepoName }}-${{ parameters.environment }} --top 10 --orderby time_desc
