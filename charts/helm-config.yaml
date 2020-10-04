@@ -8,13 +8,13 @@ global:
   # Specify the azure environment specific values
   #
   azure:
-    tenant: ${AZURE_TENANT_ID}
-    subscription: ${AZURE_DEPLOY_SUBSCRIPTION}
-    resourcegroup: ${BASE_NAME_CR}-rg
-    identity: ${BASE_NAME_CR}-osdu-identity
-    identity_id: ${IDENTITY_CLIENT_ID}
-    keyvault: ${BASE_NAME_CR}-kv
-    appid: ${AZURE_AD_APP_RESOURCE_ID}
+    tenant: #{AZURE_TENANT_ID}#
+    subscription: #{AZURE_DEPLOY_SUBSCRIPTION}#
+    resourcegroup: #{BASE_NAME_CR}#-rg
+    identity: #{BASE_NAME_CR}#-osdu-identity
+    identity_id: #{IDENTITY_CLIENT_ID}#
+    keyvault: #{BASE_NAME_CR}#-kv
+    appid: #{AZURE_AD_APP_RESOURCE_ID}#
 
   ################################################################################
   # Specify the Ingress Settings
@@ -25,8 +25,8 @@ global:
   #     https://acme-v02.api.letsencrypt.org/directory --> Production Server
   #
   ingress:
-    hostname: ${DNS_HOST}
-    admin: ${ADMIN_EMAIL}
+    hostname: #{DNS_HOST}#
+    admin: #{ADMIN_EMAIL}#
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
 
 ################################################################################
@@ -34,14 +34,14 @@ global:
 # ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
 #
 image:
-  repository: ${CONTAINER_REGISTRY_NAME}.azurecr.io
-  branch: ${BRANCH}
-  tag: ${TAG}
+  repository: #{CONTAINER_REGISTRY_NAME}#.azurecr.io
+  branch: #{BRANCH}#
+  tag: #{TAG}#
 
 ################################################################################
 # Specify the istio specific values
 # based64 encoded username and password
 #
 istio:
-  username: $ISTIO_USERNAME
-  password: $ISTIO_PASSWORD
+  username: #{ISTIO_USERNAME}
+  password: #{ISTIO_PASSWORD}
