@@ -36,7 +36,7 @@ global:
 image:
   repository: #{CONTAINER_REGISTRY_NAME}#.azurecr.io
   branch: #{Build.SourceBranchName}#
-  tag: #{Build.SourceVersion}#
+  tag: #{Build.BuildId}#-#{Build.SourceVersion}#
 
 ################################################################################
 # Specify the istio specific values

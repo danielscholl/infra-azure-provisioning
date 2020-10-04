@@ -18,7 +18,7 @@
 
 steps:
   - task: Bash@3
-    displayName: "Commit to Branch"
+    displayName: "Flux Commit"
     env:
       CHART_PATH: ${{parameters.chartPath}}
       BRANCH_NAME: ${{ parameters.branchName }}
