@@ -17,7 +17,7 @@ steps:
   - task: AzureCLI@1
     displayName: 'Flux Deployment Wait'
     env:
-      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.BuildId)
+      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.SourceVersion)
       SERVICE_NAME: ${{parameters.serviceName}}
       BASE_NAME_SR: $(base-name-sr)
     inputs:
@@ -33,8 +33,8 @@ steps:
         sudo az aks install-cli
         az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
 
-        echo "Checking Deployment $SERVICE_NAME Available"
-        echo "------------------------------------"
+        echo "Checking Deployment $SERVICE_NAME Exists"
+        echo "----------------------------------------"
         attempt_counter=0
         max_attempts=30
         until kubectl get deployment $SERVICE_NAME -n osdu
@@ -63,4 +63,7 @@ steps:
           sleep 20
         done
 
+
+        echo "Checking Deployment $SERVICE_NAME Available"
+        echo "----------------------------------------"
         kubectl wait --for=condition=available --timeout=600s deployment/$SERVICE_NAME -n osdu
