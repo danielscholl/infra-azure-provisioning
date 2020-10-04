@@ -19,6 +19,7 @@ steps:
     env:
       IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.BuildId)
       SERVICE_NAME: ${{parameters.serviceName}}
+      BASE_NAME_SR: $(base-name-sr)
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true

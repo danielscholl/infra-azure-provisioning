@@ -75,13 +75,11 @@ steps:
       options: ${{ parameters.testCoreMavenOptions }}
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
-  - template: flux-complete.yml
+  - template: flux-wait.yml
     parameters:
       serviceName: ${{parameters.serviceName}}
       environment: ${{ parameters.environment }}
       imageRepoName: '${{ parameters.serviceName }}'
-
-  # - template: debug.yml
 
   - task: Maven@3
     displayName: 'Maven run integration test'
