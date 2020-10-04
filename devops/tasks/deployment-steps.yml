@@ -81,6 +81,8 @@ steps:
       environment: ${{ parameters.environment }}
       imageRepoName: '${{ parameters.serviceName }}'
 
+  - template: debug.yml
+
   - task: Maven@3
     displayName: 'Maven run integration test'
     condition: and(succeeded(), ne('${{ parameters.skipTest }}', false))
