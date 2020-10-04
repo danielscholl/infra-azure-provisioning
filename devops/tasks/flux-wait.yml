@@ -15,7 +15,7 @@
 # This template is responsible for detecting a service being alive.
 steps:
   - task: AzureCLI@1
-    displayName: 'Flux Wait'
+    displayName: 'Flux Deployment Wait'
     env:
       IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.BuildId)
       SERVICE_NAME: ${{parameters.serviceName}}
@@ -42,7 +42,7 @@ steps:
           echo "Waiting for Deployment..."
           sleep 10
           [[ attempt_counter -eq $max_attempts ]] && echo "Deployment not found!" && exit 1
-          ((counter++))
+          ((attempt_counter++))
         done
 
 
