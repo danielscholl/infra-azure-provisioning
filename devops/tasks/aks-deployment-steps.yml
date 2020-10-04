@@ -33,7 +33,7 @@ steps:
       inputs:
         helmVersionToInstall: 3.3.0
     - template: helm-values.yml
-        parameters:
+      parameters:
         chartPath: ${{ parameters.chartPath }}
         valuesFile: ${{ parameters.valuesFile }}
     - template: helm-template.yml
