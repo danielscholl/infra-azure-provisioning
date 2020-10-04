@@ -33,7 +33,7 @@ steps:
         sudo az aks install-cli
         az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
 
-        echo "Checking Deployment $IMAGE updated"
+        echo "Checking Deployment $SERVICE_NAME Available"
         echo "------------------------------------"
         attempt_counter=0
         max_attempts=30
@@ -48,7 +48,8 @@ steps:
         done
 
 
-        echo "Checking Deployment Available"
+
+        echo "Checking Deployment $IMAGE updated"
         echo "------------------------------------"
         attempt_counter=0
         max_attempts=6
