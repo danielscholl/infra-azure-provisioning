@@ -53,10 +53,6 @@ steps:
         }
 
         function git_commit() {
-          # echo "GIT REMOVE"
-          # Cannot delete as all the manifests from multiple repos would be coming over to here.
-          # rm -rf ./$(MANIFEST_GENERATION_PATH)/*/
-
           echo "COPY YAML FILES FROM $GITOPS_MANIFEST_DIRECTORY..."
           cp -rf $GITOPS_MANIFEST_DIRECTORY .
 
