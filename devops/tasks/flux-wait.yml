@@ -60,4 +60,4 @@ steps:
           sleep 10
         done
 
-        kubectl wait --for=condition=available --timeout=600s deployment/default-service -n osdu
+        kubectl wait --for=condition=available --timeout=600s deployment/$SERVICE_NAME -n osdu

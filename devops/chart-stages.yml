@@ -49,3 +49,9 @@ stages:
                     valuesFile: ${{ parameters.valuesFile }}
                     skipDeploy: ${{ parameters.skipDeploy }}
                     hldRegPath: ${{ parameters.hldRegPath }}
+
+                - template: flux-wait.yml
+                  parameters:
+                    serviceName: ${{parameters.serviceName}}
+                    environment: ${{ environment }}
+                    imageRepoName: '${{ parameters.serviceName }}'
