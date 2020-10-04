@@ -50,7 +50,7 @@ stages:
                     skipDeploy: ${{ parameters.skipDeploy }}
                     hldRegPath: ${{ parameters.hldRegPath }}
 
-                - template: flux-wait.yml
+                - template: tasks/flux-wait.yml
                   parameters:
                     serviceName: ${{parameters.serviceName}}
                     environment: ${{ environment }}
