@@ -8,13 +8,13 @@ global:
   # Specify the azure environment specific values
   #
   azure:
-    tenant: #{AZURE_TENANT_ID}#
-    subscription: #{AZURE_DEPLOY_SUBSCRIPTION}#
-    resourcegroup: #{BASE_NAME_CR}#-rg
-    identity: #{BASE_NAME_CR}#-osdu-identity
+    tenant: #{tenant-id}#
+    subscription: #{subscription-id}#
+    resourcegroup: #{base-name-cr}#-rg
+    identity: #{base-name-cr}#-osdu-identity
     identity_id: #{osdu-identity-id}#
-    keyvault: #{BASE_NAME_CR}#-kv
-    appid: #{AZURE_AD_APP_RESOURCE_ID}#
+    keyvault: #{base-name-cr}#-kv
+    appid: #{aad-client-id}#
 
   ################################################################################
   # Specify the Ingress Settings
@@ -34,7 +34,7 @@ global:
 # ie: community.opengroup.org:5555/osdu/platform/system/storage/{{ .Values.global.branch }}/storage:latest
 #
 image:
-  repository: #{CONTAINER_REGISTRY_NAME}#.azurecr.io
+  repository: #{container-registry}#.azurecr.io
   branch: #{Build.SourceBranchName}#
   tag: #{Build.BuildId}#-#{Build.SourceVersion}#
 
@@ -43,5 +43,5 @@ image:
 # based64 encoded username and password
 #
 istio:
-  username: #{ISTIO_USERNAME}#
-  password: #{ISTIO_PASSWORD}#
+  username: #{istio-username}#
+  password: #{istio-password}#
