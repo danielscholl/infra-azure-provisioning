@@ -12,7 +12,7 @@ global:
     subscription: #{AZURE_DEPLOY_SUBSCRIPTION}#
     resourcegroup: #{BASE_NAME_CR}#-rg
     identity: #{BASE_NAME_CR}#-osdu-identity
-    identity_id: #{identity-id}#
+    identity_id: #{osdu-identity-id}#
     keyvault: #{BASE_NAME_CR}#-kv
     appid: #{AZURE_AD_APP_RESOURCE_ID}#
 
