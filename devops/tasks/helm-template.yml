@@ -30,6 +30,8 @@ steps:
 
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
+          ls -l
+          cat $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
 
           # echo "Creating Helm Values File"
           # envsubst < $VALUES_FILE > $CHART_PATH/values.yml
