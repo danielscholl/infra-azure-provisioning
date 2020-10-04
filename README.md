@@ -401,8 +401,6 @@ done
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
 | MY_TENANT                                     | `opendes`                         |
 
-16241870-54ca-486a-b629-13bf3b74aa0e
-
 - Setup and Configure the ADO Library `Azure Target Env Secrets - demo`
 > This Library is linked to the Enviroment Key Vault
 
