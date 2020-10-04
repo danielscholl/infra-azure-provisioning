@@ -35,18 +35,16 @@ steps:
 
         echo "Checking Deployment $IMAGE updated"
         echo "------------------------------------"
-
         attempt_counter=0
-        max_attempts=10
-        while [ $(kubectl get deployments |grep $SERVICE_NAME | awk '{print $1}') != $SERVICE_NAME ]
+        max_attempts=20
+        until kubectl get deployment $SERVICE_NAME
         do
-          if [ ${attempt_counter} -eq ${max_attempts} ];then
-            echo "Deployment not found, integraton tests are skipped"
-            exit 1
-          fi
-          attempt_counter=$(($attempt_counter+1))
-          sleep 2
+          echo "Waiting for Deployment..."
+          sleep 10
+          [[ attempt_counter -eq $max_attempts ]] && echo "Deployment not found!" && exit 1
+          ((counter++))
         done
+
 
         echo "Checking Deployment Available"
         echo "------------------------------------"
