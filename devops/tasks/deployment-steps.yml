@@ -75,7 +75,7 @@ steps:
       options: ${{ parameters.testCoreMavenOptions }}
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
-  - template: flux-wait.yml
+  - template: flux-service-wait.yml
     parameters:
       serviceName: ${{parameters.serviceName}}
       environment: ${{ parameters.environment }}
