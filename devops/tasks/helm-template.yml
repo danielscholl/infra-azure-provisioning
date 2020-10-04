@@ -30,11 +30,11 @@ steps:
 
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
-          ls -l
+          env
           cat $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
 
           # echo "Creating Helm Values File"
           # envsubst < $VALUES_FILE > $CHART_PATH/values.yml
 
           echo "Extracting Manifest"
-          helm template $SERVICE_NAME $CHART_PATH -f $CHART_PATH/values.yml --output-dir $CHART_PATH/$GENERATION_PATH
+          helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH

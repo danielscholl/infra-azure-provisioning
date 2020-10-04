@@ -35,13 +35,13 @@ global:
 #
 image:
   repository: #{CONTAINER_REGISTRY_NAME}#.azurecr.io
-  branch: #{BRANCH}#
-  tag: #{TAG}#
+  branch: #{Build.SourceBranchName}#
+  tag: #{Build.SourceVersion}#
 
 ################################################################################
 # Specify the istio specific values
 # based64 encoded username and password
 #
 istio:
-  username: #{ISTIO_USERNAME}
-  password: #{ISTIO_PASSWORD}
+  username: #{ISTIO_USERNAME}#
+  password: #{ISTIO_PASSWORD}#
