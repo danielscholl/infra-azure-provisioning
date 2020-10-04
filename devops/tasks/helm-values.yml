@@ -14,7 +14,7 @@
 
 steps:
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-  displayName: 'Transform Values File'
-  inputs:
-    targetFiles: |
-      ${{parameters.valuesFile}} => ${{parameters.chartPath}}/values.yaml
+    displayName: 'Transform Values File'
+    inputs:
+      targetFiles: |
+        ${{parameters.valuesFile}} => ${{parameters.chartPath}}/values.yaml
