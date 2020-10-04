@@ -81,7 +81,7 @@ steps:
       environment: ${{ parameters.environment }}
       imageRepoName: '${{ parameters.serviceName }}'
 
-  - template: debug.yml
+  # - template: debug.yml
 
   - task: Maven@3
     displayName: 'Maven run integration test'

@@ -37,10 +37,10 @@ steps:
 
         attempt_counter=0
         max_attempts=10
-        while [ $(kubectl get deployment $SERVICE_NAME -o=jsonpath='{$.spec.template.spec.containers[:1].image}') != $IMAGE ]
+        while [ $(kubectl get deployments |grep $SERVICE_NAME | awk '{print $1}') != $SERVICE_NAME ]
         do
           if [ ${attempt_counter} -eq ${max_attempts} ];then
-            echo "Service is not available, integraton tests are skipped"
+            echo "Deployment not found, integraton tests are skipped"
             exit 1
           fi
           attempt_counter=$(($attempt_counter+1))
@@ -54,7 +54,7 @@ steps:
         while [ $(kubectl get deployment $SERVICE_NAME -o=jsonpath='{$.spec.template.spec.containers[:1].image}') != $IMAGE ]
         do
           if [ ${attempt_counter} -eq ${max_attempts} ];then
-            echo "Flux Deployment not triggered, integration tests are skipped"
+            echo "Deployment Image not updated, integration tests are skipped"
             exit 1
           fi
           attempt_counter=$(($attempt_counter+1))
