@@ -44,7 +44,7 @@ steps:
             exit 1
           fi
           attempt_counter=$(($attempt_counter+1))
-          sleep 20
+          sleep 30
         done
 
 
