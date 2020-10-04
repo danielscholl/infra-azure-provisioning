@@ -364,8 +364,6 @@ done
 | AGENT_POOL                                    | `Hosted Ubuntu 1604` |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-infra-<your_unique>-test-app-id)` |
 | AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-app-oid)` |
-| AZURE_TENANT_ID                               | <your_ad_tenant_id> |
-| elastic-endpoint                              | `$(opendes-elastic-endpoint)` |
 | HOST_URL                                      | `https://$(DNS_HOST)/` |
 | NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)` |
 | NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-infra-azg-test-app-noaccess-key)` |
@@ -382,27 +380,28 @@ done
 - ad-guest-oid
 - ad-user-email
 - ad-user-oid
+- istio-username
+- istio-password
 
 ### Setup Environment ADO Libraries
 
 - Setup and Configure the ADO Library `Azure Target Env - demo`
+> This library is subject to change due to pipeline tranformation work not completed.
 
 | Variable | Value |
 |----------|-------|
-| AZURE_AD_APP_RESOURCE_ID                      | `$(aad-client-id)` |
-| AZURE_DEPLOY_SUBSCRIPTION                     | <your_subscription_id> |
-| AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)` |
-| BASE_NAME_CR                                  |   _(ie:  osdu-mvp-crdemo-0knr)_   |
-| BASE_NAME_SR                                  |   _(ie:  osdu-mvp-srdemo-wzjm)_   |
-| CONTAINER_REGISTRY_NAME                       |   _(ie:  osdumvpcrdemo0knrcr)_   |
-| DNS_HOST                                      | <your_FQDN> |
-| IDENTITY_CLIENT_ID                            | <your_osdu_identity_client_id> |
-| INTEGRATION_TESTER                            | `$(app-dev-sp-username)` |
-| ISTIO_PASSWORD                                | <your_istio_ui_password> |
-| ISTIO_USERNAME                                | <your_istio_ui_username> |
-| MY_TENANT                                     | `opendes` |
+| AZURE_AD_APP_RESOURCE_ID                      | `$(aad-client-id)`                |
+| AZURE_DEPLOY_SUBSCRIPTION                     | `$(subscription-id)`              |
+| AZURE_TENANT_ID                               | `$(tenant-id)`                    |
+| AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)`          |
+| CONTAINER_REGISTRY_NAME                       | `$(container_registry)`           |
+| DNS_HOST                                      | <your_FQDN>                       |
+| ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
+| IDENTITY_CLIENT_ID                            | `$(identity_id)`                  |
+| INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
+| MY_TENANT                                     | `opendes`                         |
 
-
+16241870-54ca-486a-b629-13bf3b74aa0e
 
 - Setup and Configure the ADO Library `Azure Target Env Secrets - demo`
 > This Library is linked to the Enviroment Key Vault
