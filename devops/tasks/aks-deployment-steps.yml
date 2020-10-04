@@ -32,10 +32,11 @@ steps:
       displayName: 'Install Helm'
       inputs:
         helmVersionToInstall: 3.3.0
-    - template: helm-values.yml
-      parameters:
-        chartPath: ${{ parameters.chartPath }}
-        valuesFile: ${{ parameters.valuesFile }}
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+      displayName: 'Transform Helm Values'
+      inputs:
+        targetFiles: |
+          $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.valuesFile}} => $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
     - template: helm-template.yml
       parameters:
         serviceName: ${{parameters.serviceName}}

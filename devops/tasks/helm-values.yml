@@ -14,7 +14,7 @@
 
 steps:
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-    displayName: 'Transform Values File'
+    displayName: 'Transform Helm Values'
     inputs:
       targetFiles: |
-        ${{parameters.valuesFile}} => ${{parameters.chartPath}}/values.yaml
+        $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.valuesFile}} => $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
