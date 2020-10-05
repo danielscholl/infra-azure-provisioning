@@ -504,6 +504,14 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - search`
 | SERVICE_RESOURCE_NAME | `$(AZURE_SEARCH_SERVICE_NAME)` |
 
 
+### Load Storage Container Integration Test Data
+
+The data to be loaded before services are deployed and can be found in the osdu-infrastructure repository `osdu-infrastructure/docs/osdu/integration-test-data/`.
+
+__Container: legal-service-azure-configuration__
+
+- Legal_COO.json
+
 
 ### Load Cosmos DB Integration Test Data
 
