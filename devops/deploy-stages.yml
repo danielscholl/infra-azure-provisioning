@@ -33,8 +33,6 @@ stages:
     - stage: 'Deploy_${{ provider.name }}_${{ environment }}'
 
       variables:
-      - group: 'Azure - Common'
-      - group: 'Azure Common Secrets'
       - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
       - group: '${{ provider.name }} Target Env - ${{ environment }}'
       - group: '${{ provider.name }} Service Release - ${{ parameters.serviceName }}'
@@ -69,7 +67,7 @@ stages:
                   testCoreMavenGoal: ${{ parameters.testCoreMavenGoal }}
                   testCoreMavenOptions: ${{ parameters.testCoreMavenOptions }}
                   artifactName: ${{ variables.artifactName }}
-                  elasticEndpoint: $(elastic-endpoint)
+                  elasticEndpoint: $(ELASTIC_ENDPOINT)
                   environment: ${{ environment }}
                   chartPath: ${{ parameters.chartPath }}
                   valuesFile: ${{ parameters.valuesFile }}

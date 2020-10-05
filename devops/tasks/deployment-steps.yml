@@ -42,7 +42,7 @@ steps:
       environment: ${{ parameters.environment }}
       jarFilePath: $(DetectJarScript.JAR_FILE_PATH)
       providerName: ${{ parameters.providerName }}
-      imageRepoName: 'svc-${{ parameters.serviceName }}'
+      imageRepoName: '${{ parameters.serviceName }}'
 
   - template: aks-deployment-steps.yml
     parameters:
@@ -75,9 +75,15 @@ steps:
       options: ${{ parameters.testCoreMavenOptions }}
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
+  - template: flux-service-wait.yml
+    parameters:
+      serviceName: ${{parameters.serviceName}}
+      environment: ${{ parameters.environment }}
+      imageRepoName: '${{ parameters.serviceName }}'
+
   - task: Maven@3
     displayName: 'Maven run integration test'
-    condition: ${{ parameters.skipTest }}
+    condition: and(succeeded(), ne('${{ parameters.skipTest }}', false))
     inputs:
       mavenPomFile: '$(System.DefaultWorkingDirectory)/$(MAVEN_INTEGRATION_TEST_POM_FILE_PATH)'
       goals: ${{ parameters.integrationTestMavenGoal }}

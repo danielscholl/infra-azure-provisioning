@@ -15,7 +15,7 @@
 steps:
   - task: Bash@3
     name: GenerateHelmTemplate
-    displayName: Generate Template
+    displayName: Helm Template
     env:
       CHART_PATH: ${{parameters.chartPath}}
       VALUES_FILE: ${{parameters.valuesFile}}
@@ -30,9 +30,10 @@ steps:
 
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
           mkdir $CHART_PATH/$GENERATION_PATH
+          cat $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
 
-          echo "Creating Helm Values File"
-          envsubst < $VALUES_FILE > $CHART_PATH/values.yml
+          # echo "Creating Helm Values File"
+          # envsubst < $VALUES_FILE > $CHART_PATH/values.yml
 
           echo "Extracting Manifest"
-          helm template $SERVICE_NAME $CHART_PATH -f $CHART_PATH/values.yml --output-dir $CHART_PATH/$GENERATION_PATH
+          helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH

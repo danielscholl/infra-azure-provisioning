@@ -25,7 +25,7 @@ steps:
     condition: and(succeeded(), eq('${{ parameters.providerName }}', 'Azure'))
     env:
       JAR_FILE_PATH: ${{ parameters.jarFilePath }}
-      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}:$(Build.BuildId)-${{ parameters.environment }}
+      IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.SourceVersion)
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -57,4 +57,4 @@ steps:
 
         docker push $IMAGE
         echo "Show recent tags of repository ${{ parameters.imageRepoName }}"
-        az acr repository show-tags -n $(CONTAINER_REGISTRY_NAME) --repository ${{ parameters.imageRepoName }} --top 10 --orderby time_desc
+        az acr repository show-tags -n $(CONTAINER_REGISTRY_NAME) --repository ${{ parameters.imageRepoName }}-${{ parameters.environment }} --top 10 --orderby time_desc

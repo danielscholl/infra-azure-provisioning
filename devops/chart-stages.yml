@@ -16,7 +16,7 @@
 parameters:
   providers: []
   serviceName: ""
-  skipDeploy: "false"
+  skipDeploy: false
   hldRegPath: "providers/azure/hld-registry"
 
 stages:
@@ -25,9 +25,9 @@ stages:
       - stage: 'Deploy_${{ provider.name }}_${{ environment }}'
 
         variables:
-          - group: 'Azure - Common'
-          - group: 'Azure Common Secrets'
+          - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
           - group: '${{ provider.name }} Target Env - ${{ environment }}'
+
 
         jobs:
         - deployment: Deploy
@@ -49,3 +49,9 @@ stages:
                     valuesFile: ${{ parameters.valuesFile }}
                     skipDeploy: ${{ parameters.skipDeploy }}
                     hldRegPath: ${{ parameters.hldRegPath }}
+
+                - template: tasks/flux-chart-wait.yml
+                  parameters:
+                    serviceName: ${{parameters.serviceName}}
+                    environment: ${{ environment }}
+                    imageRepoName: '${{ parameters.serviceName }}'
