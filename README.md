@@ -550,6 +550,16 @@ Create the pipelines and run things in this exact order.
   - Validate the URL is alive.  https://<your_dns_name>
 
 
+- Add a Pipeline __chart-osdu-istio__ -->  Repo: infra-azure-provisioning Path:`/charts/osdu-istio/pipeline.yml` and execute it.
+  - This pipeline will deploy Istio.
+  - Validate pods are alive in Istio Namespace.
+
+
+- Add a Pipeline __chart-osdu-istio-auth__ -->  Repo: infra-azure-provisioning Path:`/charts/osdu-istio-auth/pipeline.yml` and execute it.
+  - This pipeline will deploy the Authorization Policies .
+  - Validate authorization policies exist in osdu Namespace.
+
+
 - Add a Pipeline __service-partition__ -->  Repo: partition Path:`/devops/azure/pipeline.yml` and execute it.
   - This pipeline will deploy to flux the partition service.
   > Partition Service requires an execution call to set Partition Data Manually at this point.
