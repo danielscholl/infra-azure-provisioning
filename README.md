@@ -162,6 +162,13 @@ jobs:
     steps:
 
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'infra-azure-provisioning'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning.git'
+        destinationGitRepositoryUri: '$(INFRA_PROVISIONING_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
       displayName: 'partition'
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/partition.git'
@@ -216,14 +223,6 @@ jobs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/delivery.git'
         destinationGitRepositoryUri: '$(DELIVERY_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
-
-    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
-      displayName: 'infra-azure-provisioning'
-      inputs:
-        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning.git'
-        destinationGitRepositoryUri: '$(INFRA_PROVISIONING_REPO)'
-        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
-
 ```
 
 - Execute the Pipeline which will then pull the required code into the ADO project repos.
@@ -394,7 +393,7 @@ done
 
 ### Setup Environment ADO Libraries
 
-- Setup and Configure the ADO Library `Azure Target Env - demo`
+- __Setup and Configure the ADO Library__ `Azure Target Env - demo`
 > This library is subject to change due to pipeline tranformation work not completed.
 
 | Variable | Value |
@@ -414,7 +413,8 @@ done
 | STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
 | STORAGE_ACCOUNT_KEY                           | `$(opendes-storage-key)`          |
 
-- Setup and Configure the ADO Library `Azure Target Env Secrets - demo`
+
+- __Setup and Configure the ADO Library__ `Azure Target Env Secrets - demo`
 > This Library is linked to the Enviroment Key Vault
 
 - aad-client-id
@@ -450,7 +450,7 @@ done
 
 
 
-- __Setup and Configure the ADO Library__ `Azure Service Release - entitlements`
+- __Setup and Configure the ADO Library__ `Azure Service Release - entitlements-azure`
 
 | Variable | Value |
 |----------|-------|
@@ -476,13 +476,10 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - storage`
 
 | Variable | Value |
 |----------|-------|
-| MAVEN_DEPLOY_GOALS | `azure-webapp:deploy` |
-| MAVEN_DEPLOY_OPTIONS | `--settings $(System.DefaultWorkingDirectory)/drop/provider/storage-azure/maven/settings.xml -DAZURE_DEPLOY_TENANT=$(AZURE_DEPLOY_TENANT) -DAZURE_DEPLOY_CLIENT_ID=$(AZURE_DEPLOY_CLIENT_ID) -DAZURE_DEPLOY_CLIENT_SECRET=$(AZURE_DEPLOY_CLIENT_SECRET) -Dazure.appservice.resourcegroup=$(AZURE_DEPLOY_RESOURCE_GROUP) -Dazure.appservice.plan=$(AZURE_DEPLOY_APPSERVICE_PLAN) -Dazure.appservice.appname=$(AZURE_STORAGE_SERVICE_NAME) -Dazure.appservice.subscription=$(AZURE_DEPLOY_SUBSCRIPTION)` |
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/storage-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DDOMAIN=$(DOMAIN) -DSTORAGE_URL=$(STORAGE_URL) -DLEGAL_URL=$(LEGAL_URL) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_DEPLOY_TENANT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DDEPLOY_ENV=$(DEPLOY_ENV) -DPUBSUB_TOKEN=$(PUBSUB_TOKEN) -DTENANT_NAME=$(MY_TENANT) -DAZURE_STORAGE_ACCOUNT=$(AZURE_STORAGE_ACCOUNT)` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DSTORAGE_URL=$(STORAGE_URL) -DLEGAL_URL=$(LEGAL_URL) -DTENANT_NAME=$(MY_TENANT) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DDOMAIN=$(DOMAIN) -DPUBSUB_TOKEN=$(PUBSUB_TOKEN) -DDEPLOY_ENV=$(DEPLOY_ENV)` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/storage-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_STORAGE_SERVICE_NAME)` |
-`
 
 
 
@@ -490,10 +487,8 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - indexer`
 
 | Variable | Value |
 |----------|-------|
-| MAVEN_DEPLOY_GOALS | `azure-webapp:deploy` |
-| MAVEN_DEPLOY_OPTIONS | `--settings $(System.DefaultWorkingDirectory)/drop/provider/indexer-azure/maven/settings.xml -DAZURE_DEPLOY_TENANT=$(AZURE_DEPLOY_TENANT) -DAZURE_DEPLOY_CLIENT_ID=$(AZURE_DEPLOY_CLIENT_ID) -DAZURE_DEPLOY_CLIENT_SECRET=$(AZURE_DEPLOY_CLIENT_SECRET) -Dazure.appservice.resourcegroup=$(AZURE_DEPLOY_RESOURCE_GROUP) -Dazure.appservice.plan=$(AZURE_DEPLOY_APPSERVICE_PLAN) -Dazure.appservice.appname=$(AZURE_INDEXER_SERVICE_NAME) -Dazure.appservice.subscription=$(AZURE_DEPLOY_SUBSCRIPTION) -DELASTIC_USER_NAME=$(elastic-username) -DELASTIC_PASSWORD=$(elastic-password) -DELASTIC_HOST=$(elastic-host) -DELASTIC_PORT=$(elastic-port)` |
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/indexer-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DAZURE_AD_TENANT_ID=$(AZURE_DEPLOY_TENANT) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DELASTIC_USER_NAME=$(elastic-username) -DELASTIC_PASSWORD=$(elastic-password) -DELASTIC_HOST=$(elastic-host) -DELASTIC_PORT=$(elastic-port)  -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DLEGAL_TAG=opendes-public-usa-dataset-7643990 -DOTHER_RELEVANT_DATA_COUNTRIES=US -DENTITLEMENTS_DOMAIN=contoso.com -DENVIRONMENT=CLOUD -DSTORAGE_HOST=$(STORAGE_URL)` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -Daad_client_id=$(AZURE_AD_APP_RESOURCE_ID) -DSTORAGE_HOST=$(STORAGE_URL) -DELASTIC_HOST=$(elastic-host) -DELASTIC_PORT=$(elastic-port) -DELASTIC_USER_NAME=$(elastic-username) -DELASTIC_PASSWORD=$(elastic-password) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DENTITLEMENTS_DOMAIN=contoso.com -DENVIRONMENT=CLOUD -DLEGAL_TAG=opendes-public-usa-dataset-7643990 -DOTHER_RELEVANT_DATA_COUNTRIES=US ` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/indexer-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_INDEXER_SERVICE_NAME)` |
 
@@ -503,13 +498,10 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - search`
 
 | Variable | Value |
 |----------|-------|
-| MAVEN_DEPLOY_GOALS | `azure-webapp:deploy` |
-| MAVEN_DEPLOY_OPTIONS | `--settings $(System.DefaultWorkingDirectory)/drop/provider/search-azure/maven/settings.xml -DAZURE_DEPLOY_TENANT=$(AZURE_DEPLOY_TENANT) -DAZURE_DEPLOY_CLIENT_ID=$(AZURE_DEPLOY_CLIENT_ID) -DAZURE_DEPLOY_CLIENT_SECRET=$(AZURE_DEPLOY_CLIENT_SECRET) -Dazure.appservice.resourcegroup=$(AZURE_DEPLOY_RESOURCE_GROUP) -Dazure.appservice.plan=$(AZURE_DEPLOY_APPSERVICE_PLAN) -Dazure.appservice.appname=$(AZURE_SEARCH_SERVICE_NAME) -Dazure.appservice.subscription=$(AZURE_DEPLOY_SUBSCRIPTION)` |
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/search-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DOTHER_RELEVANT_DATA_COUNTRIES= -DINTEGRATION_TEST_AUDIENCE= -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DELASTIC_USER_NAME=$(elastic-username) -DELASTIC_PASSWORD=$(elastic-password) -DELASTIC_HOST=$(elastic-host) -DELASTIC_PORT=$(elastic-port) -DINDEXER_HOST=$() -DENTITLEMENTS_DOMAIN=$(DOMAIN) -DSEARCH_HOST=$(SEARCH_URL)api/search/v2/ -DSTORAGE_HOST=$() -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_DEPLOY_TENANT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID)` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DSEARCH_HOST=$(SEARCH_URL)api/search/v2/ -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DINDEXER_HOST=$() -DSTORAGE_HOST=$() -DELASTIC_HOST=$(elastic-host) -DELASTIC_PORT=$(elastic-port) -DELASTIC_USER_NAME=$(elastic-username) -DELASTIC_PASSWORD=$(elastic-password) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DENTITLEMENTS_DOMAIN=$(DOMAIN)` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/integration-tests/search-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_SEARCH_SERVICE_NAME)` |
-
 
 
 
@@ -552,11 +544,11 @@ Create the pipelines and run things in this exact order.
   > Partition Service requires an execution call to set Partition Data Manually at this point.
 
 
-- Add a Pipeline __entitlements-azure__ -->  Repo: entitlements-azure Path:`/devops/azure/pipeline.yml` and execute it.
+- Add a Pipeline __service-entitlements-azure__ -->  Repo: entitlements-azure Path:`/devops/azure/pipeline.yml` and execute it.
   - This pipeline will have to be run twice for integration tests to pass due to a preload data issue.
 
 
-- Add a Pipeline __legal__ -->  Repo: legal Path:`/devops/legal/pipeline.yml` and execute it.
+- Add a Pipeline __service-legal__ -->  Repo: legal Path:`/devops/legal/pipeline.yml` and execute it.
 
 
 - Add a Pipeline __indexer-queue__ -->  Repo: indexer-queue Path:`/devops/azure/pipeline.yml` and execute it.
