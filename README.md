@@ -543,39 +543,77 @@ The data to be loaded before services are deployed and can be found in the osdu-
 ### Configure the ADO Charts and Service Pipelines
 
 Create the pipelines and run things in this exact order.
-> Ensure DNS is configured for your Gateway IP to DNS_HOST
-
-- Add a Pipeline __chart-osdu-common__ -->  Repo: infra-azure-provisioning Path:`/charts/osdu-common/pipeline.yml` and execute it.
-  - This pipeline will deploy to flux the common components which includes ingress.
-  - Validate the URL is alive.  https://<your_dns_name>
 
 
-- Add a Pipeline __chart-osdu-istio__ -->  Repo: infra-azure-provisioning Path:`/charts/osdu-istio/pipeline.yml` and execute it.
-  - This pipeline will deploy Istio.
-  - Validate pods are alive in Istio Namespace.
+1. Add a Pipeline for __chart-osdu-common__ to deploy common components.
+    > Ensure DNS is configured for your Gateway IP to DNS_HOST prior.
+
+    _Repo:_ `infra-azure-provisioning`
+
+    _Path:_ `/charts/osdu-common/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name> is alive.
 
 
-- Add a Pipeline __chart-osdu-istio-auth__ -->  Repo: infra-azure-provisioning Path:`/charts/osdu-istio-auth/pipeline.yml` and execute it.
-  - This pipeline will deploy the Authorization Policies .
-  - Validate authorization policies exist in osdu Namespace.
+2. Add a Pipeline for __chart-osdu-istio__  to deploy Istio components.
+
+    _Repo:_ `infra-azure-provisioning`
+
+    _Path:_ `/charts/osdu-istio/pipeline.yml`
+
+    _Validate:_ Pods are running in Istio Namespace.
 
 
-- Add a Pipeline __service-partition__ -->  Repo: partition Path:`/devops/azure/pipeline.yml` and execute it.
-  - This pipeline will deploy to flux the partition service.
-  > Partition Service requires an execution call to set Partition Data Manually at this point.
+3. Add a Pipeline for __chart-osdu-istio-auth__  to deploy Istio Authorization Policies.
+
+    _Repo:_ `infra-azure-provisioning`
+
+    _Path:_ `/charts/osdu-istio-auth/pipeline.yml`
+
+    _Validate:_ Authorization Policies exist in osdu namespace.
 
 
-- Add a Pipeline __service-entitlements-azure__ -->  Repo: entitlements-azure Path:`/devops/azure/pipeline.yml` and execute it.
-  - This pipeline will have to be run twice for integration tests to pass due to a preload data issue.
+4. Add a Pipeline for __service-partition__  to deploy the Partition Service.
+
+    _Repo:_ `partition`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/api/partition/v1/swagger-ui.html is alive.
 
 
-- Add a Pipeline __service-legal__ -->  Repo: legal Path:`/devops/legal/pipeline.yml` and execute it.
+
+5. Add a Pipeline for __service-entitlements-azure__  to deploy the Entitlements Service.
+    > This pipeline may have to be run twice for integration tests to pass due to a preload data issue.
+
+    _Repo:_ `entitlements-azure`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/entitlements/v1/swagger-ui.html is alive.
+
+
+6. Add a Pipeline for __service-legal__  to deploy the Legal Service.
+
+    _Repo:_ `legal`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/api/legal/v1/swagger-ui.html is alive.
+
+
+6. Add a Pipeline for __service-storage__  to deploy the Storage Service.
+
+    _Repo:_ `storage`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/api/storage/v2/swagger-ui.html is alive.
+
+
 
 
 - Add a Pipeline __indexer-queue__ -->  Repo: indexer-queue Path:`/devops/azure/pipeline.yml` and execute it.
-
-
-- Add a Pipeline __storage__ -->  Repo: storage Path:`/devops/azure/pipeline.yml` and execute it.
 
 
 - Add a Pipeline __indexer__ -->  Repo: indexer Path:`/devops/azure/pipeline.yml` and execute it.
