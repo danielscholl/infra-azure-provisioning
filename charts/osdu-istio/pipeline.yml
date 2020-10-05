@@ -59,6 +59,7 @@
 
   variables:
     - group: 'Azure - OSDU'
+    - group: 'Azure - OSDU secrets'
 
     - name: serviceName
       value: "osdu-istio"
