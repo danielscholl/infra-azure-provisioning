@@ -24,7 +24,7 @@ parameters:
   testCoreMavenOptions: ''
   testCoreMavenGoal: 'install'
   skipDeploy: false
-  skipTest: 'false'
+  skipTest: false
 
 stages:
 
