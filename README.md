@@ -368,12 +368,14 @@ done
 | AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                        |
 | AZURE_AD_USER_OID                             | `$(ad-user-oid)`                          |
 | AZURE_LEGAL_TOPICNAME                         | `legaltags`                               |
+| DEPLOY_ENV                                    | `empty`                                   |
 | ENTITLEMENT_URL                               | `https://$(DNS_HOST)/entitlements/v1/`    |
 | EXPIRED_TOKEN                                 | <an_expired_token>                        |
 | HOST_URL                                      | `https://$(DNS_HOST)/`                    |
 | LEGAL_URL                                     | `https://$(DNS_HOST)/api/legal/v1/`       |
 | NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)`  |
 | NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-infra-azg-test-app-noaccess-key)` |
+| PUBSUB_TOKEN                                  | `empty`                                   |
 | SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
 | GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
 
@@ -480,6 +482,7 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - storage`
 | MAVEN_INTEGRATION_TEST_OPTIONS | `-DSTORAGE_URL=$(STORAGE_URL) -DLEGAL_URL=$(LEGAL_URL) -DTENANT_NAME=$(MY_TENANT) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DDOMAIN=$(DOMAIN) -DPUBSUB_TOKEN=$(PUBSUB_TOKEN) -DDEPLOY_ENV=$(DEPLOY_ENV)` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/storage-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_STORAGE_SERVICE_NAME)` |
+
 
 
 
