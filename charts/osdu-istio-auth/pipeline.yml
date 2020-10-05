@@ -33,7 +33,6 @@
     paths:
       include:
         - /charts/osdu-istio-auth/*
-        - /devops/tasks/*
       exclude:
         - /**/*.md
 
@@ -47,7 +46,6 @@
     paths:
       include:
         - /charts/osdu-istio-auth/*
-        - /devops/tasks/*
       exclude:
         - /**/*.md
 
