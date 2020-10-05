@@ -29,10 +29,10 @@ global:
     admin: #{ADMIN_EMAIL}#
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
 
-################################################################################
-# Specify the istio specific values
-# based64 encoded username and password
-#
-istio:
-  username: #{istio-username}#
-  password: #{istio-password}#
+  ################################################################################
+  # Specify the istio specific values
+  # based64 encoded username and password
+  #
+  istio:
+    username: #{istio-username}#
+    password: #{istio-password}#

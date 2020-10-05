@@ -1,0 +1,81 @@
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# Required Group Variables - `Azure - OSDU`
+  # AGENT_POOL
+  # AZURE_TENANT_ID
+  # ENV_SUBSCRIPTION_ID
+  # ENV_APP_ID
+  # ENV_BASE_NAME_21
+  # ENV_IDENTITY_ID
+  # ENV_HOST
+  # ADMIN_EMAIL
+  # ENV_REGISTRY
+  # ISTIO_USERNAME
+  # ISTIO_PASSWORD
+
+  trigger:
+    batch: true
+    branches:
+      include:
+        - master
+    paths:
+      include:
+        - /charts/osdu-istio/*
+        - /devops/tasks/*
+      exclude:
+        - /**/*.md
+  
+  pr:
+    autoCancel: false
+    branches:
+      include:
+        - "*"
+      exclude:
+        - master
+    paths:
+      include:
+        - /charts/osdu-istio/*
+        - /devops/tasks/*
+      exclude:
+        - /**/*.md
+  
+  resources:
+    repositories:
+    - repository: FluxRepo
+      type: git
+      name: k8-gitops-manifests
+  
+  variables:
+    - group: 'Azure - OSDU'
+  
+    - name: serviceName
+      value: "osdu-istio"
+    - name: chartPath
+      value: "charts/osdu-istio"
+    - name: valuesFile
+      value: "charts/helm-config.yaml"
+    - name: 'MANIFEST_REPO'
+      value: $[ resources.repositories['FluxRepo'].name ]
+  
+  stages:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        providers:
+          - name: Azure
+            environments: ["dev"]
+  
