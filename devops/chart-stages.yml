@@ -53,5 +53,6 @@ stages:
                 - template: tasks/flux-chart-wait.yml
                   parameters:
                     serviceName: ${{parameters.serviceName}}
+                    skipDeploy: ${{ parameters.skipDeploy }}
                     environment: ${{ environment }}
                     imageRepoName: '${{ parameters.serviceName }}'

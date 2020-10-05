@@ -19,6 +19,7 @@ steps:
     env:
       SERVICE_NAME: ${{parameters.serviceName}}
       BASE_NAME_SR: $(base-name-sr)
+      SKIP_DEPLOY: ${{parameters.skipDeploy}}
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -26,6 +27,14 @@ steps:
       inlineScript: |
         #!/usr/bin/env bash
         set -euo pipefail
+
+        if [[ $SKIP_DEPLOY == true ]]
+        then
+            echo "***********************"
+            echo "FLUX DEPLOYMENT SKIPPED"
+            echo "***********************"
+            exit 0
+        fi
 
         echo "Logging in to AKS"
         echo "------------------------------------"
