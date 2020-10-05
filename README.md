@@ -360,14 +360,23 @@ done
 
 | Variable                                      | Value |
 |-----------------------------------------------|-------|
-| ADMIN_EMAIL                                   | <your_sslcert_admin_email> |
-| AGENT_POOL                                    | `Hosted Ubuntu 1604` |
+| ADMIN_EMAIL                                   | <your_sslcert_admin_email>                |
+| AGENT_POOL                                    | `Hosted Ubuntu 1604`                      |
+| AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                       |
+| AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                         |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-infra-<your_unique>-test-app-id)` |
-| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-app-oid)` |
-| HOST_URL                                      | `https://$(DNS_HOST)/` |
-| NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)` |
+| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-app-oid)`|
+| AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                        |
+| AZURE_AD_USER_OID                             | `$(ad-user-oid)`                          |
+| AZURE_LEGAL_TOPICNAME                         | `legaltags`                               |
+| ENTITLEMENT_URL                               | `https://$(DNS_HOST)/entitlements/v1/`    |
+| EXPIRED_TOKEN                                 | <an_expired_token>                        |
+| HOST_URL                                      | `https://$(DNS_HOST)/`                    |
+| LEGAL_URL                                     | `https://$(DNS_HOST)/api/legal/v1/`       |
+| NO_DATA_ACCESS_TESTER                         | `$(osdu-infra-azg-test-app-noaccess-id)`  |
 | NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-infra-azg-test-app-noaccess-key)` |
-| SERVICE_CONNECTION_NAME                       | <your_service_connection_name> |
+| SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
+| GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
 
 - Setup and Configure the ADO Library `Azure - OSDU Secrets`
 > This Library is linked to the Common Key Vault
@@ -392,14 +401,18 @@ done
 |----------|-------|
 | AZURE_AD_APP_RESOURCE_ID                      | `$(aad-client-id)`                |
 | AZURE_DEPLOY_SUBSCRIPTION                     | `$(subscription-id)`              |
+| AZURE_LEGAL_SERVICEBUS                        | `$(opendes-sb-connection)`        |
 | AZURE_TENANT_ID                               | `$(tenant-id)`                    |
 | AZURE_TESTER_SERVICEPRINCIPAL_SECRET          | `$(app-dev-sp-password)`          |
 | CONTAINER_REGISTRY_NAME                       | `$(container_registry)`           |
 | DNS_HOST                                      | <your_FQDN>                       |
+| DOMAIN                                        | `contoso.com`                     |
 | ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
 | IDENTITY_CLIENT_ID                            | `$(identity_id)`                  |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
 | MY_TENANT                                     | `opendes`                         |
+| STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
+| STORAGE_ACCOUNT_KEY                           | `$(opendes-storage-key)`          |
 
 - Setup and Configure the ADO Library `Azure Target Env Secrets - demo`
 > This Library is linked to the Enviroment Key Vault
