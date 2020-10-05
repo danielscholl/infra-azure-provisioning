@@ -19,7 +19,7 @@ steps:
     env:
       SERVICE_NAME: ${{parameters.serviceName}}
       BASE_NAME_SR: $(base-name-sr)
-      SKIP_DEPLOY: ${{parameters.skipDeploy}}
+      SKIP_CHECK: ${{parameters.skipCheck}}
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -28,7 +28,7 @@ steps:
         #!/usr/bin/env bash
         set -euo pipefail
 
-        if [[ $SKIP_DEPLOY == true ]]
+        if [[ $SKIP_CHECK == true ]]
         then
             echo "***********************"
             echo "FLUX DEPLOYMENT SKIPPED"
