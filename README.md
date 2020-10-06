@@ -332,7 +332,7 @@ __Setup and Configure the ADO Library `Azure - OSDU Secrets`__
 - osdu-infra-{unique}-test-app-id
 - osdu-infra-{unique}-test-app-key
 - osdu-infra-{unique}-test-app-noaccess-id
-- osdu-infra-{unique}-test-app-noaccess-key
+- osdu-infra-{unique}-test-app-noaccess-oid
 - ad-guest-email
 - ad-guest-oid
 - ad-user-email
