@@ -14,126 +14,66 @@ The current approach to deploying OSDU into your own Azure tenant involves the f
 
 3- Load the data
 
-## Service Onboarding
 
-### Enable Azure Tasks in the service pipeline
-
-Each service has a common build pipeline `.gitlab-ci.yaml` and azure has to be added to the pipeline in order for the azure tasks to trigger
-
-__Azure Provider Environment Variables__
-Add the 3 required variables to the pipeline
-
-- AZURE_SERVICE - This variable names the service  ie: `storage`
-- AZURE_BUILD_SUBDIR - This variable is the path where the service azure provider pom file can be found ie: `provider/storage-azure`
-- AZURE_TEST_SUBDIR - This variable is the path where the testing azure provider pom file can be found ie: `testing/storage-test-azure`
-
-```yaml
-variables:
-
-  AZURE_SERVICE: <service_name>
-  AZURE_BUILD_SUBDIR: provider/<azure_directory>
-  AZURE_TEST_SUBDIR: testing/<azure_directory>
-```
-
-__Azure Provider CI/CD Template__
-Add the azure ci/cd template include
-
-```yaml
-
-include:
-  - project: "osdu/platform/ci-cd-pipelines"
-    file: "cloud-providers/azure.yml"
-```
-
-### Disable for the Project Azure Integration Testing
-
-The CI/CD Pipeline has a feature flag to disable Integration Testing for azure.  Set this variable to be true at the Project CI/CD Variable Settings.
-
-```
-AZURE_SKIP_TEST=true
-```
-
-### Create the Helm Chart and Pipelines for the Service
-
-Each service is responsible to maintain the helm chart necessary to install the service.  Charts for services are typically very similar but unique variables exist in the deployment.yaml that would be different for each services, additionally some files have service specific names that have to be modified from service to service.
-
-Each service is also responsible to maintain the pipeline files.  There are 2 pipeline files, one for MS development flows and the other for customer demo flows.
-
-```
-├── devops
-│   ├── azure
-│   │   ├── README.md
-│   │   ├── chart
-│   │   │   ├── Chart.yaml
-│   │   │   ├── helm-config.yaml
-│   │   │   ├── templates
-│   │   │   │   ├── deployment.yaml
-│   │   │   │   └── service.yaml
-│   │   │   └── values.yaml
-│   │   └── release.yaml
-│   │   └── development-pipeline.yml
-│   │   └── pipeline.yml
-```
-
-### Execute the pipeline
-
-Execute the pipeline and the service should now build, deploy and start.  Validate that the service has started successfully.
-
-### Update the Ingress Controller
-
-If the service has a public ingress the service ingress needs to be updated which can be found in the osdu-common chart.
-
-### Update the Developer Variables
-
-Each service typically needs specific variables necessary to start the service and test the service.  These developer variables need to be updated so that other developers have the ability to work with the service locally.
-
-### Validate Integration Tests
-
-Using the Developer Variables the deployed service needs to be validated that all integration tests pass successfully and the required variables have been identified.
-
-### Update the Azure Cloud Provider CI/CD Template and enable testing
-
-Once the service can be integration tested successfully any additional variables necessary for testing need to be updated in the `cloud-providers/azure.yml` file.
-
-Remove the `AZURE_SKIP_TESTS` variable at the project and execute the pipeline
-
-
-## Configure Continous Deployment for Services into Environemts.
+## Configure Continous Deployment for Infrastructure and Services into Environments.
 
 > This typically takes about 10-15 minutes to complete.
 
-- Create a new ADO Project in your organization called `osdu`
+__Create a new ADO Project__
 
-- In the base project repo now import the base project
-  - https://dev.azure.com/osdu-demo/osdu/_git/osdu
+Name the project in your organization `osdu`
 
-- Create Empty Repositories (No Readme)
-  - osdu-infrastructure
-  - infra-azure-provisioning
-  - entitlements-azure
-  - legal
-  - indexer-queue
-  - storage
-  - indexer-service
-  - search-service
 
-- Setup a Variable Group `Mirror Variables` to mirror repositories
+__Create Empty Repositories__
 
-    | Variable | Value |
-    |----------|-------|
-    | ACCESS_TOKEN | <your_personal_access_token> |
-    | OSDU_INFRASTRUCTURE | https://dev.azure.com/osdu-demo/osdu/_git/osdu-infrastructure |
-    | INFRA_PROVISIONING_REPO | https://dev.azure.com/osdu-demo/osdu/_git/infra-azure-provisioning |
-    | ENTITLEMENTS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/entitlements-azure |
-    | LEGAL_REPO | https://dev.azure.com/osdu-demo/osdu/_git/legal |
-    | STORAGE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/storage |
-    | INDEXER_QUEUE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/indexer-queue |
-    | INDEXER_REPO | https://dev.azure.com/osdu-demo/osdu/_git/indexer-service |
-    | SEARCH_REPO | https://dev.azure.com/osdu-demo/osdu/_git/search |
+- osdu-infrastructure
+- infra-azure-provisioning
+- partition
+- entitlements-azure
+- legal
+- indexer-queue
+- storage
+- indexer-service
+- search-service
 
-- Add a Pipeline __gitlab-sync__
+
+__Create Variable Group__
+
+Name the Variable Group `Mirror Variables` and set the following values.
+
+| Variable | Value |
+|----------|-------|
+| ACCESS_TOKEN | <your_personal_access_token> |
+| OSDU_INFRASTRUCTURE | https://dev.azure.com/osdu-demo/osdu/_git/osdu-infrastructure |
+| INFRA_PROVISIONING_REPO | https://dev.azure.com/osdu-demo/osdu/_git/infra-azure-provisioning |
+| PARTITION_REPO | https://dev.azure.com/osdu-demo/osdu/_git/partition |
+| ENTITLEMENTS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/entitlements-azure |
+| LEGAL_REPO | https://dev.azure.com/osdu-demo/osdu/_git/legal |
+| STORAGE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/storage |
+| INDEXER_QUEUE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/indexer-queue |
+| INDEXER_REPO | https://dev.azure.com/osdu-demo/osdu/_git/indexer-service |
+| SEARCH_REPO | https://dev.azure.com/osdu-demo/osdu/_git/search |
+
+
+__Create Pipeline__
+
+Name the Pipeline `gitlab-sync`
 
 ```yaml
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 trigger:
   batch: true
   branches:
@@ -145,13 +85,15 @@ trigger:
     exclude:
     - /**/*.md
 
-schedules:
-  - cron: "*/10 * * * *"
-    displayName: Hourly Pull Schedule
-    branches:
-      include:
-      - master
-    always: true
+### UNCOMMENT IF YOU WANT A SCHEDULED PULL ####
+
+# schedules:
+#   - cron: "*/10 * * * *"
+#     displayName: Hourly Pull Schedule
+#     branches:
+#       include:
+#       - master
+#     always: true
 
 variables:
   - group: 'Mirror Variables'
@@ -160,6 +102,13 @@ jobs:
   - job: mirror_sync
     displayName: 'Pull Repositories'
     steps:
+
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'osdu-infrastructure'
+      inputs:
+        sourceGitRepositoryUri: 'https://github.com/Azure/osdu-infrastructure.git'
+        destinationGitRepositoryUri: '$(OSDU_INFRASTRUCTURE_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
       displayName: 'infra-azure-provisioning'
@@ -216,16 +165,9 @@ jobs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/search-service.git'
         destinationGitRepositoryUri: '$(SEARCH_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
-
-    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
-      displayName: 'delivery'
-      inputs:
-        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/delivery.git'
-        destinationGitRepositoryUri: '$(DELIVERY_REPO)'
-        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 ```
 
-- Execute the Pipeline which will then pull the required code into the ADO project repos.
+6. Execute the Pipeline which will then pull the required code into the ADO project repos.
 
 
 ## Build osdu-infrastructure
@@ -272,10 +214,9 @@ for i in `az keyvault secret list --vault-name $AZURE_VAULT --query [].id -otsv`
 do
    echo "export ${i##*/}=\"$(az keyvault secret show --vault-name $AZURE_VAULT --id $i --query value -otsv)\""
 done
-
 ```
 
-### Configure Azure DevOps Service Connection
+__Configure Azure DevOps Service Connection__
 
 - Configure an [ARM Resources Service Connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops) for the desired subscription.
   - Scope should be to the desired Subscription but do not apply scope to a Resource Group
@@ -289,9 +230,7 @@ done
 - In Azure Portal locat the subscription and under Access control (IAM) add an Owner Role Assignment to the principal then remove the default created Contributor role.
 
 
-### Setup ADO required Libraries
-
-- Setup and Configure the ADO Library `Infrastructure Pipeline Variables`
+__Setup and Configure the ADO Library `Infrastructure Pipeline Variables`__
 
   | Variable | Value |
   |----------|-------|
@@ -303,7 +242,10 @@ done
   | TF_VAR_remote_state_account | osducommon<your_unique> |
   | TF_VAR_remote_state_container | remote-state-container |
 
-- Setup and Configure the ADO Library `Infrastructure Pipeline Variables - demo`
+
+__Setup and Configure the ADO Library `Infrastructure Pipeline Variables - demo`__
+> You can specify the desired region locations you wish.
+
 
   | Variable | Value |
   |----------|-------|
@@ -324,9 +266,9 @@ done
   | TF_VAR_resource_group_location | centralus |
 
 
-> You can specify the desired region locations you wish.
 
-- Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`
+__Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`__
+> This should be linked Secrets from Azure Key Vault `osducommon<your_unique>-kv`
 
   | Variable | Value |
   |----------|-------|
@@ -334,28 +276,30 @@ done
   | elastic-username-dp1-dev | `*********` |
   | elastic-password-dp1-dev | `*********` |
 
-> This should be linked Secrets from Azure Key Vault `osducommon<your_unique>-kv`
 
-- Setup 2 Secure Files
+__Setup 2 Secure Files__
   - azure-aks-gitops-ssh-key
   - azure-aks-node-ssh-key.pub
 
+
 ** This is future AKS work but required. Ensure the names of files uploaded have the exact names listed which will require renaming the .ssh key information created by the script.
 
-- Execute the pipelines in __osdu-infrastructure__ in the following order
-  - `azure-pipeline-central.yml`
-  - `azure-pipeline-data.yml`
-  - `azure-pipeline-service.yml`
 
+__Execute the pipelines in `osdu-infrastructure`__
+> This should be executed to completion in order
 
+1. `azure-pipeline-central.yml`
+2. `azure-pipeline-data.yml`
+3. `azure-pipeline-service.yml`
+
+---
 
 ## Deploy OSDU Services
 
 > This typically takes about 3-4 hours to complete.
 
-### Setup OSDU ADO Libraries
 
-- Setup and Configure the ADO Library `Azure - OSDU`
+__Setup and Configure the ADO Library `Azure - OSDU`__
 
 | Variable                                      | Value |
 |-----------------------------------------------|-------|
@@ -379,7 +323,10 @@ done
 | SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
 | GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
 
-- Setup and Configure the ADO Library `Azure - OSDU Secrets`
+
+
+__Setup and Configure the ADO Library `Azure - OSDU Secrets`__
+
 > This Library is linked to the Common Key Vault
 
 - osdu-infra-{unique}-test-app-id
@@ -393,9 +340,10 @@ done
 - istio-username
 - istio-password
 
-### Setup Environment ADO Libraries
 
-- __Setup and Configure the ADO Library__ `Azure Target Env - demo`
+
+__Setup and Configure the ADO Library `Azure Target Env - demo`__
+
 > This library is subject to change due to pipeline tranformation work not completed.
 
 | Variable | Value |
@@ -416,7 +364,8 @@ done
 | STORAGE_ACCOUNT_KEY                           | `$(opendes-storage-key)`          |
 
 
-- __Setup and Configure the ADO Library__ `Azure Target Env Secrets - demo`
+__Setup and Configure the ADO Library `Azure Target Env Secrets - demo`__
+
 > This Library is linked to the Enviroment Key Vault
 
 - aad-client-id
@@ -439,9 +388,7 @@ done
 - tenant-id
 
 
-### Setup Service ADO Libraries
-
-- __Setup and Configure the ADO Library__ `Azure Service Release - partition`
+__Setup and Configure the ADO Library `Azure Service Release - partition`__
 
 | Variable | Value |
 |----------|-------|
@@ -451,7 +398,7 @@ done
 | SERVICE_RESOURCE_NAME | `$(AZURE_PARTITION_SERVICE_NAME)` |
 
 
-- __Setup and Configure the ADO Library__ `Azure Service Release - entitlements-azure`
+__Setup and Configure the ADO Library `Azure Service Release - entitlements-azure`__
 
 | Variable | Value |
 |----------|-------|
@@ -461,7 +408,7 @@ done
 | SERVICE_RESOURCE_NAME | `$(AZURE_ENTITLEMENTS_SERVICE_NAME)` |
 
 
-- __Setup and Configure the ADO Library__ `Azure Service Release - legal`
+__Setup and Configure the ADO Library `Azure Service Release - legal`__
 
 | Variable | Value |
 |----------|-------|
@@ -471,7 +418,7 @@ done
 | SERVICE_RESOURCE_NAME | `$(AZURE_LEGAL_SERVICE_NAME)` |
 
 
-__- Setup and Configure the ADO Library__ `Azure Service Release - storage`
+__Setup and Configure the ADO Library `Azure Service Release - storage`__
 
 | Variable | Value |
 |----------|-------|
@@ -481,7 +428,7 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - storage`
 | SERVICE_RESOURCE_NAME | `$(AZURE_STORAGE_SERVICE_NAME)` |
 
 
-__- Setup and Configure the ADO Library__ `Azure Service Release - indexer-service`
+__Setup and Configure the ADO Library `Azure Service Release - indexer-service`__
 
 | Variable | Value |
 |----------|-------|
@@ -491,7 +438,7 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - indexer-servi
 | SERVICE_RESOURCE_NAME | `$(AZURE_INDEXER_SERVICE_NAME)` |
 
 
-__- Setup and Configure the ADO Library__ `Azure Service Release - search-service`
+__Setup and Configure the ADO Library `Azure Service Release - search-service`__
 
 | Variable | Value |
 |----------|-------|
@@ -502,16 +449,16 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - search-servic
 
 
 
-### Load Storage Container Integration Test Data
+__Load Storage Container Integration Test Data__
 
 The data to be loaded before services are deployed and can be found in the osdu-infrastructure repository `osdu-infrastructure/docs/osdu/integration-test-data/`.
 
-__Container: legal-service-azure-configuration__
+Container: `legal-service-azure-configuration`
 
 - Legal_COO.json
 
 
-### Load Cosmos DB Integration Test Data
+__Load Cosmos DB Integration Test Data__
 
 The data to be loaded before services are deployed and can be found in the osdu-infrastructure repository `osdu-infrastructure/docs/osdu/integration-test-data/` and has to be modified with environment specific information as necessary.
 
@@ -535,7 +482,7 @@ The data to be loaded before services are deployed and can be found in the osdu-
 - storage_schema_11.json
 
 
-### Configure the ADO Charts and Service Pipelines
+__Configure the ADO Charts and Service Pipelines__
 
 Create the pipelines and run things in this exact order.
 
@@ -606,12 +553,29 @@ Create the pipelines and run things in this exact order.
     _Validate:_ https://<your_dns_name>/api/storage/v2/swagger-ui.html is alive.
 
 
+7. Add a Pipeline for __service-indexer-queue__  to deploy the Indexer Queue Function.
+
+    _Repo:_ `indexer-queue`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ ScaledObject exist in osdu namespace.
 
 
-- Add a Pipeline __indexer-queue__ -->  Repo: indexer-queue Path:`/devops/azure/pipeline.yml` and execute it.
+8. Add a Pipeline for __service-indexer__  to deploy the Indexer Service.
+
+    _Repo:_ `indexer-service`
+
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/api/indexer/v2/swagger-ui.html is alive.
 
 
-- Add a Pipeline __indexer__ -->  Repo: indexer Path:`/devops/azure/pipeline.yml` and execute it.
+9. Add a Pipeline for __service-search__  to deploy the Search Service.
 
+    _Repo:_ `search-service`
 
-- Add a Pipeline __search__ -->  Repo: search Path:`/devops/azure/pipeline.yml` and execute it.
+    _Path:_ `/devops/azure/pipeline.yml`
+
+    _Validate:_ https://<your_dns_name>/api/search/v2/swagger-ui.html is alive.
+
