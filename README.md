@@ -485,8 +485,7 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - storage`
 
 
 
-
-__- Setup and Configure the ADO Library__ `Azure Service Release - indexer`
+__- Setup and Configure the ADO Library__ `Azure Service Release - indexer-service`
 
 | Variable | Value |
 |----------|-------|
@@ -497,7 +496,7 @@ __- Setup and Configure the ADO Library__ `Azure Service Release - indexer`
 
 
 
-__- Setup and Configure the ADO Library__ `Azure Service Release - search`
+__- Setup and Configure the ADO Library__ `Azure Service Release - search-service`
 
 | Variable | Value |
 |----------|-------|
