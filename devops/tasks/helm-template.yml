@@ -30,11 +30,8 @@ steps:
 
           cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
 
-          echo "Making a Directory... --> $CHART_PATH/$GENERATION_PATH"
           mkdir $CHART_PATH/$GENERATION_PATH
           cat $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
-
-          ls -l $(Build.SourcesDirectory)/$(Build.Repository.Name)
 
           echo "Extracting Manifest"
           helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH
