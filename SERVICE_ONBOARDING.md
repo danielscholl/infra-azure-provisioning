@@ -53,6 +53,7 @@ Each service is also responsible to maintain the pipeline files.  There are 2 pi
 │   │   │   ├── templates
 │   │   │   │   ├── deployment.yaml
 │   │   │   │   └── service.yaml
+│   │   │   └── helm-config.yaml
 │   │   │   └── values.yaml
 │   │   └── release.yaml
 │   │   └── development-pipeline.yml
