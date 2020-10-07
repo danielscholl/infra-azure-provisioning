@@ -77,4 +77,4 @@ stages:
       skipDeploy: ${{ variables.SKIP_DEPLOY }}
       providers:
         - name: Azure
-          environments: ["dev"]
+          environments: ["dev", "glab"]
