@@ -78,4 +78,4 @@
         skipCheck: true
         providers:
           - name: Azure
-            environments: ["dev"]
+            environments: ["dev", "glab"]
