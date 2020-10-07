@@ -307,8 +307,8 @@ __Setup and Configure the ADO Library `Azure - OSDU`__
 | AGENT_POOL                                    | `Hosted Ubuntu 1604`                      |
 | AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                       |
 | AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                         |
-| AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-infra-<your_unique>-test-app-id)` |
-| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-app-oid)`|
+| AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-infra-<your_unique>-test-app-noaccess-id)` |
+| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-infra-<your_unique>-test-noaccess-app-oid)`|
 | AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                        |
 | AZURE_AD_USER_OID                             | `$(ad-user-oid)`                          |
 | AZURE_LEGAL_TOPICNAME                         | `legaltags`                               |
