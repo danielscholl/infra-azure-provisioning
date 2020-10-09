@@ -6,7 +6,7 @@ This repository contains the infrastructure as code implementation and pipelines
 
 > This typically takes about 2 hours to complete.
 
-1. Install the Infrastructure _(Manual Method)_ following directions [here](./infra/README.md).
+1. Install the Infrastructure _(Manual Method)_ following directions [here](./infra/templates/osdu-r3-mvp/README.md).
 
 2. Deploy the application helm charts _(Manual Method)_ following the directions [here](./charts/README.md).
 
