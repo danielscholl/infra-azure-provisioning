@@ -501,6 +501,7 @@ export TF_VAR_application_secret="$(az keyvault secret show --vault-name $AZURE_
 export TF_VAR_ssh_public_key_file=.ssh/node-ssh-key.pub
 export TF_VAR_gitops_ssh_key_file=.ssh/gitops-ssh-key
 export TF_VAR_gitops_ssh_url="git@ssh.dev.azure.com:v3/osdu-demo/OSDU_Rx/k8-gitops-manifests"
+export TF_VAR_gitops_branch="${UNIQUE}"
 
 EOF
 cp .envrc_${UNIQUE} .envrc
