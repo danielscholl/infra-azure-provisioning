@@ -28,7 +28,7 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio -f ${INFRA_SRC}/charts/co
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio-auth.yaml
 
 # Extract manifests from each service chart.
-for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service ;
+for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service delivery;
 do
   helm template $SERVICE ${SERVICES_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
 done

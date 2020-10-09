@@ -1,18 +1,16 @@
 # infra-azure-provisioning
 
-Azure Infrastructure provisioning scripts and templates are hosted in a Github repository that is accessible here:
-[Azure Infrastructure Templates](https://github.com/azure/osdu-infrastructure)
+This repository contains the infrastructure as code implementation and pipelines necessary for the required infrastructure in Azure to host OSDU.
 
-The repository contains the infrastructure as code implementation and pipelines necessary for the required infrastructure in Azure to host OSDU. We've chosen to host the infrastructure code in Github because the infrastructure code is very closely tied to Azure, requires a high degree of priviledges and access to our Azure instance and leverages capability inherent to Azure DevOps. Unfortunately this high level of integration could not be entirely accomodated out of Gitlab, and therefore led us to choose to host the code in Github.
+## Manual Installation Procuedures.
 
-The current approach to deploying OSDU into your own Azure tenant involves the following steps:
+> This typically takes about 2 hours to complete.
 
-1- Follow the directions in the infrastructure repository to deploy the infrastructure:
-- R3 MVP which includes latest from master and the most up-to-date master branch deployment.It can be found [here](https://github.com/Azure/osdu-infrastructure/blob/master/infra/templates/osdu-r3-mvp). There is a risk of using the latest if you don't want to deal with potential inconsistencies.
+1. Install the Infrastructure _(Manual Method)_ following directions [here](./infra/README.md).
 
-2- Deploy the services using a mirrored Azure Devops project (instructions in [here](https://github.com/azure/osdu-infrastructure))
+2. Deploy the application helm charts _(Manual Method)_ following the directions [here](./charts/README.md).
 
-3- Load the data
+3. Load the data
 
 
 ## Configure Continous Deployment for Infrastructure and Services into Environments.
