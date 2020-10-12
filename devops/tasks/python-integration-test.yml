@@ -1,0 +1,18 @@
+
+parameters:
+  stepName: ''
+  runPythonTest: ''
+  testPythonFilePath: ''
+  testPythonFile: ''
+  testArtifactLocation: 'drop/deploy'
+
+steps:
+  - task: Bash@3
+    condition: and(succeeded(), eq('${{ parameters.runPythonTest }}', 'true'))
+    name: ${{ parameters.stepName }}
+    displayName: 'Run python integration tests'
+    inputs:
+      targetType: filePath
+      filePath: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testPythonFilePath }}/${{ parameters.testPythonFile }}'
+      arguments: '$(AUTH_SECRET) $(AUTH_SERVICE_TOKEN_X_API_KEY)'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testPythonFilePath }}'

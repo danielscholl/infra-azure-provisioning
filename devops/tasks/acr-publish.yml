@@ -18,6 +18,8 @@ parameters:
   environment: ''
   providerName: ''
   jarFilePath: ''
+  artifactName: ''
+  dockerFile: ''
 
 steps:
   - task: AzureCLI@1
@@ -26,6 +28,8 @@ steps:
     env:
       JAR_FILE_PATH: ${{ parameters.jarFilePath }}
       IMAGE: $(CONTAINER_REGISTRY_NAME).azurecr.io/${{ parameters.imageRepoName }}-${{ parameters.environment }}:$(Build.SourceVersion)
+      DOCKERFILE: ${{ parameters.dockerFile }}
+
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -47,7 +51,12 @@ steps:
         echo "------------------------------------"
         az acr login -n $(CONTAINER_REGISTRY_NAME)
 
-        writeDockerFile
+        if [[ ! ${DOCKERFILE} ]]; then
+          writeDockerFile
+        else
+          cp ${{ parameters.artifactName }}/${DOCKERFILE} Dockerfile
+        fi
+
         jar_file_name=$(basename $JAR_FILE_PATH)
         cp $JAR_FILE_PATH .
 

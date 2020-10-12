@@ -25,6 +25,7 @@ parameters:
   testCoreMavenGoal: 'install'
   skipDeploy: false
   skipTest: 'false'
+  dockerFile: ''
 
 stages:
 
@@ -71,6 +72,10 @@ stages:
                   environment: ${{ environment }}
                   chartPath: ${{ parameters.chartPath }}
                   valuesFile: ${{ parameters.valuesFile }}
+                  dockerFile: ${{ parameters.dockerFile }}
                   hldRegPath: ${{ parameters.hldRegPath }}
                   skipDeploy: ${{ parameters.skipDeploy }}
                   skipTest: ${{ parameters.skipTest }}
+                  runPythonTest: ${{ parameters.runPythonTest }}
+                  testPythonFilePath: ${{ parameters.testPythonFilePath }}
+                  testPythonFile: ${{ parameters.testPythonFile }}
