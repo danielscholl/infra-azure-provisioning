@@ -62,7 +62,7 @@ variables:
 - group: 'Infrastructure Pipeline Variables'
 
 stages:
-- template: devops/infra-prepare-stage.yml
+- template: /devops/infra-prepare-stage.yml
   parameters:
     environments:
     - name: 'demo'
@@ -72,5 +72,5 @@ stages:
     configurations:
     - jobName: central_resources
       terraformWorkspacePrefix: cr
-      terraformTemplatePath: infra/templates/osdu-r3-mvp/central_resources
+      terraformTemplatePath: /infra/templates/osdu-r3-mvp/central_resources
       deploymentTimeoutInMinutes: 120

@@ -40,26 +40,12 @@ trigger:
     - master
   paths:
     include:
-    - /devops/infrastructure/*
     - /infra/modules/providers/*
     - /infra/templates/osdu-r3-mvp/data_partition/*
     - /test-harness/terratest-extensions/*
     exclude:
     - /**/*.md
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-    - '*'
-  paths:
-    include:
-    - /devops/infrastructure/*
-    - /infra/modules/providers/*
-    - /infra/templates/osdu-r3-mvp/data_partition/*
-    - /test-harness/terratest-extensions/*
-    exclude:
-    - /**/*.md
 
 variables:
 - name: 'TF_VERSION'
@@ -69,13 +55,13 @@ variables:
 - name: 'TF_ROOT_DIR'
   value: 'infra'
 - name: 'PIPELINE_ROOT_DIR'
-  value: 'devops/infrastructure'
+  value: 'devops'
 - name: 'TEST_HARNESS_DIR'
   value: 'test-harness'
 - group: 'Infrastructure Pipeline Variables'
 
 stages:
-- template: devops/infrastructure/prepare-stage.yml
+- template: /devops/prepare-stage.yml
   parameters:
     environments:
     - name: 'demo'
@@ -85,11 +71,11 @@ stages:
     configurations:
     - jobName: data_partition_1
       terraformWorkspacePrefix: dp1
-      terraformTemplatePath: infra/templates/osdu-r3-mvp/data_partition
+      terraformTemplatePath: /infra/templates/osdu-r3-mvp/data_partition
       deploymentTimeoutInMinutes: 120
       dataPartitionName: opendes
     - jobName: data_partition_2
       terraformWorkspacePrefix: dp2
-      terraformTemplatePath: infra/templates/osdu-r3-mvp/data_partition
+      terraformTemplatePath: /infra/templates/osdu-r3-mvp/data_partition
       deploymentTimeoutInMinutes: 120
       dataPartitionName: common

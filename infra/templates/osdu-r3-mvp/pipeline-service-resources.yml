@@ -39,26 +39,12 @@ trigger:
     - master
   paths:
     include:
-    - /devops/infrastructure/*
     - /infra/modules/providers/*
     - /infra/templates/osdu-r3-mvp/service_resources/*
     - /test-harness/terratest-extensions/*
     exclude:
     - /**/*.md
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-    - '*'
-  paths:
-    include:
-    - /devops/infrastructure/*
-    - /infra/modules/providers/*
-    - /infra/templates/osdu-r3-mvp/service_resources/*
-    - /test-harness/terratest-extensions/*
-    exclude:
-    - /**/*.md
 
 variables:
 - name: 'TF_VERSION'
@@ -68,13 +54,13 @@ variables:
 - name: 'TF_ROOT_DIR'
   value: 'infra'
 - name: 'PIPELINE_ROOT_DIR'
-  value: 'devops/infrastructure'
+  value: 'devops'
 - name: 'TEST_HARNESS_DIR'
   value: 'test-harness'
 - group: 'Infrastructure Pipeline Variables'
 
 stages:
-- template: devops/infrastructure/prepare-stage.yml
+- template: /devops/prepare-stage.yml
   parameters:
     environments:
     - name: 'demo'
@@ -84,5 +70,5 @@ stages:
     configurations:
     - jobName: service_resources
       terraformWorkspacePrefix: sr
-      terraformTemplatePath: infra/templates/osdu-r3-mvp/service_resources
+      terraformTemplatePath: /infra/templates/osdu-r3-mvp/service_resources
       deploymentTimeoutInMinutes: 120
