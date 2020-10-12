@@ -8,7 +8,7 @@ v0.3 - 10/4/2020
 
 Some of OSDU's enterprise customers have a small number of microservices they'd like to deploy and host on [AKS](https://docs.microsoft.com/en-us/azure/aks/). Geospatial documents are indexed in Elastic Search to accomodate bounding box and radius distance querying scenarios. This template provisions resources required to run OSDU Services in AKS and uses an instance of a fully managed PaaS Elasticsearch hosted in [EC](https://www.elastic.co/cloud/).
 
-This document outlines how Cobalt has been extended to meet the use cases of these customers. The intended audience of this document is the development and product teams working on OSDU Infratructure on Azure and related projects.
+This document outlines how [Cobalt](https://github.com/microsoft/cobalt) has been extended to meet the use cases of these customers. The intended audience of this document is the development and product teams working on OSDU Infrastructure on Azure and related projects.
 
 ## In Scope
 
@@ -25,6 +25,7 @@ This document outlines how Cobalt has been extended to meet the use cases of the
 - Elastic Search Service
 
 ## Key Terms
+
 - **RG**: Abbreviation for “Resource Group”
 - **Sub**: Abbreviation for “Subscription”
 - **Persona**: An archetype of a Cobalt customer
@@ -33,6 +34,7 @@ This document outlines how Cobalt has been extended to meet the use cases of the
 
 
 ## Customers
+
 - **Admin**: This persona represents an administrator of Azure. This persona does not implement the line of business applications but will help other teams deliver them.
 - **App Developer Team**: This persona is responsible for creating and maintaining the line of business applications
 
@@ -57,51 +59,72 @@ The graphic below outlines the topology of the terraform templates that will dep
 ## Terraform Template Environment Dependencies
 
 ```
-└── configurations
+└── osdu-r3-mvp
     ├── central_resources
-    │   ├── main.tf
-    │   └── terraform.tfvars
+    │   ├── README.md
+    │   ├── diagnostics.tf
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── secrets.tf
+    │   ├── terraform.tfvars
+    │   └── variables.tf
+    ├── common_keys.sh
+    ├── common_prepare.sh
     ├── data_partition
-    │   ├── main.tf
-    │   ├── terraform.tfvars
-    │   └── variables.tf
-    ├── service_resources
-    │   ├── agic.tf
-    │   ├── aks.tf
-    │   ├── backend.tf
-    │   ├── commons.tf
-    │   ├── keyvault.tf
-    │   ├── networking.tf
-    │   ├── outputs.tf
-    │   ├── pod_identity.tf
-    │   ├── security.tf
-    │   ├── terraform.tfvars
-    │   └── variables.tf
+    │   ├── README.md
+    │   ├── diagnostics.tf
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── secrets.tf
+    │   ├── terraform.tfvars
+    │   └── variables.tf
+    ├── docs
+    ├── magefile.go
+    └── service_resources
+        ├── README.md
+        ├── airflow.tf
+        ├── config_map.tf
+        ├── diagnostics.tf
+        ├── helm_agic.tf
+        ├── helm_certs.tf
+        ├── helm_flux.tf
+        ├── helm_keda.tf
+        ├── helm_kv_csi.tf
+        ├── helm_pod_identity.tf
+        ├── main.tf
+        ├── output.tf
+        ├── secrets.tf
+        ├── terraform.tfvars
+        └── variables.tf
 ```
 
 ### central_resources
 
-The [central_resources](../configurations/central_resources/main.tf) configuation is the resources that are central to an OSDU architecture. These resources need to exist first before any other configuration and can never be destroyed without impacting the entire data platform.
+The [central_resources](../infra/templates/osdu-r3-mvp/central_resources/main.tf) configuation is the resources that are central to an OSDU architecture. These resources need to exist first before any other configuration and can never be destroyed without impacting the entire data platform.
 
 Items here incude things such as:
 - Centralized Logging
 - Key Vault
 - User Assigned Identity
+- Table Storage
 
 
 ### service_resources
 
-The [service_resources](../configurations/service_resources/main.tf) configuration relies on the resources from the [central_resources](../configurations/central_resources/main.tf) configuration and has the responsibility to store any sensitive information it creates to the central keyvault.  Additionally it is required to setup any maintain any roles it requires.
+The [service_resources](../infra/templates/osdu-r3-mvp/service_resources/main.tf) configuration relies on the resources from the [central_resources](../infra/templates/osdu-r3-mvp/central_resources/main.tf) configuration and has the responsibility to store any sensitive information it creates to the central keyvault.  Additionally it is required to setup any maintain any roles it requires.
 
 Items here include things such as:
 - AKS Clusters
 - Application Gateway
+- Redis Cache
+- Postgres DB
 - Airflow Configuration Components
+
 
 
 ### data_partition
 
-The [data_partition](../configurations/data_partition/main.tf) configuration relies on the resources from the [central_resources](../configuration/data_partition/main.tf) configuration and has the responsibility to store any sensitive information it creates to the central keyvault.  Additionally it is required to setup and maintain any roles it requires.
+The [data_partition](../infra/templates/osdu-r3-mvp/data_partition/main.tf) configuration relies on the resources from the [central_resources](../infra/templates/osdu-r3-mvp/data_partition/main.tf) configuration and has the responsibility to store any sensitive information it creates to the central keyvault.  Additionally it is required to setup and maintain any roles it requires.
 
 Items here include things such as:
 - CosmosDB
@@ -112,7 +135,7 @@ Items here include things such as:
 
 ### Credential Management
 
-The AKS cluster will be configured with a `SystemAssigned` identity to enable MSI integration with resources like Service Bus, ADLS Gen 2 and Keyvault. 
+The AKS cluster will be configured with a `SystemAssigned` identity to enable MSI integration with resources like Service Bus, ADLS Gen 2 and Keyvault.
 
 MSI is enabled through the [identity block](https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#type-2) of the `azurerm_kubernetes_cluster` Terraform provider.
 
@@ -124,9 +147,7 @@ Here is an overview of the security for the deployment strategy and templates di
 
 The service principal running the deployment will have to be an owner in the target subscription.
 
-This template will **not** create the OSDU environment service principal but one will have to be provided to the central resources configuration. This will eliminate the need to have an elevated service principal to deploy the solution. The service principalcreated will need to have Microsoft Graph Directory.Read.All access granted. 
-
-
+This template will **not** create the OSDU environment service principal but one will have to be provided to the central resources configuration. This will eliminate the need to have an elevated service principal to deploy the solution. The service principalcreated will need to have Microsoft Graph Directory.Read.All access granted.
 
 
 
@@ -135,7 +156,7 @@ Copyright © Microsoft Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at 
+You may obtain a copy of the License at
 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
