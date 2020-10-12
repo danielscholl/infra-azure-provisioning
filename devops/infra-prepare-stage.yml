@@ -67,7 +67,7 @@ stages:
           parameters:
             terraformTemplatePath: ${{ config.terraformTemplatePath }}
             jobName: ${{ config.jobName }}
-      - template: deploy-stage.yml
+      - template: infra-deploy-stage.yml
         parameters:
           environment: ${{ environment.name }}
           enablePrIsolation: ${{ environment.enablePrIsolation }}
