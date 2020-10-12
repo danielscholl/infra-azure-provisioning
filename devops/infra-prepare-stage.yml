@@ -15,7 +15,7 @@
 parameters:
   environments: []
   configurations: []
-  forceRun: false
+  forceRun: true
   aksAgentSshPublicKeyFilename: 'azure-aks-node-ssh-key.pub'
   aksGitOpsSshPrivateKeyFilename: 'azure-aks-gitops-ssh-key'
 
@@ -38,6 +38,14 @@ stages:
       displayName: 'Build ${{ config.jobName }}-${{ environment.name }}'
       dependsOn: Environment_${{ environment.name }}
       jobs:
+      - job: TemplateChangeDetection_${{ config.jobName }}_Build
+        displayName: Analyze Changes
+        pool: $(AGENT_POOL)
+        steps:
+        - template: tasks/detect-cicd.yml
+          parameters:
+            terraformTemplatePath: ${{ config.terraformTemplatePath }}
+            jobName: ${{ config.jobName }}
       - template: infra-build-stage.yml
         parameters:
           environment: ${{ environment.name }}
@@ -51,6 +59,14 @@ stages:
       dependsOn: ${{ config.jobName }}_${{ environment.name }}_Build
       displayName: 'Deploy ${{ config.jobName }}-${{ environment.name }}'
       jobs:
+      - job: TemplateChangeDetection_${{ config.jobName }}_Deploy
+        displayName: Analyze Changes
+        pool: $(AGENT_POOL)
+        steps:
+        - template: tasks/detect-cicd.yml
+          parameters:
+            terraformTemplatePath: ${{ config.terraformTemplatePath }}
+            jobName: ${{ config.jobName }}
       - template: infra-deploy-stage.yml
         parameters:
           environment: ${{ environment.name }}
