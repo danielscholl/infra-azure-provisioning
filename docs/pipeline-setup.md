@@ -324,7 +324,20 @@ __Execute the pipelines in `osdu-infrastructure`__
 2. `azure-pipeline-data.yml`
 3. `azure-pipeline-service.yml`
 
----
+```bash
+# Create and Deploy the Central Resources
+az pipelines create \
+  --name 'infrastructure-central-resources'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-central-resources.yml  \
+  --organization https://dev.azure.com/${ADO_ORGANIZATION}  \
+  --project $ADO_PROJECT  \
+  -ojson
+
+
+```
 
 ## Deploy OSDU Services
 
