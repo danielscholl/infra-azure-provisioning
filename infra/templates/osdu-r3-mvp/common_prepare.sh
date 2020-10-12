@@ -109,6 +109,10 @@ function CreateTfPrincipal() {
         --display-name $1 \
         --query [].appId -otsv)
 
+      PRINCIPAL_OID=$(az ad app list \
+        --display-name $1 \
+        --query [].objectId -otsv)
+
       AD_GRAPH_API_GUID="00000002-0000-0000-c000-000000000000"
 
       # Azure AD Graph API Access Application.ReadWrite.OwnedBy
@@ -121,6 +125,13 @@ function CreateTfPrincipal() {
       tput setaf 2; echo "Adding Information to Vault..." ; tput sgr0
       AddKeyToVault $2 "${1}-id" $PRINCIPAL_ID
       AddKeyToVault $2 "${1}-key" $PRINCIPAL_SECRET
+
+      tput setaf 2; echo "Adding Access Policy..." ; tput sgr0
+      az keyvault set-policy --name $AZURE_VAULT \
+        --object-id $(az ad app list --display-name $1 --query [].objectId -otsv) \
+        --secret-permissions list get \
+        -ojson
+
 
     else
         tput setaf 3;  echo "Service Principal $1 already exists."; tput sgr0
@@ -217,27 +228,32 @@ function CreateSSHKeys() {
     exit 1;
   fi
 
-  if [ ! -d ./.ssh ]
+  if [ ! -d ~/.ssh ]
   then
     mkdir .ssh
   fi
 
-  if [ -f ./.ssh/$2.passphrase ]; then
+  if [ ! -d ~/.ssh/osdu_${UNIQUE} ]
+  then
+    mkdir  ~/.ssh/osdu_${UNIQUE}
+  fi
+
+  if [ -f ~/.ssh/osdu_${UNIQUE}/$2.passphrase ]; then
     tput setaf 3;  echo "SSH Keys already exist."; tput sgr0
-    PASSPHRASE=`cat ./.ssh/${2}.passphrase`
+    PASSPHRASE=`cat ~/.ssh/osdu_${UNIQUE}/${2}.passphrase`
   else
-    cd .ssh
+    cd ~/.ssh/osdu_${UNIQUE}
 
     PASSPHRASE=$(echo $((RANDOM%20000000000000000000+100000000000000000000)))
     echo "$PASSPHRASE" >> "$2.passphrase"
     ssh-keygen -t rsa -b 2048 -C $1 -f $2 -N $PASSPHRASE && cd ..
   fi
 
-  AddKeyToVault $AZURE_VAULT "${2}" ".ssh/${2}" "file"
-  AddKeyToVault $AZURE_VAULT "${2}-pub" ".ssh/${2}.pub" "file"
+  AddKeyToVault $AZURE_VAULT "${2}" "~/.ssh/osdu_${UNIQUE}/${2}" "file"
+  AddKeyToVault $AZURE_VAULT "${2}-pub" "~/.ssh/osdu_${UNIQUE}/${2}.pub" "file"
   AddKeyToVault $AZURE_VAULT "${2}-passphrase" $PASSPHRASE
 
- _result=`cat ./.ssh/${2}.pub`
+ _result=`cat ~/.ssh/osdu_${UNIQUE}/${2}.pub`
  echo $_result
 }
 
@@ -454,6 +470,8 @@ tput setaf 2; echo 'Creating required Service Principals...' ; tput sgr0
 CreateTfPrincipal "osdu-mvp-${UNIQUE}-terraform" $AZURE_VAULT
 CreatePrincipal "osdu-mvp-${UNIQUE}-principal" $AZURE_VAULT
 
+
+
 tput setaf 2; echo 'Creating required AD Application...' ; tput sgr0
 CreateADApplication "osdu-mvp-${UNIQUE}-application" $AZURE_VAULT
 CreateADApplication "osdu-mvp-${UNIQUE}-noaccess" $AZURE_VAULT
@@ -461,7 +479,7 @@ CreateADApplication "osdu-mvp-${UNIQUE}-noaccess" $AZURE_VAULT
 tput setaf 2; echo 'Creating SSH Keys...' ; tput sgr0
 GITOPS_KEY="azure-aks-gitops-ssh-key"
 CreateSSHKeys $AZURE_AKS_USER $GITOPS_KEY
-AddKeyToVault $AZURE_VAULT "azure-aks-gitops-ssh-key" ".ssh/${GITOPS_KEY}" "file"
+AddKeyToVault $AZURE_VAULT "azure-aks-gitops-ssh-key" "~/.ssh/osdu_${UNIQUE}/${GITOPS_KEY}" "file"
 
 CreateSSHKeys $AZURE_AKS_USER "azure-aks-node-ssh-key"
 
@@ -500,7 +518,7 @@ export TF_VAR_application_secret="$(az keyvault secret show --vault-name $AZURE_
 
 export TF_VAR_ssh_public_key_file=.ssh/node-ssh-key.pub
 export TF_VAR_gitops_ssh_key_file=.ssh/gitops-ssh-key
-export TF_VAR_gitops_ssh_url="git@ssh.dev.azure.com:v3/osdu-demo/OSDU_Rx/k8-gitops-manifests"
+export TF_VAR_gitops_ssh_url="${GIT_REPO}"
 export TF_VAR_gitops_branch="${UNIQUE}"
 
 EOF
