@@ -334,14 +334,15 @@ __Setup 2 Secure Files__
 
 
 __Execute the pipelines in `osdu-infrastructure`__
+
 > This should be executed to completion in order
 
-1. `azure-pipeline-central.yml`
+1. `infrastructure-central-resources`
 
   > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
 
 ```bash
-# Create and Deploy the Central Resources
+# Create and Deploy the Pipeline
 az pipelines create \
   --name 'infrastructure-central-resources'  \
   --repository infra-azure-provisioning  \
@@ -354,12 +355,12 @@ az pipelines create \
 ```
 
 
-2. `azure-pipeline-data.yml`
+2. `infrastructure-data-partition`
 
   > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
 
 ```bash
-# Create and Deploy the Central Resources
+# Create and Deploy the Pipeline
 az pipelines create \
   --name 'infrastructure-data-partition'  \
   --repository infra-azure-provisioning  \
@@ -377,7 +378,7 @@ az pipelines create \
   > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
 
 ```bash
-# Create and Deploy the Central Resources
+# Create and Deploy the Pipeline
 az pipelines create \
   --name 'infrastructure-service-resources'  \
   --repository infra-azure-provisioning  \
