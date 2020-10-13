@@ -3,7 +3,7 @@
 
 ## Setup Mirroring of Gitlab Repositories
 
-> This typically takes about 30 minutes to complete.
+> This typically takes about 10 minutes to complete.
 
 __Create Empty Repositories__
 
@@ -54,7 +54,12 @@ Variable Group Name:  `Mirror Variables`
 | ACCESS_TOKEN | <your_personal_access_token> |
 
 
+Manually create a Personal Access Token following the [documentation](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page) and add a Variable called `ACCESS_TOKEN` with the value being the PAT created.
+
+
 ```bash
+ACCESS_TOKEN=<your_access_token>
+
 az pipelines variable-group create \
   --name "Mirror Variables" \
   --authorize true \
@@ -70,17 +75,21 @@ az pipelines variable-group create \
   INDEXER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/indexer-service \
   SEARCH_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/search-service \
   DELIVERY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/delivery \
+  ACCESS_TOKEN=$ACCESS_TOKEN \
   -ojson
 ```
 
-Manually create a Personal Access Token following the [documentation](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page) and add a Variable called `ACCESS_TOKEN` with the value being the PAT created.
+
+__Create Mirror Pipeline__
+
+Clone the Project Repository `osdu-mvp`, and add the pipeline.
 
 
-__Create Pipeline__
+```bash
+GIT_SSH_COMMAND="ssh -i ${TF_VAR_gitops_ssh_key_file}"  \
+  git clone git@ssh.dev.azure.com:v3/${ADO_ORGANIZATION}/${ADO_PROJECT}/${ADO_PROJECT}
 
-Manually Create a Pipeline [`gitlab-sync`](../devops/gitlab-sync.yml)
-
-```yaml
+cat > ${ADO_PROJECT}/pipeline.yml << 'EOF'
 #  Copyright © Microsoft Corporation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -176,12 +185,21 @@ jobs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/delivery.git'
         destinationGitRepositoryUri: '$(DELIVERY_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
-```
+EOF
 
-Execute the Pipeline which will then `git clone --mirror` the repositories into ADO.
+(cd ${ADO_PROJECT}  && git add -A && git commit -m "pipeline" && git push)
+rm -rf ${ADO_PROJECT}
 
-```bash
-az pipelines run --name gitlab-sync --organization https://dev.azure.com/${ADO_ORGANIZATION} --project $ADO_PROJECT -ojson
+# Create and Execute the Pipeline
+az pipelines create \
+  --name 'gitlab-sync'  \
+  --repository $ADO_PROJECT  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /pipeline.yml  \
+  --organization https://dev.azure.com/${ADO_ORGANIZATION}  \
+  --project $ADO_PROJECT  \
+  -ojson
 ```
 
 
@@ -195,7 +213,7 @@ __Configure Azure DevOps Service Connection__
   - Scope should be to the desired Subscription but do not apply scope to a Resource Group
 
 ```bash
-SERVICE_CONNECTION_NAME=osdu-mvp-connection
+SERVICE_CONNECTION_NAME=osdu-mvp-$UNIQUE
 export AZURE_DEVOPS_EXT_AZURE_RM_SERVICE_PRINCIPAL_KEY=$ARM_CLIENT_SECRET
 
 az devops service-endpoint azurerm create \
@@ -223,8 +241,6 @@ __Setup and Configure the ADO Library `Infrastructure Pipeline Variables`__
   | TF_VAR_remote_state_container | remote-state-container |
 
 ```bash
-SERVICE_CONNECTION_NAME=osdu-mvp-connection
-
 az pipelines variable-group create \
   --name "Infrastructure Pipeline Variables" \
   --authorize true \
@@ -298,7 +314,7 @@ az pipelines variable-group create \
 ```
 
 __Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`__
-> This should be linked Secrets from Azure Key Vault `osducommon<your_unique>-kv`
+> This should be linked Secrets from Azure Key Vault `osducommon<random>`
 
   | Variable | Value |
   |----------|-------|
@@ -312,8 +328,8 @@ __Setup 2 Secure Files__
 [Upload the 2 Secure files](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/secure-files?view=azure-devops).
 
 
-  - azure-aks-gitops-ssh-key
-  - azure-aks-node-ssh-key.pub
+  - ~/.ssh/osdu_$UNIQUE/azure-aks-gitops-ssh-key
+  - ~/.ssh/osdu_$UNIQUE/azure-aks-node-ssh-key.pub
 
 
 

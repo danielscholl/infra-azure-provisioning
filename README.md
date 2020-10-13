@@ -70,14 +70,13 @@ The script `common_prepare.sh` script is a _helper_ script designed to help setu
 - Ensure you are logged into the azure cli with the desired subscription set.
 - Ensure you have the access to run az ad commands.
 
-
 ```bash
 # Login to Azure CLI and ensure subscription is set to desired subscription
 az login
 az account set --subscription <your_subscription>
 
 # Execute Script
-UNIQUE=demo  # 3-8 characters
+UNIQUE=demo
 ./infra/templates/osdu-r3-mvp/common_prepare.sh $(az account show --query id -otsv) $UNIQUE
 ```
 
@@ -95,12 +94,12 @@ The script creates some local files to be used.
 
 1. .envrc_{UNIQUE} -- This is a copy of the required environment variables for the common components.
 2. .envrc -- This file is used directory by direnv and requires `direnv allow` to be run to access variables.
-3. .ssh/azure-aks-gitops-ssh-key -- SSH key used by flux.
-4. .ssh/azure-aks-gitops-key.pub -- SSH Public Key used by flux.
-5. .ssh/azure-aks-gitops-key.passphrase -- SSH Key Passphrase used by flux.
-6. .ssh/azure-aks-node-ssh-key -- SSH Key used by AKS
-7. .ssh/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
-8. .ssh/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
+3. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-ssh-key -- SSH key used by flux.
+4. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-key.pub -- SSH Public Key used by flux.
+5. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-key.passphrase -- SSH Key Passphrase used by flux.
+6. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key -- SSH Key used by AKS
+7. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
+8. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
 
 
 __Installed Common Resources__
@@ -129,27 +128,32 @@ az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-endpoint-dp1-d
 az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-username-dp1-demo" --value $USERNAME
 az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-password-dp1-demo" --value $PASSWORD
 
-cat >> .envrc_${UNIQUE} << EOF
+cat >> .envrc << EOF
 
 # https://cloud.elastic.co
 # ------------------------------------------------------------------------------------------------------
-export TF_VAR_elasticsearch_endpoint="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-endpoint-ado-demo --query value -otsv)"
-export TF_VAR_elasticsearch_username="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-username-ado-demo --query value -otsv)"
-export TF_VAR_elasticsearch_password="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-password-ado-demo --query value -otsv)"
+export TF_VAR_elasticsearch_endpoint="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-endpoint-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_username="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-username-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_password="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-password-dp1-demo --query value -otsv)"
 
 EOF
 
-cp .envrc_${UNIQUE} .envrc
+cp .envrc .envrc_${UNIQUE}
 ```
 
 
 ## Configure Key Access in Manifest Repository
 
-The public key of the [RSA key pair](#create-an-rsa-key-pair-for-a-deploy-key-for-the-flux-repository) previously created needs to be added as a deploy key. Note: _If you do not own the repository, you will have to fork it before proceeding_.
+The public key of the `azure-aks-gitops-ssh-key` previously created needs to be added as a deploy key in your Azure DevOPS Project, follow these [steps](https://docs.microsoft.com/en-us/azure/devops/repos/git/use-ssh-keys-to-authenticate?view=azure-devops&tabs=current-page#step-2--add-the-public-key-to-azure-devops-servicestfs) to add your public SSH key to your ADO environment.
 
-Use the contents of the Secret as shown above.
-
-Next, in your Azure DevOPS Project, follow these [steps](https://docs.microsoft.com/en-us/azure/devops/repos/git/use-ssh-keys-to-authenticate?view=azure-devops&tabs=current-page#step-2--add-the-public-key-to-azure-devops-servicestfs) to add your public SSH key to your ADO environment.
+```bash
+# Retrieve the public key
+az keyvault secret show \
+  --vault-name $COMMON_VAULT \
+  --id https://$COMMON_VAULT.vault.azure.net/secrets/azure-aks-gitops-ssh-key-pub \
+  --query value \
+  -otsv
+```
 
 
 ## Automated Pipeline Installation

@@ -133,7 +133,7 @@ function CreateTfPrincipal() {
 
       tput setaf 2; echo "Adding Access Policy..." ; tput sgr0
       az keyvault set-policy --name $AZURE_VAULT \
-        --object-id $(az ad app list --display-name $1 --query [].objectId -otsv) \
+        --object-id $(az ad sp list --display-name $1 --query [].objectId -otsv) \
         --secret-permissions list get \
         -ojson
 
@@ -524,4 +524,5 @@ export TF_VAR_gitops_ssh_url="${GIT_REPO}"
 export TF_VAR_gitops_branch="${UNIQUE}"
 
 EOF
+
 cp .envrc .envrc_${UNIQUE}
