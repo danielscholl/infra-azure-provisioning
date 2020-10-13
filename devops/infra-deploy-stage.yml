@@ -92,6 +92,7 @@ jobs:
             terraformWorkspacePrefix: ${{ parameters.configuration.terraformWorkspacePrefix }}
 
         - template: tasks/tests-int.yml
+          condition: succeeded()
           parameters:
             skip: ${{ parameters.skipTests }}
 
