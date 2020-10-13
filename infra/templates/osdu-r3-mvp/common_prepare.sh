@@ -235,7 +235,7 @@ function CreateSSHKeys() {
 
   if [ ! -d ~/.ssh ]
   then
-    mkdir .ssh
+    mkdir ~/.ssh
   fi
 
   if [ ! -d ~/.ssh/osdu_${UNIQUE} ]
