@@ -75,9 +75,10 @@ The script `common_prepare.sh` script is a _helper_ script designed to help setu
 # Login to Azure CLI and ensure subscription is set to desired subscription
 az login
 az account set --subscription <your_subscription>
-export ARM_SUBSCRIPTION_ID=$(az account show --query id -otsv)
 
-./infra/templates/osdu-r3-mvp/common_prepare.sh
+# Execute Script
+UNIQUE=demo  # 3-8 characters
+./infra/templates/osdu-r3-mvp/common_prepare.sh $(az account show --query id -otsv) $UNIQUE
 ```
 
 This results in 2 service principals being created that need an AD Admin to `grant admin consent` on.
@@ -85,6 +86,8 @@ This results in 2 service principals being created that need an AD Admin to `gra
 1. osdu-mvp-{UNIQUE}-terraform
 2. osdu-mvp-{UNIQUE}-principal
 
+
+> Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, the resource group and purging the KV.
 
 __Local Script Output Resources__
 

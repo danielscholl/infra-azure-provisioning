@@ -7,7 +7,7 @@
 ###############################
 ## ARGUMENT INPUT            ##
 ###############################
-usage() { echo "Usage: common_prepare.sh <subscription_id> <unique>" 1>&2; exit 1; }
+usage() { echo "Usage: common_prepare.sh <unique> <subscription_id>" 1>&2; exit 1; }
 
 if [ ! -z $1 ]; then ARM_SUBSCRIPTION_ID=$1; fi
 if [ -z $ARM_SUBSCRIPTION_ID ]; then
@@ -17,8 +17,13 @@ fi
 
 if [ ! -z $2 ]; then UNIQUE=$2; fi
 if [ -z $UNIQUE ]; then
-  UNIQUE=$(echo $((RANDOM%999+100)))
-  echo "export UNIQUE=${UNIQUE}" > .envrc_${UNIQUE}
+  tput setaf 1; echo 'ERROR: UNIQUE not provided' ; tput sgr0
+  usage;
+fi
+
+if [ -z $RANDOM_NUMBER ]; then
+  RANDOM_NUMBER=$(echo $((RANDOM%9999+100)))
+  echo "export RANDOM_NUMBER=${RANDOM_NUMBER}" > .envrc
 fi
 
 if [ -z $AZURE_LOCATION ]; then
@@ -34,11 +39,11 @@ if [ -z $AZURE_GROUP ]; then
 fi
 
 if [ -z $AZURE_STORAGE ]; then
-  AZURE_STORAGE="osducommon${UNIQUE}"
+  AZURE_STORAGE="osducommon${RANDOM_NUMBER}"
 fi
 
 if [ -z $AZURE_VAULT ]; then
-  AZURE_VAULT="osducommon${UNIQUE}-kv"
+  AZURE_VAULT="osducommon${RANDOM_NUMBER}"
 fi
 
 if [ -z $REMOTE_STATE_CONTAINER ]; then
@@ -71,7 +76,7 @@ function CreateResourceGroup() {
     exit 1;
   fi
 
-  local _result=$(az group show --name $1)
+  local _result=$(az group show --name $1 2>/dev/null)
   if [ "$_result"  == "" ]
     then
       OUTPUT=$(az group create --name $1 \
@@ -301,7 +306,7 @@ function CreateStorageAccount() {
     exit 1;
   fi
 
-  local _storage=$(az storage account show --name $1 --resource-group $2 --query name -otsv)
+  local _storage=$(az storage account show --name $1 --resource-group $2 --query name -otsv 2>/dev/null)
   if [ "$_storage"  == "" ]
       then
       OUTPUT=$(az storage account create \
@@ -356,7 +361,7 @@ function CreateBlobContainer() {
     exit 1;
   fi
 
-  local _container=$(az storage container show --name $1 --account-name $2 --account-key $3 --query name -otsv)
+  local _container=$(az storage container show --name $1 --account-name $2 --account-key $3 --query name -otsv 2>/dev/null)
   if [ "$_container"  == "" ]
       then
         OUTPUT=$(az storage container create \
@@ -470,8 +475,6 @@ tput setaf 2; echo 'Creating required Service Principals...' ; tput sgr0
 CreateTfPrincipal "osdu-mvp-${UNIQUE}-terraform" $AZURE_VAULT
 CreatePrincipal "osdu-mvp-${UNIQUE}-principal" $AZURE_VAULT
 
-
-
 tput setaf 2; echo 'Creating required AD Application...' ; tput sgr0
 CreateADApplication "osdu-mvp-${UNIQUE}-application" $AZURE_VAULT
 CreateADApplication "osdu-mvp-${UNIQUE}-noaccess" $AZURE_VAULT
@@ -483,24 +486,23 @@ AddKeyToVault $AZURE_VAULT "azure-aks-gitops-ssh-key" "~/.ssh/osdu_${UNIQUE}/${G
 
 CreateSSHKeys $AZURE_AKS_USER "azure-aks-node-ssh-key"
 
-# tput setaf 2; echo 'Creating AD User...' ; tput sgr0
-# CreateADUser "Integration" "Test"
-
-tput setaf 2; echo '# OSDU ENVIRONMENT ${UNIQUE}' ; tput sgr0
+tput setaf 2; echo "# OSDU ENVIRONMENT ${UNIQUE}" ; tput sgr0
 tput setaf 3; echo "------------------------------------" ; tput sgr0
-cat > .envrc_${UNIQUE} << EOF
+
+cat > .envrc << EOF
 
 # OSDU ENVIRONMENT ${UNIQUE}
 # ------------------------------------------------------------------------------------------------------
+export RANDOM_NUMBER=${RANDOM_NUMBER}
 export UNIQUE=${UNIQUE}
 export COMMON_VAULT="${AZURE_VAULT}"
 export ARM_TENANT_ID="$(az account show -ojson --query tenantId -otsv)"
 export ARM_SUBSCRIPTION_ID="${ARM_SUBSCRIPTION_ID}"
 export ARM_CLIENT_ID="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-id --query value -otsv)"
 export ARM_CLIENT_SECRET="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-key --query value -otsv)"
-export ARM_ACCESS_KEY="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${UNIQUE}-storage-key --query value -otsv)"
+export ARM_ACCESS_KEY="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage-key --query value -otsv)"
 
-export TF_VAR_remote_state_account="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${UNIQUE}-storage --query value -otsv)"
+export TF_VAR_remote_state_account="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage --query value -otsv)"
 export TF_VAR_remote_state_container="remote-state-container"
 
 export TF_VAR_resource_group_location="${AZURE_LOCATION}"
@@ -516,10 +518,10 @@ export TF_VAR_principal_objectId="$(az keyvault secret show --vault-name $AZURE_
 export TF_VAR_application_clientid="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-clientid --query value -otsv)"
 export TF_VAR_application_secret="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-secret --query value -otsv)"
 
-export TF_VAR_ssh_public_key_file=.ssh/node-ssh-key.pub
-export TF_VAR_gitops_ssh_key_file=.ssh/gitops-ssh-key
+export TF_VAR_ssh_public_key_file=~/.ssh/osdu_${UNIQUE}/azure-aks-node-ssh-key.pub
+export TF_VAR_gitops_ssh_key_file=~/.ssh/osdu_${UNIQUE}/azure-aks-gitops-ssh-key
 export TF_VAR_gitops_ssh_url="${GIT_REPO}"
 export TF_VAR_gitops_branch="${UNIQUE}"
 
 EOF
-cp .envrc_${UNIQUE} .envrc
+cp .envrc .envrc_${UNIQUE}
