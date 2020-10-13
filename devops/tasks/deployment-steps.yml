@@ -28,6 +28,11 @@ parameters:
   testCoreMavenOptions: ''
   testArtifactLocation: 'drop/deploy'
   elasticEndpoint: ''
+  skipTest: ''
+  dockerFile: ''
+  testPythonFilePath: ''
+  testPythonFile: ''
+  runPythonTest: ''
 
 steps:
   - template: detect-jar.yml
@@ -43,6 +48,8 @@ steps:
       jarFilePath: $(DetectJarScript.JAR_FILE_PATH)
       providerName: ${{ parameters.providerName }}
       imageRepoName: ${{ parameters.serviceName }}
+      artifactName: ${{ parameters.artifactName }}
+      dockerFile: ${{ parameters.dockerFile }}
 
   - template: aks-deployment-steps.yml
     parameters:
@@ -90,3 +97,9 @@ steps:
       options: $(MAVEN_INTEGRATION_TEST_OPTIONS)
       publishJUnitResults: ${{ parameters.mavenPublishJUnitResults }}
 
+  - template: python-integration-test.yml
+    parameters:
+      stepName: PythonRunIntegrationTests
+      testPythonFilePath: ${{ parameters.testPythonFilePath }}
+      testPythonFile: ${{ parameters.testPythonFile }}
+      runPythonTest: ${{ parameters.runPythonTest }}
