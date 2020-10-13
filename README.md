@@ -92,12 +92,12 @@ The script creates some local files to be used.
 
 1. .envrc_{UNIQUE} -- This is a copy of the required environment variables for the common components.
 2. .envrc -- This file is used directory by direnv and requires `direnv allow` to be run to access variables.
-3. .ssh/azure-aks-gitops-ssh-key -- SSH key used by flux.
-4. .ssh/azure-aks-gitops-key.pub -- SSH Public Key used by flux.
-5. .ssh/azure-aks-gitops-key.passphrase -- SSH Key Passphrase used by flux.
-6. .ssh/azure-aks-node-ssh-key -- SSH Key used by AKS
-7. .ssh/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
-8. .ssh/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
+3. ~/.ssh/osdu_${UNIQUE}/azure-aks-gitops-ssh-key -- SSH key used by flux.
+4. ~/.ssh/osdu_${UNIQUE}/azure-aks-gitops-key.pub -- SSH Public Key used by flux.
+5. ~/.ssh/osdu_${UNIQUE}/azure-aks-gitops-key.passphrase -- SSH Key Passphrase used by flux.
+6. ~/.ssh/osdu_${UNIQUE}/azure-aks-node-ssh-key -- SSH Key used by AKS
+7. ~/.ssh/osdu_${UNIQUE}/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
+8. ~/.ssh/osdu_${UNIQUE}/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
 
 
 __Installed Common Resources__
