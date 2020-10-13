@@ -337,8 +337,8 @@ __Execute the pipelines in `osdu-infrastructure`__
 > This should be executed to completion in order
 
 1. `azure-pipeline-central.yml`
-2. `azure-pipeline-data.yml`
-3. `azure-pipeline-service.yml`
+
+  > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
 
 ```bash
 # Create and Deploy the Central Resources
@@ -351,9 +351,45 @@ az pipelines create \
   --organization https://dev.azure.com/${ADO_ORGANIZATION}  \
   --project $ADO_PROJECT  \
   -ojson
-
-
 ```
+
+
+2. `azure-pipeline-data.yml`
+
+  > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
+
+```bash
+# Create and Deploy the Central Resources
+az pipelines create \
+  --name 'infrastructure-data-partition'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-data-partition.yml  \
+  --organization https://dev.azure.com/${ADO_ORGANIZATION}  \
+  --project $ADO_PROJECT  \
+  -ojson
+```
+
+
+3. `azure-pipeline-service.yml`
+
+  > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
+
+```bash
+# Create and Deploy the Central Resources
+az pipelines create \
+  --name 'infrastructure-service-resources'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-service-resources.yml  \
+  --organization https://dev.azure.com/${ADO_ORGANIZATION}  \
+  --project $ADO_PROJECT  \
+  -ojson
+```
+
+
 
 ## Deploy OSDU Services
 
