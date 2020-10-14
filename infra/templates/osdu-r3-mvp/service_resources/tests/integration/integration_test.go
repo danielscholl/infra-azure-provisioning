@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	appGatewayIntegTests "github.com/microsoft/cobalt/infra/modules/providers/azure/aks-appgw/tests/integration"
+	appGatewayIntegTests "github.com/microsoft/cobalt/infra/modules/providers/azure/appgw/tests/integration"
 	redisIntegTests "github.com/microsoft/cobalt/infra/modules/providers/azure/redis-cache/tests/integration"
 	storageIntegTests "github.com/microsoft/cobalt/infra/modules/providers/azure/storage-account/tests/integration"
 	"github.com/microsoft/cobalt/test-harness/infratests"

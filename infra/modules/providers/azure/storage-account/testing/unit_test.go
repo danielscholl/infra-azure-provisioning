@@ -29,7 +29,7 @@ func TestTemplate(t *testing.T) {
 
 	expectedResult := asMap(t, `{
 		"account_kind" : "StorageV2",
-		"account_replication_type": "LRS",
+		"account_replication_type": "GZRS",
 		"account_tier": "Standard"
 	}`)
 

@@ -20,18 +20,26 @@ func All() {
 	mg.Deps(PartitionTests)
 }
 
+// Execute Module Tests and fail if a test fails. Only executes tests in 'test' directories.
+func ModuleTests() error {
+	mg.Deps(Clean)
+	mg.Deps(Check)
+	fmt.Println("INFO: Running unit tests...")
+	return FindAndRunTests("testing")
+}
+
 // Execute Unit Tests for OSDU MVP Central Resources.
 func CentralUnitTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running unit tests...")
-	return FindAndRunTests("central_resources/tests/unit")
+	return FindAndRunTests("templates/osdu-r3-mvp/central_resources/tests/unit")
 }
 
 // Execute Integration Tests for OSDU MVP Central Resources.
 func CentralIntegrationTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running integration tests...")
-	return FindAndRunTests("central_resources/tests/integration")
+	return FindAndRunTests("templates/osdu-r3-mvp/central_resources/tests/integration")
 }
 
 // Execute Tests for OSDU MVP Central Resources.
@@ -44,14 +52,14 @@ func CentralTests() {
 func ServiceUnitTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running unit tests...")
-	return FindAndRunTests("service_resources/tests/unit")
+	return FindAndRunTests("templates/osdu-r3-mvp/service_resources/tests/unit")
 }
 
 // Execute Integration Tests for OSDU MVP Service Resources.
 func ServiceIntegrationTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running integration tests...")
-	return FindAndRunTests("service_resources/tests/integration")
+	return FindAndRunTests("templates/osdu-r3-mvp/service_resources/tests/integration")
 }
 
 // Execute Tests for OSDU MVP Service Resources.
@@ -64,14 +72,14 @@ func ServiceTests() {
 func PartitionUnitTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running unit tests...")
-	return FindAndRunTests("data_partition/tests/unit")
+	return FindAndRunTests("templates/osdu-r3-mvp/data_partition/tests/unit")
 }
 
 // Execute Integration Tests for OSDU MVP Partition Resources.
 func PartitionIntegrationTest() error {
 	mg.Deps(Check)
 	fmt.Println("INFO: Running integration tests...")
-	return FindAndRunTests("data_partition/tests/integration")
+	return FindAndRunTests("templates/osdu-r3-mvp/data_partition/tests/integration")
 }
 
 // Execute Tests for OSDU MVP Partition Resources.
@@ -101,7 +109,7 @@ func LintTF() error {
 // Remove temporary build and test files.
 func Clean() error {
 	fmt.Println("INFO: Cleaning...")
-	return filepath.Walk("./infra/modules", func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk("./modules", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

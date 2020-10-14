@@ -30,7 +30,7 @@ module "container-registry" {
   container_registry_name          = "osdu-module-container-registry-${module.resource_group.random}"
   container_registry_admin_enabled = true
   container_registry_sku           = "Standard"
-  container_registry_tags = {
+  resource_tags = {
     osdu = "module"
   }
   subnet_id_whitelist = [

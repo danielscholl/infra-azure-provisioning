@@ -26,7 +26,7 @@ import (
 )
 
 var workspace = "osdu-services-" + strings.ToLower(random.UniqueId())
-var count = 14
+var count = 6
 
 var tfOptions = &terraform.Options{
 	TerraformDir: "./",
@@ -52,41 +52,17 @@ func TestTemplate(t *testing.T) {
 		},
 	}
 
-	expectedNamespaceAuth := map[string]interface{}{
-		"name":   "policy",
-		"listen": true,
-		"send":   true,
-		"manage": false,
-	}
-
 	expectedSubscription := map[string]interface{}{
-		"name":                                 "sub_test",
-		"max_delivery_count":                   1.0,
-		"lock_duration":                        "PT5M",
-		"forward_to":                           "",
-		"dead_lettering_on_message_expiration": true,
+		"name":               "sub_test",
+		"max_delivery_count": 1.0,
+		"lock_duration":      "PT5M",
+		"dead_lettering_on_filter_evaluation_error": true,
 	}
 
 	expectedTopic := map[string]interface{}{
-		"name":                         "topic_test",
-		"default_message_ttl":          "PT30M",
-		"enable_partitioning":          true,
-		"support_ordering":             true,
-		"requires_duplicate_detection": true,
-	}
-
-	expectedTopicAuth := map[string]interface{}{
-		"name":   "policy",
-		"listen": true,
-		"send":   true,
-		"manage": false,
-	}
-
-	expectedSubRules := map[string]interface{}{
-		"name":        "sub_test",
-		"filter_type": "SqlFilter",
-		"sql_filter":  "color = 'red'",
-		"action":      "",
+		"name":                "topic_test",
+		"enable_partitioning": true,
+		"status":              "Active",
 	}
 
 	testFixture := infratests.UnitTestFixture{
@@ -96,12 +72,9 @@ func TestTemplate(t *testing.T) {
 		PlanAssertions:        nil,
 		ExpectedResourceCount: count,
 		ExpectedResourceAttributeValues: infratests.ResourceDescription{
-			"module.service-bus.azurerm_servicebus_namespace.servicebus":                            expectedSBNamespace,
-			"module.service-bus.azurerm_servicebus_namespace_authorization_rule.sbnamespaceauth[0]": expectedNamespaceAuth,
-			"module.service-bus.azurerm_servicebus_topic.sptopic[0]":                                expectedTopic,
-			"module.service-bus.azurerm_servicebus_subscription.subscription[0]":                    expectedSubscription,
-			"module.service-bus.azurerm_servicebus_topic_authorization_rule.topicaauth[0]":          expectedTopicAuth,
-			"module.service-bus.azurerm_servicebus_subscription_rule.subrules[0]":                   expectedSubRules,
+			"module.service_bus.azurerm_servicebus_namespace.main":       expectedSBNamespace,
+			"module.service_bus.azurerm_servicebus_topic.main[0]":        expectedTopic,
+			"module.service_bus.azurerm_servicebus_subscription.main[0]": expectedSubscription,
 		},
 	}
 	infratests.RunUnitTests(&testFixture)
