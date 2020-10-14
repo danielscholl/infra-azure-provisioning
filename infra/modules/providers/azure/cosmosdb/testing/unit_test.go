@@ -11,7 +11,7 @@ import (
 
 var name = "cosmosdb-"
 var location = "eastus"
-var count = 10
+var count = 7
 
 var tfOptions = &terraform.Options{
 	TerraformDir: "./",
@@ -30,7 +30,7 @@ func TestTemplate(t *testing.T) {
 
 	expectedAccountResult := asMap(t, `{
     "kind": "GlobalDocumentDB",
-    "enable_automatic_failover": false,
+    "enable_automatic_failover": true,
     "enable_multiple_write_locations": false,
     "is_virtual_network_filter_enabled": false,
 		"offer_type": "Standard",
@@ -40,12 +40,14 @@ func TestTemplate(t *testing.T) {
 	}`)
 
 	expectedDatabaseResult := asMap(t, `{
-		"name": "osdu-module-database1",
-		"throughput": 400
+		"name": "osdu-module-database",
+		"autoscale_settings": [{
+      "max_throughput": 4000
+    }]
 	}`)
 
 	expectedContainerResult := asMap(t, `{
-    "database_name": "osdu-module-database1",
+    "database_name": "osdu-module-database",
     "name": "osdu-module-container1",
     "partition_key_path": "/id"
 	}`)
@@ -57,9 +59,9 @@ func TestTemplate(t *testing.T) {
 		PlanAssertions:        nil,
 		ExpectedResourceCount: count,
 		ExpectedResourceAttributeValues: infratests.ResourceDescription{
-			"module.cosmosdb.azurerm_cosmosdb_account.cosmosdb":                    expectedAccountResult,
-			"module.cosmosdb.azurerm_cosmosdb_sql_database.cosmos_dbs[0]":          expectedDatabaseResult,
-			"module.cosmosdb.azurerm_cosmosdb_sql_container.cosmos_collections[0]": expectedContainerResult,
+			"module.cosmosdb_autoscale.azurerm_cosmosdb_account.cosmosdb":                    expectedAccountResult,
+			"module.cosmosdb_autoscale.azurerm_cosmosdb_sql_database.cosmos_dbs[0]":          expectedDatabaseResult,
+			"module.cosmosdb_autoscale.azurerm_cosmosdb_sql_container.cosmos_collections[0]": expectedContainerResult,
 		},
 	}
 
