@@ -219,7 +219,7 @@ function CreateADApplication() {
         tput setaf 3;  echo "AD Application $1 already exists."; tput sgr0
     fi
 }
-function CreateSSHKeys() {
+function CreateSSHKeysPassphrase() {
   # Required Argument $1 = SSH_USER
   # Required Argument $2 = KEY_NAME
 
@@ -247,16 +247,58 @@ function CreateSSHKeys() {
     tput setaf 3;  echo "SSH Keys already exist."; tput sgr0
     PASSPHRASE=`cat ~/.ssh/osdu_${UNIQUE}/${2}.passphrase`
   else
+    BASE_DIR=$(pwd)
     cd ~/.ssh/osdu_${UNIQUE}
 
     PASSPHRASE=$(echo $((RANDOM%20000000000000000000+100000000000000000000)))
     echo "$PASSPHRASE" >> "$2.passphrase"
-    ssh-keygen -t rsa -b 2048 -C $1 -f $2 -N $PASSPHRASE && cd ..
+    ssh-keygen -t rsa -b 2048 -C $1 -f $2 -N $PASSPHRASE
+    cd $BASE_DIR
   fi
 
   AddKeyToVault $AZURE_VAULT "${2}" "~/.ssh/osdu_${UNIQUE}/${2}" "file"
   AddKeyToVault $AZURE_VAULT "${2}-pub" "~/.ssh/osdu_${UNIQUE}/${2}.pub" "file"
   AddKeyToVault $AZURE_VAULT "${2}-passphrase" $PASSPHRASE
+
+ _result=`cat ~/.ssh/osdu_${UNIQUE}/${2}.pub`
+ echo $_result
+}
+function CreateSSHKeys() {
+  # Required Argument $1 = SSH_USER
+  # Required Argument $2 = KEY_NAME
+
+  if [ -z $1 ]; then
+    tput setaf 1; echo 'ERROR: Argument $1 (SSH_USER) not received'; tput sgr0
+    exit 1;
+  fi
+
+  if [ -z $2 ]; then
+    tput setaf 1; echo 'ERROR: Argument $2 (KEY_NAME) not received'; tput sgr0
+    exit 1;
+  fi
+
+  if [ ! -d ~/.ssh ]
+  then
+    mkdir ~/.ssh
+  fi
+
+  if [ ! -d ~/.ssh/osdu_${UNIQUE} ]
+  then
+    mkdir  ~/.ssh/osdu_${UNIQUE}
+  fi
+
+  if [ -f ~/.ssh/osdu_${UNIQUE}/$2.pub ]; then
+    tput setaf 3;  echo "SSH Keys already exist."; tput sgr0
+  else
+    BASE_DIR=$(pwd)
+    cd ~/.ssh/osdu_${UNIQUE}
+
+    ssh-keygen -t rsa -b 2048 -C $1 -f $2 -N ""
+    cd $BASE_DIR
+  fi
+
+  AddKeyToVault $AZURE_VAULT "${2}" "~/.ssh/osdu_${UNIQUE}/${2}" "file"
+  AddKeyToVault $AZURE_VAULT "${2}-pub" "~/.ssh/osdu_${UNIQUE}/${2}.pub" "file"
 
  _result=`cat ~/.ssh/osdu_${UNIQUE}/${2}.pub`
  echo $_result
@@ -480,11 +522,8 @@ CreateADApplication "osdu-mvp-${UNIQUE}-application" $AZURE_VAULT
 CreateADApplication "osdu-mvp-${UNIQUE}-noaccess" $AZURE_VAULT
 
 tput setaf 2; echo 'Creating SSH Keys...' ; tput sgr0
-GITOPS_KEY="azure-aks-gitops-ssh-key"
-CreateSSHKeys $AZURE_AKS_USER $GITOPS_KEY
-AddKeyToVault $AZURE_VAULT "azure-aks-gitops-ssh-key" "~/.ssh/osdu_${UNIQUE}/${GITOPS_KEY}" "file"
-
-CreateSSHKeys $AZURE_AKS_USER "azure-aks-node-ssh-key"
+CreateSSHKeys $AZURE_AKS_USER "azure-aks-gitops-ssh-key"
+CreateSSHKeysPassphrase $AZURE_AKS_USER "azure-aks-node-ssh-key"
 
 tput setaf 2; echo "# OSDU ENVIRONMENT ${UNIQUE}" ; tput sgr0
 tput setaf 3; echo "------------------------------------" ; tput sgr0
