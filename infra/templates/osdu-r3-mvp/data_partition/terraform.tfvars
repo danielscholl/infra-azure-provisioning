@@ -21,6 +21,8 @@
 
 prefix = "osdu-mvp"
 
+data_partition_name = "opendes"
+
 resource_tags = {
   contact = "pipeline"
 }
