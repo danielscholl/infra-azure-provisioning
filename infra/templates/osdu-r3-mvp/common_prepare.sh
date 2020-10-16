@@ -54,9 +54,9 @@ if [ -z $AZURE_AKS_USER ]; then
   AZURE_AKS_USER="osdu.${UNIQUE}"
 fi
 
-
 if [ -z $GIT_REPO ]; then
-  GIT_REPO="git@ssh.dev.azure.com:v3/<your_org>/<your_project>/k8-gitops-manifests"
+  tput setaf 1; echo 'ERROR: GIT_REPO not provided' ; tput sgr0
+  usage;
 fi
 
 
