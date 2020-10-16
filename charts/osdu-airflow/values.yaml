@@ -32,12 +32,12 @@ airflow:
       valueFrom:
         secretKeyRef:
           name: airflow
-          key: airflow-fernet-key
+          key: fernet-key
     - name: AIRFLOW_CONN_AZ_LOG
       valueFrom:
         secretKeyRef:
           name: airflow
-          key: airflow-remote-log-connection
+          key: remote-log-connection
     extraConfigmapMounts:
         - name: remote-log-config
           mountPath: /opt/airflow/config
