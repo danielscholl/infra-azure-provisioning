@@ -30,9 +30,8 @@ grant_type=client_credentials
 ###
 @access_token = {{login.response.body.access_token}}
 
-@ENDPOINT_LOCAL=http://localhost:8080
-@ENDPOINT_R3 = https://osdu-{{OSDU_BASE}}.msft-osdu-test.org
-@PARTITION_HOST = {{ENDPOINT_R3}}/api/partition/v1
+@ENDPOINT = https://{{OSDU_HOST}}
+@PARTITION_HOST = {{ENDPOINT}}/api/partition/v1
 
 @data_partition_id = opendes
 

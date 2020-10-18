@@ -173,13 +173,11 @@ cat > index.html << EOF
 EOF
 ```
 
-docker run -p 8080:80 --name osduauth -d osdu-auth
-docker rm -f osdauth
 
 __Create a docker container__
 
+Bring up osdu auth and access the login page via http://localhost:8080
+
 ```
-docker build -t osdu-login .
-docker run -p 80:80 --name osduauth -d osdu-login
-docker rm -f osdauth
+docker-compose up
 ```
