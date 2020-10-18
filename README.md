@@ -19,20 +19,59 @@ Azure environment cost ballpark [estimate](https://tinyurl.com/y4e9s7rf). This i
 1. Azure Subscription
 1. Terraform and Go are locally installed.
 1. Requires the use of [direnv](https://direnv.net/).
-1. Install the required common tools (kubectl, helm, and terraform).  Currently uses [Terraform 0.12.29](https://releases.hashicorp.com/terraform/0.12.29/) and [GO 1.12.14](https://golang.org/dl/).
-
+1. Install the required common tools (kubectl, helm, and terraform).  
 
 
 ### Install the required tooling
 
 This document assumes one is running a current version of Ubuntu. Windows users can install the Ubuntu Terminal from the Microsoft Store. The Ubuntu Terminal enables Linux command-line utilities, including bash, ssh, and git that will be useful for the following deployment. _Note: You will need the Windows Subsystem for Linux installed to use the Ubuntu Terminal on Windows_.
 
+
+Currently the versions in use are [Terraform 0.12.29](https://releases.hashicorp.com/terraform/0.12.29/) and [GO 1.12.14](https://golang.org/dl/).
+
 > Note: Terraform and Go are recommended to be installed using a [Terraform Version Manager](https://github.com/tfutils/tfenv) and a [Go Version Manager](https://github.com/stefanmaric/g)
 
 
 ### Install the Azure CLI
 
-For information specific to your operating system, see the [Azure CLI install guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). You can also use [this script](https://github.com/microsoft/bedrock/blob/master/tools/prereqs/setup_azure_cli.sh) if running on a Unix based machine.
+For information specific to your operating system, see the [Azure CLI install guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). You can also use the single command install if running on a Unix based machine.
+
+```bash
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Login to Azure CLI and ensure subscription is set to desired subscription
+az login
+az account set --subscription <your_subscription>
+```
+
+
+### Configure and Work with an Azure Devops Project
+
+Configure an Azure Devops Project in your Organization called `osdu-mvp` and set the cli command to use the organization by default.
+
+```bash
+export ADO_ORGANIZATION=<organization_name>
+export ADO_PROJECT=osdu-mvp
+
+# Ensure the CLI extension is added
+az extension add --name azure-devops
+
+# Setup a Project Space in your organization
+az devops project create --name $ADO_PROJECT --organization $ADO_ORGANIZATION
+
+# Configure the CLI Defaults to work with the organization and project
+az devops configure --defaults organization=https://dev.azure.com/$ADO_ORGANIZATION project=$ADO_PROJECT
+```
+
+## Clone the repository
+
+It is recommended to work with this repository in a WSL Ubuntu directory structure.
+
+```bash
+git clone git@community.opengroup.org:osdu/platform/deployment-and-operations/infra-azure-provisioning.git
+
+cd infra-azure-provisioning
+```
 
 
 ## Create a Flux Manifest Repository
@@ -42,8 +81,6 @@ For information specific to your operating system, see the [Azure CLI install gu
 Flux requires that the git repository have at least one commit. Initialize the repo with an empty commit.
 
 ```bash
-export ADO_ORGANIZATION=<organization_name>   # ie: osdu-demo
-export ADO_PROJECT=<project_name>             # ie: osdu-mvp
 export ADO_REPO=k8-gitops-manifests
 
 # Initialize a Git Repository
@@ -53,7 +90,7 @@ export ADO_REPO=k8-gitops-manifests
   && git commit --allow-empty -m "Initializing the Flux Manifest Repository")
 
 # Create an ADO Repo
-az repos create --name $ADO_REPO --organization https://dev.azure.com/${ADO_ORGANIZATION} --project $ADO_PROJECT -ojson
+az repos create --name $ADO_REPO
 export GIT_REPO=git@ssh.dev.azure.com:v3/${ADO_ORGANIZATION}/${ADO_PROJECT}/k8-gitops-manifests
 
 # Push the Git Repository
@@ -71,22 +108,12 @@ The script `common_prepare.sh` script is a _helper_ script designed to help setu
 - Ensure you have the access to run az ad commands.
 
 ```bash
-# Login to Azure CLI and ensure subscription is set to desired subscription
-az login
-az account set --subscription <your_subscription>
-
 # Execute Script
-UNIQUE=demo
-./infra/templates/osdu-r3-mvp/common_prepare.sh $(az account show --query id -otsv) $UNIQUE
+export UNIQUE=demo
+
+./infra/common_prepare.sh $(az account show --query id -otsv) $UNIQUE
 ```
 
-This results in 2 service principals being created that need an AD Admin to `grant admin consent` on.
-
-1. osdu-mvp-{UNIQUE}-terraform
-2. osdu-mvp-{UNIQUE}-principal
-
-
-> Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, the resource group and purging the KV.
 
 __Local Script Output Resources__
 
@@ -101,8 +128,9 @@ The script creates some local files to be used.
 7. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
 8. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
 
+> Ensure environment variables are loaded `direnv allow`
 
-__Installed Common Resources__
+__Installed Azure Resources__
 
 1. Resource Group
 2. Storage Account
@@ -112,29 +140,39 @@ __Installed Common Resources__
 6. An application to be used for the OSDU environment. _(future)_
 7. An application to be used for negative integration testing.
 
->Note: 2 Users are required to be created manually in AD for integration testing purposes manually and values stored in this Common Key Vault.
+> Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group then purging the KV.
+
+
+__Azure AD Admin Consent__
+
+2 service principals have been created that need to have an AD Admin `grant admin consent` on.
+
+1. osdu-mvp-{UNIQUE}-terraform  _(Azure AD Application Graph - Application.ReadWrite.OwnedBy)_
+2. osdu-mvp-{UNIQUE}-principal _(Microsoft Graph - Directory.Read.All)_
 
 
 
 ## Elastic Search Setup
 
-Infrastructure assumes bring your own Elastic Search Instance at a version of 6.8.x and access information must be stored in the Common KeyVault.
+Infrastructure requires a bring your own Elastic Search Instance of a version of 6.8.x with a valid https endpoint and the access information must now be stored in the Common KeyVault. The recommended method of Elastic Search is to use the [Elastic Cloud Managed Service from the Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/elastic.ec-azure?tab=Overview).
+
+> Note: Elastic Cloud Managed Service requires a Credit Card to be associated to the subscription for billing purposes.
 
 ```bash
-ENDPOINT=""
-USERNAME=""
-PASSWORD=""
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-endpoint-dp1-demo" --value $ENDPOINT
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-username-dp1-demo" --value $USERNAME
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-password-dp1-demo" --value $PASSWORD
+ES_ENDPOINT=""
+ES_USERNAME=""
+ES_PASSWORD=""
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-endpoint-dp1-demo" --value $ES_ENDPOINT
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-username-dp1-demo" --value $ES_USERNAME
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-password-dp1-demo" --value $ES_PASSWORD
 
 cat >> .envrc << EOF
 
 # https://cloud.elastic.co
 # ------------------------------------------------------------------------------------------------------
-export TF_VAR_elasticsearch_endpoint="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-endpoint-dp1-demo --query value -otsv)"
-export TF_VAR_elasticsearch_username="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-username-dp1-demo --query value -otsv)"
-export TF_VAR_elasticsearch_password="$(az keyvault secret show --vault-name $COMMON_VAULT --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-password-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_endpoint="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-endpoint-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_username="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-username-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_password="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-password-dp1-demo --query value -otsv)"
 
 EOF
 
@@ -149,7 +187,6 @@ The public key of the `azure-aks-gitops-ssh-key` previously created needs to be 
 ```bash
 # Retrieve the public key
 az keyvault secret show \
-  --vault-name $COMMON_VAULT \
   --id https://$COMMON_VAULT.vault.azure.net/secrets/azure-aks-gitops-ssh-key-pub \
   --query value \
   -otsv
@@ -162,9 +199,10 @@ az keyvault secret show \
 
 1. Configure the Pipelines following directions [here](./docs/pipeline-setup.md).
 
-2. Deploy the application helm charts following the directions [here]().
+2. Manually configure your DNS_HOST to the IP Address of the environment IP Address.
 
-3. Load the data
+3. Deploy the application helm charts following the directions [here]().
+
 
 
 ## Manual Installation
@@ -173,9 +211,10 @@ az keyvault secret show \
 
 1. Install the Infrastructure following directions [here](./infra/templates/osdu-r3-mvp/README.md).
 
-2. Deploy the application helm charts following the directions [here](./charts/README.md).
+2. Manually configure your DNS_HOST to the IP Address of the environment IP Address.
 
-3. Load the data
+3. Deploy the application helm charts following the directions [here](./charts/README.md).
+
 
 
 ## Developer Activities

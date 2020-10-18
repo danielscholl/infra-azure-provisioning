@@ -23,5 +23,5 @@ tput setaf 2; echo 'Key Vault Dump...' ; tput sgr0
 tput setaf 3; echo "------------------------------------" ; tput sgr0
 for i in `az keyvault secret list --vault-name $COMMON_VAULT --query [].id -otsv`
 do
-   echo "${i##*/}=\"$(az keyvault secret show --vault-name $COMMON_VAULT --id $i --query value -otsv)\""
+   echo "${i##*/}=\"$(az keyvault secret show --id $i --query value -otsv)\""
 done
