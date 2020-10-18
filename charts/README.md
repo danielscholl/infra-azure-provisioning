@@ -29,6 +29,8 @@ Create the helm chart values file necessary to install charts.
 
 - Edit the newly downloaded [config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/raw/master/charts/helm-config.yaml) and fill out the required sections `azure`, `ingress` and `istio`.
 
+
+
 ```bash
 # Setup Variables
 ISTIO_DASH="<your_dash_login>"      # ie: admin
@@ -99,16 +101,31 @@ git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC
 ```
 
 
+__Kubernetes API Access__
+
+> Optional
+
+It can often be helpful to be able to retrieve the cluster context and execute queries directly against the Kubernetes API. 
+
+```bash
+BASE_NAME=$(az group list --query "[?contains(name, '${UNIQUE}sr')].name" -otsv |grep -v MC | rev | cut -c 3- | rev)
+
+az aks get-credentials -n ${BASE_NAME}aks -g ${BASE_NAME}rg
+```
+
+
 __Helm Manifests__
 
 Manually extract the manifests from the helm charts to your Flux Repo Directory.
 
 ```bash
-SRC_DIR="<ROOT_PATH_TO_SOURCE>"                 #  $HOME/source/osdu/osdu-gitlab
 INFRA_SRC="$SRC_DIR/infra-azure-provisioning"
 FLUX_SRC="$INFRA_SRC/k8-gitops-manifests"
 BRANCH="master"
 TAG="latest"
+
+# Setup the Flux Directory
+mkdir -p ${FLUX_SRC}/providers/azure/hld-registry
 
 # Extract manifests from the common osdu chart.
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-common -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-common.yaml
@@ -121,46 +138,24 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-common -f ${INFRA_SRC}/charts/c
   && git push origin $UNIQUE)
 
 
-# Extract manifests from the istio osdu chart.
+# Extract manifests from the istio charts.
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio.yaml
 
-# Commit and Checkin to Deploy
-(cd $FLUX_SRC \
-  && git switch $UNIQUE \
-  && git add ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio.yaml \
-  && git commit -m "Initialize Istio Chart" \
-  && git push origin $UNIQUE)
-
-
-# Extract manifests from the istio osdu chart.
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio-auth.yaml
 
 # Commit and Checkin to Deploy
 (cd $FLUX_SRC \
   && git switch $UNIQUE \
+  && git add ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio.yaml \
   && git add ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio-auth.yaml \
   && git commit -m "Initialize Istio Auth Chart" \
   && git push origin $UNIQUE)
 
 
 # Extract manifests from each service chart.
-for SERVICE in partition;
+for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;
 do
   helm template $SERVICE ${SRC_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
-done
-
-# Commit and Checkin to Deploy
-(cd $FLUX_SRC \
-  && git switch $UNIQUE \
-  && git add ${FLUX_SRC}/providers/azure/hld-registry/partition.yaml \
-  && git commit -m "Adding Partition Service" \
-  && git push origin $UNIQUE)
-
-
-# Extract manifests from each service chart.
-for SERVICE in entitlements-azure legal storage indexer-queue indexer-service search-service delivery;
-do
-  helm template $SERVICE ${SERVICES_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
 done
 
 # Commit and Checkin to Deploy

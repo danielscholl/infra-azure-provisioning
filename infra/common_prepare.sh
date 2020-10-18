@@ -135,7 +135,7 @@ function CreateTfPrincipal() {
       az keyvault set-policy --name $AZURE_VAULT \
         --object-id $(az ad sp list --display-name $1 --query [].objectId -otsv) \
         --secret-permissions list get \
-        -ojson
+        -ojson 2>/dev/null
 
 
     else
@@ -259,9 +259,6 @@ function CreateSSHKeysPassphrase() {
   AddKeyToVault $AZURE_VAULT "${2}" "~/.ssh/osdu_${UNIQUE}/${2}" "file"
   AddKeyToVault $AZURE_VAULT "${2}-pub" "~/.ssh/osdu_${UNIQUE}/${2}.pub" "file"
   AddKeyToVault $AZURE_VAULT "${2}-passphrase" $PASSPHRASE
-
- _result=`cat ~/.ssh/osdu_${UNIQUE}/${2}.pub`
- echo $_result
 }
 function CreateSSHKeys() {
   # Required Argument $1 = SSH_USER
@@ -299,9 +296,6 @@ function CreateSSHKeys() {
 
   AddKeyToVault $AZURE_VAULT "${2}" "~/.ssh/osdu_${UNIQUE}/${2}" "file"
   AddKeyToVault $AZURE_VAULT "${2}-pub" "~/.ssh/osdu_${UNIQUE}/${2}.pub" "file"
-
- _result=`cat ~/.ssh/osdu_${UNIQUE}/${2}.pub`
- echo $_result
 }
 
 function CreateKeyVault() {
@@ -322,7 +316,7 @@ function CreateKeyVault() {
     exit 1;
   fi
 
-  local _vault=$(az keyvault list --resource-group $2 --query [].name -otsv)
+  local _vault=$(az keyvault list --resource-group $2 --query [].name -otsv 2>/dev/null)
   if [ "$_vault"  == "" ]
     then
       OUTPUT=$(az keyvault create --name $1 --resource-group $2 --location $3 --query [].name -otsv)
@@ -537,11 +531,11 @@ export UNIQUE=${UNIQUE}
 export COMMON_VAULT="${AZURE_VAULT}"
 export ARM_TENANT_ID="$(az account show -ojson --query tenantId -otsv)"
 export ARM_SUBSCRIPTION_ID="${ARM_SUBSCRIPTION_ID}"
-export ARM_CLIENT_ID="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-id --query value -otsv)"
-export ARM_CLIENT_SECRET="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-key --query value -otsv)"
-export ARM_ACCESS_KEY="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage-key --query value -otsv)"
+export ARM_CLIENT_ID="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-id --query value -otsv)"
+export ARM_CLIENT_SECRET="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-terraform-key --query value -otsv)"
+export ARM_ACCESS_KEY="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage-key --query value -otsv)"
 
-export TF_VAR_remote_state_account="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage --query value -otsv)"
+export TF_VAR_remote_state_account="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osducommon${RANDOM_NUMBER}-storage --query value -otsv)"
 export TF_VAR_remote_state_container="remote-state-container"
 
 export TF_VAR_resource_group_location="${AZURE_LOCATION}"
@@ -549,13 +543,13 @@ export TF_VAR_cosmosdb_replica_location="${AZURE_PAIR_LOCATION}"
 
 export TF_VAR_central_resources_workspace_name="${UNIQUE}-cr"
 
-export TF_VAR_principal_appId="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-id --query value -otsv)"
+export TF_VAR_principal_appId="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-id --query value -otsv)"
 export TF_VAR_principal_name="osdu-mvp-${UNIQUE}-principal"
-export TF_VAR_principal_password="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-key --query value -otsv)"
-export TF_VAR_principal_objectId="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-oid --query value -otsv)"
+export TF_VAR_principal_password="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-key --query value -otsv)"
+export TF_VAR_principal_objectId="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-oid --query value -otsv)"
 
-export TF_VAR_application_clientid="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-clientid --query value -otsv)"
-export TF_VAR_application_secret="$(az keyvault secret show --vault-name $AZURE_VAULT --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-secret --query value -otsv)"
+export TF_VAR_application_clientid="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-clientid --query value -otsv)"
+export TF_VAR_application_secret="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-application-secret --query value -otsv)"
 
 export TF_VAR_ssh_public_key_file=~/.ssh/osdu_${UNIQUE}/azure-aks-node-ssh-key.pub
 export TF_VAR_gitops_ssh_key_file=~/.ssh/osdu_${UNIQUE}/azure-aks-gitops-ssh-key
