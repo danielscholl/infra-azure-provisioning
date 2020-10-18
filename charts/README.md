@@ -105,7 +105,7 @@ __Kubernetes API Access__
 
 > Optional
 
-It can often be helpful to be able to retrieve the cluster context and execute queries directly against the Kubernetes API. 
+It can often be helpful to be able to retrieve the cluster context and execute queries directly against the Kubernetes API.
 
 ```bash
 BASE_NAME=$(az group list --query "[?contains(name, '${UNIQUE}sr')].name" -otsv |grep -v MC | rev | cut -c 3- | rev)

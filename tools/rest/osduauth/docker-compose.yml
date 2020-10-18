@@ -1,0 +1,10 @@
+version: '3.2'
+
+services:
+  device:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: osdu-auth
+    ports:
+      - "8080:80"
