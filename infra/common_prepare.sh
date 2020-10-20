@@ -211,9 +211,14 @@ function CreateADApplication() {
         --display-name $1 \
         --query [].appId -otsv)
 
+      APP_OID=$(az ad app list \
+        --display-name $1 \
+        --query [].objectId -otsv)
+
       tput setaf 2; echo "Adding AD Application to Vault..." ; tput sgr0
       AddKeyToVault $2 "${1}-clientid" $APP_ID
       AddKeyToVault $2 "${1}-secret" $APP_SECRET
+      AddKeyToVault $2 "${1}-oid" $APP_OID
 
     else
         tput setaf 3;  echo "AD Application $1 already exists."; tput sgr0

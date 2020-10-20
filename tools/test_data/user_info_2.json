@@ -1,0 +1,20 @@
+{
+  "id": "$SERVICE_PRINCIPAL_NO_ACCESS_APP_ID",
+  "uid": "",
+  "tenants": [
+    {
+      "name": "common",
+      "groups": [
+        "service.storage.admin",
+        "service.legal.admin"
+      ]
+    },
+    {
+      "name": "opendes",
+      "groups": [
+        "service.storage.admin",
+        "service.legal.admin"
+      ]
+    }
+  ]
+}
