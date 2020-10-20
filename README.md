@@ -19,7 +19,7 @@ Azure environment cost ballpark [estimate](https://tinyurl.com/y4e9s7rf). This i
 1. Azure Subscription
 1. Terraform and Go are locally installed.
 1. Requires the use of [direnv](https://direnv.net/).
-1. Install the required common tools (kubectl, helm, and terraform).  
+1. Install the required common tools (kubectl, helm, and terraform).
 
 
 ### Install the required tooling
@@ -114,6 +114,35 @@ export UNIQUE=demo
 ./infra/common_prepare.sh $(az account show --query id -otsv) $UNIQUE
 ```
 
+Integration Tests requires 2 Azure AD User Accounts, a tenant user and a guest user to be setup in order to use for integration testing.  This activity needs to be performed by someone who has access as an AD User Admin.
+
+- ad-guest-email (ie: integration.test@email.com)
+- ad-guest-oid (OID of the user)
+- ad-user-email (ie: integration.test@{tenant}.onmicrosoft.com
+- ad-user-oid (OID of the user)
+
+```bash
+USER_EMAIL=""
+USER_EMAIL_OID=""
+GUEST_EMAIL=""
+GUEST_EMAIL_OID=""
+
+az keyvault secret set --vault-name $COMMON_VAULT --name "ad-user-email" --value $USER_EMAIL
+az keyvault secret set --vault-name $COMMON_VAULT --name "ad-user-oid" --value $USER_EMAIL_OID
+az keyvault secret set --vault-name $COMMON_VAULT --name "ad-guest-email" --value $GUEST_EMAIL
+az keyvault secret set --vault-name $COMMON_VAULT --name "ad-guest-oid" --value $GUEST_EMAIL_OID
+```
+
+Istio Configuration setups a Dashboard that requires some admin credentials.  Automation Pipelines uses settings out of the common keyvault for applying the values of the Istio Dashboard default credentials.
+
+```bash
+ISTIO_USERNAME=""
+ISTIO_PASSWORD=""
+
+
+az keyvault secret set --vault-name $COMMON_VAULT --name "istio-username" --value $(echo $ISTIO_USERNAME |base64)
+az keyvault secret set --vault-name $COMMON_VAULT --name "istio-password" --value $(echo $ISTIO_PASSWORD |base64)
+```
 
 __Local Script Output Resources__
 
@@ -193,27 +222,43 @@ az keyvault secret show \
 ```
 
 
-## Automated Pipeline Installation
+## Install OSDU
 
-> This typically takes about 3 hours to complete.
+There are 2 methods that can be chosen to perform installation at this point in time.
 
-1. Configure the Pipelines following directions [here](./docs/pipeline-setup.md).
+1. Manual Installation -- Typically used when the desire is to manually make modifications to the environment and have full control all updates and deployments.
 
-2. Manually configure your DNS_HOST to the IP Address of the environment IP Address.
-
-3. Deploy the application helm charts following the directions [here]().
+2. Pipeline Installation -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
 
 
-
-## Manual Installation
+__Manual Installation__
 
 > This typically takes about 2 hours to complete.
 
-1. Install the Infrastructure following directions [here](./infra/templates/osdu-r3-mvp/README.md).
+1. Install the Infrastructure following directions [here](./infra/templates/osdu-r3-mvp).
 
-2. Manually configure your DNS_HOST to the IP Address of the environment IP Address.
+2. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
 
-3. Deploy the application helm charts following the directions [here](./charts/README.md).
+3. Upload the Integration Test Data following directions [here](./tools/test_data).
+
+3. Deploy the application helm charts following the directions [here](./charts).
+
+5. Setup Environment Variables for IDE Development and Integration Testing.
+
+
+__Automated Pipeline Installation__
+
+> This typically takes about 3 hours to complete.
+
+1. Setup Code Mirroring following directions [here](./docs/code-mirroring.md).
+
+2. Setup Infrastructure Automation following directions [here](./docs/infra-automation.md).
+
+2. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
+
+4. Upload the Integration Test Data following directions [here](./tools/test_data).
+
+5. Setup Service Automation following directions [here](./docs/service-automation.md).
 
 
 
