@@ -268,6 +268,12 @@ __Automated Pipeline Installation__
 
 5. Setup Service Automation following directions [here](./docs/service-automation.md).
 
+6. Register the Data Partition API using the API request located [here](../tools/rest/partition.http).
+
+7. Enable Integration Tests for the pipelines.
+
+
+
 
 
 ## Developer Activities

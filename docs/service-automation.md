@@ -111,7 +111,7 @@ az pipelines variable-group create \
   AZURE_LEGAL_SERVICEBUS='$('${DATA_PARTITION_NAME}'-sb-connection)' \
   AZURE_TENANT_ID='$(tenant-id)' \
   AZURE_TESTER_SERVICEPRINCIPAL_SECRET='$(app-dev-sp-password)' \
-  CONTAINER_REGISTRY_NAME='$(container_registry)' \
+  CONTAINER_REGISTRY_NAME='$(container-registry)' \
   DNS_HOST="$DNS_HOST" \
   DOMAIN="contoso.com" \
   ELASTIC_ENDPOINT='$('${DATA_PARTITION_NAME}'-elastic-endpoint)' \
@@ -363,7 +363,6 @@ az pipelines create \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
-
 
 2. Add a Pipeline for __service-entitlements-azure__  to deploy the Entitlements Service.
     > This pipeline may have to be run twice for integration tests to pass due to a preload data issue.
