@@ -9,6 +9,11 @@
 ###############################
 usage() { echo "Usage: common_prepare.sh <unique> <subscription_id>" 1>&2; exit 1; }
 
+if [ -z $GIT_REPO ]; then
+  tput setaf 1; echo 'ERROR: GIT_REPO not provided' ; tput sgr0
+  usage;
+fi
+
 if [ ! -z $1 ]; then ARM_SUBSCRIPTION_ID=$1; fi
 if [ -z $ARM_SUBSCRIPTION_ID ]; then
   tput setaf 1; echo 'ERROR: ARM_SUBSCRIPTION_ID not provided' ; tput sgr0
@@ -54,10 +59,7 @@ if [ -z $AZURE_AKS_USER ]; then
   AZURE_AKS_USER="osdu.${UNIQUE}"
 fi
 
-if [ -z $GIT_REPO ]; then
-  tput setaf 1; echo 'ERROR: GIT_REPO not provided' ; tput sgr0
-  usage;
-fi
+
 
 
 ###############################
@@ -132,11 +134,10 @@ function CreateTfPrincipal() {
       AddKeyToVault $2 "${1}-key" $PRINCIPAL_SECRET
 
       tput setaf 2; echo "Adding Access Policy..." ; tput sgr0
-      az keyvault set-policy --name $AZURE_VAULT \
+      ACCESS_POLICY=$(az keyvault set-policy --name $AZURE_VAULT \
         --object-id $(az ad sp list --display-name $1 --query [].objectId -otsv) \
         --secret-permissions list get \
-        -ojson 2>/dev/null
-
+        -ojson 2>/dev/null)
 
     else
         tput setaf 3;  echo "Service Principal $1 already exists."; tput sgr0
