@@ -91,7 +91,7 @@ az pipelines variable-group create \
   TF_VAR_data_partition_name="${PARTITION_NAME}" \
   TF_VAR_data_resources_workspace_name="dr-${ENVIRONMENT}" \
   TF_VAR_elasticsearch_version="${ELASTIC_VERSION}" \
-  TF_VAR_gitops_branch="master" \
+  TF_VAR_gitops_branch="${UNIQUE}" \
   TF_VAR_gitops_path="providers/azure/hld-registry" \
   TF_VAR_gitops_ssh_url="${GIT_REPO}" \
   TF_VAR_principal_appId="${TF_VAR_principal_appId}" \
