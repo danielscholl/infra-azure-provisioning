@@ -198,17 +198,18 @@ Infrastructure requires a bring your own Elastic Search Instance of a version of
 ES_ENDPOINT=""
 ES_USERNAME=""
 ES_PASSWORD=""
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-endpoint-dp1-demo" --value $ES_ENDPOINT
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-username-dp1-demo" --value $ES_USERNAME
-az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-password-dp1-demo" --value $ES_PASSWORD
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-endpoint-dp1-${UNIQUE}" --value $ES_ENDPOINT
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-username-dp1-${UNIQUE}" --value $ES_USERNAME
+az keyvault secret set --vault-name $COMMON_VAULT --name "elastic-password-dp1-${UNIQUE}" --value $ES_PASSWORD
+
 
 cat >> .envrc << EOF
 
 # https://cloud.elastic.co
 # ------------------------------------------------------------------------------------------------------
-export TF_VAR_elasticsearch_endpoint="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-endpoint-dp1-demo --query value -otsv)"
-export TF_VAR_elasticsearch_username="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-username-dp1-demo --query value -otsv)"
-export TF_VAR_elasticsearch_password="$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/elastic-password-dp1-demo --query value -otsv)"
+export TF_VAR_elasticsearch_endpoint="$ES_ENDPOINT"
+export TF_VAR_elasticsearch_username="$ES_USERNAME"
+export TF_VAR_elasticsearch_password="$ES_PASSWORD"
 
 EOF
 

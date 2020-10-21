@@ -49,6 +49,8 @@ storage_queues = [ "airflowlogqueue" ]
 
 __Provision__
 
+> Please run `helm repo update` prior to executing in case you have helm charts locally that need updates.
+
 Execute the following commands to set up your terraform workspace.
 
 ```bash
