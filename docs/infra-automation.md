@@ -137,7 +137,7 @@ az pipelines create \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-central-resources.yml  \
+  --yaml-path /devops/pipelines/infrastructure-central-resources.yml  \
   -ojson
 ```
 
@@ -153,7 +153,7 @@ az pipelines create \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-data-partition.yml  \
+  --yaml-path /devops/pipelines/infrastructure-data-partition.yml  \
   -ojson
 ```
 
@@ -169,6 +169,6 @@ az pipelines create \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /infra/templates/osdu-r3-mvp/pipeline-service-resources.yml  \
+  --yaml-path /devops/pipelines/infrastructure-service-resources.yml  \
   -ojson
 ```
