@@ -298,7 +298,7 @@ Create the pipelines and run things in this exact order.
 1. Add a Pipeline for __chart-osdu-common__ to deploy common components.
 
     _Repo:_ `infra-azure-provisioning`
-    _Path:_ `/charts/osdu-common/pipeline.yml`
+    _Path:_ `/devops/pipelines/chart-osdu-common.yml`
     _Validate:_ https://<your_dns_name> is alive.
 
 ```bash
@@ -307,27 +307,42 @@ az pipelines create \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /charts/osdu-common/pipeline.yml  \
+  --yaml-path /devops/pipelines/chart-osdu-common.yml  \
   -ojson
 ```
 
 2. Add a Pipeline for __chart-osdu-istio__  to deploy Istio components.
 
     _Repo:_ `infra-azure-provisioning`
-
-    _Path:_ `/charts/osdu-istio/pipeline.yml`
-
+    _Path:_ `/devops/pipelines/chart-osdu-istio.yml`
     _Validate:_ Pods are running in Istio Namespace.
+
+```bash
+az pipelines create \
+  --name 'chart-osdu-istio'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/pipelines/chart-osdu-istio.yml  \
+  -ojson
+```
 
 
 3. Add a Pipeline for __chart-osdu-istio-auth__  to deploy Istio Authorization Policies.
 
     _Repo:_ `infra-azure-provisioning`
-
-    _Path:_ `/charts/osdu-istio-auth/pipeline.yml`
-
+    _Path:_ `/devops/pipelines/chart-osdu-istio-auth.yml`
     _Validate:_ Authorization Policies exist in osdu namespace.
 
+```bash
+az pipelines create \
+  --name 'chart-osdu-istio-auth'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/pipelines/chart-osdu-istio-auth.yml  \
+  -ojson
+```
 
 __Create the Service Pipelines__
 
@@ -336,63 +351,115 @@ Create the pipelines and run things in this exact order.
 1. Add a Pipeline for __service-partition__  to deploy the Partition Service.
 
     _Repo:_ `partition`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/api/partition/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-partition'  \
+  --repository partition  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 
 2. Add a Pipeline for __service-entitlements-azure__  to deploy the Entitlements Service.
     > This pipeline may have to be run twice for integration tests to pass due to a preload data issue.
 
     _Repo:_ `entitlements-azure`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/entitlements/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-entitlements-azure'  \
+  --repository entitlements-azure  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 
 3. Add a Pipeline for __service-legal__  to deploy the Legal Service.
 
     _Repo:_ `legal`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/api/legal/v1/swagger-ui.html is alive.
 
+```bash
+az pipelines create \
+  --name 'service-legal'  \
+  --repository legal  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 4. Add a Pipeline for __service-storage__  to deploy the Storage Service.
 
     _Repo:_ `storage`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/api/storage/v2/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-storage'  \
+  --repository storage  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 
 5. Add a Pipeline for __service-indexer-queue__  to deploy the Indexer Queue Function.
 
     _Repo:_ `indexer-queue`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ ScaledObject exist in osdu namespace.
 
+```bash
+az pipelines create \
+  --name 'service-indexer-queue'  \
+  --repository indexer-queue  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 6. Add a Pipeline for __service-indexer__  to deploy the Indexer Service.
 
     _Repo:_ `indexer-service`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/api/indexer/v2/swagger-ui.html is alive.
 
+```bash
+az pipelines create \
+  --name 'service-indexer'  \
+  --repository indexer-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
 
 7. Add a Pipeline for __service-search__  to deploy the Search Service.
 
     _Repo:_ `search-service`
-
     _Path:_ `/devops/azure/pipeline.yml`
-
     _Validate:_ https://<your_dns_name>/api/search/v2/swagger-ui.html is alive.
 
+```bash
+az pipelines create \
+  --name 'service-search'  \
+  --repository search-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```

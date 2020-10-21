@@ -546,7 +546,7 @@ export TF_VAR_remote_state_container="remote-state-container"
 export TF_VAR_resource_group_location="${AZURE_LOCATION}"
 export TF_VAR_cosmosdb_replica_location="${AZURE_PAIR_LOCATION}"
 
-export TF_VAR_central_resources_workspace_name="${UNIQUE}-cr"
+export TF_VAR_central_resources_workspace_name="cr-${UNIQUE}"
 
 export TF_VAR_principal_appId="$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-principal-id --query value -otsv)"
 export TF_VAR_principal_name="osdu-mvp-${UNIQUE}-principal"

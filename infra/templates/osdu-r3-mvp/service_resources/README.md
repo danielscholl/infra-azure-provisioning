@@ -58,7 +58,7 @@ terraform init -backend-config "storage_account_name=${TF_VAR_remote_state_accou
 
 # This command configures terraform to use a workspace unique to you. This allows you to work
 # without stepping over your teammate's deployments
-TF_WORKSPACE="${UNIQUE}-sr"
+TF_WORKSPACE="sr-${UNIQUE}"
 terraform workspace new $TF_WORKSPACE || terraform workspace select $TF_WORKSPACE
 ```
 

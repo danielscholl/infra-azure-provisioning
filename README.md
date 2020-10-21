@@ -99,6 +99,13 @@ export GIT_REPO=git@ssh.dev.azure.com:v3/${ADO_ORGANIZATION}/${ADO_PROJECT}/k8-g
   && git push -u origin --all)
 ```
 
+In order for Automated Pipelines to be able to work with this repository the following Permissions must be set in the ADO Project for `All Repositories/Permissions` on the user `osdu-mvp Build Service`.
+
+- Create Branch `Allow`
+- Contribute `Allow`
+- Contribute to Pull requests `Allow`
+
+
 
 ## Provision the Common Resources
 
