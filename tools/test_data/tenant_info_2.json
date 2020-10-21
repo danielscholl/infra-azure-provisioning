@@ -18,6 +18,9 @@
     "service.entitlements.admin",
     "service.workflow.creator",
     "service.workflow.viewer",
-    "service.workflow.admin"
+    "service.workflow.admin",
+    "users.datalake.ops",
+    "cron.job",
+    "notification.pubsub"
   ]
 }
