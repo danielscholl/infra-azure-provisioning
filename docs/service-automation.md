@@ -296,14 +296,20 @@ __Create the Chart Pipelines__
 Create the pipelines and run things in this exact order.
 
 1. Add a Pipeline for __chart-osdu-common__ to deploy common components.
-    > Ensure DNS is configured for your Gateway IP to DNS_HOST prior.
 
     _Repo:_ `infra-azure-provisioning`
-
     _Path:_ `/charts/osdu-common/pipeline.yml`
-
     _Validate:_ https://<your_dns_name> is alive.
 
+```bash
+az pipelines create \
+  --name 'chart-osdu-common'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /charts/osdu-common/pipeline.yml  \
+  -ojson
+```
 
 2. Add a Pipeline for __chart-osdu-istio__  to deploy Istio components.
 
