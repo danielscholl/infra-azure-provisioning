@@ -170,8 +170,8 @@ resource "azurerm_role_assignment" "storage_access" {
 
 // Add Data Contributor Role to Principal
 resource "azurerm_role_assignment" "storage_data_contributor" {
-  count = length(local.rbac_principals)
-  depends_on          = [azurerm_role_assignment.storage_access]
+  count      = length(local.rbac_principals)
+  depends_on = [azurerm_role_assignment.storage_access]
 
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.rbac_principals[count.index]
@@ -201,8 +201,8 @@ resource "azurerm_role_assignment" "sdms_storage_access" {
 
 // Add Data Contributor Role to Principal
 resource "azurerm_role_assignment" "sdms_storage_data_contributor" {
-  count = length(local.rbac_principals)
-  depends_on          = [azurerm_role_assignment.sdms_storage_access]
+  count      = length(local.rbac_principals)
+  depends_on = [azurerm_role_assignment.sdms_storage_access]
 
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.rbac_principals[count.index]
