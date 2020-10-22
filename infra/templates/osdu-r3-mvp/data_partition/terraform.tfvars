@@ -124,6 +124,16 @@ cosmos_sql_collections = [
     name               = "WorkflowRun"
     database_name      = "osdu-db"
     partition_key_path = "/workflowId"
+  },
+  {
+    name               = "RelationshipStatus"
+    database_name      = "osdu-db"
+    partition_key_path = "/id"
+  },
+  {
+    name               = "MappingInfo"
+    database_name      = "osdu-db"
+    partition_key_path = "/sourceSchemaKind"
   }
 ]
 
