@@ -1,15 +1,5 @@
 # Helm Installation Instructions
 
-__DNS Record Setup__
-
-Manually update your DNS A Records to point to the Public IP Address for the environment.
-
-```bash
-# Get IP Address
-RESOURCE_GROUP=$(az group list --query "[?contains(name, '${UNIQUE}sr')].name" -otsv |grep -v MC)
-az network public-ip list --resource-group $RESOURCE_GROUP --query [].ipAddress -otsv
-```
-
 __CLI Login__
 
 Login to Azure CLI using the OSDU Environment Service Principal.
@@ -33,11 +23,10 @@ Create the helm chart values file necessary to install charts.
 
 ```bash
 # Setup Variables
-ISTIO_DASH="<your_dash_login>"      # ie: admin
 ADMIN_EMAIL="<your_cert_admin>"     # ie: admin@email.com
 DNS_HOST="<your_ingress_hostname>"  # ie: osdu.contoso.com
 
-GROUP=$(az group list --query "[?contains(name, '${UNIQUE}cr')].name" -otsv)
+GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 
 # Translate Values File
@@ -78,8 +67,8 @@ global:
   # based64 encoded username and password
   #
   istio:
-    username: $(echo $ISTIO_DASH | base64)
-    password: $(echo $ISTIO_DASH | base64)
+    username: $(az keyvault secret show --id https://${COMMON_VAULT}.vault.azure.net/secrets/istio-username --query value -otsv)
+    password: $(az keyvault secret show --id https://${COMMON_VAULT}.vault.azure.net/secrets/istio-password --query value -otsv)
 EOF
 ```
 
@@ -97,7 +86,6 @@ git clone https://community.opengroup.org/osdu/platform/system/storage.git $SRC_
 git clone https://community.opengroup.org/osdu/platform/system/indexer-queue.git $SRC_DIR/indexer-queue
 git clone https://community.opengroup.org/osdu/platform/system/indexer-service.git $SRC_DIR/indexer-service
 git clone https://community.opengroup.org/osdu/platform/system/search-service.git $SRC_DIR/search-service
-git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC_DIR/delivery
 ```
 
 
@@ -108,7 +96,7 @@ __Kubernetes API Access__
 It can often be helpful to be able to retrieve the cluster context and execute queries directly against the Kubernetes API.
 
 ```bash
-BASE_NAME=$(az group list --query "[?contains(name, '${UNIQUE}sr')].name" -otsv |grep -v MC | rev | cut -c 3- | rev)
+BASE_NAME=$(az group list --query "[?contains(name, 'sr${UNIQUE}')].name" -otsv |grep -v MC | rev | cut -c 3- | rev)
 
 az aks get-credentials -n ${BASE_NAME}aks -g ${BASE_NAME}rg
 ```
