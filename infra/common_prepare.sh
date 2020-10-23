@@ -212,7 +212,7 @@ function CreateADApplication() {
         --display-name $1 \
         --query [].appId -otsv)
 
-      APP_OID=$(az ad app list \
+      APP_OID=$(az ad sp list \
         --display-name $1 \
         --query [].objectId -otsv)
 
