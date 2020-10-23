@@ -64,11 +64,11 @@ These files need to be uploaded into the proper Cosmos Collections with the requ
 
 ```bash
 # Retrieve Values from Common Key Vault
-export NO_DATA_ACCESS_TESTER=$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/osdu-mvp-demo-noaccess-clientid --query value -otsv)
+export NO_DATA_ACCESS_TESTER=$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-noaccess-oid
+ --query value -otsv)
 
 # Retrieve Values from Environment Key Vault
 export COSMOS_ENDPOINT=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${PARTITION_NAME}-cosmos-endpoint --query value -otsv)
-export COSMOS_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${PARTITION_NAME}-cosmos-primary-key --query value -otsv)
 export COSMOS_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${PARTITION_NAME}-cosmos-primary-key --query value -otsv)
 export SERVICE_PRINCIPAL_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-username --query value -otsv)
 export SERVICE_PRINCIPAL_OID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-id --query value -otsv)

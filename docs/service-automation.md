@@ -72,6 +72,7 @@ This variable group is a linked variable group that links to the Common Key Vaul
 - istio-password
 - osdu-mvp-{unique}-application-clientid
 - osdu-mvp-{unique}-application-secret
+- osdu-mvp-{unique}-application-oid
 - osdu-infra-{unique}-noaccess-clientid
 - osdu-infra-{unique}-noaccess-oid
 
