@@ -1,0 +1,66 @@
+
+## Type
+
+<!-- Please choose the type of ticket. --> 
+- [ ] Feature Request
+- [ ] Bug Report
+
+
+## Priority
+- [ ] High 
+- [ ] Medium
+- [ ] Low
+
+------------------------
+------------------------
+
+## Feature Request 
+<!-- If this is a feature request, fill up the following -->
+
+__Why is this change needed?__ 
+<!-- Please add relevant details. -->
+__Current behavior__
+<!-- Please describe the current behavior you observe -->
+
+__Expected behavior__
+<!-- Please describe the behavior you anticipate -->
+
+
+----------------------------
+--------------------------
+## Bug Report
+<!-- If this is a bug report, fill up the following -->
+
+
+__Breaking__
+<!-- Is the bug breaking something. -->
+- [ ] YES
+- [ ] NO
+ 
+__Attached Logs?__
+<!-- Please attach relevant logs. -->
+
+- [ ] YES
+- [ ] NO
+
+__Reproduction__
+<!-- Please mention how often can you reproduce it. -->
+
+
+__Current behavior__
+<!-- Please describe the current behavior you observe -->
+
+__Expected behavior__
+<!-- Please describe the behavior you anticipate -->
+
+__Steps to reproduce__
+<!-- Please add how to reproduce the bug -->
+
+
+--------------------------
+--------------------------
+
+## Other information
+
+<!-- Any other information that is important to this PR such as screenshots of how the component looks before and after the change. -->
+
