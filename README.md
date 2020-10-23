@@ -159,10 +159,9 @@ The script creates some local files to be used.
 2. .envrc -- This file is used directory by direnv and requires `direnv allow` to be run to access variables.
 3. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-ssh-key -- SSH key used by flux.
 4. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-key.pub -- SSH Public Key used by flux.
-5. ~/.ssh/osdu_{UNIQUE}/azure-aks-gitops-key.passphrase -- SSH Key Passphrase used by flux.
-6. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key -- SSH Key used by AKS
-7. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
-8. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
+5. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key -- SSH Key used by AKS
+6. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.pub -- SSH Public Key used by AKS
+7. ~/.ssh/osdu_{UNIQUE}/azure-aks-node-ssh-key.passphrase -- SSH Key Passphrase used by AKS
 
 > Ensure environment variables are loaded `direnv allow`
 
@@ -172,9 +171,9 @@ __Installed Azure Resources__
 2. Storage Account
 3. Key Vault
 4. A principal to be used for Terraform _(Requires Grant Admin Approval)_
-5. A principal to be used for the OSDU environment.
-6. An application to be used for the OSDU environment. _(future)_
-7. An application to be used for negative integration testing.
+5. A principal to be used for the OSDU environment _(Requires Grant Admin Approval)_
+6. An application to be used for the OSDU environment _(future)_
+7. An application to be used for negative integration testing
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group then purging the KV.
 
@@ -249,9 +248,11 @@ __Manual Installation__
 
 3. Upload the Integration Test Data following directions [here](./tools/test_data).
 
-3. Deploy the application helm charts following the directions [here](./charts).
+4. Deploy the application helm charts following the directions [here](./charts).
 
-5. Setup Environment Variables for IDE Development and Integration Testing.
+5. Register the Data Partition API using the API request located [here](../tools/rest/partition.http).
+
+6. Setup Environment Variables for IDE Development and Integration Testing.
 
 
 __Automated Pipeline Installation__

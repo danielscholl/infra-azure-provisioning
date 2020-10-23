@@ -43,6 +43,6 @@ EOF
 
 __Retrieve Additional Values__
 
-The `INITIAL_TOKEN` is an open id token.  Follow the directions in osduauth to obtain a token and once obtained save the value in settings.
+The `INITIAL_TOKEN` is an open id token.  Follow the directions in [osduauth](./osduauth) to obtain a token and once obtained save the value in settings.
 
 The `OSDU_HOST` is your FQDN for your osdu environment.

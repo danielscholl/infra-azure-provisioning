@@ -61,6 +61,7 @@ These files need to be uploaded into the proper Cosmos Collections with the requ
 - storage_schema_10.json
 - storage_schema_11.json
 
+> NOTE: If you are doing a manual deployment, your partition name is "opendes" by default
 
 ```bash
 # Retrieve Values from Common Key Vault
