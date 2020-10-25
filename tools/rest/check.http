@@ -163,12 +163,6 @@ data-partition-id: {{data_partition_id}}
 }
 
 
-
-
-
-
-
-
 # -----------------------
 # API LEGAL
 # -----------------------
@@ -255,12 +249,6 @@ data-partition-id: {{data_partition_id}}
 @all_totalCount = {{searchRecord.response.body.totalCount}}
 @record_id = {{searchRecord.response.body.results[0].id}}
 
-
-###
-# @name searchElastic
-GET {{ES_HOST}}/{{index}}
-Authorization: Basic {{ES_AUTH_TOKEN}}
-Accept: application/json
 
 
 # -----------------------

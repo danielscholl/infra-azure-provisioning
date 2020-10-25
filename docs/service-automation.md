@@ -54,7 +54,7 @@ az pipelines variable-group create \
   LEGAL_URL="https://${DNS_HOST}/api/legal/v1/" \
   STORAGE_URL="https://${DNS_HOST}/api/storage/v2/" \
   NO_DATA_ACCESS_TESTER='$(osdu-mvp-'${UNIQUE}'-noaccess-clientid)' \
-  NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET='$(osdu-mvp-'${UNIQUE}'-noaccess-secret))' \
+  NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET='$(osdu-mvp-'${UNIQUE}'-noaccess-secret)' \
   PUBSUB_TOKEN="az" \
   SERVICE_CONNECTION_NAME=$SERVICE_CONNECTION_NAME \
   GOOGLE_CLOUD_PROJECT="opendes" \
@@ -77,6 +77,7 @@ This variable group is a linked variable group that links to the Common Key Vaul
 - osdu-mvp-{unique}-application-oid
 - osdu-infra-{unique}-noaccess-clientid
 - osdu-infra-{unique}-noaccess-oid
+- osdu-infra-{unique}-noaccess-secret
 
 
 __Setup and Configure the ADO Library `Azure Target Env - demo`__
