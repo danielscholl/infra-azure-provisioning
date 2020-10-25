@@ -246,9 +246,9 @@ __Manual Installation__
 
 2. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
 
-3. Upload the Integration Test Data following directions [here](./tools/test_data).
+3. Upload the Integration Test Data following directions [here](./tools/test_data/README.md).
 
-4. Deploy the application helm charts following the directions [here](./charts).
+4. Deploy the application helm charts following the directions [here](./charts/README.md).
 
 5. Register the Data Partition API using the API request located [here](../tools/rest/partition.http).
 
