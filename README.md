@@ -244,15 +244,15 @@ __Manual Installation__
 
 1. Install the Infrastructure following directions [here](./infra/templates/osdu-r3-mvp).
 
-2. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
+1. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
 
-3. Upload the Integration Test Data following directions [here](./tools/test_data/README.md).
+1. Upload the Integration Test Data following directions [here](./tools/test_data/README.md).
 
-4. Deploy the application helm charts following the directions [here](./charts/README.md).
+1. Deploy the application helm charts following the directions [here](./charts/README.md).
 
-5. Register the Data Partition API using the API request located [here](../tools/rest/partition.http).
+1. Register your partition with the Data Partition API by following the instructions [here](./tools/rest/README.md) to configure your IDE to make authenticated requests to your OSDU instance and send the API request located [here](./tools/rest/partition.http) (createPartition).
 
-6. Setup Environment Variables for IDE Development and Integration Testing.
+1. Setup Environment Variables for IDE Development and Integration Testing following the directions [here](./tools/variables/README.md).
 
 
 __Automated Pipeline Installation__
@@ -261,20 +261,17 @@ __Automated Pipeline Installation__
 
 1. Setup Code Mirroring following directions [here](./docs/code-mirroring.md).
 
-2. Setup Infrastructure Automation following directions [here](./docs/infra-automation.md).
+1. Setup Infrastructure Automation following directions [here](./docs/infra-automation.md).
 
-2. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
+1. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
 
-4. Upload the Integration Test Data following directions [here](./tools/test_data).
+1. Upload the Integration Test Data following directions [here](./tools/test_data).
 
-5. Setup Service Automation following directions [here](./docs/service-automation.md).
+1. Setup Service Automation following directions [here](./docs/service-automation.md).
 
-6. Register the Data Partition API using the API request located [here](../tools/rest/partition.http).
+1. Register your partition with the Data Partition API by following the instructions [here](./tools/rest/README.md) to configure your IDE to make authenticated requests to your OSDU instance and send the API request located [here](./tools/rest/partition.http) (createPartition).
 
-7. Enable Integration Tests for the pipelines.
-
-
-
+1. Enable Integration Tests for the pipelines.
 
 
 ## Developer Activities
