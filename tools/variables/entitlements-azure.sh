@@ -2,14 +2,14 @@
 #
 #  Purpose: Create the Developer Environment Variables.
 #  Usage:
-#    indexer.sh
+#    entitlements.sh
 
 ###############################
 ## ARGUMENT INPUT            ##
 ###############################
-usage() { echo "Usage: DNS_HOST=<your_host> INVALID_JWT=<your_token> indexer.sh " 1>&2; exit 1; }
+usage() { echo "Usage: DNS_HOST=<your_host> INVALID_JWT=<your_token> entitlements-azure.sh " 1>&2; exit 1; }
 
-SERVICE="indexer"
+SERVICE="entitlements"
 
 if [ -z $UNIQUE ]; then
   tput setaf 1; echo 'ERROR: UNIQUE not provided' ; tput sgr0
@@ -18,6 +18,11 @@ fi
 
 if [ -z $DNS_HOST ]; then
   tput setaf 1; echo 'ERROR: DNS_HOST not provided' ; tput sgr0
+  usage;
+fi
+
+if [ -z $COMMON_VAULT ]; then
+  tput setaf 1; echo 'ERROR: COMMON_VAULT not provided' ; tput sgr0
   usage;
 fi
 
@@ -47,46 +52,39 @@ if [ ! -d $UNIQUE ]; then mkdir $UNIQUE; fi
 AZURE_TENANT_ID="${TENANT_ID}"
 AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
 AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
-KEYVAULT_URI="${ENV_KEYVAULT}"
+azure_activedirectory_session_stateless="true"
+azure_activedirectory_AppIdUri="api://${ENV_APP_ID}"
 aad_client_id="${ENV_APP_ID}"
 appinsights_key="${ENV_APPINSIGHTS_KEY}"
-cosmosdb_account="${ENV_COSMOSDB_HOST}"
+KEYVAULT_URI="${ENV_KEYVAULT}"
 cosmosdb_database="${COSMOS_DB_NAME}"
-cosmosdb_key="${ENV_COSMOSDB_KEY}"
-entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
-entitlements_app_key="${API_KEY}"
-entitlements_service_api_key="${API_KEY}"
-servicebus_namespace_name="${ENV_SERVICEBUS_NAMESPACE}"
-servicebus_connection_string="${ENV_SERVICEBUS_CONNECTION}"
-servicebus_topic_name="${RECORD_SERVICE_BUS_TOPIC}"
-storage_service_url="https://${ENV_HOST}/api/storage/v2/"
-STORAGE_SCHEMA_HOST="https://${ENV_HOST}/api/storage/v2/schemas"
-STORAGE_QUERY_RECORD_HOST="https://${ENV_HOST}/api/storage/v2/records"
-STORAGE_QUERY_RECORD_FOR_CONVERSION_HOST="https://${ENV_HOST}/api/storage/v2/query/records:batch"
+spring_application_name="entitlements-azure"
+service_domain_name="${COMPANY_DOMAIN}"
 partition_service_endpoint="https://${ENV_HOST}/api/partition/v1/"
 azure_istioauth_enabled="true"
-server_port="8083"
+server_port="8080"
 
 
 # ------------------------------------------------------------------------------------------------------
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
+ENTITLEMENT_URL="https://${ENV_HOST}/entitlements/v1/"
+MY_TENANT="${OSDU_TENANT}"
 AZURE_AD_TENANT_ID="${TENANT_ID}"
 INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
+ENTITLEMENT_MEMBER_NAME_VALID="${ENV_PRINCIPAL_ID}"
 AZURE_TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
 AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
-aad_client_id="${ENV_APP_ID}"
-STORAGE_HOST="https://${ENV_HOST}/api/storage/v2/"
-ELASTIC_HOST="${ENV_ELASTIC_HOST}"
-ELASTIC_PORT="${ENV_ELASTIC_PORT}"
-ELASTIC_USER_NAME="${ENV_ELASTIC_USERNAME}"
-ELASTIC_PASSWORD="${ENV_ELASTIC_PASSWORD}"
-DEFAULT_DATA_PARTITION_ID_TENANT1="${OSDU_TENANT}"
-DEFAULT_DATA_PARTITION_ID_TENANT2="${OSDU_TENANT2}"
-ENTITLEMENTS_DOMAIN="${COMPANY_DOMAIN}"
-ENVIRONMENT="CLOUD"
-LEGAL_TAG="opendes-public-usa-dataset-7643990"
-OTHER_RELEVANT_DATA_COUNTRIES="US"
+AZURE_AD_OTHER_APP_RESOURCE_ID="${OTHER_APP_ID}"
+AZURE_AD_OTHER_APP_RESOURCE_OID="${OTHER_APP_OID}"
+DOMAIN="${COMPANY_DOMAIN}"
+EXPIRED_TOKEN="${INVALID_JWT}"
+ENTITLEMENT_GROUP_NAME_VALID="integ.test.data.creator"
+ENTITLEMENT_MEMBER_NAME_INVALID="InvalidTestAdmin"
+AZURE_AD_USER_EMAIL="${AD_USER_EMAIL}"
+AZURE_AD_USER_OID="${AD_USER_OID}"
+AZURE_AD_GUEST_EMAIL="${AD_GUEST_EMAIL}"
+AZURE_AD_GUEST_OID="${AD_GUEST_OID}"
 
 
 cat > ${UNIQUE}/${SERVICE}.envrc <<LOCALENV
@@ -145,46 +143,39 @@ export ENV_ELASTIC_PASSWORD=$ENV_ELASTIC_PASSWORD
 export AZURE_TENANT_ID="${TENANT_ID}"
 export AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
 export AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
-export KEYVAULT_URI="${ENV_KEYVAULT}"
+export azure_activedirectory_session_stateless="true"
+export azure_activedirectory_AppIdUri="api://${ENV_APP_ID}"
 export aad_client_id="${ENV_APP_ID}"
 export appinsights_key="${ENV_APPINSIGHTS_KEY}"
-export cosmosdb_account="${ENV_COSMOSDB_HOST}"
+export KEYVAULT_URI="${ENV_KEYVAULT}"
 export cosmosdb_database="${COSMOS_DB_NAME}"
-export cosmosdb_key="${ENV_COSMOSDB_KEY}"
-export entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
-export entitlements_app_key="${API_KEY}"
-export entitlements_service_api_key="${API_KEY}"
-export servicebus_namespace_name="${ENV_SERVICEBUS_NAMESPACE}"
-export servicebus_connection_string="${ENV_SERVICEBUS_CONNECTION}"
-export servicebus_topic_name="${RECORD_SERVICE_BUS_TOPIC}"
-export storage_service_url="https://${ENV_HOST}/api/storage/v2/"
-export STORAGE_SCHEMA_HOST="https://${ENV_HOST}/api/storage/v2/schemas"
-export STORAGE_QUERY_RECORD_HOST="https://${ENV_HOST}/api/storage/v2/records"
-export STORAGE_QUERY_RECORD_FOR_CONVERSION_HOST="https://${ENV_HOST}/api/storage/v2/query/records:batch"
+export spring_application_name="entitlements-azure"
+export service_domain_name="${COMPANY_DOMAIN}"
 export partition_service_endpoint="https://${ENV_HOST}/api/partition/v1/"
 export azure_istioauth_enabled="true"
-export server_port="8083"
+export server_port="8080"
 
 
 # ------------------------------------------------------------------------------------------------------
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
+export ENTITLEMENT_URL="https://${ENV_HOST}/entitlements/v1/"
+export MY_TENANT="${OSDU_TENANT}"
 export AZURE_AD_TENANT_ID="${TENANT_ID}"
 export INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
+export ENTITLEMENT_MEMBER_NAME_VALID="${ENV_PRINCIPAL_ID}"
 export AZURE_TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
 export AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
-export aad_client_id="${ENV_APP_ID}"
-export STORAGE_HOST="https://${ENV_HOST}/api/storage/v2/"
-export ELASTIC_HOST="${ENV_ELASTIC_HOST}"
-export ELASTIC_PORT="${ENV_ELASTIC_PORT}"
-export ELASTIC_USER_NAME="${ENV_ELASTIC_USERNAME}"
-export ELASTIC_PASSWORD="${ENV_ELASTIC_PASSWORD}"
-export DEFAULT_DATA_PARTITION_ID_TENANT1="${OSDU_TENANT}"
-export DEFAULT_DATA_PARTITION_ID_TENANT2="${OSDU_TENANT2}"
-export ENTITLEMENTS_DOMAIN="${COMPANY_DOMAIN}"
-export ENVIRONMENT="CLOUD"
-export LEGAL_TAG="opendes-public-usa-dataset-7643990"
-export OTHER_RELEVANT_DATA_COUNTRIES="US"
+export AZURE_AD_OTHER_APP_RESOURCE_ID="${OTHER_APP_ID}"
+export AZURE_AD_OTHER_APP_RESOURCE_OID="${OTHER_APP_OID}"
+export DOMAIN="${COMPANY_DOMAIN}"
+export EXPIRED_TOKEN="${INVALID_JWT}"
+export ENTITLEMENT_GROUP_NAME_VALID="integ.test.data.creator"
+export ENTITLEMENT_MEMBER_NAME_INVALID="InvalidTestAdmin"
+export AZURE_AD_USER_EMAIL="${AD_USER_EMAIL}"
+export AZURE_AD_USER_OID="${AD_USER_OID}"
+export AZURE_AD_GUEST_EMAIL="${AD_GUEST_EMAIL}"
+export AZURE_AD_GUEST_OID="${AD_GUEST_OID}"
 LOCALENV
 
 
@@ -192,43 +183,57 @@ cat > ${UNIQUE}/${SERVICE}_local.yaml <<LOCALRUN
 AZURE_TENANT_ID: "${TENANT_ID}"
 AZURE_CLIENT_ID: "${ENV_PRINCIPAL_ID}"
 AZURE_CLIENT_SECRET: "${ENV_PRINCIPAL_SECRET}"
-KEYVAULT_URI: "${ENV_KEYVAULT}"
+azure_activedirectory_session_stateless: "true"
+azure_activedirectory_AppIdUri: "api://${ENV_APP_ID}"
 aad_client_id: "${ENV_APP_ID}"
 appinsights_key: "${ENV_APPINSIGHTS_KEY}"
-cosmosdb_account: "${ENV_COSMOSDB_HOST}"
+KEYVAULT_URI: "${ENV_KEYVAULT}"
 cosmosdb_database: "${COSMOS_DB_NAME}"
-cosmosdb_key: "${ENV_COSMOSDB_KEY}"
-entitlements_service_endpoint: "https://${ENV_HOST}/entitlements/v1/"
-entitlements_app_key: "${API_KEY}"
-entitlements_service_api_key: "${API_KEY}"
-servicebus_namespace_name: "${ENV_SERVICEBUS_NAMESPACE}"
-servicebus_connection_string: "${ENV_SERVICEBUS_CONNECTION}"
-servicebus_topic_name: "${RECORD_SERVICE_BUS_TOPIC}"
-storage_service_url: "https://${ENV_HOST}/api/storage/v2/"
-STORAGE_SCHEMA_HOST: "https://${ENV_HOST}/api/storage/v2/schemas"
-STORAGE_QUERY_RECORD_HOST: "https://${ENV_HOST}/api/storage/v2/records"
-STORAGE_QUERY_RECORD_FOR_CONVERSION_HOST: "https://${ENV_HOST}/api/storage/v2/query/records:batch"
+spring_application_name: "entitlements-azure"
+service_domain_name: "${COMPANY_DOMAIN}"
 partition_service_endpoint: "https://${ENV_HOST}/api/partition/v1/"
 azure_istioauth_enabled: "true"
-server_port: "${server_port}"
+server_port: "8080"
 LOCALRUN
 
 
-cat > ${UNIQUE}/${SERVICE}_test.yaml <<DEVTEST
+cat > ${UNIQUE}/${SERVICE}_local_test.yaml <<LOCALTEST
+ENTITLEMENT_URL: "http://localhost:${server_port}/entitlements/v1/"
+MY_TENANT: "${OSDU_TENANT}"
 AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${ENV_PRINCIPAL_ID}"
+ENTITLEMENT_MEMBER_NAME_VALID: "${ENV_PRINCIPAL_ID}"
 AZURE_TESTER_SERVICEPRINCIPAL_SECRET: "${ENV_PRINCIPAL_SECRET}"
 AZURE_AD_APP_RESOURCE_ID: "${ENV_APP_ID}"
-aad_client_id: "${ENV_APP_ID}"
-STORAGE_HOST: "https://${ENV_HOST}/api/storage/v2/"
-ELASTIC_HOST: "${ENV_ELASTIC_HOST}"
-ELASTIC_PORT: "${ENV_ELASTIC_PORT}"
-ELASTIC_USER_NAME: "${ENV_ELASTIC_USERNAME}"
-ELASTIC_PASSWORD: "${ENV_ELASTIC_PASSWORD}"
-DEFAULT_DATA_PARTITION_ID_TENANT1: "${OSDU_TENANT}"
-DEFAULT_DATA_PARTITION_ID_TENANT2: "${OSDU_TENANT2}"
-ENTITLEMENTS_DOMAIN: "${COMPANY_DOMAIN}"
-ENVIRONMENT: "CLOUD"
-LEGAL_TAG: "opendes-public-usa-dataset-7643990"
-OTHER_RELEVANT_DATA_COUNTRIES: "US"
+AZURE_AD_OTHER_APP_RESOURCE_ID: "${OTHER_APP_ID}"
+AZURE_AD_OTHER_APP_RESOURCE_OID: "${OTHER_APP_OID}"
+DOMAIN: "${COMPANY_DOMAIN}"
+EXPIRED_TOKEN: "${INVALID_JWT}"
+AZURE_AD_USER_EMAIL: "${AD_USER_EMAIL}"
+AZURE_AD_USER_OID: "${AD_USER_OID}"
+AZURE_AD_GUEST_EMAIL: "${AD_GUEST_EMAIL}"
+AZURE_AD_GUEST_OID: "${AD_GUEST_OID}"
+ENTITLEMENT_GROUP_NAME_VALID: "integ.test.data.creator"
+ENTITLEMENT_MEMBER_NAME_INVALID: "InvalidTestAdmin"
+LOCALTEST
+
+
+cat > ${UNIQUE}/${SERVICE}_test.yaml <<DEVTEST
+ENTITLEMENT_URL: "https://${ENV_HOST}/entitlements/v1/"
+MY_TENANT: "${OSDU_TENANT}"
+AZURE_AD_TENANT_ID: "${TENANT_ID}"
+INTEGRATION_TESTER: "${ENV_PRINCIPAL_ID}"
+ENTITLEMENT_MEMBER_NAME_VALID: "${ENV_PRINCIPAL_ID}"
+AZURE_TESTER_SERVICEPRINCIPAL_SECRET: "${ENV_PRINCIPAL_SECRET}"
+AZURE_AD_APP_RESOURCE_ID: "${ENV_APP_ID}"
+AZURE_AD_OTHER_APP_RESOURCE_ID: "${OTHER_APP_ID}"
+AZURE_AD_OTHER_APP_RESOURCE_OID: "${OTHER_APP_OID}"
+DOMAIN: "${COMPANY_DOMAIN}"
+EXPIRED_TOKEN: "${INVALID_JWT}"
+AZURE_AD_USER_EMAIL: "${AD_USER_EMAIL}"
+AZURE_AD_USER_OID: "${AD_USER_OID}"
+AZURE_AD_GUEST_EMAIL: "${AD_GUEST_EMAIL}"
+AZURE_AD_GUEST_OID: "${AD_GUEST_OID}"
+ENTITLEMENT_GROUP_NAME_VALID: "integ.test.data.creator"
+ENTITLEMENT_MEMBER_NAME_INVALID: "InvalidTestAdmin"
 DEVTEST

@@ -21,16 +21,23 @@ if [ -z $DNS_HOST ]; then
   usage;
 fi
 
+if [ -z $COMMON_VAULT ]; then
+  tput setaf 1; echo 'ERROR: COMMON_VAULT not provided' ; tput sgr0
+  usage;
+fi
+
 if [ -z $INVALID_JWT ]; then
   tput setaf 1; echo 'ERROR: INVALID_JWT not provided' ; tput sgr0
   usage;
 fi
+
 
 if [ -f ./settings_common.env ]; then
   source ./settings_common.env;
 else
   tput setaf 1; echo 'ERROR: common.env not found' ; tput sgr0
 fi
+
 
 if [ -f ./settings_environment.env ]; then
   source ./settings_environment.env;
