@@ -23,7 +23,7 @@ __Create Service Environment Variables__
 Generate the environment .envrc and yaml files compatable with intelliJ [envfile](https://plugins.jetbrains.com/plugin/7861-envfile) plugin.
 
 ```bash
-for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;
+for SERVICE in partition entitlements-azure legal storage indexer-service search-service;
 do
   ./$SERVICE.sh
 done
