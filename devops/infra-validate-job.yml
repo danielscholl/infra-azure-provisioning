@@ -21,10 +21,10 @@ jobs:
     clean: all
 
   steps:
-  # Checkout to use the InfraRepo (resource repository from main pipeline) if creating the pipeline from outside of infra-azure-provisioning repo.
+
   - checkout: InfraRepo
     persistCredentials: true
-    condition: ne(variables['INFRA_REPO'], '')
+    condition: ne(variables.INFRA_REPO, '')
 
   - task: GoTool@0
     displayName: 'Ensure Golang'

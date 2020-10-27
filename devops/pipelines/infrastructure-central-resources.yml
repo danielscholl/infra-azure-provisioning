@@ -26,12 +26,11 @@ trigger:
     exclude:
     - /**/*.md
 
-### If you are defining a custom pipeline in a different repo then add the repo repository
-# resources:
-#   repositories:
-#   - repository: InfraRepo
-#     type: git
-#     name: infra-azure-provisioning
+resources:
+  repositories:
+  - repository: InfraRepo
+    type: git
+    name: infra-azure-provisioning
 
 variables:
 - group: 'Infrastructure Pipeline Variables'
