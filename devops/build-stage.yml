@@ -27,6 +27,7 @@ parameters:
   mavenPomFile: 'pom.xml'
   mavenPublishJUnitResults: false
   mavenOptions: ''
+  checkoutRepo: self
 
 stages:
 
@@ -44,6 +45,8 @@ stages:
       clean: all
     steps:
     - download: none
+    - checkout: ${{ parameters.checkoutRepo }}
+      persistCredentials: true
     - task: Maven@3
       displayName: 'Maven: validate'
       inputs:

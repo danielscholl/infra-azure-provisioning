@@ -26,6 +26,7 @@ parameters:
   skipDeploy: false
   skipTest: 'false'
   dockerFile: ''
+  checkoutRepo: self
 
 stages:
 
@@ -79,3 +80,4 @@ stages:
                   runPythonTest: ${{ parameters.runPythonTest }}
                   testPythonFilePath: ${{ parameters.testPythonFilePath }}
                   testPythonFile: ${{ parameters.testPythonFile }}
+                  checkoutRepo: ${{ parameters.checkoutRepo }}

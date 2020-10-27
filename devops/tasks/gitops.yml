@@ -32,7 +32,13 @@ steps:
         #!/usr/bin/env bash
         set -euo pipefail
 
-        GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$(Build.Repository.Name)/$CHART_PATH/$GENERATION_PATH
+        if [[ "$(HELM_SOURCE)" != "" ]]
+        then
+            HELM_SOURCE_NAME=$(HELM_SOURCE)
+        else
+            HELM_SOURCE_NAME=$(Build.Repository.Name)
+        fi
+        GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$HELM_SOURCE_NAME/$CHART_PATH/$GENERATION_PATH
         cd $(Build.SourcesDirectory)/$(MANIFEST_REPO)
 
         function configure_git_profile() {

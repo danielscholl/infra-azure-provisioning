@@ -25,6 +25,12 @@ trigger:
     exclude:
     - /**/*.md
 
+# Use this resource when creating and using a pipeline external to this repo.
+# resources:
+#   repositories:
+#   - repository: InfraRepo
+#     type: git
+#     name: infra-azure-provisioning  
 
 variables:
 - name: 'TF_VERSION'
@@ -38,6 +44,9 @@ variables:
 - name: 'TEST_HARNESS_DIR'
   value: 'test-harness'
 - group: 'Infrastructure Pipeline Variables'
+# Add this variable when creating and using pipeline external to this repo.
+# - name: 'INFRA_REPO'
+#   value: $[ resources.repositories['InfraRepo'].name ]
 
 stages:
 - template: /devops/infra-prepare-stage.yml
