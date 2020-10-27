@@ -26,13 +26,15 @@ trigger:
     exclude:
     - /**/*.md
 
-resources:
-  repositories:
-  - repository: InfraRepo
-    type: git
-    name: infra-azure-provisioning
+### If you are defining a custom pipeline in a different repo then add the repo repository
+# resources:
+#   repositories:
+#   - repository: InfraRepo
+#     type: git
+#     name: infra-azure-provisioning
 
 variables:
+- group: 'Infrastructure Pipeline Variables'
 - name: 'TF_VERSION'
   value: '0.12.29'
 - name: 'GO_VERSION'
@@ -44,8 +46,8 @@ variables:
 - name: 'TEST_HARNESS_DIR'
   value: 'test-harness'
 - name: 'INFRA_REPO'
-  value: $[ resources.repositories['InfraRepo'].name ]
-- group: 'Infrastructure Pipeline Variables'
+  value: ''  # If Custom pipeline then --> value: $[ resources.repositories['InfraRepo'].name ]
+
 
 stages:
 - template: /devops/infra-prepare-stage.yml
