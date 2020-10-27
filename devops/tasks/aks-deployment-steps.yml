@@ -21,22 +21,29 @@ parameters:
   skipDeploy: false
   hldRegPath: ""
   generationPath: "generated"
+  checkoutRepo: self
 
 steps:
-    # self to trigger clone of the current repo.
-    - checkout: self
-      persistCredentials: true
     - checkout: FluxRepo
+      persistCredentials: true
+    - checkout: ${{ parameters.checkoutRepo }}
       persistCredentials: true
     - task: "HelmInstaller@1"
       displayName: 'Helm Install'
       inputs:
         helmVersionToInstall: 3.3.0
     - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-      displayName: 'Helm Values'
+      displayName: 'Helm Values - Build Repo'
       inputs:
         targetFiles: |
           $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.valuesFile}} => $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
+      condition: eq(variables['HELM_SOURCE'], '')
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+      displayName: 'Helm Values - Helm Source Repo'
+      inputs:
+        targetFiles: |
+          $(Build.SourcesDirectory)/$(HELM_SOURCE)/${{parameters.valuesFile}} => $(Build.SourcesDirectory)/$(HELM_SOURCE)/${{parameters.chartPath}}/values.yaml
+      condition: ne(variables['HELM_SOURCE'], '')
     - template: helm-template.yml
       parameters:
         serviceName: ${{parameters.serviceName}}

@@ -28,10 +28,21 @@ steps:
       script: |
         #!/usr/bin/env bash
 
-          cd $(Build.SourcesDirectory)/$(Build.Repository.Name)
+          echo "Helm Source: $(HELM_SOURCE)"
+          echo "Build Trigger Repo Name: $(Build.Repository.Name)"
+
+          if [[ "$(HELM_SOURCE)" != "" ]]
+          then
+              HELM_SOURCE_NAME=$(HELM_SOURCE)
+          else
+              HELM_SOURCE_NAME=$(Build.Repository.Name)
+          fi
+
+          echo "Helm Source Name: $HELM_SOURCE_NAME"
+          cd $(Build.SourcesDirectory)/$HELM_SOURCE_NAME
 
           mkdir $CHART_PATH/$GENERATION_PATH
-          cat $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
+          cat $(Build.SourcesDirectory)/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml
 
           echo "Extracting Manifest"
-          helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH
+          helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH

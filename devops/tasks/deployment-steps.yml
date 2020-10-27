@@ -33,6 +33,7 @@ parameters:
   testPythonFilePath: ''
   testPythonFile: ''
   runPythonTest: ''
+  checkoutRepo: self
 
 steps:
   - template: detect-jar.yml
@@ -60,6 +61,7 @@ steps:
       valuesFile: ${{ parameters.valuesFile }}
       hldRegPath: ${{ parameters.hldRegPath }}
       skipDeploy: ${{ parameters.skipDeploy }}
+      checkoutRepo: ${{ parameters.checkoutRepo }}
 
   - task: ExtractFiles@1
     displayName: 'Extract ${{parameters.serviceName}} integration test suite '
