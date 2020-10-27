@@ -22,6 +22,7 @@ trigger:
     - /infra/modules/providers/*
     - /infra/templates/osdu-r3-mvp/central_resources/*
     - /test-harness/terratest-extensions/*
+    - /devops/pipelines/infrastructure-central-resources.yml
     exclude:
     - /**/*.md
 

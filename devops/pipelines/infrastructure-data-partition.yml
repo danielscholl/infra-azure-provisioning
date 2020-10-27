@@ -23,6 +23,7 @@ trigger:
     - /infra/modules/providers/*
     - /infra/templates/osdu-r3-mvp/data_partition/*
     - /test-harness/terratest-extensions/*
+    - /devops/pipelines/infrastructure-data-partition.yml
     exclude:
     - /**/*.md
 
