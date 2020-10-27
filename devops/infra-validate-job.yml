@@ -22,9 +22,9 @@ jobs:
 
   steps:
 
-  - checkout: InfraRepo
-    persistCredentials: true
-    condition: ne(variables.INFRA_REPO, '')
+  # - checkout: InfraRepo
+  #   persistCredentials: true
+  #   condition: ne(variables.INFRA_REPO, '')
 
   - task: GoTool@0
     displayName: 'Ensure Golang'
