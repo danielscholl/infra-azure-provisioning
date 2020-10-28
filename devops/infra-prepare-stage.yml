@@ -18,6 +18,7 @@ parameters:
   forceRun: true
   aksAgentSshPublicKeyFilename: 'azure-aks-node-ssh-key.pub'
   aksGitOpsSshPrivateKeyFilename: 'azure-aks-gitops-ssh-key'
+  checkoutRepo: self
 
 stages:
 
@@ -25,6 +26,8 @@ stages:
   displayName: 'Prepare'
   jobs:
   - template: infra-validate-job.yml
+    parameters:
+      checkoutRepo: ${{ parameters.checkoutRepo }}
 
 - ${{ each environment in parameters.environments }}:
 

@@ -12,6 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+parameters:
+  checkoutRepo: self
+
 jobs:
 - job: validate_job
   displayName: Code Validation
@@ -22,9 +25,8 @@ jobs:
 
   steps:
 
-  # - checkout: InfraRepo
-  #   persistCredentials: true
-  #   condition: ne(variables.INFRA_REPO, '')
+  - checkout: ${{ parameters.checkoutRepo }}
+    persistCredentials: true
 
   - task: GoTool@0
     displayName: 'Ensure Golang'
