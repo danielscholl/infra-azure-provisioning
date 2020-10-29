@@ -54,5 +54,6 @@ output "cosmosdb_account_name" {
 
 output "cosmosdb_properties" {
   description = "Properties of the deployed CosmosDB account."
+  sensitive   = true
   value       = module.cosmosdb_account.properties
 }

@@ -81,7 +81,8 @@ output "redis_hostname" {
 }
 
 output "redis_primary_access_key" {
-  value = module.redis_cache.primary_access_key
+  sensitive = true
+  value     = module.redis_cache.primary_access_key
 }
 
 output "redis_ssl_port" {
