@@ -63,7 +63,7 @@ This variable group will be used to hold the common values for a specific infras
   | TF_VAR_data_partition_name | opendes |
   | TF_VAR_data_resources_workspace_name | dr-demo |
   | TF_VAR_elasticsearch_version | <your_elastic_version> |
-  | TF_VAR_gitops_branch | master |
+  | TF_VAR_gitops_branch | <desired_branch> |
   | TF_VAR_gitops_path | providers/azure/hld-registry |
   | TF_VAR_gitops_ssh_url | git@<your_flux_repo> |
   | TF_VAR_principal_appId | <your_principal_appId> |
