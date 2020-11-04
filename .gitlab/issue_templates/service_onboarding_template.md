@@ -20,7 +20,7 @@ _Examples: Cosmos collections, Storage containers_
 
 **Chart Onboarding**
 - [ ] Identify any additional chart changes and document as chart level requirements.  
-_Examples: Ingress, Secrets, Auth Policies._
+_Examples: [Ingress](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/appgw-ingress.yaml), [Secrets](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/kv-secrets.yaml), [Istio Auth Policies](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/charts/osdu-istio-auth/templates)._
 - [ ] Obtain Approval for any chart requirements.
 - [ ] Implement any required chart changes.
 - [ ] Obtain approval for merge request(s) containing chart changes.
