@@ -96,8 +96,8 @@ This variable group will be used to hold the specific environment values necessa
 | DOMAIN                                        | `contoso.com`                     |
 | ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
 | ELASTIC_USERNAME                              | `$(opendes-elastic-username)`     |
-| ELASTIC_PASSWORD                             | `$(opendes-elastic-password)`     |
-| IDENTITY_CLIENT_ID                            | `$(identity_id)`                  |
+| ELASTIC_PASSWORD                             | `$(opendes-elastic-password)`      |
+| IDENTITY_CLIENT_ID                            | `$(osdu-identity-id)`             |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
 | MY_TENANT                                     | `opendes`                         |
 | STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
