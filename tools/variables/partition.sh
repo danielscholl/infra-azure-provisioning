@@ -60,6 +60,7 @@ aad_client_id="${ENV_APP_ID}"
 azure_activedirectory_AppIdUri="api://${ENV_APP_ID}"
 azure_activedirectory_session_stateless="true"
 spring_application_name="partition"
+REDIS_DATABASE="2"
 server_port="8080"
 
 
@@ -144,6 +145,7 @@ export aad_client_id="${ENV_APP_ID}"
 export azure_activedirectory_AppIdUri="api://${ENV_APP_ID}"
 export azure_activedirectory_session_stateless="true"
 export spring_application_name="partition"
+export REDIS_DATABASE="2"
 export server_port="8080"
 
 
@@ -174,6 +176,7 @@ appinsights_key: "${ENV_APPINSIGHTS_KEY}"
 aad_client_id: "${ENV_APP_ID}"
 azure_activedirectory_AppIdUri: "api://${ENV_APP_ID}"
 azure_activedirectory_session_stateless: "true"
+REDIS_DATABASE: "2"
 server_port: "8080"
 LOCALRUN
 
