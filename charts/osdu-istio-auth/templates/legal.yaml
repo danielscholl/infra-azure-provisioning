@@ -28,7 +28,10 @@ spec:
             notRequestPrincipals: ["*"]
       to:
         - operation:
-            notPaths: ["/", "*/index.html", "*/v2/api-docs", "*/configuration/ui",
-                       "*/configuration/security", "*/swagger", "*/swagger-ui.html",
-                       "*/swagger-resources","/api/legal/v1/swagger-resources/*",
+            notPaths: ["/","*/index.html",
+                       "*/v2/api-docs",
+                       "*/configuration/ui","*/configuration/security",
+                       "*/swagger","*/swagger-ui.html","*/swagger-resources",
+                       "*/actuator/health",
+                       "/api/legal/v1/swagger-resources/*",
                        "/api/legal/v1/webjars/*"]
