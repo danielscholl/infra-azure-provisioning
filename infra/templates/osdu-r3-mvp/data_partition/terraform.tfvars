@@ -140,6 +140,11 @@ cosmos_sql_collections = [
     name               = "WorkflowTasksSharingInfo"
     database_name      = "osdu-db"
     partition_key_path = "/workflowId"
+  },
+  {
+    name               = "FileLocationEntity"
+    database_name      = "osdu-db"
+    partition_key_path = "/id"
   }
 ]
 
