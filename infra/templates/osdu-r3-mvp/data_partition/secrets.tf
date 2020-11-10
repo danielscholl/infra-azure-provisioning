@@ -44,6 +44,7 @@ locals {
   eventgrid_domain_key_name        = format("%s-key", local.eventgrid_domain_name)
   eventgrid_records_topic_name     = format("%s-recordstopic", local.eventgrid_domain_name)
   eventgrid_records_topic_endpoint = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_records_topic, var.resource_group_location)
+  event_grid_resourcegroup_name    = format("%s-eventgrid-resourcegroup", var.data_partition_name)
 
   elastic_endpoint = format("%s-elastic-endpoint", var.data_partition_name)
   elastic_username = format("%s-elastic-username", var.data_partition_name)
@@ -152,6 +153,11 @@ resource "azurerm_key_vault_secret" "recordstopic_name" {
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
+resource "azurerm_key_vault_secret" "eventgrid_resource_group" {
+  name         = local.event_grid_resourcegroup_name
+  value        = azurerm_resource_group.main.name
+  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
+}
 
 #-------------------------------
 # Elastic
