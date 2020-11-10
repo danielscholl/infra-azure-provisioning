@@ -280,16 +280,14 @@ module "event_grid" {
   resource_tags = var.resource_tags
 }
 
-// Add Access Control to Principal
-resource "azurerm_role_assignment" "eventgrid_access" {
+// Add EventGrid EventSubscription Contributor access to Principal
+resource "azurerm_role_assignment" "event_grid_topics_role" {
   count = length(local.rbac_principals)
 
-  role_definition_name = "Contributor"
+  role_definition_name = "EventGrid EventSubscription Contributor"
   principal_id         = local.rbac_principals[count.index]
-  scope                = module.event_grid.id
+  scope                = lookup(module.event_grid.topics, local.eventgrid_records_topic)
 }
-
-
 
 #-------------------------------
 # Locks
