@@ -33,7 +33,8 @@ storage_containers = [
   "legal-service-azure-configuration",
   "opendes",
   "osdu-wks-mappings",
-  "workflow-tasks-sharing"
+  "workflow-tasks-sharing",
+  "wdms-osdu"
 ]
 
 
