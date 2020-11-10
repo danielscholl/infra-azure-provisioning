@@ -32,7 +32,8 @@ storage_replication_type = "GZRS"
 storage_containers = [
   "legal-service-azure-configuration",
   "opendes",
-  "osdu-wks-mappings"
+  "osdu-wks-mappings",
+  "workflow-tasks-sharing"
 ]
 
 
@@ -134,6 +135,11 @@ cosmos_sql_collections = [
     name               = "MappingInfo"
     database_name      = "osdu-db"
     partition_key_path = "/sourceSchemaKind"
+  },
+  {
+    name               = "WorkflowTasksSharingInfo"
+    database_name      = "osdu-db"
+    partition_key_path = "/workflowId"
   }
 ]
 
