@@ -1,0 +1,70 @@
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# This is a sample custom Pipeline.
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /infra-chart-pipelines/chart-osdu-istio-auth.yml
+
+resources:
+  repositories:
+  - repository: FluxRepo
+    type: git
+    name: k8-gitops-manifests
+  - repository: HelmRepo
+    type: git
+    name: infra-azure-provisioning
+    trigger:
+      branches:
+        include:
+        - master
+      paths:
+        include:
+        - /charts/osdu-istio-auth/*
+        exclude:
+        - /**/*.md
+
+variables:
+  - group: 'Azure - OSDU'
+  - group: 'Azure - OSDU secrets'
+
+  - name: serviceName
+    value: "osdu-istio-auth"
+  - name: chartPath
+    value: "charts/osdu-istio-auth"
+  - name: valuesFile
+    value: "charts/helm-config.yaml"
+  - name: 'MANIFEST_REPO'
+    value: $[ resources.repositories['FluxRepo'].name ]
+  - name: 'HELM_SOURCE'
+    value: $[ resources.repositories['HelmRepo'].name ]
+
+stages:
+  - template: /devops/chart-stages.yml@HelmRepo
+    parameters:
+      serviceName: ${{ variables.serviceName }}
+      chartPath: ${{ variables.chartPath }}
+      valuesFile: ${{ variables.valuesFile }}
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: true
+      checkoutRepo: HelmRepo
+      providers:
+        - name: Azure
+          environments: ["dev"]
