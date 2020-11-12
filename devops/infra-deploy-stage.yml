@@ -19,7 +19,6 @@ parameters:
   skipTests: false
   aksAgentSshPublicKeyFilename: 'azure-aks-node-ssh-key.pub'
   aksGitOpsSshPrivateKeyFilename: 'azure-aks-gitops-ssh-key'
-  terraformVariablePath: ''
 
 jobs:
 
@@ -66,9 +65,6 @@ jobs:
   - name: TF_VAR_DATA_PARTITION_NAME
     value: ${{ parameters.configuration.dataPartitionName }}
 
-  - name: TF_VARFILE
-    value: '$(System.DefaultWorkingDirectory)/${{ parameters.configuration.terraformVariableFile }}'
-
   environment: ${{ parameters.environment }}
   strategy:
     runOnce:
@@ -94,7 +90,6 @@ jobs:
             aksAgentSshPublicKeyFilename: ${{ parameters.aksAgentSshPublicKeyFilename }}
             aksGitOpsSshPrivateKeyFilename: ${{ parameters.aksGitOpsSshPrivateKeyFilename }}
             terraformWorkspacePrefix: ${{ parameters.configuration.terraformWorkspacePrefix }}
-            terraformVariablePath: ${{ parameters.configuration.terraformVariablePath }}
 
         - template: tasks/tests-int.yml
           parameters:
