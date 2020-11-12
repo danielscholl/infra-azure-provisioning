@@ -109,4 +109,4 @@ steps:
         echo "File 1: $(aksPublicAgentKeySecureDownload.secureFilePath)"
         echo "File 2: $(aksPrivateGitopsKeySecureDownload.secureFilePath)"
 
-        terraform plan -var-file $TF_VAFILE $TF_CLI_ARGS -input=false -out $TF_PLAN_FILE
+        terraform plan -var-file $TF_VARFILE $TF_CLI_ARGS -input=false -out $TF_PLAN_FILE
