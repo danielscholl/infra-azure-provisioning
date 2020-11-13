@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 apiVersion: v2
-name: osdu-airflow
+name: airflow
 appVersion: "latest"
 description: Installs the airflow and required components for osdu on Azure"
 version: 0.1.0

@@ -139,6 +139,16 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/char
   && git commit -m "Initialize Istio Auth Chart" \
   && git push origin $UNIQUE)
 
+# Extract manifests from the airflow charts.
+helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config.yaml | ${INFRA_SRC}/charts/airflow/add-namespace.py > ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml
+
+# Commit and Checkin to Deploy
+(cd $FLUX_SRC \
+  && git switch $UNIQUE \
+  && git add ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml \
+  && git commit -m "Initialize Airflow Chart" \
+  && git push origin $UNIQUE)
+
 
 # Extract manifests from each service chart.
 for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;
