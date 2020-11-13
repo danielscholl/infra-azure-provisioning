@@ -46,3 +46,20 @@ steps:
 
           echo "Extracting Manifest"
           helm template $SERVICE_NAME $CHART_PATH -f $(Build.SourcesDirectory)/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml --output-dir $CHART_PATH/$GENERATION_PATH
+
+          if [[ "${{parameters.chartModificationScript}}" != "" ]]
+          then
+            echo "Updating generated charts with the script ${{parameters.chartModificationScript}}"
+            chmod -fR 755 $(Build.SourcesDirectory)/$HELM_SOURCE_NAME/${{parameters.chartPath}}/${{parameters.chartModificationScript}}
+
+            pip install -U PyYAML
+
+            touch tempFile
+
+            for file in `find $CHART_PATH/$GENERATION_PATH -name '*.yaml'`; do
+               cat $file | $(Build.SourcesDirectory)/$HELM_SOURCE_NAME/${{parameters.chartPath}}/${{parameters.chartModificationScript}} > tempFile
+               cat tempFile > $file
+            done
+
+            rm tempFile
+          fi

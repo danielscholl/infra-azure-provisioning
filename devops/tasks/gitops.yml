@@ -26,6 +26,8 @@ steps:
       SERVICE_NAME: ${{parameters.serviceName}}
       HLD_REG_PATH: ${{parameters.hldRegPath}}
       GENERATION_PATH: ${{parameters.generationPath}}
+      CHART_FOLDERS: ${{parameters.extractedChartFolder}}
+
     inputs:
       targetType: "inline"
       script: |
@@ -72,8 +74,13 @@ steps:
               echo "COPYING YAML FILES TO $HLD_REG_PATH/$SERVICE_NAME"
               mkdir -p ./$HLD_REG_PATH/$SERVICE_NAME
               rm -rf ./$HLD_REG_PATH/$SERVICE_NAME/*
-              cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/templates/* ./$HLD_REG_PATH/$SERVICE_NAME
+
+              IFS="|"; for folder in $CHART_FOLDERS; do
+                echo "COPYING YAML FILES OF EXTRACTED CHARTS FOLDER $folder"
+                cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder/* ./$HLD_REG_PATH/$SERVICE_NAME
+              done
           fi
+
 
           git add -A
 

@@ -94,7 +94,7 @@ airflow:
         cert-manager.io/acme-challenge-type: http01
       path: "/airflow"
       ## DNS name mapping to Application Gateway Public IP
-      host: appgatewayhostfqdn
+      host: #{DNS_HOST}#
       livenessPath: "/airflow/health"
       tls:
         enabled: true
@@ -113,11 +113,11 @@ airflow:
   externalDatabase:
     type: postgres
     ## Azure PostgreSQL Database username, formatted as {username}@{hostname}
-    user: dbadmin@dbhost
+    user:  osdu_admin@#{base-name-sr}#-pg
     passwordSecret: "postgres"
     passwordSecretKey: "postgres-password"
     ## Azure PostgreSQL Database host
-    host: dbhostfqdn
+    host: #{base-name-sr}#-pg.postgres.database.azure.com
     port: 5432
     properties: "?sslmode=require"
     database: airflow
@@ -125,7 +125,7 @@ airflow:
     enabled: false
   externalRedis:
     ## Azure Redis Cache host
-    host: redishost
+    host: #{base-name-sr}#-cache.redis.cache.windows.net
     port: 6380
     passwordSecret: "redis"
     passwordSecretKey: "redis-password"
