@@ -50,21 +50,10 @@ airflow:
         "apache-airflow-backport-providers-microsoft-azure"
     ]
     extraVolumeMounts:
-        ## mount the kube config from volume into default kube config file for Airflow Kubernetes Operator 
-        # - name: airflow-kubernetes-config
-        #   mountPath: "/home/airflow/.kube"
-        #   readOnly: true
         - name: azure-keyvault
           mountPath: "/mnt/azure-keyvault"
           readOnly: true
     extraVolumes:
-        ## mount Kube config from secret 
-        # - name: airflow-kubernetes-config
-        #   secret:
-        #     secretName: airflow-kubernetes-config
-        #     items:
-        #     - key: airflow-kubernetes-config
-        #       path: config
         - name: azure-keyvault
           csi:
             driver: secrets-store.csi.k8s.io
@@ -85,24 +74,6 @@ airflow:
     podLabels:
       aadpodidbinding: "osdu-identity"
     baseUrl: "http://localhost/airflow"
-  ingress:
-    enabled: true
-    web:
-      annotations:
-        kubernetes.io/ingress.class: azure/application-gateway
-        cert-manager.io/cluster-issuer: letsencrypt
-        cert-manager.io/acme-challenge-type: http01
-      path: "/airflow"
-      ## DNS name mapping to Application Gateway Public IP
-      host: #{DNS_HOST}#
-      livenessPath: "/airflow/health"
-      tls:
-        enabled: true
-        secretName: osdu-certificate
-      precedingPaths:
-        - path: "/airflow/*"
-          serviceName: airflow-web
-          servicePort: 8080
   workers:
     podLabels:
       aadpodidbinding: "osdu-identity"             
