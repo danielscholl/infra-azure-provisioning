@@ -34,14 +34,10 @@ subnet_aks_prefix  = "10.10.2.0/23"
 # Storage Settings
 storage_replication_type = "LRS"
 storage_containers = [
-  "azure-webjobs-hosts",
-  "airflow-logs"
+  "azure-webjobs-hosts"
 ]
 storage_shares = [
-  "airflowdags",
   "unit",
   "crs"
 ]
-storage_queues = [
-  "airflowlogqueue"
-]
+storage_queues = []
