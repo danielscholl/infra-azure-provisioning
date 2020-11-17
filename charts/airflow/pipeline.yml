@@ -51,7 +51,7 @@ variables:
   - name: chartPath
     value: "charts/airflow"
   - name: valuesFile
-    value: "charts/airflow/values.yaml"
+    value: "charts/airflow/helm-config.yaml"
   - name: 'MANIFEST_REPO'
     value: $[ resources.repositories['FluxRepo'].name ]
 
