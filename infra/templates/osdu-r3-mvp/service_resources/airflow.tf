@@ -25,8 +25,8 @@
 # Airflow
 #-------------------------------
 locals {
-  airflow_admin_password     = coalesce(var.airflow_admin_password, random_password.airflow_admin_password[0].result)
-  airflow_log_queue_name     = "airflowlogqueue"
+  airflow_admin_password = coalesce(var.airflow_admin_password, random_password.airflow_admin_password[0].result)
+  airflow_log_queue_name = "airflowlogqueue"
 }
 
 resource "random_password" "airflow_admin_password" {
@@ -75,22 +75,22 @@ resource "azurerm_storage_share" "airflow_share" {
 }
 
 resource "azurerm_storage_share_directory" "dags" {
-    name                 = "dags"
-    share_name           = azurerm_storage_share.airflow_share.name
-    storage_account_name = module.storage_account.name
+  name                 = "dags"
+  share_name           = azurerm_storage_share.airflow_share.name
+  storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "plugins" {
-    name                 = "plugins"
-    share_name           = azurerm_storage_share.airflow_share.name
-    storage_account_name = module.storage_account.name
+  name                 = "plugins"
+  share_name           = azurerm_storage_share.airflow_share.name
+  storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "operators" {
-    name                 = "plugins/operators"
-    share_name           = azurerm_storage_share.airflow_share.name
-    storage_account_name = module.storage_account.name
-    depends_on           = [azurerm_storage_share_directory.plugins]
+  name                 = "plugins/operators"
+  share_name           = azurerm_storage_share.airflow_share.name
+  storage_account_name = module.storage_account.name
+  depends_on           = [azurerm_storage_share_directory.plugins]
 }
 
 // Airflow log container
