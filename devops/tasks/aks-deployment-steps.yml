@@ -23,7 +23,7 @@ parameters:
   generationPath: "generated"
   checkoutRepo: self
   chartModificationScript: ""
-  extractedChartFolder: ""
+  extractedChartFolder: "templates"
 
 steps:
     - checkout: FluxRepo
