@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: airflow-log-processor
-        image: binroon/airflow-logs-to-workspace
+        image: {{ .Values.image.repository }}/airflow-function-{{ .Values.image.branch }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: Always
         env:
           - name: AzureFunctionsJobHost__functions__0

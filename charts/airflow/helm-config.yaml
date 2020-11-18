@@ -100,3 +100,8 @@ airflow:
     port: 6380
     passwordSecret: "redis"
     passwordSecretKey: "redis-password"
+    
+image:
+  repository: #{container-registry}#.azurecr.io
+  branch: #{ENVIRONMENT_NAME}#
+  tag: #{Build.SourceVersion}#

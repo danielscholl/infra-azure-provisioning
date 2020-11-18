@@ -20,21 +20,6 @@ trigger:
   paths:
     include:
       - /charts/airflow/*
-      - /source/airflow-function/*
-    exclude:
-      - /**/*.md
-
-pr:
-  autoCancel: false
-  branches:
-    include:
-      - "*"
-    exclude:
-      - master
-  paths:
-    include:
-      - /charts/airflow/*
-      - /source/airflow-function/*
     exclude:
       - /**/*.md
 
@@ -58,15 +43,6 @@ variables:
     value: $[ resources.repositories['FluxRepo'].name ]
 
 stages:
-  - template: pipeline-stages/airflow-custom-stages.yml
-    parameters:
-      sourceFolder: "source"
-      #multiple file paths to be provided with pipe(|) seperated
-      dockerFilePaths: "airflow-function"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-
   - template: /devops/chart-stages.yml
     parameters:
       serviceName: ${{ variables.serviceName }}
@@ -79,4 +55,4 @@ stages:
       extractedChartFolder: "templates|charts/airflow/templates"
       providers:
         - name: Azure
-          environments: ["dev", "glab"]
+          environments: ["demo"]
