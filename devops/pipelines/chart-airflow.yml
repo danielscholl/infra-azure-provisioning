@@ -43,6 +43,16 @@ variables:
     value: $[ resources.repositories['FluxRepo'].name ]
 
 stages:
+
+  - template: /charts/airflow/pipeline-stages/airflow-custom-stages.yml
+    parameters:
+      sourceFolder: "source"
+      #multiple file paths to be provided with pipe(|) seperated
+      dockerFilePaths: "airflow-function"
+      providers:
+        - name: Azure
+          environments: ["demo"]
+
   - template: /devops/chart-stages.yml
     parameters:
       serviceName: ${{ variables.serviceName }}
