@@ -83,6 +83,9 @@ Create the helm chart values file necessary to install airflow charts.
 
 ```bash
 # Setup Variables
+BRANCH="master"
+TAG="latest"
+
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 
@@ -192,6 +195,10 @@ airflow:
     passwordSecret: "redis"
     passwordSecretKey: "redis-password"
 
+image:
+  repository: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv).azurecr.io
+  branch: $BRANCH
+  tag: $TAG
 EOF
 ```
 
@@ -248,7 +255,6 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-common -f ${INFRA_SRC}/charts/c
   && git commit -m "Initialize Common Chart" \
   && git push origin $UNIQUE)
 
-
 # Extract manifests from the istio charts.
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio.yaml
 
@@ -262,8 +268,20 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/char
   && git commit -m "Initialize Istio Auth Chart" \
   && git push origin $UNIQUE)
 
-#Installing PyYaml required for airflow
+# Publish Docker Images for airflow components
+CONTAINER_REGISTRY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv)
+az acr login -n $CONTAINER_REGISTRY
+for SERVICE in airflow-function;
+do
+  cd ${INFRA_SRC}/source/$SERVICE
+  IMAGE=$CONTAINER_REGISTRY.azurecr.io/$SERVICE-$BRANCH:$(TAG)
+  docker build -t $IMAGE .
+  docker push $IMAGE
+done
+
+# Installing PyYaml required for airflow
 pip3 install -U PyYAML
+
 # Extract manifests from the airflow charts.
 helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_airflow.yaml | python3 ${INFRA_SRC}/charts/airflow/scripts/add-namespace.py > ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml
 
@@ -273,7 +291,6 @@ helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_
   && git add ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml \
   && git commit -m "Initialize Airflow Chart" \
   && git push origin $UNIQUE)
-
 
 # Extract manifests from each service chart.
 for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;

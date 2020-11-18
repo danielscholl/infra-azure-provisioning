@@ -356,6 +356,22 @@ az pipelines create \
   -ojson
 ```
 
+4. Add a Pipeline for __chart-osdu-airflow__  to deploy Istio Authorization Policies.
+
+    _Repo:_ `infra-azure-provisioning`
+    _Path:_ `/devops/pipelines/chart-airflow.yml`
+    _Validate:_ Airflow Pods are running except for airflow-setup-default-user which is a job pod.
+
+```bash
+az pipelines create \
+  --name 'chart-airflow'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/pipelines/chart-airflow.yml  \
+  -ojson
+```
+
 __Create the Service Pipelines__
 
 Create the pipelines and run things in this exact order.
