@@ -23,7 +23,9 @@
         "service.workflow.admin",
         "users.datalake.ops",
         "cron.job",
-        "notification.pubsub"
+        "notification.pubsub",
+	"service.file.viewers",
+	"service.file.editors"
       ]
     },
     {
@@ -48,7 +50,9 @@
         "service.workflow.admin",
         "users.datalake.ops",
         "cron.job",
-        "notification.pubsub"
+        "notification.pubsub",
+	"service.file.viewers",
+	"service.file.editors"
       ]
     }
   ]
