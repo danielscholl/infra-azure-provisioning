@@ -67,3 +67,7 @@ steps:
         echo "Checking Deployment $SERVICE_NAME Available"
         echo "----------------------------------------"
         kubectl wait --for=condition=available --timeout=600s deployment/$SERVICE_NAME -n osdu
+
+        echo "Checking for deployment $SERVICE_NAME READY!!"
+        echo "----------------------------------------"
+        kubectl rollout status deployment.v1.apps/$SERVICE_NAME -n osdu --timeout=900s
