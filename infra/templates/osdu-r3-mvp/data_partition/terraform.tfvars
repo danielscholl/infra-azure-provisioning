@@ -32,7 +32,11 @@ storage_replication_type = "GZRS"
 storage_containers = [
   "legal-service-azure-configuration",
   "opendes",
-  "osdu-wks-mappings"
+  "osdu-wks-mappings",
+  "workflow-tasks-sharing",
+  "wdms-osdu",
+  "file-staging-area",
+  "file-persistent-area"
 ]
 
 
@@ -41,7 +45,7 @@ cosmosdb_consistency_level = "Session"
 cosmos_databases = [
   {
     name       = "osdu-db"
-    throughput = 4000
+    throughput = 12000
   }
 ]
 cosmos_sql_collections = [
@@ -134,6 +138,16 @@ cosmos_sql_collections = [
     name               = "MappingInfo"
     database_name      = "osdu-db"
     partition_key_path = "/sourceSchemaKind"
+  },
+  {
+    name               = "WorkflowTasksSharingInfo"
+    database_name      = "osdu-db"
+    partition_key_path = "/workflowId"
+  },
+  {
+    name               = "FileLocationEntity"
+    database_name      = "osdu-db"
+    partition_key_path = "/id"
   }
 ]
 

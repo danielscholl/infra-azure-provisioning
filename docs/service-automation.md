@@ -96,8 +96,8 @@ This variable group will be used to hold the specific environment values necessa
 | DOMAIN                                        | `contoso.com`                     |
 | ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
 | ELASTIC_USERNAME                              | `$(opendes-elastic-username)`     |
-| ELASTIC_PASSWORD                             | `$(opendes-elastic-password)`     |
-| IDENTITY_CLIENT_ID                            | `$(identity_id)`                  |
+| ELASTIC_PASSWORD                             | `$(opendes-elastic-password)`      |
+| IDENTITY_CLIENT_ID                            | `$(osdu-identity-id)`             |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
 | MY_TENANT                                     | `opendes`                         |
 | STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
@@ -353,6 +353,22 @@ az pipelines create \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/pipelines/chart-osdu-istio-auth.yml  \
+  -ojson
+```
+
+4. Add a Pipeline for __chart-osdu-airflow__  to deploy Istio Authorization Policies.
+
+    _Repo:_ `infra-azure-provisioning`
+    _Path:_ `/devops/pipelines/chart-airflow.yml`
+    _Validate:_ Airflow Pods are running except for airflow-setup-default-user which is a job pod.
+
+```bash
+az pipelines create \
+  --name 'chart-airflow'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/pipelines/chart-airflow.yml  \
   -ojson
 ```
 

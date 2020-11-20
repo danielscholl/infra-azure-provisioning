@@ -1,11 +1,11 @@
 #  Copyright 2017-2019, Schlumberger
-#  
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,12 @@ spec:
             notRequestPrincipals: ["*"]
       to:
         - operation:
-            notPaths: ["/", "*/index.html", "*/v2/api-docs", "*/configuration/ui",
-                       "*/configuration/security", "*/swagger", "*/swagger-ui.html",
-                       "*/swagger-resources","/api/unit/swagger-resources/*",
-                       "/api/unit/webjars/*", "*/_ah/**"]
+            notPaths: ["/","*/index.html",
+                       "*/v2/api-docs",
+                       "*/swagger","*/swagger-resources","*/swagger-ui.html",
+                       "*/actuator/health",
+                       "*/configuration/ui","*/configuration/security",
+                       "/api/unit/swagger-resources/*",
+                       "/api/unit/webjars/*",
+                       "*/_ah/**"]
 

@@ -32,6 +32,7 @@ steps:
     displayName: 'TF Apply'
     env:
       TERRAFORM_WORKSPACE_PREFIX: ${{ parameters.terraformWorkspacePrefix }}
+      TF_VAR_override_file: $(System.DefaultWorkingDirectory)/${{ parameters.terraformVariableFile }}
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true

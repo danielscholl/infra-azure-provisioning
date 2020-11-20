@@ -71,6 +71,142 @@ global:
     password: $(az keyvault secret show --id https://${COMMON_VAULT}.vault.azure.net/secrets/istio-password --query value -otsv)
 EOF
 ```
+Create the helm chart values file necessary to install airflow charts.
+
+- Download [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/raw/master/charts/airflow/helm-config.yaml), which will configure OSDU on Azure.
+
+  `wget https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/raw/master/charts/airflow/helm-config.yaml -O config_airflow.yaml`
+
+- Edit the newly downloaded [config_airflow.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/raw/master/charts/airflow/helm-config.yaml) and fill out the required sections `externalDatabase` and `externalRedis`.
+
+
+
+```bash
+# Setup Variables
+BRANCH="master"
+TAG="latest"
+
+GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
+ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
+
+# Translate Values File
+cat > config_airflow.yaml << EOF
+# This file contains the essential configs for the osdu airflow on azure helm chart
+appinsightstatsd:
+  aadpodidbinding: "osdu-identity"
+airflowLogin:
+  name: admin
+airflow:
+  airflow:
+    image:
+      repository: apache/airflow
+      tag: 1.10.12-python3.6
+      pullPolicy: IfNotPresent
+      pullSecret: ""
+    config:
+      AIRFLOW__SCHEDULER__STATSD_ON: "True"
+      AIRFLOW__SCHEDULER__STATSD_HOST: "appinsights-statsd"
+      AIRFLOW__SCHEDULER__STATSD_PORT: 8125
+      AIRFLOW__SCHEDULER__STATSD_PREFIX: "osdu_airflow"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "False"
+      ## Enable for Debug purpose
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      AIRFLOW__WEBSERVER__AUTHENTICATE: "True"
+      AIRFLOW__WEBSERVER__AUTH_BACKEND: "airflow.contrib.auth.backends.password_auth"
+      AIRFLOW__API__AUTH_BACKEND: "airflow.contrib.auth.backends.password_auth"
+      AIRFLOW__CORE__REMOTE_LOGGING: "True"
+      AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "az_log"
+      AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "wasb-airflowlog"
+      AIRFLOW__CORE__LOGGING_CONFIG_CLASS: "log_config.DEFAULT_LOGGING_CONFIG"
+      AIRFLOW__CORE__LOG_FILENAME_TEMPLATE: "{{ run_id }}/{{ ti.dag_id }}/{{ ti.task_id }}/{{ ts }}/{{ try_number }}.log"
+      AIRFLOW__CELERY__SSL_ACTIVE: "True"
+      AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX: "True"
+      AIRFLOW__CORE__PLUGINS_FOLDER: "/opt/airflow/plugins"
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+    extraEnv:
+      - name: AIRFLOW__CORE__FERNET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: airflow
+            key: fernet-key
+      - name: AIRFLOW_CONN_AZ_LOG
+        valueFrom:
+          secretKeyRef:
+            name: airflow
+            key: remote-log-connection
+    extraConfigmapMounts:
+      - name: remote-log-config
+        mountPath: /opt/airflow/config
+        configMap: airflow-remote-log-config
+        readOnly: true
+    extraPipPackages: [
+        "flask-bcrypt",
+        "apache-airflow[statsd]",
+        "apache-airflow[kubernetes]",
+        "apache-airflow-backport-providers-microsoft-azure"
+    ]
+    extraVolumeMounts:
+      - name: azure-keyvault
+        mountPath: "/mnt/azure-keyvault"
+        readOnly: true
+      - name: dags-data
+        mountPath: /opt/airflow/plugins
+        subPath: plugins
+    extraVolumes:
+      - name: azure-keyvault
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: azure-keyvault
+  dags:
+    installRequirements: true
+    persistence:
+      enabled: true
+      existingClaim: airflowdagpvc
+      subPath: "dags"
+  scheduler:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    variables: |
+      {}
+  web:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    baseUrl: "http://localhost/airflow"
+  workers:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+  flower:
+    enabled: false
+  postgresql:
+    enabled: false
+  externalDatabase:
+    type: postgres
+    ## Azure PostgreSQL Database username, formatted as {username}@{hostname}
+    user:  osdu_admin@$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+    ## Azure PostgreSQL Database host
+    host: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg.postgres.database.azure.com
+    port: 5432
+    properties: "?sslmode=require"
+    database: airflow
+  redis:
+    enabled: false
+  externalRedis:
+    ## Azure Redis Cache host
+    host: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-cache.redis.cache.windows.net
+    port: 6380
+    passwordSecret: "redis"
+    passwordSecretKey: "redis-password"
+
+image:
+  repository: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv).azurecr.io
+  branch: $BRANCH
+  tag: $TAG
+EOF
+```
 
 __Clone Service Repositories__
 
@@ -125,7 +261,6 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-common -f ${INFRA_SRC}/charts/c
   && git commit -m "Initialize Common Chart" \
   && git push origin $UNIQUE)
 
-
 # Extract manifests from the istio charts.
 helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio -f ${INFRA_SRC}/charts/config.yaml > ${FLUX_SRC}/providers/azure/hld-registry/osdu-istio.yaml
 
@@ -139,6 +274,29 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/char
   && git commit -m "Initialize Istio Auth Chart" \
   && git push origin $UNIQUE)
 
+# Publish Docker Images for airflow components
+CONTAINER_REGISTRY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv)
+az acr login -n $CONTAINER_REGISTRY
+for SERVICE in airflow-function;
+do
+  cd ${INFRA_SRC}/source/$SERVICE
+  IMAGE=$CONTAINER_REGISTRY.azurecr.io/$SERVICE-$BRANCH:$(TAG)
+  docker build -t $IMAGE .
+  docker push $IMAGE
+done
+
+# Installing PyYaml required for airflow
+pip3 install -U PyYAML
+
+# Extract manifests from the airflow charts.
+helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_airflow.yaml | python3 ${INFRA_SRC}/charts/airflow/scripts/add-namespace.py > ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml
+
+# Commit and Checkin to Deploy
+(cd $FLUX_SRC \
+  && git switch $UNIQUE \
+  && git add ${FLUX_SRC}/providers/azure/hld-registry/airflow.yaml \
+  && git commit -m "Initialize Airflow Chart" \
+  && git push origin $UNIQUE)
 
 # Extract manifests from each service chart.
 for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;

@@ -57,3 +57,8 @@ output "cosmosdb_properties" {
   sensitive   = true
   value       = module.cosmosdb_account.properties
 }
+
+output "eventgrid_topics" {
+  description = "Properties of the event grid topics."
+  value       = module.event_grid.topics
+}

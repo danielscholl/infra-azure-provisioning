@@ -22,6 +22,8 @@ parameters:
   hldRegPath: ""
   generationPath: "generated"
   checkoutRepo: self
+  chartModificationScript: ""
+  extractedChartFolder: "templates"
 
 steps:
     - checkout: FluxRepo
@@ -50,6 +52,7 @@ steps:
         chartPath: ${{ parameters.chartPath }}
         valuesFile: ${{ parameters.valuesFile }}
         generationPath: ${{parameters.generationPath}}
+        chartModificationScript: ${{parameters.chartModificationScript}}
     - template: gitops.yml
       parameters:
         serviceName: ${{parameters.serviceName}}
@@ -58,3 +61,4 @@ steps:
         branchName: ${{parameters.environment}}
         hldRegPath: ${{parameters.hldRegPath}}
         skipDeploy: ${{parameters.skipDeploy}}
+        extractedChartFolder: ${{parameters.extractedChartFolder}}

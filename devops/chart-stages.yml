@@ -19,6 +19,7 @@ parameters:
   skipDeploy: false
   hldRegPath: "providers/azure/hld-registry"
   checkoutRepo: self
+  extractedChartFolder: "templates"
 
 stages:
   - ${{ each provider in parameters.providers }}:
@@ -51,6 +52,8 @@ stages:
                     skipDeploy: ${{ parameters.skipDeploy }}
                     hldRegPath: ${{ parameters.hldRegPath }}
                     checkoutRepo: ${{ parameters.checkoutRepo }}
+                    chartModificationScript: ${{ parameters.chartModificationScript }}
+                    extractedChartFolder: ${{ parameters.extractedChartFolder }}
 
                 - template: tasks/flux-chart-wait.yml
                   parameters:

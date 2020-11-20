@@ -5,7 +5,9 @@ metadata:
   namespace: osdu
   annotations:
     kubernetes.io/ingress.class: azure/application-gateway
-    appgw.ingress.kubernetes.io/request-timeout: "60"
+    appgw.ingress.kubernetes.io/request-timeout: "300"
+    appgw.ingress.kubernetes.io/connection-draining: "true"
+    appgw.ingress.kubernetes.io/connection-draining-timeout: "30"
     cert-manager.io/cluster-issuer: letsencrypt
     cert-manager.io/acme-challenge-type: http01
 spec:
@@ -78,6 +80,5 @@ spec:
               servicePort: 80
             path: /api/workflow/v1/*
           - backend:
-              serviceName: notification
+              serviceName: wellbore-dms
               servicePort: 80
-            path: /api/notification/v1/*
