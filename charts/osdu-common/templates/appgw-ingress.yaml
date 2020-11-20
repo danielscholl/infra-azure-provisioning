@@ -77,3 +77,7 @@ spec:
               serviceName: ingestion-workflow
               servicePort: 80
             path: /api/workflow/v1/*
+          - backend:
+              serviceName: notification
+              servicePort: 80
+            path: /api/notification/v1/*
