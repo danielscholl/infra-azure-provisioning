@@ -277,7 +277,7 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/char
 # Publish Docker Images for airflow components
 CONTAINER_REGISTRY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv)
 az acr login -n $CONTAINER_REGISTRY
-for SERVICE in airflow-function;
+for SERVICE in airflow-function airflow-statsd;
 do
   cd ${INFRA_SRC}/source/$SERVICE
   IMAGE=$CONTAINER_REGISTRY.azurecr.io/$SERVICE-$BRANCH:$(TAG)
