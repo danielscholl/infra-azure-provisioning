@@ -148,6 +148,11 @@ cosmos_sql_collections = [
     name               = "FileLocationEntity"
     database_name      = "osdu-db"
     partition_key_path = "/id"
+  },
+  {
+    name               = "WorkflowCustomOperatorInfo"
+    database_name      = "osdu-db"
+    partition_key_path = "/operatorId"
   }
 ]
 
