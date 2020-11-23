@@ -82,3 +82,7 @@ spec:
           - backend:
               serviceName: wellbore-dms
               servicePort: 80
+          - backend:
+              serviceName: notification
+              servicePort: 80
+            path: /api/notification/v1/*

@@ -34,5 +34,8 @@ spec:
                        "*/actuator/health",
                        "/api/indexer/v2/swagger-resources/*",
                        "/api/indexer/v2/webjars/*",
+                       "*/index-worker",
+                       "*/_dps/task-handlers",
+                       "/api/indexer/v2/_dps/task-handlers/*",
                        "*/reindex",
                        "*/configuration/security"]
