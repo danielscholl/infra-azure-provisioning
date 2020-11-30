@@ -127,9 +127,17 @@ def storage_schema(db):
     container.upsert_item(storage_schema_11)
     return
 
+def file_location_entity(db):
+    container = db.get_container_client("FileLocationEntity")
+    with open("./file_location_entity_1.json", "r") as f:
+      file_location_entity_1 = json.load(f)
 
+    container.upsert_item(file_location_entity_1)
+    return
+    
 if __name__ == "__main__":
     tenant_info(db)
     user_info(db)
     legal_tag(db)
     storage_schema(db)
+    file_location_entity(db)
