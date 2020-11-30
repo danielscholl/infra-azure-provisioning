@@ -24,8 +24,9 @@
         "users.datalake.ops",
         "cron.job",
         "notification.pubsub",
-	"service.file.viewers",
-	"service.file.editors"
+        "service.file.viewers",
+        "service.file.editors",
+        "service.delivery.viewer"
       ]
     },
     {
@@ -51,8 +52,9 @@
         "users.datalake.ops",
         "cron.job",
         "notification.pubsub",
-	"service.file.viewers",
-	"service.file.editors"
+        "service.file.viewers",
+        "service.file.editors",
+        "service.delivery.viewer"
       ]
     }
   ]
