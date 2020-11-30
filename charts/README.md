@@ -222,6 +222,8 @@ git clone https://community.opengroup.org/osdu/platform/system/storage.git $SRC_
 git clone https://community.opengroup.org/osdu/platform/system/indexer-queue.git $SRC_DIR/indexer-queue
 git clone https://community.opengroup.org/osdu/platform/system/indexer-service.git $SRC_DIR/indexer-service
 git clone https://community.opengroup.org/osdu/platform/system/search-service.git $SRC_DIR/search-service
+git clone https://community.opengroup.org/osdu/platform/system/file.git $SRC_DIR/file-service
+git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC_DIR/delivery
 ```
 
 
@@ -299,7 +301,7 @@ helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_
   && git push origin $UNIQUE)
 
 # Extract manifests from each service chart.
-for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service;
+for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service file-service delivery;
 do
   helm template $SERVICE ${SRC_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
 done

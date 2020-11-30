@@ -26,6 +26,8 @@ This variable group will be used to hold the common values for the services to b
 | PUBSUB_TOKEN                                  | `az`                                      |
 | SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
 | GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
+| FILE_URL                                      | `https://<your_fqdn>/api/file/v2`         |
+| DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`         |
 
 
 ```bash
@@ -58,6 +60,8 @@ az pipelines variable-group create \
   PUBSUB_TOKEN="az" \
   SERVICE_CONNECTION_NAME=$SERVICE_CONNECTION_NAME \
   GOOGLE_CLOUD_PROJECT="opendes" \
+  FILE_URL="https://${DNS_HOST}/api/file/v2" \
+  DELIVERY_URL="https://${DNS_HOST}/api/delivery/v2/" \
   -ojson
 ```
 
@@ -281,7 +285,7 @@ az pipelines variable-group create \
 
 __Setup and Configure the ADO Library `Azure Service Release - search-service`__
 
-This variable group is the service specific variables necessary for testing and deploying the `indexer-service` service.
+This variable group is the service specific variables necessary for testing and deploying the `search` service.
 
 | Variable | Value |
 |----------|-------|
@@ -299,6 +303,52 @@ az pipelines variable-group create \
   MAVEN_INTEGRATION_TEST_OPTIONS='-DSEARCH_HOST=$(SEARCH_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID)  -DSTORAGE_HOST=$(STORAGE_URL) -DELASTIC_HOST=$(ELASTIC_HOST) -DELASTIC_PORT=$(ELASTIC_PORT) -DELASTIC_USER_NAME=$(ELASTIC_USERNAME) -DELASTIC_PASSWORD=$(ELASTIC_PASSWORD) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DENTITLEMENTS_DOMAIN=$(DOMAIN)' \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/integration-tests/search-test-azure" \
   SERVICE_RESOURCE_NAME='$(AZURE_SEARCH_SERVICE_NAME)' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - file`__
+
+This variable group is the service specific variables necessary for testing and deploying the `file` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/file-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DDATA_PARTITION_ID=$(MY_TENANT) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0"` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/file-test-azure` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_FILE_SERVICE_NAME)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - file" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/file-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DDATA_PARTITION_ID=$(MY_TENANT) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0"' \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/file-test-azure" \
+  SERVICE_RESOURCE_NAME='$(AZURE_FILE_SERVICE_NAME)' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - delivery`__
+
+This variable group is the service specific variables necessary for testing and deploying the `delivery` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/delivery-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine="-DDOMAIN=$(DOMAIN) -DENTITLEMENTS_DOMAIN=$(DOMAIN) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DLEGAL_HOST=$(LEGAL_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=common -DOTHER_RELEVANT_DATA_COUNTRIES=US -DLEGAL_TAG=opendes-public-usa-dataset-1 -DSEARCH_HOST=$(SEARCH_URL) -DSTORAGE_HOST=$(STORAGE_URL) -DDELIVERY_HOST=$(DELIVERY_URL)"` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/delivery-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_DELIVERY_SERVICE_NAME)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - delivery" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/delivery-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DargLine="-DDOMAIN=$(DOMAIN) -DENTITLEMENTS_DOMAIN=$(DOMAIN) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DLEGAL_HOST=$(LEGAL_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=common -DOTHER_RELEVANT_DATA_COUNTRIES=US -DLEGAL_TAG=opendes-public-usa-dataset-1 -DSEARCH_HOST=$(SEARCH_URL) -DSTORAGE_HOST=$(STORAGE_URL) -DDELIVERY_HOST=$(DELIVERY_URL)"' \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/delivery-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_DELIVERY_SERVICE_NAME)' \
   -ojson
 ```
 
@@ -485,6 +535,38 @@ az pipelines create \
 az pipelines create \
   --name 'service-search'  \
   --repository search-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+7. Add a Pipeline for __file__  to deploy the File Service.
+
+    _Repo:_ `file`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/file/v2/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-file'  \
+  --repository file  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+8. Add a Pipeline for __delivery__  to deploy the Delivery Service.
+
+    _Repo:_ `delivery`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/delivery/v2/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-delivery'  \
+  --repository delivery  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
