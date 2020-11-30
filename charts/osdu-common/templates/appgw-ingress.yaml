@@ -80,8 +80,9 @@ spec:
               servicePort: 80
             path: /api/workflow/v1/*
           - backend:
-              serviceName: wellbore-dms
+              serviceName: os-wellbore-ddms
               servicePort: 80
+            path: /api/os-wellbore-ddms/*
           - backend:
               serviceName: notification
               servicePort: 80
