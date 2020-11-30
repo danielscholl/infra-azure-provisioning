@@ -2,14 +2,14 @@
 #
 #  Purpose: Create the Developer Environment Variables.
 #  Usage:
-#    storage.sh
+#    delivery.sh
 
 ###############################
 ## ARGUMENT INPUT            ##
 ###############################
-usage() { echo "Usage: DNS_HOST=<your_host> INVALID_JWT=<your_token> file.sh " 1>&2; exit 1; }
+usage() { echo "Usage: DNS_HOST=<your_host> INVALID_JWT=<your_token> delivery.sh " 1>&2; exit 1; }
 
-SERVICE="file"
+SERVICE="delivery"
 
 if [ -z $UNIQUE ]; then
   tput setaf 1; echo 'ERROR: UNIQUE not provided' ; tput sgr0
@@ -49,37 +49,42 @@ if [ ! -d $UNIQUE ]; then mkdir $UNIQUE; fi
 # ------------------------------------------------------------------------------------------------------
 # LocalHost Run Settings
 # ------------------------------------------------------------------------------------------------------
-LOG_PREFIX="file"
 AZURE_TENANT_ID="${TENANT_ID}"
 AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
 AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
-keyvault_url="${ENV_KEYVAULT}"
-appinsights_key="${ENV_APPINSIGHTS_KEY}"
-cosmosdb_database="${COSMOS_DB_NAME}"
-AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
-osdu_entitlements_url="https://${ENV_HOST}/entitlements/v1"
-osdu_entitlements_app_key="${API_KEY}"
-osdu_storage_url="https://${ENV_HOST}/api/storage/v2/"
-AZURE_STORAGE_ACCOUNT="${ENV_STORAGE}" # also used for testing
+KEYVAULT_URI="${ENV_KEYVAULT}"
 aad_client_id="${ENV_APP_ID}"
-server_port="8082"
+appinsights_key="${ENV_APPINSIGHTS_KEY}"
+AUTHORIZE_API="https://${ENV_HOST}/entitlements/v1/"
+SEARCH_HOST="https://${ENV_HOST}/api/search/v2/"
+partition_service_endpoint="https://${ENV_HOST}/api/partition/v1/"
+BATCH_SIZE="100"
+SEARCH_QUERY_LIMIT="1000"
 azure_istioauth_enabled="true"
+server_port="8085"
+
 
 # ------------------------------------------------------------------------------------------------------
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
-FILE_SERVICE_HOST="http://localhost:${server_port}/api/file/v2"
-FILE_SERVICE_HOST_REMOTE="https://${ENV_HOST}/api/file/v2"
-DATA_PARTITION_ID="opendes"
+#DELIVERY_HOST="http://localhost:${server_port}/api/delivery/v2/"
+DELIVERY_HOST="http://${ENV_HOST}/api/delivery/v2/"
+SEARCH_HOST="https://${ENV_HOST}/api/search/v2/"
+STORAGE_HOST="https://${ENV_HOST}/api/storage/v2/"
+LEGAL_HOST="https://${ENV_HOST}/api/legal/v1/"
+TENANT_NAME="${OSDU_TENANT}"
+AZURE_AD_TENANT_ID="${TENANT_ID}"
 INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
 TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
-AZURE_AD_TENANT_ID="${TENANT_ID}"
+AZURE_STORAGE_ACCOUNT="${ENV_STORAGE}"
 AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
-NO_DATA_ACCESS_TESTER="${NO_ACCESS_ID}"
-NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET="${NO_ACCESS_SECRET}"
-USER_ID="osdu-user"
-EXIST_FILE_ID="test_data"
-TIME_ZONE="UTC+0"
+DEFAULT_DATA_PARTITION_ID_TENANT1="${OSDU_TENANT2}"
+DEFAULT_DATA_PARTITION_ID_TENANT2="${OSDU_TENANT3}"
+DOMAIN="${COMPANY_DOMAIN}"
+ENTITLEMENTS_DOMAIN="${COMPANY_DOMAIN}"
+LEGAL_TAG="${LEGAL_TAG}"
+OTHER_RELEVANT_DATA_COUNTRIES="US"
+
 
 cat > ${UNIQUE}/${SERVICE}.envrc <<LOCALENV
 # ------------------------------------------------------------------------------------------------------
@@ -134,86 +139,95 @@ export ENV_ELASTIC_PASSWORD=$ENV_ELASTIC_PASSWORD
 # ------------------------------------------------------------------------------------------------------
 # LocalHost Run Settings
 # ------------------------------------------------------------------------------------------------------
-export LOG_PREFIX="${LOG_PREFIX}"
-export AZURE_TENANT_ID="${AZURE_TENANT_ID}"
-export AZURE_CLIENT_ID="${AZURE_CLIENT_ID}"
-export AZURE_CLIENT_SECRET="${AZURE_CLIENT_SECRET}"
-export keyvault_url="${keyvault_url}"
-export appinsights_key="${appinsights_key}"
-export cosmosdb_database="${cosmosdb_database}"
-export AZURE_AD_APP_RESOURCE_ID="${AZURE_AD_APP_RESOURCE_ID}"
-export osdu_entitlements_url="${osdu_entitlements_url}"
-export osdu_entitlements_app_key="${osdu_entitlements_app_key}"
-export osdu_storage_url="${osdu_storage_url}"
-export AZURE_STORAGE_ACCOUNT="${AZURE_STORAGE_ACCOUNT}"
-export aad_client_id="${aad_client_id}"
-export server_port="${server_port}"
+export AZURE_TENANT_ID="${TENANT_ID}"
+export AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
+export AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
+export KEYVAULT_URI="${ENV_KEYVAULT}"
+export aad_client_id="${ENV_APP_ID}"
+export appinsights_key="${ENV_APPINSIGHTS_KEY}"
+export AUTHORIZE_API="https://${ENV_HOST}/entitlements/v1/"
+export SEARCH_HOST="https://${ENV_HOST}/api/search/v2/"
+export partition_service_endpoint="https://${ENV_HOST}/api/partition/v1/"
+export BATCH_SIZE="${BATCH_SIZE}"
+export SEARCH_QUERY_LIMIT="${SEARCH_QUERY_LIMIT}"
 export azure_istioauth_enabled="${azure_istioauth_enabled}"
+export server_port="${server_port}"
 
 # ------------------------------------------------------------------------------------------------------
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
-export FILE_SERVICE_HOST="${FILE_SERVICE_HOST}"
-export DATA_PARTITION_ID="${DATA_PARTITION_ID}"
-export INTEGRATION_TESTER="${INTEGRATION_TESTER}"
-export TESTER_SERVICEPRINCIPAL_SECRET="${TESTER_SERVICEPRINCIPAL_SECRET}"
-export AZURE_AD_TENANT_ID="${AZURE_AD_TENANT_ID}"
-export AZURE_AD_APP_RESOURCE_ID="${AZURE_AD_APP_RESOURCE_ID}"
-export NO_DATA_ACCESS_TESTER="${NO_DATA_ACCESS_TESTER}"
-export NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET="${NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET}"
-export AZURE_STORAGE_ACCOUNT="${AZURE_STORAGE_ACCOUNT}"
-export USER_ID="${USER_ID}"
-export EXIST_FILE_ID="${EXIST_FILE_ID}"
-export TIME_ZONE="${TIME_ZONE}"
+#export DELIVERY_HOST="http://localhost:${server_port}/api/delivery/v2/"
+export DELIVERY_HOST="https://${ENV_HOST}/api/delivery/v2/"
+export SEARCH_HOST="https://${ENV_HOST}/api/search/v2/"
+export STORAGE_HOST="https://${ENV_HOST}/api/storage/v2/"
+export LEGAL_HOST="https://${ENV_HOST}/api/legal/v1/"
+export TENANT_NAME="${TENANT_NAME}"
+export AZURE_AD_TENANT_ID="${TENANT_ID}"
+export INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
+export TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
+export AZURE_STORAGE_ACCOUNT="${ENV_STORAGE}"
+export AZURE_AD_APP_RESOURCE_ID="${ENV_APP_ID}"
+export DEFAULT_DATA_PARTITION_ID_TENANT1="${OSDU_TENANT2}"
+export DEFAULT_DATA_PARTITION_ID_TENANT2="${OSDU_TENANT3}"
+export DOMAIN="${COMPANY_DOMAIN}"
+export ENTITLEMENTS_DOMAIN="${COMPANY_DOMAIN}"
+export LEGAL_TAG="${LEGAL_TAG}"
+export OTHER_RELEVANT_DATA_COUNTRIES="${OTHER_RELEVANT_DATA_COUNTRIES}"
 LOCALENV
 
 
 cat > ${UNIQUE}/${SERVICE}_local.yaml <<LOCALRUN
-LOG_PREFIX: "${LOG_PREFIX}"
-AZURE_TENANT_ID: "${AZURE_TENANT_ID}"
-AZURE_CLIENT_ID: "${AZURE_CLIENT_ID}"
-AZURE_CLIENT_SECRET: "${AZURE_CLIENT_SECRET}"
-keyvault_url: "${keyvault_url}"
-appinsights_key: "${appinsights_key}"
-cosmosdb_database: "${cosmosdb_database}"
-AZURE_AD_APP_RESOURCE_ID: "${AZURE_AD_APP_RESOURCE_ID}"
-osdu_entitlements_url: "${osdu_entitlements_url}"
-osdu_entitlements_app_key: "${osdu_entitlements_app_key}"
-osdu_storage_url: "${osdu_storage_url}"
-AZURE_STORAGE_ACCOUNT: "${AZURE_STORAGE_ACCOUNT}"
-aad_client_id: "${aad_client_id}"
-server_port: "${server_port}"
+AZURE_TENANT_ID: "${TENANT_ID}"
+AZURE_CLIENT_ID: "${ENV_PRINCIPAL_ID}"
+AZURE_CLIENT_SECRET: "${ENV_PRINCIPAL_SECRET}"
+KEYVAULT_URI: "${ENV_KEYVAULT}"
+aad_client_id: "${ENV_APP_ID}"
+appinsights_key: "${ENV_APPINSIGHTS_KEY}"
+AUTHORIZE_API: "https://${ENV_HOST}/entitlements/v1/"
+SEARCH_HOST: "https://${ENV_HOST}/api/search/v2/"
+partition_service_endpoint: "https://${ENV_HOST}/api/partition/v1/"
+BATCH_SIZE="${BATCH_SIZE}"
+SEARCH_QUERY_LIMIT="${SEARCH_QUERY_LIMIT}"
 azure_istioauth_enabled: "${azure_istioauth_enabled}"
+server_port: "${server_port}"
 LOCALRUN
 
 
 cat > ${UNIQUE}/${SERVICE}_local_test.yaml <<LOCALTEST
-FILE_SERVICE_HOST: "${FILE_SERVICE_HOST}"
-DATA_PARTITION_ID: "${DATA_PARTITION_ID}"
+DELIVERY_HOST: "http://localhost:${server_port}/api/delivery/v2/"
+SEARCH_HOST: "${SEARCH_HOST}"
+STORAGE_HOST: "${STORAGE_HOST}"
+LEGAL_HOST: "${LEGAL_HOST}"
+TENANT_NAME: "${TENANT_NAME}"
+AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${INTEGRATION_TESTER}"
 TESTER_SERVICEPRINCIPAL_SECRET: "${TESTER_SERVICEPRINCIPAL_SECRET}"
-AZURE_AD_TENANT_ID: "${AZURE_AD_TENANT_ID}"
-AZURE_AD_APP_RESOURCE_ID: "${AZURE_AD_APP_RESOURCE_ID}"
-NO_DATA_ACCESS_TESTER: "${NO_DATA_ACCESS_TESTER}"
-NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET: "${NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET}"
 AZURE_STORAGE_ACCOUNT: "${AZURE_STORAGE_ACCOUNT}"
-USER_ID: "${USER_ID}"
-EXIST_FILE_ID: "${EXIST_FILE_ID}"
-TIME_ZONE: "${TIME_ZONE}"
+AZURE_AD_APP_RESOURCE_ID: "${AZURE_AD_APP_RESOURCE_ID}"
+DEFAULT_DATA_PARTITION_ID_TENANT1: "${OSDU_TENANT2}"
+DEFAULT_DATA_PARTITION_ID_TENANT2: "${OSDU_TENANT3}
+DOMAIN: "${COMPANY_DOMAIN}"
+ENTITLEMENTS_DOMAIN: "${COMPANY_DOMAIN}"
+LEGAL_TAG: "${LEGAL_TAG}"
+OTHER_RELEVANT_DATA_COUNTRIES: "${OTHER_RELEVANT_DATA_COUNTRIES}"
 LOCALTEST
 
 
 cat > ${UNIQUE}/${SERVICE}_test.yaml <<DEVTEST
-FILE_SERVICE_HOST: "${FILE_SERVICE_HOST_REMOTE}"
-DATA_PARTITION_ID: "${DATA_PARTITION_ID}"
+DELIVERY_HOST: "http://${ENV_HOST}/api/delivery/v2/"
+SEARCH_HOST: "https://${ENV_HOST}/api/search/v2/"
+STORAGE_HOST: "https://${ENV_HOST}/api/storage/v2/"
+LEGAL_HOST: "https://${ENV_HOST}/api/legal/v1/"
+TENANT_NAME: "${TENANT_NAME}"
+AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${INTEGRATION_TESTER}"
 TESTER_SERVICEPRINCIPAL_SECRET: "${TESTER_SERVICEPRINCIPAL_SECRET}"
-AZURE_AD_TENANT_ID: "${AZURE_AD_TENANT_ID}"
-AZURE_AD_APP_RESOURCE_ID: "${AZURE_AD_APP_RESOURCE_ID}"
-NO_DATA_ACCESS_TESTER: "${NO_DATA_ACCESS_TESTER}"
-NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET: "${NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET}"
 AZURE_STORAGE_ACCOUNT: "${AZURE_STORAGE_ACCOUNT}"
-USER_ID: "${USER_ID}"
-EXIST_FILE_ID: "${EXIST_FILE_ID}"
-TIME_ZONE: "${TIME_ZONE}"
+AZURE_AD_APP_RESOURCE_ID: "${AZURE_AD_APP_RESOURCE_ID}"
+DEFAULT_DATA_PARTITION_ID_TENANT1: "${OSDU_TENANT2}"
+DEFAULT_DATA_PARTITION_ID_TENANT2: "${OSDU_TENANT3}
+DOMAIN: "${COMPANY_DOMAIN}"
+ENTITLEMENTS_DOMAIN: "${COMPANY_DOMAIN}"
+LEGAL_TAG: "${LEGAL_TAG}"
+OTHER_RELEVANT_DATA_COUNTRIES: "${OTHER_RELEVANT_DATA_COUNTRIES}"
 DEVTEST
