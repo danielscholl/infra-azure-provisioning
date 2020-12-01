@@ -35,7 +35,7 @@ cat  << EOF
       "ES_HOST": "$(echo $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-endpoint --query value -otsv) \
                    | sed 's/^.\{8\}//g' | sed 's/.\{5\}$//')",
       "ES_AUTH_TOKEN": "$(echo $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-username --query value -otsv):$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-password --query value -otsv) | base64)",
-      "INITIAL_TOKEN": ""
+      "INITIAL_TOKEN": "<put refresh token here from auth_token.http authorize request>"
     }
 }
 EOF
