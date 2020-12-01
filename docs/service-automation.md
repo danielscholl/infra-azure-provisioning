@@ -442,6 +442,8 @@ az pipelines create \
   -ojson
 ```
 
+**Stop here**. Before you continue, you must register your partition with the Data Partition API by following the instructions [here](./tools/rest/README.md) to configure your IDE to make authenticated requests to your OSDU instance and send the API request located [here](./tools/rest/partition.http) (createPartition).
+
 2. Add a Pipeline for __service-entitlements-azure__  to deploy the Entitlements Service.
     > This pipeline may have to be run twice for integration tests to pass due to a preload data issue.
 

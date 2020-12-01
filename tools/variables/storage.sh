@@ -221,7 +221,7 @@ LOCALRUN
 
 cat > ${UNIQUE}/${SERVICE}_local_test.yaml <<LOCALTEST
 STORAGE_URL: "http://localhost:${server_port}/api/storage/v2/"
-LEGAL_URL: "http://${ENV_HOST}/api/legal/v1/"
+LEGAL_URL: "https://${ENV_HOST}/api/legal/v1/"
 TENANT_NAME: "${OSDU_TENANT}"
 AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${ENV_PRINCIPAL_ID}"

@@ -269,11 +269,6 @@ __Automated Pipeline Installation__
 
 1. Setup Service Automation following directions [here](./docs/service-automation.md).
 
-1. Register your partition with the Data Partition API by following the instructions [here](./tools/rest/README.md) to configure your IDE to make authenticated requests to your OSDU instance and send the API request located [here](./tools/rest/partition.http) (createPartition).
-
-1. Enable Integration Tests for the pipelines.
-
-
 ## Developer Activities
 
 1. To onboard new services follow the process located [here](./docs/service-onboarding.md).
