@@ -7,7 +7,7 @@
 ###############################
 ## ARGUMENT INPUT            ##
 ###############################
-usage() { echo "Usage: common_prepare.sh <unique> <subscription_id>" 1>&2; exit 1; }
+usage() { echo "Usage: common_prepare.sh <subscription_id> <unique>" 1>&2; exit 1; }
 
 if [ -z $GIT_REPO ]; then
   tput setaf 1; echo 'ERROR: GIT_REPO not provided' ; tput sgr0
