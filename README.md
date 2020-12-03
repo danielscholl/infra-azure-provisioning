@@ -50,7 +50,7 @@ az account set --subscription <your_subscription>
 Configure an Azure Devops Project in your Organization called `osdu-mvp` and set the cli command to use the organization by default.
 
 ```bash
-export ADO_ORGANIZATION=<organization_name>
+export ADO_ORGANIZATION=https://dev.azure.com/<organization_name>/
 export ADO_PROJECT=osdu-mvp
 
 # Ensure the CLI extension is added
