@@ -1,83 +1,62 @@
 # Service Onboarding
+This document outlines the process of onboarding a service with OSDU on Azure.
 
-### Enable Azure Tasks in the service pipeline
+## Table of Contents
+1. [Infrastructure and Initial Requirements](#infrastructure-and-initial-requirements)
+1. [Gitlab Code and Documentation](#gitlab-code-and-documentation)
+1. [Development and Demo Azure Devops Pipelines](#development-and-demo-azure-devops-pipelines)
+1. [User Documentation](#user-documentation)
+1. [Release](#release)
 
-Each service has a common build pipeline `.gitlab-ci.yaml` and azure has to be added to the pipeline in order for the azure tasks to trigger
 
-__Azure Provider Environment Variables__
-Add the 3 required variables to the pipeline
+## Infrastructure and Initial Requirements
+Quick links: [Terraform infra template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp), [ingress](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/appgw-ingress.yaml), [test data](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/test_data), [integration tester](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/test_data/user_info_1.json), [secrets](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/kv-secrets.yaml), [environment variable scripts](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/variables)
 
-- AZURE_SERVICE - This variable names the service  ie: `storage`
-- AZURE_BUILD_SUBDIR - This variable is the path where the service azure provider pom file can be found ie: `provider/storage-azure`
-- AZURE_TEST_SUBDIR - This variable is the path where the testing azure provider pom file can be found ie: `testing/storage-test-azure`
+---
 
-```yaml
-variables:
+The first step to onboarding a service with OSDU on Azure is onboarding with the infrastructure. This includes the following activities:
+- Add any additional Azure cloud infrastructure (Cosmos containers, Storage containers, fileshares, etc.) to the Terraform template. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp)
+- Create an ingress point for the service. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/appgw-ingress.yaml)
+- Add any test data that is required for the service integration tests. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/test_data)
+- Update `upload-data.py` to upload any new test data files you created. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/test_data/upload-data.py).
+- Update the integration tester with any entitlements required to test the service. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/test_data/user_info_1.json)
+- Add in any new secrets that the service needs to run. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/kv-secrets.yaml)
+- Create environment variable script to generate .yaml files to be used with Intellij [EnvFile](https://plugins.jetbrains.com/plugin/7861-envfile) plugin and .envrc files to be used with [direnv](https://direnv.net/). [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/variables)
 
-  AZURE_SERVICE: <service_name>
-  AZURE_BUILD_SUBDIR: provider/<azure_directory>
-  AZURE_TEST_SUBDIR: testing/<azure_directory>
-```
+## Gitlab Code and Documentation
+Quick Links: [Azure Provider Implementation Guidance](./gitlab-service-guide.md), [Gitlab Azure pipeline variables](https://community.opengroup.org/osdu/platform/ci-cd-pipelines/-/blob/master/cloud-providers/azure.yml), [sample Istio auth policy](https://community.opengroup.org/osdu/platform/system/file/-/blob/master/devops/azure/chart/templates/azure-istio-auth-policy.yaml), [Gitlab provider README template](./gitlab-service-readme-template.md).
 
-__Azure Provider CI/CD Template__
-Add the azure ci/cd template include
+---
 
-```yaml
+After onboarding with the infrastructure, the code and documentation for the service must be completed. This includes the following activities:
+- Complete the service code such that it passes all integration tests locally. There is some documentation on starting off implementing an Azure provider. [Link](./gitlab-service-readme-template.md)
+- Create helm charts for service. The charts for each service are located in the devops/azure directory. You can look at charts from other services as a model. The charts will be nearly identical except for the different environment variables, values, etc each service needs to run. [Link](./gitlab-service-guide.md)
+- Implement Istio for the service if this has not already been done. Here is an example MR that shows what steps are required. [Link](https://community.opengroup.org/osdu/platform/system/storage/-/merge_requests/64)
+- Create an Istio auth policy in the devops/azure/chart/templates directory. Here is an example of an Istio auth policy that is generic and can be used by other services. [Link](https://community.opengroup.org/osdu/platform/system/storage/-/blob/master/devops/azure/chart/templates/azure-istio-auth-policy.yaml)
+- Add any variables that are required for the service integration tests to the Azure CI-CD file. [Link](https://community.opengroup.org/osdu/platform/ci-cd-pipelines/-/blob/master/cloud-providers/azure.yml)
+- Verify that the README for the Azure provider correctly and clearly describes how to run and test the service. There is a README template to help. [Link](./gitlab-service-readme-template.md)
+- Push any changes and verify that the Gitlab pipeline is passing in master.
 
-include:
-  - project: "osdu/platform/ci-cd-pipelines"
-    file: "cloud-providers/azure.yml"
-```
+## Development and Demo Azure Devops Pipelines
+Quick Links: [Azure Provider Implementation Guidance](./gitlab-service-guide.md), [sample pipeline.yml](https://community.opengroup.org/osdu/platform/system/storage/-/blob/master/devops/azure/pipeline.yml), [sample development-pipeline.yml](https://community.opengroup.org/osdu/platform/system/storage/-/blob/master/devops/azure/development-pipeline.yml)
 
-### Disable for the Project Azure Integration Testing
+---
+Once the code is passing through the pipelines in Gitlab, a pipeline needs to be established in Azure Devops (ADO). There are two nearly identical files for each service that define its ADO pipelines. These two pipelines are located at devops/azure/development-pipeline.yml and devops/azure/pipeline.yml for each service.  The development pipeline.yml file is currently a Microsoft used pipeline for Microsoft's Development efforts on OSDU.  Pipelines with the name pipeline.yml are treated as customer example pipelines for reference architecture which utilizes the environment name of `demo` in all documentation samples and pipelines.  Before proceeding, make sure that both pipelines are passing in ADO.
 
-The CI/CD Pipeline has a feature flag to disable Integration Testing for azure.  Set this variable to be true at the Project CI/CD Variable Settings.
 
-```
-AZURE_SKIP_TEST=true
-```
+## User Documentation
+Quick Links: [manual deployment instructions](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/charts), [code mirror instructions](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/code-mirroring.md), [rest calls](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/rest), [automated deployment instructions and variable group creation](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/service-automation.md)
 
-### Create the Helm Chart and Pipelines for the Service
+---
 
-Each service is responsible to maintain the helm chart necessary to install the service.  Charts for services are typically very similar but unique variables exist in the deployment.yaml that would be different for each services, additionally some files have service specific names that have to be modified from service to service.
+Once the service is passing both Gitlab and ADO pipelines, it has to be properly documented so other users can deploy and test the service. There are currently two distinct processes for deploying the services into AKS: a manual process and a pipeline controlled process. In a manual deployment, the user manually pushes the helm manifest for each service to their Flux repository which causes the service to be deployed into the AKS cluster. In a pipeline-controlled deployment, the user configures ADO pipelines to automate the deployment process. Additionally, each service is expected to have a file containing sample API calls for the service so that users can easily experiment with a service. In summary, the process of documentating a service includes the following activities:
 
-Each service is also responsible to maintain the pipeline files.  There are 2 pipeline files, one for MS development flows and the other for customer demo flows.
+- Add the service to the mirror pipeline instructions. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/code-mirroring.md)
+- Add the service to the manual deployment instructions. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/charts)
+- Add any required variables to the already existing variable group instructions for automated deployment. You should know if any variables need to be added to existing variable groups from creating the development and demo pipelines. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/service-automation.md#create-osdu-service-libraries)
+- Add a variable group `Azure Service Release - $SERVICE_NAME` to the documentation. You should know what values to set for this variable group from creating the development and demo pipelines. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/service-automation.md#create-osdu-service-libraries)
+- Add a step for creating the service pipeline at the bottom of the service-automation page. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/service-automation.md#create-osdu-service-libraries)
+- Create a rest script with sample calls to the service for users. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/rest)
 
-```
-├── devops
-│   ├── azure
-│   │   ├── README.md
-│   │   ├── chart
-│   │   │   ├── Chart.yaml
-│   │   │   ├── helm-config.yaml
-│   │   │   ├── templates
-│   │   │   │   ├── deployment.yaml
-│   │   │   │   └── service.yaml
-│   │   │   └── helm-config.yaml
-│   │   │   └── values.yaml
-│   │   └── release.yaml
-│   │   └── development-pipeline.yml
-│   │   └── pipeline.yml
-```
-
-### Execute the pipeline
-
-Execute the pipeline and the service should now build, deploy and start.  Validate that the service has started successfully.
-
-### Update the Ingress Controller
-
-If the service has a public ingress the service ingress needs to be updated which can be found in the osdu-common chart.
-
-### Update the Developer Variables
-
-Each service typically needs specific variables necessary to start the service and test the service.  These developer variables need to be updated so that other developers have the ability to work with the service locally.
-
-### Validate Integration Tests
-
-Using the Developer Variables the deployed service needs to be validated that all integration tests pass successfully and the required variables have been identified.
-
-### Update the Azure Cloud Provider CI/CD Template and enable testing
-
-Once the service can be integration tested successfully any additional variables necessary for testing need to be updated in the `cloud-providers/azure.yml` file.
-
-Remove the `AZURE_SKIP_TESTS` variable at the project and execute the pipeline
+## Release 
+**Coming soon**
