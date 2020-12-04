@@ -20,7 +20,7 @@
     "statsd"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache License",
   "files": [
     "LICENSE",
     "README.md",
