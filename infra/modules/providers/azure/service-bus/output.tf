@@ -15,12 +15,12 @@
 // topics_flattend is used to create the map of Topic Name to Topic Id.
 locals {
   topics_flattened = flatten([
-  for topic in azurerm_servicebus_topic.main : [
-    {
-      key   = topic.name
-      value = topic.id
-    }
-  ]
+    for topic in azurerm_servicebus_topic.main : [
+      {
+        key   = topic.name
+        value = topic.id
+      }
+    ]
   ])
 }
 
