@@ -174,10 +174,10 @@ __Installed Azure Resources__
 1. Resource Group
 2. Storage Account
 3. Key Vault
-4. A principal to be used for Terraform _(Requires Grant Admin Approval)_
-5. A principal to be used for the OSDU environment _(Requires Grant Admin Approval)_
-6. An application to be used for the OSDU environment _(future)_
-7. An application to be used for negative integration testing
+4. A principal to be used by Terraform to create all resources for an OSDU Environment. _(Requires Grant Admin Approval)_
+5. A principal required by an OSDU environment deployment that will have root level access to that environment. _(Requires Grant Admin Approval)_
+6. An AD application to be leveraged in the future that defines and controls access to the OSDU Environment for AD Identity. _(future)_
+7. An AD application to be used for negative integration testing
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group then purging the KV.
 
