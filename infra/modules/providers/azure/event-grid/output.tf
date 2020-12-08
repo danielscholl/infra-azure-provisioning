@@ -12,9 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-// topics_flattend is used to create the map of Topic Name to Topic Id.
+// topics_flattened is used to create the map of Topic Name to Topic Id.
 locals {
-  topics_flattend = flatten([
+  topics_flattened = flatten([
     for topic in azurerm_eventgrid_topic.main : [
       {
         key   = topic.name
@@ -41,5 +41,5 @@ output "primary_access_key" {
 
 output "topics" {
   description = "The Topic Name to Topic Id map for the given list of topics."
-  value       = { for item in local.topics_flattend : item.key => item.value }
+  value       = { for item in local.topics_flattened : item.key => item.value }
 }

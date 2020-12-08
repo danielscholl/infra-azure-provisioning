@@ -218,5 +218,17 @@ sb_topics = [
         forward_to         = ""
       }
     ]
+  },
+  {
+    name                = "recordstopiceg"
+    enable_partitioning = true
+    subscriptions = [
+      {
+        name               = "eg_sb_wkssubscription"
+        max_delivery_count = 5
+        lock_duration      = "PT5M"
+        forward_to         = ""
+      }
+    ]
   }
 ]
