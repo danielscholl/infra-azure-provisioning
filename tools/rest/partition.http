@@ -96,7 +96,7 @@ data-partition-id: {{data_partition_id}}
             "sensitive": true,
             "value": "storage"
         },
-        "eventgrid-recordstopic-endpoint": {
+        "eventgrid-recordstopic": {
             "sensitive": true,
             "value": "eventgrid-recordstopic"
         },
