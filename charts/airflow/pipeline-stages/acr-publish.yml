@@ -43,6 +43,7 @@ steps:
         az acr login -n $(CONTAINER_REGISTRY_NAME)
 
         IFS="|"; for dockerFile in $DOCKER_FILE_PATHS; do
+          dockerFile=`echo $dockerFile | sed -e 's/^[[:space:]]*//'`
           cd $(Build.SourcesDirectory)/$SOURCE/$dockerFile
           IMAGE=$(CONTAINER_REGISTRY_NAME).azurecr.io/$dockerFile-${{ parameters.environment }}:$(Build.SourceVersion)
           echo "Tagging and Pushing $IMAGE to ACR "
