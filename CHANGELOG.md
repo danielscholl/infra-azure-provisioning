@@ -9,7 +9,7 @@ __Documentation Changes__
 - [MR 94 - Fixing File Pipeline and Search URL Variable](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/94)
 - [MR 95 - Updating Service Onboarding](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/95)'
 - [MR 100 - Updating Service Onboarding Template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/103)
-
+- [MR 102 - Updating Service Onboarding Template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/102)
 
   __Tool Changes__
 - [MR 91 - Adding Scripts for Unit and CRS Catalog](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/91)
