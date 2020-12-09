@@ -95,6 +95,14 @@ data-partition-id: {{data_partition_id}}
         "storage-account-name": {
             "sensitive": true,
             "value": "storage"
+        },
+        "eventgrid-recordstopic-endpoint": {
+            "sensitive": true,
+            "value": "eventgrid-recordstopic"
+        },
+        "eventgrid-recordstopic-accesskey": {
+            "sensitive": true,
+            "value": "eventgrid-recordstopic-accesskey"
         }
     }
 }
