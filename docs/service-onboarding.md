@@ -1,5 +1,5 @@
 # Service Onboarding
-This document outlines the process of onboarding a service with OSDU on Azure.
+This document outlines the process of onboarding a service with OSDU on Azure. Note that if you are a service owner who is onboarding a service, there is an issue template in this repository titled "service_onboarding_template" that we ask you use so we can track along with your process.
 
 ## Table of Contents
 1. [Infrastructure and Initial Requirements](#infrastructure-and-initial-requirements)
@@ -15,7 +15,7 @@ Quick links: [Terraform infra template](https://community.opengroup.org/osdu/pla
 ---
 
 The first step to onboarding a service with OSDU on Azure is onboarding with the infrastructure. This includes the following activities:
-- Add any additional Azure cloud infrastructure (Cosmos containers, Storage containers, fileshares, etc.) to the Terraform template. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp)
+- Add any additional Azure cloud infrastructure (Cosmos containers, Storage containers, fileshares, etc.) to the Terraform template. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp). Note that if the infrastructure is a part of the data-partition template, you may need to add secrets to the keyvault that are partition specific; if doing so, update the createPartition REST request to include the keys that you have added so they are accessible in service code. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/rest/partition.http#L48)
 - Create an ingress point for the service. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/appgw-ingress.yaml)
 - Add any test data that is required for the service integration tests. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/test_data)
 - Update `upload-data.py` to upload any new test data files you created. [Link](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/test_data/upload-data.py).
