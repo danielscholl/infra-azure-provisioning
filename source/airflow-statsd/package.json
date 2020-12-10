@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:binroon/ApplicationInsights-statsd.git"
+    "url": "git+https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning.git"
   },
   "keywords": [
     "application",
@@ -22,9 +22,9 @@
   "author": "",
   "license": "Apache License",
   "files": [
-    "LICENSE",
-    "README.md",
-    "lib/appinsights.js"
+    "source/airflow-statsd/LICENSE",
+    "source/airflow-statsd/README.md",
+    "source/airflow-statsd/lib/appinsights.js"
   ],
   "dependencies": {
     "applicationinsights": "1.8.2"
