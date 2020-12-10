@@ -62,6 +62,7 @@ steps:
 
         function git_commit() {
           echo "COPY YAML FILES FROM $GITOPS_MANIFEST_DIRECTORY..."
+          [ -d ./$GENERATION_PATH/$SERVICE_NAME ] && rm -rf ./$GENERATION_PATH/$SERVICE_NAME/*
           cp -rf $GITOPS_MANIFEST_DIRECTORY .
 
           echo "SKIP DEPLOY: $SKIP_DEPLOY, HLD-REG: $HLD_REG_PATH"

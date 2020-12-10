@@ -86,10 +86,12 @@ locals {
   resource_group_name = format("%s-%s-%s-rg", var.prefix, local.workspace, random_string.workspace_scope.result)
   retention_policy    = var.log_retention_days == 0 ? false : true
 
-  storage_name            = "${replace(local.base_name_21, "-", "")}data"
-  sdms_storage_name       = "${replace(local.base_name_21, "-", "")}sdms"
-  cosmosdb_name           = "${local.base_name}-db"
-  sb_namespace            = "${local.base_name_21}-bus"
+  storage_name      = "${replace(local.base_name_21, "-", "")}data"
+  sdms_storage_name = "${replace(local.base_name_21, "-", "")}sdms"
+  cosmosdb_name     = "${local.base_name}-db"
+  sb_namespace      = "${local.base_name_21}-bus"
+
+  eg_sbtopic_subscriber   = "servicebusrecordstopic"
   eventgrid_name          = "${local.base_name_21}-grid"
   eventgrid_records_topic = format("%s-recordstopic", local.eventgrid_name)
 
@@ -287,6 +289,16 @@ resource "azurerm_role_assignment" "event_grid_topics_role" {
   role_definition_name = "EventGrid EventSubscription Contributor"
   principal_id         = local.rbac_principals[count.index]
   scope                = lookup(module.event_grid.topics, local.eventgrid_records_topic)
+}
+
+// Add a Service Bus Topic subscriber that is used by WKS service.
+resource "azurerm_eventgrid_event_subscription" "service_bus_topic_subscriber" {
+  name = local.eg_sbtopic_subscriber
+
+  scope      = lookup(module.event_grid.topics, local.eventgrid_records_topic)
+  depends_on = [module.service_bus.id]
+
+  service_bus_topic_endpoint_id = lookup(module.service_bus.topicsmap, "recordstopiceg")
 }
 
 #-------------------------------

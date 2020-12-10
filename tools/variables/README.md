@@ -16,6 +16,7 @@ az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $A
 
 export DNS_HOST=<your_fqdn>
 export COMMON_VAULT=<your_common_vault>
+export INVALID_JWT=<any_invalid_jwt>
 ```
 
 __Create Service Environment Variables__
@@ -23,7 +24,7 @@ __Create Service Environment Variables__
 Generate the environment .envrc and yaml files compatable with intelliJ [envfile](https://plugins.jetbrains.com/plugin/7861-envfile) plugin.
 
 ```bash
-for SERVICE in partition entitlements-azure legal storage indexer-service search-service;
+for SERVICE in partition entitlements-azure legal storage indexer-service search-service delivery file;
 do
   ./$SERVICE.sh
 done

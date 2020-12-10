@@ -20,7 +20,7 @@
     "statsd"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache License",
   "files": [
     "source/airflow-statsd/LICENSE",
     "source/airflow-statsd/README.md",

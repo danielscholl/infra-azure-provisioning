@@ -148,6 +148,11 @@ cosmos_sql_collections = [
     name               = "FileLocationEntity"
     database_name      = "osdu-db"
     partition_key_path = "/id"
+  },
+  {
+    name               = "WorkflowCustomOperatorInfo"
+    database_name      = "osdu-db"
+    partition_key_path = "/operatorId"
   }
 ]
 
@@ -208,6 +213,18 @@ sb_topics = [
     subscriptions = [
       {
         name               = "downstreamsub"
+        max_delivery_count = 5
+        lock_duration      = "PT5M"
+        forward_to         = ""
+      }
+    ]
+  },
+  {
+    name                = "recordstopiceg"
+    enable_partitioning = true
+    subscriptions = [
+      {
+        name               = "eg_sb_wkssubscription"
         max_delivery_count = 5
         lock_duration      = "PT5M"
         forward_to         = ""
