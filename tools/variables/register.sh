@@ -66,7 +66,6 @@ SUBSCRIBER_SECRET="395f1b05e95171d7c0dde0b19fd6cf"
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
 REGISTER_BASE_URL="https://${ENV_HOST}/"
-TENANT_NAME="${OSDU_TENANT}"
 AZURE_AD_TENANT_ID="${TENANT_ID}"
 INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
 TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
@@ -149,7 +148,6 @@ export SUBSCRIBER_SECRET="395f1b05e95171d7c0dde0b19fd6cf"
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
 #export REGISTER_BASE_URL="https://${ENV_HOST}/"
-export TENANT_NAME="${TENANT_NAME}"
 export AZURE_AD_TENANT_ID="${TENANT_ID}"
 export INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
 export TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
@@ -180,7 +178,6 @@ LOCALRUN
 
 cat > ${UNIQUE}/${SERVICE}_local_test.yaml <<LOCALTEST
 REGISTER_BASE_URL: "http://localhost:${server_port}/"
-TENANT_NAME: "${OSDU_TENANT}"
 AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${ENV_PRINCIPAL_ID}"
 TESTER_SERVICEPRINCIPAL_SECRET: "${ENV_PRINCIPAL_SECRET}"
@@ -196,7 +193,6 @@ LOCALTEST
 
 cat > ${UNIQUE}/${SERVICE}_test.yaml <<DEVTEST
 REGISTER_BASE_URL: "https://${ENV_HOST}/"
-TENANT_NAME: "${OSDU_TENANT}"
 AZURE_AD_TENANT_ID: "${TENANT_ID}"
 INTEGRATION_TESTER: "${ENV_PRINCIPAL_ID}"
 TESTER_SERVICEPRINCIPAL_SECRET: "${ENV_PRINCIPAL_SECRET}"
