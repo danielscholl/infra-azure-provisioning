@@ -16,6 +16,7 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | search-service            | https://community.opengroup.org/osdu/platform/system/search-service.git |
 | delivery                  | https://community.opengroup.org/osdu/platform/system/delivery.git       |
 | file                      | https://community.opengroup.org/osdu/platform/system/file.git      |
+| crs-conversion-service    | https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git |
 
 ```bash
 export ADO_ORGANIZATION=<organization_name>
@@ -24,7 +25,7 @@ export ADO_PROJECT=osdu-mvp
 az devops configure --defaults organization=https://dev.azure.com/$ADO_ORGANIZATION project=$ADO_PROJECT
 
 # Create required ADO Repositories
-for SERVICE in infra-azure-provisioning partition entitlements-azure legal storage indexer-queue indexer-service search-service delivery file;
+for SERVICE in infra-azure-provisioning partition entitlements-azure legal storage indexer-queue indexer-service search-service delivery file crs-conversion-service;
 do
   az repos create --name $SERVICE --organization https://dev.azure.com/${ADO_ORGANIZATION} --project $ADO_PROJECT -ojson
 done
@@ -50,6 +51,7 @@ Variable Group Name:  `Mirror Variables`
 | SEARCH_REPO | https://dev.azure.com/osdu-demo/osdu/_git/search-service |
 | DELIVERY_REPO | https://dev.azure.com/osdu-demo/osdu/_git/delivery |
 | FILE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/file |
+| CRS_CONVERSION_REPO | https://dev.azure.com/osdu-demo/osdu/_git/crs-conversion-service |
 | ACCESS_TOKEN | <your_personal_access_token> |
 
 
@@ -73,6 +75,7 @@ az pipelines variable-group create \
   SEARCH_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/search-service \
   DELIVERY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/delivery \
   FILE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/file \
+  CRS_CONVERSION_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/crs-conversion-service \
   ACCESS_TOKEN=$ACCESS_TOKEN \
   -ojson
 ```
@@ -189,6 +192,13 @@ jobs:
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/file.git'
         destinationGitRepositoryUri: '$(FILE_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'crs-conversion-service'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git'
+        destinationGitRepositoryUri: '$(CRS_CONVERSION_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 EOF
 
