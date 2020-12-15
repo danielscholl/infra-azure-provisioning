@@ -6,20 +6,28 @@ parameters:
   testArtifactLocation: 'drop/deploy'
 
 steps:
+  - task: UsePythonVersion@0
+    condition: and(succeeded(), eq('${{ parameters.runPythonTest }}', 'true'))
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+
   - task: Bash@3
     condition: and(succeeded(), eq('${{ parameters.runPythonTest }}', 'true'))
     name: ${{ parameters.stepName }}
-    displayName: 'Run python integration tests'
-    inputs:
-      targetType: filePath
-      filePath: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testPythonFilePath }}/${{ parameters.testPythonFile }}'
-      arguments: '$(AUTH_SECRET) $(AUTH_SERVICE_TOKEN_X_API_KEY)'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testPythonFilePath }}'
+    displayName: 'Python run integration tests'
     env:
       VIRTUAL_SERVICE_HOST_NAME: $(DNS_HOST)
       INTEGRATION_TESTER: $(INTEGRATION_TESTER)
       AZURE_TESTER_SERVICEPRINCIPAL_SECRET: $(AZURE_TESTER_SERVICEPRINCIPAL_SECRET)
       AZURE_AD_TENANT_ID: $(AZURE_AD_TENANT_ID)
       AZURE_AD_APP_RESOURCE_ID: $(AZURE_AD_APP_RESOURCE_ID)
-      BASE_URL: /api/unit
       MY_TENANT: $(MY_TENANT)
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/${{ parameters.testArtifactLocation }}/${{ parameters.testPythonFilePath }}'
+      script: |
+        #!/usr/bin/env bash
+
+        ./run-integration-tests.sh
+        exit $?
