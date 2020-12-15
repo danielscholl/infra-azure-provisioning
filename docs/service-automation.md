@@ -6,30 +6,30 @@ This variable group will be used to hold the common values for the services to b
 
 | Variable                                      | Value |
 |-----------------------------------------------|-------|
-| ADMIN_EMAIL                                   | <your_sslcert_admin_email>                |
-| AGENT_POOL                                    | `Hosted Ubuntu 1604`                      |
-| AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                       |
-| AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                         |
+| ADMIN_EMAIL                                   | <your_sslcert_admin_email>                  |
+| AGENT_POOL                                    | `Hosted Ubuntu 1604`                        |
+| AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                         |
+| AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                           |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-mvp-<your_unique>-application-clientid)` |
-| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-mvp-<your_unique>-application-oid)`|
-| AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                        |
-| AZURE_AD_USER_OID                             | `$(ad-user-oid)`                          |
-| AZURE_LEGAL_TOPICNAME                         | `legaltags`                               |
-| DEPLOY_ENV                                    | `empty`                                   |
-| ENTITLEMENT_URL                               | `https://<your_fqdn>/entitlements/v1/`    |
-| EXPIRED_TOKEN                                 | <an_expired_token>                        |
-| HOST_URL                                      | `https://<your_fqdn>/`                    |
-| LEGAL_URL                                     | `https://<your_fqdn>/api/legal/v1/`       |
-| STORAGE_URL                                   | `https://<your_fqdn>/api/storage/v2/`     |
+| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-mvp-<your_unique>-application-oid)` |
+| AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                          |
+| AZURE_AD_USER_OID                             | `$(ad-user-oid)`                            |
+| AZURE_LEGAL_TOPICNAME                         | `legaltags`                                 |
+| DEPLOY_ENV                                    | `empty`                                     |
+| ENTITLEMENT_URL                               | `https://<your_fqdn>/entitlements/v1/`      |
+| EXPIRED_TOKEN                                 | <an_expired_token>                          |
+| HOST_URL                                      | `https://<your_fqdn>/`                      |
+| LEGAL_URL                                     | `https://<your_fqdn>/api/legal/v1/`         |
+| STORAGE_URL                                   | `https://<your_fqdn>/api/storage/v2/`       |
 | NO_DATA_ACCESS_TESTER                         | `$(osdu-mvp-<your_unique>-noaccess-clientid)`  |
-| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-mvp-<your_unique>-noaccess-secret)`   |
-| PUBSUB_TOKEN                                  | `az`                                      |
-| SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
-| GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
-| FILE_URL                                      | `https://<your_fqdn>/api/file/v2`         |
-| DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`         |
-| SEARCH_URL                                    | `https://<your_fqdn>/api/search/v2/`         |
-
+| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-mvp-<your_unique>-noaccess-secret)` |
+| PUBSUB_TOKEN                                  | `az`                                        |
+| SERVICE_CONNECTION_NAME                       | <your_service_connection_name>              |
+| GOOGLE_CLOUD_PROJECT                          | `opendes`                                   |
+| FILE_URL                                      | `https://<your_fqdn>/api/file/v2`           |
+| DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`       |
+| SEARCH_URL                                    | `https://<your_fqdn>/api/search/v2/`        |
+| CRS_CONVERSION_URL                            | `https://<your_fqdn>/api/crs/converter/v2/` |
 
 ```bash
 ADMIN_EMAIL="<your_cert_admin>"     # ie: admin@email.com
@@ -64,6 +64,7 @@ az pipelines variable-group create \
   FILE_URL="https://${DNS_HOST}/api/file/v2" \
   DELIVERY_URL="https://${DNS_HOST}/api/delivery/v2/" \
   SEARCH_URL="https://${DNS_HOST}/api/search/v2/" \
+  CRS_CONVERSION_URL="https://${DNS_HOST}/api/crs/converter/v2/" \
   -ojson
 ```
 
