@@ -47,6 +47,8 @@ az account set --subscription <your_subscription>
 
 ### Configure and Work with an Azure Devops Project
 
+> [Role Documentation](https://docs.microsoft.com/en-us/azure/devops/organizations/security/about-security-identity?view=azure-devops): Working on ADO Organizations require certain Roles for the user.  To perform these activities a user must be able to create an ADO project in an organization and have administrator level access to the Project created.   
+
 Configure an Azure Devops Project in your Organization called `osdu-mvp` and set the cli command to use the organization by default.
 
 ```bash
@@ -57,7 +59,7 @@ export ADO_PROJECT=osdu-mvp
 az extension add --name azure-devops
 
 # Setup a Project Space in your organization
-az devops project create --name $ADO_PROJECT --organization $ADO_ORGANIZATION
+az devops project create --name $ADO_PROJECT --organization https://dev.azure.com/$ADO_ORGANIZATION/
 
 # Configure the CLI Defaults to work with the organization and project
 az devops configure --defaults organization=https://dev.azure.com/$ADO_ORGANIZATION project=$ADO_PROJECT
@@ -108,6 +110,8 @@ In order for Automated Pipelines to be able to work with this repository the fol
 
 
 ## Provision the Common Resources
+> [Role Documentation](https://docs.microsoft.com/en-us/azure/role-based-access-control/rbac-and-directory-admin-roles): Provisioning Common Resources requires owner access to the subscription, however AD Service Principals are created that will required an AD Admin to grant approval consent on the principals created.   
+
 
 The script `common_prepare.sh` script is a _helper_ script designed to help setup some of the common things that are necessary for infrastructure.
 
@@ -170,10 +174,10 @@ __Installed Azure Resources__
 1. Resource Group
 2. Storage Account
 3. Key Vault
-4. A principal to be used for Terraform _(Requires Grant Admin Approval)_
-5. A principal to be used for the OSDU environment _(Requires Grant Admin Approval)_
-6. An application to be used for the OSDU environment _(future)_
-7. An application to be used for negative integration testing
+4. A principal to be used by Terraform to create all resources for an OSDU Environment. _(Requires Grant Admin Approval)_
+5. A principal required by an OSDU environment deployment that will have root level access to that environment. _(Requires Grant Admin Approval)_
+6. An AD application to be leveraged in the future that defines and controls access to the OSDU Environment for AD Identity. _(future)_
+7. An AD application to be used for negative integration testing
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group then purging the KV.
 
@@ -184,6 +188,8 @@ __Azure AD Admin Consent__
 
 1. osdu-mvp-{UNIQUE}-terraform  _(Azure AD Application Graph - Application.ReadWrite.OwnedBy)_
 2. osdu-mvp-{UNIQUE}-principal _(Microsoft Graph - Directory.Read.All)_
+
+For more information on Azure identity and authorization, see the official Microsoft documentation [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent).
 
 
 

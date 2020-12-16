@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: appinsights-statsd
-        image: binroon/appinsights-statsd:latest
+        image: {{ .Values.image.repository }}/airflow-statsd-{{ .Values.image.branch }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: Always
         command: ["node"]
         args: ["/usr/src/app/statsd/stats.js", "/usr/src/app/statsd/backends/config/appinsightsconfig.js"]

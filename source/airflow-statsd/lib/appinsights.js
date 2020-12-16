@@ -110,7 +110,7 @@ var AppInsightsBackend = (function () {
                 properties = JSON.parse(buffer.toString("utf8"));
             }
             catch (error) {
-                this.aiClient.trackException(new Error("Failed to parse properties string from key '" + key + "': " + util.inspect(error)));
+               this.aiClient.trackException({exception: new Error("Failed to parse properties string from key '" + key + "': " + util.inspect(error))});
             }
         }
         return {

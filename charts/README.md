@@ -118,7 +118,7 @@ airflow:
       AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "az_log"
       AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "wasb-airflowlog"
       AIRFLOW__CORE__LOGGING_CONFIG_CLASS: "log_config.DEFAULT_LOGGING_CONFIG"
-      AIRFLOW__CORE__LOG_FILENAME_TEMPLATE: "{{ run_id }}/{{ ti.dag_id }}/{{ ti.task_id }}/{{ ts }}/{{ try_number }}.log"
+      AIRFLOW__CORE__LOG_FILENAME_TEMPLATE: "{{ run_id }}/{{ ti.dag_id }}/{{ ti.task_id }}/{{ ts }}/{% if 'correlationId' in dag_run.conf %}{{ dag_run.conf['correlationId'] }}{% else %}None{% endif %}/{{ try_number }}.log"
       AIRFLOW__CELERY__SSL_ACTIVE: "True"
       AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX: "True"
       AIRFLOW__CORE__PLUGINS_FOLDER: "/opt/airflow/plugins"
@@ -224,6 +224,9 @@ git clone https://community.opengroup.org/osdu/platform/system/indexer-service.g
 git clone https://community.opengroup.org/osdu/platform/system/search-service.git $SRC_DIR/search-service
 git clone https://community.opengroup.org/osdu/platform/system/file.git $SRC_DIR/file-service
 git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC_DIR/delivery
+git clone https://community.opengroup.org/osdu/platform/system/unit-service.git $SRC_DIR/unit-service
+git clone https://community.opengroup.org/osdu/platform/system/crs-catalog-service.git $SRC_DIR/crs-catalog-service
+git clone https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git $SRC_DIR/crs-conversion-service
 ```
 
 
@@ -279,7 +282,7 @@ helm template osdu-flux ${INFRA_SRC}/charts/osdu-istio-auth -f ${INFRA_SRC}/char
 # Publish Docker Images for airflow components
 CONTAINER_REGISTRY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/container-registry --query value -otsv)
 az acr login -n $CONTAINER_REGISTRY
-for SERVICE in airflow-function;
+for SERVICE in airflow-function airflow-statsd;
 do
   cd ${INFRA_SRC}/source/$SERVICE
   IMAGE=$CONTAINER_REGISTRY.azurecr.io/$SERVICE-$BRANCH:$(TAG)
@@ -301,7 +304,21 @@ helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_
   && git push origin $UNIQUE)
 
 # Extract manifests from each service chart.
-for SERVICE in partition entitlements-azure legal storage indexer-queue indexer-service search-service file-service delivery;
+SERVICE_LIST="infra-azure-provisioning \
+              partition \
+              entitlements-azure \
+              legal \
+              storage \
+              indexer-queue \
+              indexer-service \
+              search-service \
+              delivery \
+              file \
+              unit-service \
+              crs-conversion-service \
+              crs-catalog-service"
+
+for SERVICE in SERVICE_LIST;
 do
   helm template $SERVICE ${SRC_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
 done

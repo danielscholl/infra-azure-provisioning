@@ -6,29 +6,30 @@ This variable group will be used to hold the common values for the services to b
 
 | Variable                                      | Value |
 |-----------------------------------------------|-------|
-| ADMIN_EMAIL                                   | <your_sslcert_admin_email>                |
-| AGENT_POOL                                    | `Hosted Ubuntu 1604`                      |
-| AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                       |
-| AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                         |
+| ADMIN_EMAIL                                   | <your_sslcert_admin_email>                  |
+| AGENT_POOL                                    | `Hosted Ubuntu 1604`                        |
+| AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                         |
+| AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                           |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-mvp-<your_unique>-application-clientid)` |
-| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-mvp-<your_unique>-application-oid)`|
-| AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                        |
-| AZURE_AD_USER_OID                             | `$(ad-user-oid)`                          |
-| AZURE_LEGAL_TOPICNAME                         | `legaltags`                               |
-| DEPLOY_ENV                                    | `empty`                                   |
-| ENTITLEMENT_URL                               | `https://<your_fqdn>/entitlements/v1/`    |
-| EXPIRED_TOKEN                                 | <an_expired_token>                        |
-| HOST_URL                                      | `https://<your_fqdn>/`                    |
-| LEGAL_URL                                     | `https://<your_fqdn>/api/legal/v1/`       |
-| STORAGE_URL                                   | `https://<your_fqdn>/api/storage/v2/`     |
+| AZURE_AD_OTHER_APP_RESOURCE_OID               | `$(osdu-mvp-<your_unique>-application-oid)` |
+| AZURE_AD_USER_EMAIL                           | `$(ad-user-email)`                          |
+| AZURE_AD_USER_OID                             | `$(ad-user-oid)`                            |
+| AZURE_LEGAL_TOPICNAME                         | `legaltags`                                 |
+| DEPLOY_ENV                                    | `empty`                                     |
+| EXPIRED_TOKEN                                 | <an_expired_token>                          |
+| HOST_URL                                      | `https://<your_fqdn>/`                      |
 | NO_DATA_ACCESS_TESTER                         | `$(osdu-mvp-<your_unique>-noaccess-clientid)`  |
-| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-mvp-<your_unique>-noaccess-secret)`   |
-| PUBSUB_TOKEN                                  | `az`                                      |
-| SERVICE_CONNECTION_NAME                       | <your_service_connection_name>            |
-| GOOGLE_CLOUD_PROJECT                          | `opendes`                                 |
-| FILE_URL                                      | `https://<your_fqdn>/api/file/v2`         |
-| DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`         |
-
+| NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET | `$(osdu-mvp-<your_unique>-noaccess-secret)` |
+| PUBSUB_TOKEN                                  | `az`                                        |
+| SERVICE_CONNECTION_NAME                       | <your_service_connection_name>              |
+| GOOGLE_CLOUD_PROJECT                          | `opendes`                                   |
+| ENTITLEMENT_URL                               | `https://<your_fqdn>/entitlements/v1/`      |
+| LEGAL_URL                                     | `https://<your_fqdn>/api/legal/v1/`         |
+| STORAGE_URL                                   | `https://<your_fqdn>/api/storage/v2/`       |
+| SEARCH_URL                                    | `https://<your_fqdn>/api/search/v2/`        |
+| FILE_URL                                      | `https://<your_fqdn>/api/file/v2`           |
+| DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`       |
+| CRS_CONVERSION_URL                            | `https://<your_fqdn>/api/crs/converter/v2/` |
 
 ```bash
 ADMIN_EMAIL="<your_cert_admin>"     # ie: admin@email.com
@@ -50,18 +51,20 @@ az pipelines variable-group create \
   AZURE_AD_USER_OID='$(ad-user-oid)' \
   AZURE_LEGAL_TOPICNAME="legaltags" \
   DEPLOY_ENV="empty" \
-  ENTITLEMENT_URL="https://${DNS_HOST}/entitlements/v1/" \
   EXPIRED_TOKEN=$INVALID_TOKEN \
   HOST_URL="https://${DNS_HOST}/" \
-  LEGAL_URL="https://${DNS_HOST}/api/legal/v1/" \
-  STORAGE_URL="https://${DNS_HOST}/api/storage/v2/" \
   NO_DATA_ACCESS_TESTER='$(osdu-mvp-'${UNIQUE}'-noaccess-clientid)' \
   NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET='$(osdu-mvp-'${UNIQUE}'-noaccess-secret)' \
   PUBSUB_TOKEN="az" \
   SERVICE_CONNECTION_NAME=$SERVICE_CONNECTION_NAME \
   GOOGLE_CLOUD_PROJECT="opendes" \
+  ENTITLEMENT_URL="https://${DNS_HOST}/entitlements/v1/" \
+  LEGAL_URL="https://${DNS_HOST}/api/legal/v1/" \
+  STORAGE_URL="https://${DNS_HOST}/api/storage/v2/" \
+  SEARCH_URL="https://${DNS_HOST}/api/search/v2/" \
   FILE_URL="https://${DNS_HOST}/api/file/v2" \
   DELIVERY_URL="https://${DNS_HOST}/api/delivery/v2/" \
+  CRS_CONVERSION_URL="https://${DNS_HOST}/api/crs/converter/v2/" \
   -ojson
 ```
 
@@ -313,7 +316,7 @@ This variable group is the service specific variables necessary for testing and 
 | Variable | Value |
 |----------|-------|
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/file-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DDATA_PARTITION_ID=$(MY_TENANT) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0"` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DSTAGING_CONTAINER_NAME=file-staging-area -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0" -DDATA_PARTITION_ID=$(MY_TENANT)` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/file-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_FILE_SERVICE_NAME)` |
 
@@ -323,7 +326,7 @@ az pipelines variable-group create \
   --authorize true \
   --variables \
   MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/file-azure" \
-  MAVEN_INTEGRATION_TEST_OPTIONS='-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DDATA_PARTITION_ID=$(MY_TENANT) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0"' \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DFILE_SERVICE_HOST=$(FILE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DSTAGING_CONTAINER_NAME=file-staging-area -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_STORAGE_ACCOUNT=$(STORAGE_ACCOUNT) -DUSER_ID=osdu-user -DEXIST_FILE_ID=8900a83f-18c6-4b1d-8f38-309a208779cc -DTIME_ZONE="UTC+0" -DDATA_PARTITION_ID=$(MY_TENANT)' \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/file-test-azure" \
   SERVICE_RESOURCE_NAME='$(AZURE_FILE_SERVICE_NAME)' \
   -ojson
@@ -352,6 +355,23 @@ az pipelines variable-group create \
   -ojson
 ```
 
+__Setup and Configure the ADO Library `Azure Service Release - unit-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `unit` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/unit-azure/unit-aks` |
+
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - unit" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/unit-azure/unit-aks" \
+  -ojson
+```
 
 __Create the Chart Pipelines__
 
@@ -543,7 +563,7 @@ az pipelines create \
   -ojson
 ```
 
-7. Add a Pipeline for __file__  to deploy the File Service.
+8. Add a Pipeline for __file__  to deploy the File Service.
 
     _Repo:_ `file`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -559,7 +579,7 @@ az pipelines create \
   -ojson
 ```
 
-8. Add a Pipeline for __delivery__  to deploy the Delivery Service.
+9. Add a Pipeline for __delivery__  to deploy the Delivery Service.
 
     _Repo:_ `delivery`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -569,6 +589,22 @@ az pipelines create \
 az pipelines create \
   --name 'service-delivery'  \
   --repository delivery  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+10. Add a Pipeline for __unit__  to deploy the Unit Service.
+
+    _Repo:_ `unit-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/unit/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-unit'  \
+  --repository unit-service  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
