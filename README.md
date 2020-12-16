@@ -189,6 +189,8 @@ __Azure AD Admin Consent__
 1. osdu-mvp-{UNIQUE}-terraform  _(Azure AD Application Graph - Application.ReadWrite.OwnedBy)_
 2. osdu-mvp-{UNIQUE}-principal _(Microsoft Graph - Directory.Read.All)_
 
+For more information on Azure identity and authorization, see the official Microsoft documentation [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent).
+
 
 
 ## Elastic Search Setup
