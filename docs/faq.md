@@ -69,4 +69,15 @@ Security Layers of OSDU API’s currently exist for User Authentication and Auth
 ## What mechanisms currently exist to Ingest Data can Azure Data Factory be leveraged for Data Ingestion?
 
 Data Ingestion is currently under development and due to initial OSDU community restraints that exist the workflow integrated to the open source code base leverages Airflow for its workflow engine.
+
+
+# Common problems
+
+## 'Terraform Destroy' isn't properly cleaning up my environment
+
+Sometimes when `terraform destroy` is done improperly (errors out, is cancelled before its finished etc) the terraform state becomes __locked__. In order to fix this you must navigate to your _terraform-remote-state-container_ and manually unlock the _tf_state_
+
+## I can't change the names for my infrastructure deployment
+
+When you are deploying via terraform, once you pick a name for the terraform script to use when naming Azure resources, you cannot change the naming convention so __choose carefully!!__
  
