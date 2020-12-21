@@ -227,6 +227,8 @@ git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC
 git clone https://community.opengroup.org/osdu/platform/system/unit-service.git $SRC_DIR/unit-service
 git clone https://community.opengroup.org/osdu/platform/system/crs-catalog-service.git $SRC_DIR/crs-catalog-service
 git clone https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git $SRC_DIR/crs-conversion-service
+git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/notification
+
 ```
 
 
@@ -316,7 +318,8 @@ SERVICE_LIST="infra-azure-provisioning \
               file \
               unit-service \
               crs-conversion-service \
-              crs-catalog-service"
+              crs-catalog-service \
+              notification"
 
 for SERVICE in SERVICE_LIST;
 do
