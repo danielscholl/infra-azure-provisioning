@@ -227,8 +227,9 @@ git clone https://community.opengroup.org/osdu/platform/system/delivery.git $SRC
 git clone https://community.opengroup.org/osdu/platform/system/unit-service.git $SRC_DIR/unit-service
 git clone https://community.opengroup.org/osdu/platform/system/crs-catalog-service.git $SRC_DIR/crs-catalog-service
 git clone https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git $SRC_DIR/crs-conversion-service
-git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/notification
-
+git clone https://community.opengroup.org/osdu/platform/system/notification.git $SRC_DIR/notification
+git clone https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks.git $SRC_DIR/wks
+git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/register
 ```
 
 
@@ -319,6 +320,8 @@ SERVICE_LIST="infra-azure-provisioning \
               unit-service \
               crs-conversion-service \
               crs-catalog-service \
+              wks \
+              register \
               notification"
 
 for SERVICE in SERVICE_LIST;
