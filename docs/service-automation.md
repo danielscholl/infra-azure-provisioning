@@ -80,6 +80,9 @@ az pipelines variable-group create \
   TENANT_NAME="opendes" \
   VENDOR="azure" \
   LEGAL_TAG="opendes-public-usa-dataset-7643990" \
+  NOTIFICATION_REGISTER_BASE_URL="https://${DNS_HOST}" \
+  NOTIFICATION_BASE_URL="https://${DNS_HOST}/api/notification/v1/"
+  REGISTER_CUSTOM_PUSH_URL_HMAC="https://${DNS_HOST}/api/register/v1/test/challenge/1"
   -ojson
 ```
 
@@ -441,6 +444,30 @@ az pipelines variable-group create \
 ```
 
 
+__Setup and Configure the ADO Library `Azure Service Release - notification`__
+
+This variable group is the service specific variables necessary for testing and deploying the `notification` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/notification-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine="-DNOTIFICATION_REGISTER_BASE_URL=$(NOTIFICATION_REGISTER_BASE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DENVIRONMENT=DEV -DHMAC_SECRET=$(AZURE_EVENT_SUBSCRIBER_SECRET) -DTOPIC_ID=$(AZURE_EVENT_TOPIC_NAME) -DNOTIFICATION_BASE_URL=$(NOTIFICATION_BASE_URL) -DREGISTER_CUSTOM_PUSH_URL_HMAC=$(REGISTER_CUSTOM_PUSH_URL_HMAC) -DOSDU_TENANT=$(OSDU_TENANT)"` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/notification-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_NOTIFICATION_SERVICE_NAME)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - notification" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/notification-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine="-DNOTIFICATION_REGISTER_BASE_URL=$(NOTIFICATION_REGISTER_BASE_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET) -DENVIRONMENT=DEV -DHMAC_SECRET=$(AZURE_EVENT_SUBSCRIBER_SECRET) -DTOPIC_ID=$(AZURE_EVENT_TOPIC_NAME) -DNOTIFICATION_BASE_URL=$(NOTIFICATION_BASE_URL) -DREGISTER_CUSTOM_PUSH_URL_HMAC=$(REGISTER_CUSTOM_PUSH_URL_HMAC) -DOSDU_TENANT=$(OSDU_TENANT)"` \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/notification-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_NOTIFICATION_SERVICE_NAME)' \
+  -ojson
+```
+
+
 __Create the Chart Pipelines__
 
 Create the pipelines and run things in this exact order.
@@ -706,6 +733,22 @@ az pipelines create \
 az pipelines create \
   --name 'service-wks'  \
   --repository wks  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+13. Add a Pipeline for __notification__  to deploy the Unit Service.
+
+    _Repo:_ `notification-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/notification/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-notification'  \
+  --repository notification  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
