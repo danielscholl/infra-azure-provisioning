@@ -150,7 +150,7 @@ export SUBSCRIBER_SECRET="${ENV_AZURE_EVENT_SUBSCRIBER_SECRET}"
 # ------------------------------------------------------------------------------------------------------
 # Integration Test Settings
 # ------------------------------------------------------------------------------------------------------
-#export REGISTER_BASE_URL="https://${ENV_HOST}/"
+export REGISTER_BASE_URL="https://${ENV_HOST}/"
 export AZURE_AD_TENANT_ID="${TENANT_ID}"
 export INTEGRATION_TESTER="${ENV_PRINCIPAL_ID}"
 export TESTER_SERVICEPRINCIPAL_SECRET="${ENV_PRINCIPAL_SECRET}"
