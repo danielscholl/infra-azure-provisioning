@@ -230,6 +230,7 @@ git clone https://community.opengroup.org/osdu/platform/system/reference/crs-con
 git clone https://community.opengroup.org/osdu/platform/system/notification.git $SRC_DIR/notification
 git clone https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks.git $SRC_DIR/wks
 git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/register
+git clone https://community.opengroup.org/osdu/platform/system/schema-service.git $SRC_DIR/schema-service
 ```
 
 
@@ -322,7 +323,8 @@ SERVICE_LIST="infra-azure-provisioning \
               crs-catalog-service \
               wks \
               register \
-              notification"
+              notification \
+              schema"
 
 for SERVICE in SERVICE_LIST;
 do

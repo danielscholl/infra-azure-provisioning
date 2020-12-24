@@ -468,6 +468,29 @@ az pipelines variable-group create \
 ```
 
 
+__Setup and Configure the ADO Library `Azure Service Release - schema-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `schema` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/schema-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/schema-test-core/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_SCHEMA_SERVICE_NAME)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - schema-service" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/schema-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/schema-test-core/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_SCHEMA_SERVICE_NAME)' \
+  -ojson
+```
+
 __Create the Chart Pipelines__
 
 Create the pipelines and run things in this exact order.
@@ -739,7 +762,7 @@ az pipelines create \
   -ojson
 ```
 
-13. Add a Pipeline for __notification__  to deploy the Unit Service.
+13. Add a Pipeline for __notification__  to deploy the Notification Service.
 
     _Repo:_ `notification-service`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -749,6 +772,22 @@ az pipelines create \
 az pipelines create \
   --name 'service-notification'  \
   --repository notification  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+14. Add a Pipeline for __schema__  to deploy the Schema Service.
+
+    _Repo:_ `schema-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/schema-service/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-schema'  \
+  --repository schema  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \

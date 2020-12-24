@@ -20,7 +20,9 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | crs-conversion-service    | https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git |
 | wks                       | https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks.git |
 | register                  | https://community.opengroup.org/osdu/platform/system/register.git |
-| notification              | https://community.opengroup.org/osdu/platform/system/notification|
+| notification              | https://community.opengroup.org/osdu/platform/system/notification.git|
+| schema-service            | https://community.opengroup.org/osdu/platform/system/schema-service.git|
+
 ```bash
 export ADO_ORGANIZATION=<organization_name>
 export ADO_PROJECT=osdu-mvp
@@ -42,7 +44,8 @@ SERVICE_LIST="infra-azure-provisioning \
               crs-conversion-service \
               wks \
               register \
-              notification"
+              notification \
+              schema"
 
 for SERVICE in $SERVICE_LIST;
 do
@@ -75,6 +78,7 @@ Variable Group Name:  `Mirror Variables`
 | WKS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/wks |
 | REGISTER_REPO | https://dev.azure.com/osdu-demo/osdu/_git/register |
 | NOTIFICATION_REPO | https://dev.azure.com/osdu-demo/osdu/_git/notification |
+| SCHEMA_REPO | https://dev.azure.com/osdu-demo/osdu/_git/schema-service |
 | ACCESS_TOKEN | <your_personal_access_token> |
 
 
@@ -103,6 +107,7 @@ az pipelines variable-group create \
   WKS_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/wks \
   REGISTER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/register \
   NOTIFICATION_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/notification \
+  SCHEMA_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/schema-service \ 
   ACCESS_TOKEN=$ACCESS_TOKEN \
   -ojson
 ```
@@ -255,6 +260,14 @@ jobs:
             sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/notification.git'
             destinationGitRepositoryUri: '$(NOTIFICATION_REPO)'
             destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+          displayName: 'schema-service'
+          inputs:
+            sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/schema-service.git'
+            destinationGitRepositoryUri: '$(SCHEMA_REPO)'
+            destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
 EOF
 
 (cd ${ADO_PROJECT}  && git add -A && git commit -m "pipeline" && git push)
