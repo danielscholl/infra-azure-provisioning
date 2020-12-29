@@ -24,6 +24,7 @@ __Infra Changes__
 
 __Service Onboarded__
 - [Issue 55 - Unit Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/55)
+- [Issue 56 - CRS Catalog Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/56)
 
 
 # v0.4.1 (2020-11-30)
