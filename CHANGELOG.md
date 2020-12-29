@@ -2,29 +2,36 @@
 
 # Current Master
 
+__Service Onboarded__
+- [Issue 55 - Unit Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/55)
+- [Issue 56 - CRS Catalog Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/56)
+
 __Documentation Changes__
 - [MR 90 - Documentation Tweaks and Fixing Environment Variables](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/90)
 - [MR 92 - Airflow APACHE Licenses](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/92)
 - [MR 93 - Added Unit and CRS Catalog Manual Steps](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/93)
 - [MR 94 - Fixing File Pipeline and Search URL Variable](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/94)
 - [MR 95 - Updating Service Onboarding](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/95)'
-- [MR 100 - Updating Service Onboarding Template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/103)
-- [MR 102 - Updating Service Onboarding Template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/102)
+- [MR 103 - Updating Service Onboarding Template](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/103)
+- [MR 108 - Initial FAQ](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/108)
+
+__Chart Changes__
+- [MR 110 - Airflow log monitoring](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/110)
 
   __Tool Changes__
 - [MR 91 - Adding Scripts for Unit and CRS Catalog](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/91)
 - [MR 96 - Adding File and Delivery Rest Scripts](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/96)
 - [MR 100 - Delivery Environment Variables](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/100)
 - [MR 101 - Partition Service Support - Storage Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/101)
+- [MR 118 - Python Testing Variables](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/118)
+
 
 __Infra Changes__
 - [MR 97 - Adding a service Bus topic - WKS Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/97)
 - [MR 99 - Adding KV Secret for Event Grid Topic Primary Keys - Storage Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/99)
 
 
-__Service Onboarded__
-- [Issue 55 - Unit Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/55)
-- [Issue 56 - CRS Catalog Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/56)
+
 
 
 # v0.4.1 (2020-11-30)
