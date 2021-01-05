@@ -163,6 +163,9 @@ az pipelines variable-group create \
   AZURE_EVENT_SUBSCRIPTION_ID="subscriptionId" \
   AZURE_EVENT_TOPIC_NAME="topic name" \
   AZURE_DNS_NAME="<your_fqdn>" \
+  AZURE_MAPPINGS_STORAGE_CONTAINER="osdu-wks-mappings" \
+  AZURE_COSMOS_KEY='$(opendes-cosmos-primary-key)' \
+  AZURE_COSMOS_URL='$(opendes-cosmos-endpoint)' \
   -ojson
 ```
 
