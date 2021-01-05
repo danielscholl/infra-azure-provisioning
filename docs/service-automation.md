@@ -132,8 +132,8 @@ This variable group will be used to hold the specific environment values necessa
 | AZURE_EVENT_TOPIC_NAME                        | Event grid Topic Name eg. `osdu-mvp-dp1demo-esyx-grid-recordstopic`          |
 | AZURE_DNS_NAME                                | <your_FQDN>                       |
 | AZURE_MAPPINGS_STORAGE_CONTAINER              | `osdu-wks-mappings`               |
-| AZURE_COSMOS_KEY                              | `$(opendes-cosmos-primary-key)`   |
-| AZURE_COSMOS_URL                              | `$(opendes-cosmos-endpoint)`      |
+| AZURE_COSMOS_KEY                              | `$(opendes-cosmos-primary-key)`   This variable will not be required after the data partition changes|
+| AZURE_COSMOS_URL                              | `$(opendes-cosmos-endpoint)`      This variable will not be required after the data partition changes|
 
 ```bash
 DATA_PARTITION_NAME=opendes
