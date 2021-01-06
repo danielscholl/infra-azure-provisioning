@@ -37,7 +37,7 @@ resource "random_id" "main" {
 resource "azurerm_log_analytics_workspace" "main" {
   count = var.log_analytics_id == "" ? 1 : 0
 
-  name                = lower("${var.name}")
+  name                = lower(var.name)
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
   sku                 = "PerGB2018"
