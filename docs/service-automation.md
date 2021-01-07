@@ -37,6 +37,10 @@ This variable group will be used to hold the common values for the services to b
 | TENANT_NAME                                   | `opendes`                                   |
 | VENDOR                                        | `azure`                                     |
 | LEGAL_TAG                                     | `opendes-public-usa-dataset-7643990`        |
+| OSDU_TENANT                                   | `opendes`                                   |
+| NOTIFICATION_REGISTER_BASE_URL                | `https://<your_fqdn>/`                      |
+| NOTIFICATION_BASE_URL                         | `https://<your_fqdn>/api/notification/v1/`  |
+| REGISTER_CUSTOM_PUSH_URL_HMAC                 | `https://<your_fqdn>/api/register/v1/test/challenge/1`|
 
 
 ```bash
@@ -798,7 +802,7 @@ az pipelines create \
 ```bash
 az pipelines create \
   --name 'service-schema'  \
-  --repository schema  \
+  --repository schema-service  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
