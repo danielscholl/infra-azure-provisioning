@@ -80,6 +80,9 @@ az pipelines variable-group create \
   TENANT_NAME="opendes" \
   VENDOR="azure" \
   LEGAL_TAG="opendes-public-usa-dataset-7643990" \
+  NOTIFICATION_REGISTER_BASE_URL="https://${DNS_HOST}" \
+  NOTIFICATION_BASE_URL="https://${DNS_HOST}/api/notification/v1/"
+  REGISTER_CUSTOM_PUSH_URL_HMAC="https://${DNS_HOST}/api/register/v1/test/challenge/1"
   -ojson
 ```
 
