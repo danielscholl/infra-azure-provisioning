@@ -45,7 +45,7 @@ SERVICE_LIST="infra-azure-provisioning \
               wks \
               register \
               notification \
-              schema-service"
+              schema"
 
 for SERVICE in $SERVICE_LIST;
 do
