@@ -802,7 +802,7 @@ az pipelines create \
 ```bash
 az pipelines create \
   --name 'service-schema'  \
-  --repository schema  \
+  --repository schema-service  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
