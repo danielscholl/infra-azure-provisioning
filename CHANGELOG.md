@@ -1,5 +1,13 @@
 **Note:** This file is manually edited and is best effort information at this time.
 
+# Current Master
+
+__Infra Changes__
+- [Issue 75 - Upgrade Infrastructure tools and software dependencies](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/75)  - _* Manual Intervention Required_
+- [Issue 76 - Add Terraform Service Resource Template Feature Flags](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/76)
+
+
+
 # v0.4.2 (2020-12-30)
 
 __Service Onboarded__
