@@ -106,6 +106,11 @@ __[Automation Pipelines](https://msosdu.azureedge.net/osdu-azure-pipelines/osdu-
 - Setup Service Pipelines
 - Register Data Partition
 
+## How can I quickly ask questions when I get stuck.
+
+There is a dedicated Slack Channel for asking questions in the community around installing OSDU on Azure where you can engage with the community and Micrososft Engineers.
+
+[Slack #0_0_microsoft-infrastructure-questions](https://opensdu.slack.com/archives/C01JM5YLDV2)
 
 # Service Questions
 
