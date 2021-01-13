@@ -177,6 +177,19 @@ airflow:
   workers:
     podLabels:
       aadpodidbinding: "osdu-identity"
+    autoscaling:
+      enabled: true
+      maxReplicas: 3
+      metrics:
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 50
+    resources:
+      requests:
+        memory: "512Mi"
   flower:
     enabled: false
   postgresql:
