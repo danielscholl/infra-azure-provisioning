@@ -157,7 +157,8 @@ module "storage_account" {
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
 
-  resource_tags = var.resource_tags
+  resource_tags  = var.resource_tags
+  blob_cors_rule = var.blob_cors_rule
 }
 
 // Add Access Control to Principal

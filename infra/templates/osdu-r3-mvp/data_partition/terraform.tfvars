@@ -39,7 +39,6 @@ storage_containers = [
   "file-persistent-area"
 ]
 
-
 # Database Settings
 cosmosdb_consistency_level = "Session"
 cosmos_databases = [
