@@ -5,6 +5,7 @@
 __Infra Changes__
 - [Issue 75 - Upgrade Infrastructure tools and software dependencies](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/75)  - _* Manual Intervention Required_
 - [Issue 76 - Add Terraform Service Resource Template Feature Flags](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/76)
+- [Issue 80 - Feature Change - Data Partition - Enable CORS configuration for Blob Containers on Storage Accounts](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/80)
 
 
 
