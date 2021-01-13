@@ -17,6 +17,7 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | delivery                  | https://community.opengroup.org/osdu/platform/system/delivery.git       |
 | file                      | https://community.opengroup.org/osdu/platform/system/file.git      |
 | unit-service              | https://community.opengroup.org/osdu/platform/system/reference/unit-service.git |
+| crs-catalog-service       | https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service.git |
 | crs-conversion-service    | https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git |
 | wks                       | https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks.git |
 | register                  | https://community.opengroup.org/osdu/platform/system/register.git |
@@ -41,6 +42,7 @@ SERVICE_LIST="infra-azure-provisioning \
               delivery \
               file \
               unit-service \
+              crs-catalog-service \
               crs-conversion-service \
               wks \
               register \
@@ -74,6 +76,7 @@ Variable Group Name:  `Mirror Variables`
 | DELIVERY_REPO | https://dev.azure.com/osdu-demo/osdu/_git/delivery |
 | FILE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/file |
 | UNIT_REPO | https://dev.azure.com/osdu-demo/osdu/_git/unit-service |
+| CRS_CATALOG_REPO | https://dev.azure.com/osdu-demo/osdu/_git/crs-catalog-service |
 | CRS_CONVERSION_REPO | https://dev.azure.com/osdu-demo/osdu/_git/crs-conversion-service |
 | WKS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/wks |
 | REGISTER_REPO | https://dev.azure.com/osdu-demo/osdu/_git/register |
@@ -103,6 +106,7 @@ az pipelines variable-group create \
   DELIVERY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/delivery \
   FILE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/file \
   UNIT_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/unit-service \
+  CRS_CATALOG_REPO=https://dev.azure.com/osdu-demo/osdu/_git/unit-service \
   CRS_CONVERSION_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/crs-conversion-service \
   WKS_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/wks \
   REGISTER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/register \
@@ -232,6 +236,13 @@ jobs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/reference/unit-service.git'
         destinationGitRepositoryUri: '$(UNIT_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+    
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'crs-catalog-service'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service.git'
+        destinationGitRepositoryUri: '$(CRS_CATALOG_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
       displayName: 'crs-conversion-service'
@@ -282,4 +293,5 @@ az pipelines create \
   --yaml-path /pipeline.yml  \
   -ojson
 ```
+
 

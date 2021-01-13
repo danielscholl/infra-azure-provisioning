@@ -29,6 +29,8 @@ This variable group will be used to hold the common values for the services to b
 | SEARCH_URL                                    | `https://<your_fqdn>/api/search/v2/`        |
 | FILE_URL                                      | `https://<your_fqdn>/api/file/v2`           |
 | DELIVERY_URL                                  | `https://<your_fqdn>/api/delivery/v2`       |
+| UNIT_URL                                      | `https://<your_fqdn>/api/unit/v2`           |
+| CRS_CATALOG_URL                               | `https://<your_fqdn>/api/crs/catalog/v2/`   |
 | CRS_CONVERSION_URL                            | `https://<your_fqdn>/api/crs/converter/v2/` |
 | REGISTER_BASE_URL                             | `https://<your_fqdn>/`                      |
 | ACL_OWNERS                                    | `data.test1`                                |
@@ -38,7 +40,7 @@ This variable group will be used to hold the common values for the services to b
 | VENDOR                                        | `azure`                                     |
 | LEGAL_TAG                                     | `opendes-public-usa-dataset-7643990`        |
 | OSDU_TENANT                                   | `opendes`                                   |
-| NOTIFICATION_REGISTER_BASE_URL                | `https://<your_fqdn>`                      |
+| NOTIFICATION_REGISTER_BASE_URL                | `https://<your_fqdn>`                       |
 | NOTIFICATION_BASE_URL                         | `https://<your_fqdn>/api/notification/v1/`  |
 | REGISTER_CUSTOM_PUSH_URL_HMAC                 | `https://<your_fqdn>/api/register/v1/test/challenge/1`|
 
@@ -76,6 +78,8 @@ az pipelines variable-group create \
   SEARCH_URL="https://${DNS_HOST}/api/search/v2/" \
   FILE_URL="https://${DNS_HOST}/api/file/v2" \
   DELIVERY_URL="https://${DNS_HOST}/api/delivery/v2/" \
+  UNIT_URL="https://${DNS_HOST}/api/unit/v2/"
+  CRS_CATALOG_URL="https://${DNS_HOST}/api/crs/catalog/v2/" \
   CRS_CONVERSION_URL="https://${DNS_HOST}/api/crs/converter/v2/" \
   REGISTER_BASE_URL="https://${DNS_HOST}/" \
   ACL_OWNERS="data.test1" \
