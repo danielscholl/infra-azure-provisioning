@@ -7,6 +7,7 @@ __Infra Changes__
 - [Issue 76 - Add Terraform Service Resource Template Feature Flags](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/76)
 - [Issue 80 - Feature Change - Data Partition - Enable CORS configuration for Blob Containers on Storage Accounts](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/80)
 - [Issue 77 - Architecture Change - Central Resources - Add Graph Database](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/77)
+- [Issue 84 - Architecture Change - Data Partition - Add dedicated Storage Account for use by Ingestion Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/84/)
 
 
 
