@@ -78,6 +78,7 @@ steps:
       elasticEndpoint: ${{ parameters.elasticEndpoint }}
 
   - task: Cache@2
+    condition: ne('${{ parameters.runPythonTest }}', 'true')
     inputs:
       key: 'maven | "${{ parameters.cacheVersion }}" | "$(Agent.OS)" | **/pom.xml'
       restoreKeys: |
