@@ -179,6 +179,7 @@ airflow:
       aadpodidbinding: "osdu-identity"
     autoscaling:
       enabled: true
+      ## minReplicas is picked from Values.workers.replicas and default value is 1
       maxReplicas: 3
       metrics:
       - type: Resource
