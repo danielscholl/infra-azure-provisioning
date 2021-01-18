@@ -245,6 +245,7 @@ git clone https://community.opengroup.org/osdu/platform/system/notification.git 
 git clone https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks.git $SRC_DIR/wks
 git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/register
 git clone https://community.opengroup.org/osdu/platform/system/schema-service.git $SRC_DIR/schema-service
+git clonehttps://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow.git $SRC_DIR/ingestion-workflow
 ```
 
 
@@ -338,7 +339,8 @@ SERVICE_LIST="infra-azure-provisioning \
               wks \
               register \
               notification \
-              schema"
+              schema \
+              ingestion-workflow"
 
 for SERVICE in SERVICE_LIST;
 do
