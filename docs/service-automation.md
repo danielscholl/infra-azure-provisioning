@@ -510,6 +510,29 @@ az pipelines variable-group create \
   -ojson
 ```
 
+__Setup and Configure the ADO Library `Azure Service Release - ingestion-workflow`__
+
+This variable group is the service specific variables necessary for testing and deploying the `ingestion-workflow` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/workflow-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine=""` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/workflow-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_INGESTION_WORKFLOW_SERVICE_NAME)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - ingestion-workflow" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/workflow-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine=""` \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/workflow-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_INGESTION_WORKFLOW_SERVICE_NAME)' \
+  -ojson
+```
+
 __Create the Chart Pipelines__
 
 Create the pipelines and run things in this exact order.
@@ -807,6 +830,21 @@ az pipelines create \
 az pipelines create \
   --name 'service-schema'  \
   --repository schema-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+15. Add a Pipeline for __ingestion-workflow__  to deploy the Schema Service.
+
+    _Repo:_ `ingestion-workflow`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/workflow/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-ingestion-workflow'  \
+  --repository ingestion-workflow  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
