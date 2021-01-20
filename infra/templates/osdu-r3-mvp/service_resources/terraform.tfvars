@@ -45,6 +45,5 @@ storage_shares = [
   "unit",
   "crs",
   "crs-conversion"
-  "airflowdags"
 ]
 storage_queues = []
