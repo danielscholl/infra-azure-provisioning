@@ -19,6 +19,14 @@
    This file holds the Default Variable Configuration
 */
 
+
+/*
+The following items are recommended to override in custom.tfvars
+
+1. Resource Tags
+
+*/
+
 prefix = "osdu-mvp"
 
 resource_tags = {

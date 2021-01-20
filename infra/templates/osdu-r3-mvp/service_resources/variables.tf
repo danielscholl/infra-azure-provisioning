@@ -220,6 +220,12 @@ variable "aks_agent_vm_size" {
   default     = "Standard_D2s_v3"
 }
 
+variable "aks_agent_vm_disk" {
+  description = "The initial sice of each VM OS Disk."
+  type        = number
+  default     = 30
+}
+
 variable "kubernetes_version" {
   type    = string
   default = "1.17.11"
