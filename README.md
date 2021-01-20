@@ -252,13 +252,12 @@ __Manual Installation__
 
 1. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
 
-1. Upload the Integration Test Data following directions [here](./tools/test_data/README.md).
+1. Upload the Configuration Data following directions [here](./docs/configuration-data.md).
 
-1. Deploy the application helm charts following the directions [here](./charts/README.md).
+1. Deploy the application helm charts following the directions [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure).
 
 1. Register your partition with the Data Partition API by following the instructions [here](./tools/rest/README.md) to configure your IDE to make authenticated requests to your OSDU instance and send the API request located [here](./tools/rest/partition.http) (createPartition).
 
-1. Setup Environment Variables for IDE Development and Integration Testing following the directions [here](./tools/variables/README.md).
 
 
 __Automated Pipeline Installation__
@@ -270,6 +269,8 @@ __Automated Pipeline Installation__
 1. Setup Infrastructure Automation following directions [here](./docs/infra-automation.md).
 
 1. Setup DNS to point to the deployed infrastructure following directions [here](./docs/dns-setup.md).
+
+1. Upload the Configuration Data following directions [here](./docs/configuration-data.md).
 
 1. Upload the Integration Test Data following directions [here](./tools/test_data).
 
