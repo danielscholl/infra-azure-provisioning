@@ -342,7 +342,7 @@ SERVICE_LIST="infra-azure-provisioning \
               schema \
               ingestion-workflow"
 
-for SERVICE in SERVICE_LIST;
+for SERVICE in $SERVICE_LIST;
 do
   helm template $SERVICE ${SRC_DIR}/$SERVICE/devops/azure/chart --set image.branch=$BRANCH --set image.tag=$TAG > ${FLUX_SRC}/providers/azure/hld-registry/$SERVICE.yaml
 done
