@@ -179,7 +179,7 @@ __Installed Azure Resources__
 6. An AD application to be leveraged in the future that defines and controls access to the OSDU Environment for AD Identity. _(future)_
 7. An AD application to be used for negative integration testing
 
-> Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group then purging the KV.
+> Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group.
 
 
 __Azure AD Admin Consent__
