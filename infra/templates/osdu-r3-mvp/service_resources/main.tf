@@ -20,12 +20,6 @@
    This file holds the main control and resoures for bootstraping an OSDU Azure Devops Project.
 */
 
-// *** WARNING  ****
-// This template makes changes into the Central Resources and the locks in Central have to be removed to delete.
-// Lock: Key Vault
-// Lock: Container Registry
-// *** WARNING  ****
-
 terraform {
   required_version = ">= 0.14"
 
@@ -329,6 +323,7 @@ module "aks" {
   dns_prefix         = local.aks_dns_prefix
   agent_vm_count     = var.aks_agent_vm_count
   agent_vm_size      = var.aks_agent_vm_size
+  agent_vm_disk      = var.aks_agent_vm_disk
   vnet_subnet_id     = module.network.subnets.1
   ssh_public_key     = file(var.ssh_public_key_file)
   kubernetes_version = var.kubernetes_version
