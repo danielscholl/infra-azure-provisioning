@@ -28,6 +28,18 @@ variable "prefix" {
   type        = string
 }
 
+variable "feature_flag" {
+  description = "(Optional) A toggle for incubator features"
+  type = object({
+    osdu_namespace = bool
+    flux           = bool
+  })
+  default = {
+    osdu_namespace = true
+    flux           = true
+  }
+}
+
 variable "randomization_level" {
   description = "Number of additional random characters to include in resource names to insulate against unexpected resource name collisions."
   type        = number
@@ -206,6 +218,12 @@ variable "aks_agent_vm_size" {
   type        = string
   description = "The size of each VM in the Agent Pool (e.g. Standard_F1). Changing this forces a new resource to be created."
   default     = "Standard_D2s_v3"
+}
+
+variable "aks_agent_vm_disk" {
+  description = "The initial sice of each VM OS Disk."
+  type        = number
+  default     = 30
 }
 
 variable "kubernetes_version" {

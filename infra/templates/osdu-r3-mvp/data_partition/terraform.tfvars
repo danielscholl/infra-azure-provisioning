@@ -19,6 +19,14 @@
    This file holds the Default Variable Configuration
 */
 
+/*
+The following items are recommended to override in custom.tfvars
+
+1. Resource Tags
+2. Cosmos Database Throughput  ** Increase as necessary for Scaling purposes.
+
+*/
+
 prefix = "osdu-mvp"
 
 data_partition_name = "opendes"
@@ -33,12 +41,10 @@ storage_containers = [
   "legal-service-azure-configuration",
   "opendes",
   "osdu-wks-mappings",
-  "workflow-tasks-sharing",
   "wdms-osdu",
   "file-staging-area",
   "file-persistent-area"
 ]
-
 
 # Database Settings
 cosmosdb_consistency_level = "Session"
