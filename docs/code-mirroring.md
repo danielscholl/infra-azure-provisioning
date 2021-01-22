@@ -9,6 +9,7 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | infra-azure-provisioning  | https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning.git |
 | partition                 | https://community.opengroup.org/osdu/platform/system/partition.git |
 | entitlements-azure        | https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements-azure.git |
+| entitlements              | https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements.git |
 | legal                     | https://community.opengroup.org/osdu/platform/security-and-compliance/legal.git |
 | indexer-queue             | https://community.opengroup.org/osdu/platform/system/indexer-queue.git |
 | storage                   | https://community.opengroup.org/osdu/platform/system/storage.git |
@@ -35,6 +36,7 @@ az devops configure --defaults organization=https://dev.azure.com/$ADO_ORGANIZAT
 SERVICE_LIST="infra-azure-provisioning \
               partition \
               entitlements-azure \
+              entitlements \
               legal \
               storage \
               indexer-queue \
@@ -70,6 +72,7 @@ Variable Group Name:  `Mirror Variables`
 | INFRA_PROVISIONING_REPO | https://dev.azure.com/osdu-demo/osdu/_git/infra-azure-provisioning |
 | PARTITION_REPO | https://dev.azure.com/osdu-demo/osdu/_git/partition |
 | ENTITLEMENTS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/entitlements-azure |
+| ENTITLEMENTS_V2_REPO | https://dev.azure.com/osdu-demo/osdu/_git/entitlements |
 | LEGAL_REPO | https://dev.azure.com/osdu-demo/osdu/_git/legal |
 | STORAGE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/storage |
 | INDEXER_QUEUE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/indexer-queue |
@@ -101,6 +104,7 @@ az pipelines variable-group create \
   INFRA_PROVISIONING_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/infra-azure-provisioning \
   PARTITION_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/partition \
   ENTITLEMENTS_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/entitlements-azure \
+  ENTITLEMENTS_V2_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/entitlements \
   LEGAL_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/legal \
   STORAGE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/storage \
   INDEXER_QUEUE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/indexer-queue \
@@ -183,6 +187,13 @@ jobs:
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements-azure.git'
         destinationGitRepositoryUri: '$(ENTITLEMENTS_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'entitlements'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements.git'
+        destinationGitRepositoryUri: '$(ENTITLEMENTS_V2_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1

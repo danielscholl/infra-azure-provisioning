@@ -231,6 +231,7 @@ SRC_DIR="<ROOT_PATH_TO_SOURCE>" #  $HOME/source/osdu/osdu-gitlab
 
 git clone https://community.opengroup.org/osdu/platform/system/partition.git $SRC_DIR/partition
 git clone https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements-azure.git $SRC_DIR/entitlements-azure
+git clone https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements.git $SRC_DIR/entitlements
 git clone https://community.opengroup.org/osdu/platform/security-and-compliance/legal.git $SRC_DIR/legal
 git clone https://community.opengroup.org/osdu/platform/system/storage.git $SRC_DIR/storage
 git clone https://community.opengroup.org/osdu/platform/system/indexer-queue.git $SRC_DIR/indexer-queue
@@ -326,6 +327,7 @@ helm template airflow ${INFRA_SRC}/charts/airflow -f ${INFRA_SRC}/charts/config_
 SERVICE_LIST="infra-azure-provisioning \
               partition \
               entitlements-azure \
+              entitlements \
               legal \
               storage \
               indexer-queue \
