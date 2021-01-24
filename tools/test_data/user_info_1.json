@@ -36,6 +36,7 @@
         "service.legal.admin",
         "data.datalake.viewer",
         "data.test1",
+        "data.integration.test",
         "data.datalake.viewer",
         "data.default.viewer",
         "data.default.owner",
