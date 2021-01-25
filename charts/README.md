@@ -334,14 +334,14 @@ SERVICE_LIST="infra-azure-provisioning \
               indexer-service \
               search-service \
               delivery \
-              file \
+              file-service \
               unit-service \
               crs-conversion-service \
               crs-catalog-service \
               wks \
               register \
               notification \
-              schema \
+              schema-service \
               ingestion-workflow"
 
 for SERVICE in $SERVICE_LIST;
