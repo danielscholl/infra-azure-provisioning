@@ -249,6 +249,11 @@ git clone https://community.opengroup.org/osdu/platform/system/schema-service.gi
 git clonehttps://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow.git $SRC_DIR/ingestion-workflow
 ```
 
+__Additional Manual Steps__
+Following services require additional steps for manual setup. 
+- [CRS Catalog Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/56)
+- [CRS Conversion Serice](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/65) 
+- [Unit Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/55) 
 
 __Kubernetes API Access__
 
