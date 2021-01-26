@@ -24,6 +24,7 @@ This variable group will be used to hold the common values for the services to b
 | SERVICE_CONNECTION_NAME                       | <your_service_connection_name>              |
 | GOOGLE_CLOUD_PROJECT                          | `opendes`                                   |
 | ENTITLEMENT_URL                               | `https://<your_fqdn>/entitlements/v1/`      |
+| ENTITLEMENT_V2_URL                            | `https://<your_fqdn>/entitlements/v2/`      |
 | LEGAL_URL                                     | `https://<your_fqdn>/api/legal/v1/`         |
 | STORAGE_URL                                   | `https://<your_fqdn>/api/storage/v2/`       |
 | SEARCH_URL                                    | `https://<your_fqdn>/api/search/v2/`        |
@@ -74,6 +75,7 @@ az pipelines variable-group create \
   SERVICE_CONNECTION_NAME=$SERVICE_CONNECTION_NAME \
   GOOGLE_CLOUD_PROJECT="opendes" \
   ENTITLEMENT_URL="https://${DNS_HOST}/entitlements/v1/" \
+  ENTITLEMENT_V2_URL="https://${DNS_HOST}/entitlements/v2/" \
   LEGAL_URL="https://${DNS_HOST}/api/legal/v1/" \
   STORAGE_URL="https://${DNS_HOST}/api/storage/v2/" \
   SEARCH_URL="https://${DNS_HOST}/api/search/v2/" \
@@ -216,6 +218,8 @@ This variable group is a linked variable group that links to the Environment Key
 - osdu-identity-id
 - subscription-id
 - tenant-id
+- graph-db-endpoint
+- graph-db-primary-key
 
 
 __Setup and Configure the ADO Library `Azure Service Release - partition`__
@@ -262,6 +266,33 @@ az pipelines variable-group create \
   MAVEN_INTEGRATION_TEST_OPTIONS='-DENTITLEMENT_URL=$(ENTITLEMENT_URL) -DMY_TENANT=$(MY_TENANT) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DENTITLEMENT_MEMBER_NAME_VALID=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DAZURE_AD_OTHER_APP_RESOURCE_ID=$(AZURE_AD_OTHER_APP_RESOURCE_ID) -DAZURE_AD_OTHER_APP_RESOURCE_OID=$(AZURE_AD_OTHER_APP_RESOURCE_OID) -DDOMAIN=$(DOMAIN) -DEXPIRED_TOKEN=$(EXPIRED_TOKEN) -DENTITLEMENT_GROUP_NAME_VALID=integ.test.data.creator -DENTITLEMENT_MEMBER_NAME_INVALID=InvalidTestAdmin -DAZURE_AD_USER_EMAIL=$(ad-user-email) -DAZURE_AD_USER_OID=$(ad-user-oid) -DAZURE_AD_GUEST_EMAIL=$(ad-guest-email) -DAZURE_AD_GUEST_OID=$(ad-guest-oid)' \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/integration-tests" \
   SERVICE_RESOURCE_NAME='$(AZURE_ENTITLEMENTS_SERVICE_NAME)' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - entitlements-v2`__
+
+This variable group is the service specific variables necessary for testing and deploying the `entitlements-v2` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH     | `drop/provider/entitlements-v2-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DHOST_URL=$(ENTITLEMENT_V2_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET)`  |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/entitlements-v2-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_ENTITLEMENTS_V2_SERVICE_NAME)` |
+| GRAPH_DB_ENDPOINT | `$(graph-db-endpoint)` |
+| GRAPH_DB_PASSWORD | `$(graph-db-primary-key)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - entitlements-azure" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/entitlements-v2-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DHOST_URL=$(ENTITLEMENT_V2_URL) -DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DNO_DATA_ACCESS_TESTER=$(NO_DATA_ACCESS_TESTER) -DNO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET=$(NO_DATA_ACCESS_TESTER_SERVICEPRINCIPAL_SECRET)' \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/entitlements-v2-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_ENTITLEMENTS_V2_SERVICE_NAME)' \
+  GRAPH_DB_ENDPOINT='$(graph-db-endpoint)' \
+  GRAPH_DB_PASSWORD='$(graph-db-primary-key)' \
   -ojson
 ```
 
@@ -996,6 +1027,23 @@ az pipelines create \
 az pipelines create \
   --name 'service-seismic-store'  \
   --repository seismic-store-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+17. Add a Pipeline for __service-entitlements-v2__  to deploy the Entitlements V2 Service.
+    > This pipeline may have to be run twice for integration tests to pass due to a preload data issue.
+
+    _Repo:_ `entitlements`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/entitlements/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-entitlements-v2'  \
+  --repository entitlements  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
