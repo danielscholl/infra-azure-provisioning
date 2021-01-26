@@ -43,6 +43,7 @@ This variable group will be used to hold the common values for the services to b
 | NOTIFICATION_REGISTER_BASE_URL                | `https://<your_fqdn>`                       |
 | NOTIFICATION_BASE_URL                         | `https://<your_fqdn>/api/notification/v1/`  |
 | REGISTER_CUSTOM_PUSH_URL_HMAC                 | `https://<your_fqdn>/api/register/v1/test/challenge/1`|
+| AGENT_IMAGE                                   | `ubuntu-latest`                             | 
 
 
 ```bash
@@ -89,8 +90,9 @@ az pipelines variable-group create \
   VENDOR="azure" \
   LEGAL_TAG="opendes-public-usa-dataset-7643990" \
   NOTIFICATION_REGISTER_BASE_URL="https://${DNS_HOST}" \
-  NOTIFICATION_BASE_URL="https://${DNS_HOST}/api/notification/v1/"
-  REGISTER_CUSTOM_PUSH_URL_HMAC="https://${DNS_HOST}/api/register/v1/test/challenge/1"
+  NOTIFICATION_BASE_URL="https://${DNS_HOST}/api/notification/v1/" \
+  REGISTER_CUSTOM_PUSH_URL_HMAC="https://${DNS_HOST}/api/register/v1/test/challenge/1" \
+  AGENT_IMAGE="ubuntu-latest"
   -ojson
 ```
 
@@ -130,9 +132,12 @@ This variable group will be used to hold the specific environment values necessa
 | ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
 | ELASTIC_USERNAME                              | `$(opendes-elastic-username)`     |
 | ELASTIC_PASSWORD                              | `$(opendes-elastic-password)`     |
+| ENVIRONMENT_NAME                              | <your_environment_name_or_identifier>     |
 | IDENTITY_CLIENT_ID                            | `$(osdu-identity-id)`             |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
 | MY_TENANT                                     | `opendes`                         |
+| PROVIDER_NAME                                 | `azure`                           |
+| REDIS_PORT                                    | `6380`                            |
 | STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
 | STORAGE_ACCOUNT_KEY                           | `$(opendes-storage-key)`          |
 | AZURE_EVENT_SUBSCRIBER_SECRET                 | Subscriber Secret used while performing handshake                      |
@@ -142,10 +147,15 @@ This variable group will be used to hold the specific environment values necessa
 | AZURE_MAPPINGS_STORAGE_CONTAINER              | `osdu-wks-mappings`               |
 | AZURE_COSMOS_KEY                              | `$(opendes-cosmos-primary-key)`   This variable will not be required after the data partition changes|
 | AZURE_COSMOS_URL                              | `$(opendes-cosmos-endpoint)`      This variable will not be required after the data partition changes|
+| SIS_DATA                                      | `$(Pipeline.Workspace)/s/apachesis_setup/SIS_DATA`      This variable should point to your SIS_DATA setup|
 
 ```bash
 DATA_PARTITION_NAME=opendes
 DNS_HOST="<your_ingress_hostname>"  # ie: osdu.contoso.com
+ENVIRONMENT_NAME="<your_environment_name_or_identifier>" # ie: dev-sp-id
+PROVIDER_NAME=azure
+REDIS_PORT="6380"
+
 
 az pipelines variable-group create \
   --name "Azure Target Env - ${UNIQUE}" \
@@ -162,9 +172,12 @@ az pipelines variable-group create \
   ELASTIC_ENDPOINT='$('${DATA_PARTITION_NAME}'-elastic-endpoint)' \
   ELASTIC_USERNAME='$('${DATA_PARTITION_NAME}'-elastic-username)' \
   ELASTIC_PASSWORD='$('${DATA_PARTITION_NAME}'-elastic-password)' \
+  ENVIRONMENT_NAME="$ENVIRONMENT_NAME" \
   IDENTITY_CLIENT_ID='$(identity_id)' \
   INTEGRATION_TESTER='$(app-dev-sp-username)' \
   MY_TENANT="$DATA_PARTITION_NAME" \
+  PROVIDER_NAME="$PROVIDER_NAME" \
+  REDIS_PORT="$REDIS_PORT" \
   STORAGE_ACCOUNT='$('${DATA_PARTITION_NAME}'-storage)' \
   STORAGE_ACCOUNT_KEY='$('${DATA_PARTITION_NAME}'-storage-key)' \
   AZURE_EVENT_SUBSCRIBER_SECRET="secret" \
@@ -307,7 +320,7 @@ This variable group is the service specific variables necessary for testing and 
 | Variable | Value |
 |----------|-------|
 | MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/indexer-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -Daad_client_id=$(AZURE_AD_APP_RESOURCE_ID) -DSTORAGE_HOST=$(STORAGE_URL) -DELASTIC_HOST=$(ELASTIC_HOST) -DELASTIC_PORT=$(ELASTIC_PORT) -DELASTIC_USER_NAME=$(ELASTIC_USERNAME) -DELASTIC_PASSWORD=$(ELASTIC_PASSWORD) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DENTITLEMENTS_DOMAIN=$(DOMAIN) -DENVIRONMENT=CLOUD -DLEGAL_TAG=opendes-public-usa-dataset-7643990 -DOTHER_RELEVANT_DATA_COUNTRIES=US` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_TESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -Daad_client_id=$(AZURE_AD_APP_RESOURCE_ID) -DHOST=$(HOST_URL) -DSTORAGE_HOST=$(STORAGE_URL) -DELASTIC_HOST=$(ELASTIC_HOST) -DELASTIC_PORT=$(ELASTIC_PORT) -DELASTIC_USER_NAME=$(ELASTIC_USERNAME) -DELASTIC_PASSWORD=$(ELASTIC_PASSWORD) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2 -DENTITLEMENTS_DOMAIN=$(DOMAIN) -DENVIRONMENT=CLOUD -DLEGAL_TAG=opendes-public-usa-dataset-7643990 -DOTHER_RELEVANT_DATA_COUNTRIES=US` |
 | MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/indexer-test-azure` |
 | SERVICE_RESOURCE_NAME | `$(AZURE_INDEXER_SERVICE_NAME)` |
 
@@ -394,6 +407,33 @@ az pipelines variable-group create \
   -ojson
 ```
 
+__Setup and Configure the ADO Library `Azure Service Release - schema-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `schema` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/schema-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/schema-test-core/pom.xml` |
+| SERVICE_RESOURCE_NAME | `$(AZURE_SCHEMA_SERVICE_NAME)` |
+| AZURE_DEPLOYMENTS_SUBDIR | `drop/deployments/scripts/azure` |
+| AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR | `drop/deployments/scripts` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - schema-service" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/schema-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/schema-test-core/pom.xml" \
+  SERVICE_RESOURCE_NAME='$(AZURE_SCHEMA_SERVICE_NAME)' \
+  AZURE_DEPLOYMENTS_SUBDIR="drop/deployments/scripts/azure" \
+  AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR="drop/deployments/scripts" \
+  -ojson
+```
+
 __Setup and Configure the ADO Library `Azure Service Release - unit-service`__
 
 This variable group is the service specific variables necessary for testing and deploying the `unit` service.
@@ -411,6 +451,45 @@ az pipelines variable-group create \
   MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/unit-azure/unit-aks" \
   -ojson
 ```
+
+__Setup and Configure the ADO Library `Azure Service Release - crs-catalog-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `crs-catalog` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH     | `drop/provider/crs-converter-azure/crs-catalog-aks` |
+
+No Test Path is needed since the service has python tests
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - crs-catalog-service" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/crs-catalog-azure/crs-catalog-aks" \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - crs-conversion-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `crs-conversion` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH     | `drop/provider/crs-converter-azure/crs-converter-aks` |
+
+No Test Path is needed since the service has python tests
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - crs-conversion-service" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/crs-converter-azure/crs-converter-aks" \
+  -ojson
+```
+
 
 __Setup and Configure the ADO Library `Azure Service Release - register`__
 
@@ -482,34 +561,6 @@ az pipelines variable-group create \
   -ojson
 ```
 
-
-__Setup and Configure the ADO Library `Azure Service Release - schema-service`__
-
-This variable group is the service specific variables necessary for testing and deploying the `schema` service.
-
-| Variable | Value |
-|----------|-------|
-| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/schema-azure` |
-| MAVEN_INTEGRATION_TEST_OPTIONS | `-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` |
-| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/schema-test-core/pom.xml` |
-| SERVICE_RESOURCE_NAME | `$(AZURE_SCHEMA_SERVICE_NAME)` |
-| AZURE_DEPLOYMENTS_SUBDIR | `drop/deployments/scripts/azure` |
-| AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR | `drop/deployments/scripts` |
-
-```bash
-az pipelines variable-group create \
-  --name "Azure Service Release - schema-service" \
-  --authorize true \
-  --variables \
-  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/schema-azure" \
-  MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine="-DAZURE_AD_TENANT_ID=$(AZURE_TENANT_ID) -DINTEGRATION_TESTER=$(INTEGRATION_TESTER) -DAZURE_AD_APP_RESOURCE_ID=$(AZURE_AD_APP_RESOURCE_ID) -DTESTER_SERVICEPRINCIPAL_SECRET=$(AZURE_TESTER_SERVICEPRINCIPAL_SECRET) -DPRIVATE_TENANT1=$(TENANT_NAME) -DPRIVATE_TENANT2=tenant2 -DSHARED_TENANT=$(TENANT_NAME) -DVENDOR=$(VENDOR) -DHOST=https://$(DNS_HOST)"` \
-  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/schema-test-core/pom.xml" \
-  SERVICE_RESOURCE_NAME='$(AZURE_SCHEMA_SERVICE_NAME)' \
-  AZURE_DEPLOYMENTS_SUBDIR="drop/deployments/scripts/azure" \
-  AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR="drop/deployments/scripts" \
-  -ojson
-```
-
 __Setup and Configure the ADO Library `Azure Service Release - ingestion-workflow`__
 
 This variable group is the service specific variables necessary for testing and deploying the `ingestion-workflow` service.
@@ -530,6 +581,58 @@ az pipelines variable-group create \
   MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine=""` \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/workflow-test-azure/pom.xml" \
   SERVICE_RESOURCE_NAME='$(AZURE_INGESTION_WORKFLOW_SERVICE_NAME)' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - seismic-store-service`__
+
+This variable group is the service specific variables necessary for testing and deploying the `seismic-store-service` service.
+
+| Variable                         | Value                                                                                   |
+|----------------------------------|-----------------------------------------------------------------------------------------|
+| e2eAdminEmail                    | <your_sslcert_admin_email>                                                              |
+| e2eDataPartition                 | `opendes`                                                                               |
+| e2eLegaltag01                    | `opendes-public-usa-dataset-7643990`                                                    |
+| e2eLegaltag02                    | `opendes-dps-integration-test-valid2-legal-tag`                                         |
+| e2eSubproject                    | `demo`                                                                                  |
+| e2eSubprojectLongname            | `looooooooooooooooooooooooooooooooooooooooooooooooooooongnaaaaaaaaaaaaaaaaaaaameeeeeee` |
+| e2eTenant                        | `opendes`                                                                               |
+| PORT                             | `80`                                                                                    |
+| REPLICA_COUNT                    | `1`                                                                                     |
+| serviceUrlSuffix                 | `seistore-svc/api/v3`                                                                   |
+| utest.mount.dir                  | `/service`                                                                              |
+| utest.runtime.image              | `seistore-svc-runtime`                                                                  |
+
+```bash
+e2eAdminEmail="<your_cert_admin>"     # ie: admin@email.com
+e2eDataPartition=opendes
+e2eLegaltag01=opendes-public-usa-dataset-7643990
+e2eLegaltag02=opendes-dps-integration-test-valid2-legal-tag
+e2eSubproject=demo
+e2eSubprojectLongname=looooooooooooooooooooooooooooooooooooooooooooooooooooongnaaaaaaaaaaaaaaaaaaaameeeeeee
+e2eTenant=opendes
+PORT="80"
+REPLICA_COUNT="1"
+serviceUrlSuffix="seistore-svc/api/v3"
+utest.mount.dir="/service"
+utest.runtime.image=seistore-svc-runtime
+
+az pipelines variable-group create \
+  --name "Azure Service Release - seismic-store-service" \
+  --authorize true \
+  --variables \
+  e2eAdminEmail=${e2eAdminEmail} \
+  e2eDataPartition=${e2eDataPartition} \
+  e2eLegaltag01=${e2eLegaltag01} \
+  e2eLegaltag02=${e2eLegaltag02} \
+  e2eSubproject=${e2eSubproject} \
+  e2eSubprojectLongname=${e2eSubprojectLongname} \
+  e2eTenant=${e2eTenant} \
+  PORT='${PORT}' \
+  REPLICA_COUNT='${REPLICA_COUNT}' \
+  serviceUrlSuffix='${serviceUrlSuffix}' \
+  utest.mount.dir='${utest.mount.dir}' \
+  utest.runtime.image=${utest.runtime.image} \
   -ojson
 ```
 
@@ -755,6 +858,22 @@ az pipelines create \
   -ojson
 ```
 
+10. Add a Pipeline for __schema__  to deploy the Schema Service.
+
+    _Repo:_ `schema-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/schema-service/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'service-schema'  \
+  --repository schema-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
 10. Add a Pipeline for __unit__  to deploy the Unit Service.
 
     _Repo:_ `unit-service`
@@ -771,8 +890,40 @@ az pipelines create \
   -ojson
 ```
 
+11. Add a Pipeline for __crs-catalog-service__  to deploy the Crs Catalog Service.
 
-11. Add a Pipeline for __register__  to deploy the Register Service.
+    _Repo:_ `crs-catalog-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/crs/catalog/swagger-ui.html
+
+```bash
+az pipelines create \
+  --name 'service-crs-catalog'  \
+  --repository crs-catalog-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+12. Add a Pipeline for __crs-conversion-service__  to deploy the Crs Conversion Service.
+
+    _Repo:_ `crs-conversion-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/crs/converter/swagger-ui.html
+
+```bash
+az pipelines create \
+  --name 'service-crs-conversion'  \
+  --repository crs-conversion-service  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+
+13. Add a Pipeline for __register__  to deploy the Register Service.
 
     _Repo:_ `register`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -788,23 +939,7 @@ az pipelines create \
   -ojson
 ```
 
-12. Add a Pipeline for __wks__  to deploy the Wks Service.
-
-    _Repo:_ `wks`
-    _Path:_ `/devops/azure/pipeline.yml`
-    _Validate:_ ScaledObject exist in osdu namespace.
-
-```bash
-az pipelines create \
-  --name 'service-wks'  \
-  --repository wks  \
-  --branch master  \
-  --repository-type tfsgit  \
-  --yaml-path /devops/azure/pipeline.yml  \
-  -ojson
-```
-
-13. Add a Pipeline for __notification__  to deploy the Notification Service.
+14. Add a Pipeline for __notification__  to deploy the Notification Service.
 
     _Repo:_ `notification-service`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -820,22 +955,23 @@ az pipelines create \
   -ojson
 ```
 
-14. Add a Pipeline for __schema__  to deploy the Schema Service.
+15. Add a Pipeline for __wks__  to deploy the Wks Service.
 
-    _Repo:_ `schema-service`
+    _Repo:_ `wks`
     _Path:_ `/devops/azure/pipeline.yml`
-    _Validate:_ https://<your_dns_name>/api/schema-service/v1/swagger-ui.html is alive.
+    _Validate:_ ScaledObject exist in osdu namespace.
 
 ```bash
 az pipelines create \
-  --name 'service-schema'  \
-  --repository schema-service  \
+  --name 'service-wks'  \
+  --repository wks  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
-15. Add a Pipeline for __ingestion-workflow__  to deploy the Schema Service.
+
+16. Add a Pipeline for __ingestion-workflow__  to deploy the Schema Service.
 
     _Repo:_ `ingestion-workflow`
     _Path:_ `/devops/azure/pipeline.yml`
@@ -845,6 +981,21 @@ az pipelines create \
 az pipelines create \
   --name 'service-ingestion-workflow'  \
   --repository ingestion-workflow  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+16. Add a Pipeline for __seismic-store-service__  to deploy the Seismic Store Service.
+
+    _Repo:_ `seismic-store-service`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>//seistore-svc/api/v3/svcstatus is alive.
+
+```bash
+az pipelines create \
+  --name 'service-seismic-store'  \
+  --repository seismic-store-service  \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \

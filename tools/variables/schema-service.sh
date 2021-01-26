@@ -58,7 +58,7 @@ cosmosdb_database="${COSMOS_DB_NAME}"
 storage_account="${ENV_STORAGE}"
 entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
 entitlements_service_api_key="${API_KEY}"
-server.port="8086"
+server_port="8086"
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -131,12 +131,15 @@ export AZURE_TENANT_ID="${TENANT_ID}"
 export AZURE_CLIENT_ID="${ENV_PRINCIPAL_ID}"
 export AZURE_CLIENT_SECRET="${ENV_PRINCIPAL_SECRET}"
 export KEYVAULT_URI="${ENV_KEYVAULT}"
+export azure_activedirectory_session_stateless="true"
+export azure_activedirectory_AppIdUri="api://${ENV_APP_ID}"
+export aad_client_id="${ENV_APP_ID}"
 export appinsights_key="${ENV_APPINSIGHTS_KEY}"
 export cosmosdb_database="${COSMOS_DB_NAME}"
 export storage_account="${ENV_STORAGE}"
 export entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
 export entitlements_service_api_key="${API_KEY}"
-export server.port="8086"
+export server_port="8086"
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -153,7 +156,6 @@ export PRIVATE_TENANT2="${OSDU_TENANT2}"
 export SHARED_TENANT="${OSDU_TENANT}"
 LOCALENV
 
-
 cat > ${UNIQUE}/${SERVICE}_local.yaml <<LOCALRUN
 AZURE_TENANT_ID: "${TENANT_ID}"
 AZURE_CLIENT_ID: "${ENV_PRINCIPAL_ID}"
@@ -162,9 +164,9 @@ KEYVAULT_URI: "${ENV_KEYVAULT}"
 appinsights_key: "${ENV_APPINSIGHTS_KEY}"
 cosmosdb_database: "${COSMOS_DB_NAME}"
 storage_account: "${ENV_STORAGE}"
-entitlements_service_endpoint: "https://${ENV_HOST}/entitlements/v1/"
+entitlements_service_endpoint: "https://${ENV_HOST}/entitlements/v1"
 entitlements_service_api_key: "${API_KEY}"
-server.port: "${server.port}"
+server_port: "${server_port}"
 LOCALRUN
 
 
