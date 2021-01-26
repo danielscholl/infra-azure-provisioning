@@ -247,6 +247,7 @@ git clone https://community.opengroup.org/osdu/platform/data-flow/enrichment/wks
 git clone https://community.opengroup.org/osdu/platform/system/register.git $SRC_DIR/register
 git clone https://community.opengroup.org/osdu/platform/system/schema-service.git $SRC_DIR/schema-service
 git clonehttps://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow.git $SRC_DIR/ingestion-workflow
+git clone https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-service.git $SRC_DIR/seismic-store-service
 ```
 
 __Additional Manual Steps__
