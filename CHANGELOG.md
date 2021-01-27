@@ -1,5 +1,11 @@
 **Note:** This file is manually edited and is best effort information at this time.
 
+# Current Master
+
+__Bug Fixes__
+- [Bug 97 - Rename Cosmos DB collections used by Schema Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/97)
+
+
 # v0.4.3 (2021-1-25)
 
 __Service Onboarded__
