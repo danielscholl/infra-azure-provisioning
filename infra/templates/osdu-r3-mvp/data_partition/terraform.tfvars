@@ -83,22 +83,23 @@ cosmos_sql_collections = [
   {
     name               = "Authority"
     database_name      = "osdu-db"
-    partition_key_path = "/dataPartitionId"
+    partition_key_path = "/id"
+
   },
   {
     name               = "EntityType"
     database_name      = "osdu-db"
-    partition_key_path = "/dataPartitionId"
+    partition_key_path = "/id"
   },
   {
     name               = "SchemaInfo"
     database_name      = "osdu-db"
-    partition_key_path = "/dataPartitionId"
+    partition_key_path = "/partitionId"
   },
   {
     name               = "Source"
     database_name      = "osdu-db"
-    partition_key_path = "/dataPartitionId"
+    partition_key_path = "/id"
   },
   {
     name               = "RegisterAction"
