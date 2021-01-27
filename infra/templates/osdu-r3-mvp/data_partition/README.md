@@ -65,6 +65,8 @@ terraform workspace new $TF_WORKSPACE || terraform workspace select $TF_WORKSPAC
 
 > Manually create a custom variable file to use for template configuration and edit as appropriate and desired.
 
+See [Custom Variables](#custom-variables) section for sample properties that can be configured.
+
 ```bash
 cp terraform.tfvars custom.tfvars
 ```
@@ -101,4 +103,31 @@ Integration tests can be run using the following command:
 
 ```
 go test -v $(go list ./... | grep "integration")
+```
+
+## Custom Variables
+
+### Enabling CORS on Blob Containers
+
+To enable CORS rules on Blob Containers, add the variable `blob_cors_rule` in `custom.tfvars`.
+
+```go
+
+// Blob Storage CORS Rules
+blob_cors_rule = [
+  {
+    allowed_headers = ["*"],
+    allowed_methods = ["PUT", "GET"],
+    allowed_origins = ["https://test1.org", "https://test2.org"],
+    exposed_headers = ["*"],
+    max_age_in_seconds = 60
+  },
+  {
+    allowed_headers = ["*"],
+    allowed_methods = ["PUT"],
+    allowed_origins = ["https://test3.org"],
+    exposed_headers = ["*"],
+    max_age_in_seconds = 60
+  }
+]
 ```
