@@ -58,6 +58,9 @@ cosmosdb_database="${COSMOS_DB_NAME}"
 storage_account="${ENV_STORAGE}"
 entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
 entitlements_service_api_key="${API_KEY}"
+partition_service_endpoint="https://${ENV_HOST}/api/partition/v1"
+azure_istioauth_enabled="true"
+shared_partition="${OSDU_TENANT}"
 server_port="8086"
 
 
@@ -137,9 +140,12 @@ export aad_client_id="${ENV_APP_ID}"
 export appinsights_key="${ENV_APPINSIGHTS_KEY}"
 export cosmosdb_database="${COSMOS_DB_NAME}"
 export storage_account="${ENV_STORAGE}"
-export entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1/"
+export entitlements_service_endpoint="https://${ENV_HOST}/entitlements/v1"
 export entitlements_service_api_key="${API_KEY}"
 export server_port="8086"
+export partition_service_endpoint="https://${ENV_HOST}/api/partition/v1"
+export azure_istioauth_enabled="true"
+export shared_partition="${OSDU_TENANT}"
 
 
 # ------------------------------------------------------------------------------------------------------
