@@ -3,6 +3,7 @@
 # Current Master
 
 __Bug Fixes__
+- [Bug 100 - Airflow statsd not building in pipeline](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/100)
 - [Bug 99 - AKS and Postgres Diagnostics - All Metrics](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/99)
 - [Bug 97 - Rename Cosmos DB collections used by Schema Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/97)
 
