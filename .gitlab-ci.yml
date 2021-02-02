@@ -1,0 +1,30 @@
+stages:
+  - validate
+  - build
+  - unit-test
+
+include:
+  - 'devops/premerge_pipeline/.tf-plan.yml'
+  - 'devops/premerge_pipeline/.unit-test.yml'
+  - 'devops/premerge_pipeline/.validate.yml'
+
+validate:
+  extends: .validate
+
+cr-unit-test:
+  extends: .unit-test
+
+cr-plan:
+  extends: .tf-plan
+
+sr-unit-test:
+  extends: .unit-test
+
+sr-plan:
+  extends: .tf-plan
+
+dr-unit-test:
+  extends: .unit-test
+
+dr-plan:
+  extends: .tf-plan
