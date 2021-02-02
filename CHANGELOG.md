@@ -3,6 +3,7 @@
 # Current Master
 
 __Bug Fixes__
+- [Bug 101 - Comsos Graph module always requires a change on tf plan](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/101)
 - [Bug 100 - Airflow statsd not building in pipeline](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/100)
 - [Bug 99 - AKS and Postgres Diagnostics - All Metrics](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/99)
 - [Bug 97 - Rename Cosmos DB collections used by Schema Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/97)
