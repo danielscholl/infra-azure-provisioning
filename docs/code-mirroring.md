@@ -52,7 +52,8 @@ SERVICE_LIST="infra-azure-provisioning \
               register \
               notification \
               schema-service \
-              ingestion-workflow"
+              ingestion-workflow \
+              seismic-store-service"
 
 for SERVICE in $SERVICE_LIST;
 do
@@ -115,7 +116,7 @@ az pipelines variable-group create \
   DELIVERY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/delivery \
   FILE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/file \
   UNIT_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/unit-service \
-  CRS_CATALOG_REPO=https://dev.azure.com/osdu-demo/osdu/_git/unit-service \
+  CRS_CATALOG_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/crs-catalog-service \
   CRS_CONVERSION_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/crs-conversion-service \
   WKS_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/wks \
   REGISTER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/register \
