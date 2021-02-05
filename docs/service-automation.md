@@ -483,7 +483,7 @@ This variable group is the service specific variables necessary for testing and 
 
 | Variable | Value |
 |----------|-------|
-| MAVEN_DEPLOY_POM_FILE_PATH     | `drop/provider/crs-converter-azure/crs-catalog-aks` |
+| MAVEN_DEPLOY_POM_FILE_PATH     | `drop/provider/crs-catalog-azure/crs-catalog-aks` |
 
 No Test Path is needed since the service has python tests
 
