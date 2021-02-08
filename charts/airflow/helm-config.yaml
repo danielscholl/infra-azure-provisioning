@@ -134,6 +134,9 @@ airflow:
     port: 6380
     passwordSecret: "redis"
     passwordSecretKey: "redis-password"
+  ingress:
+    web:
+      path: "/airflow"
     
 image:
   repository: #{container-registry}#.azurecr.io
