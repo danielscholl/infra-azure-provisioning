@@ -78,7 +78,7 @@ spec:
           - backend:
               serviceName: ingestion-workflow
               servicePort: 80
-            path: /api/workflow/v1/*
+            path: /api/workflow/*
           - backend:
               serviceName: os-wellbore-ddms
               servicePort: 80
