@@ -24,7 +24,7 @@ airflow:
   # Kubernetes - Ingress Configs
   ###################################
   ingress:
-    enabled: false
+    enabled: true
     web:
       annotations:
         kubernetes.io/ingress.class: azure/application-gateway
