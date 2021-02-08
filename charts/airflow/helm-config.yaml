@@ -1,8 +1,132 @@
+################################################################################
+# Specify the azure environment specific values
+#
 appinsightstatsd:
-  aadpodidbinding: "osdu-identity"  
+  aadpodidbinding: "osdu-identity"
+
+################################################################################
+# Specify any optional override values
+#
+image:
+  repository: #{container-registry}#.azurecr.io
+  branch: #{ENVIRONMENT_NAME}#
+  tag: #{Build.SourceVersion}#
+
 airflowLogin:
   name: admin
+
+################################################################################
+# Specify the airflow configuration
+#
 airflow:
+
+  ###################################
+  # Kubernetes - Ingress Configs
+  ###################################
+  ingress:
+    enabled: false
+    web:
+      annotations:
+        kubernetes.io/ingress.class: azure/application-gateway
+        appgw.ingress.kubernetes.io/request-timeout: "300"
+        appgw.ingress.kubernetes.io/connection-draining: "true"
+        appgw.ingress.kubernetes.io/connection-draining-timeout: "30"
+        cert-manager.io/cluster-issuer: letsencrypt
+        cert-manager.io/acme-challenge-type: http01
+      path: "/airflow"
+      host: #{DNS_HOST}#
+      livenessPath: "/airflow/health"
+      tls:
+        enabled: true
+        secretName: osdu-certificate
+      precedingPaths:
+        - path: "/airflow/*"
+          serviceName: airflow-web
+          servicePort: 8080
+
+  ###################################
+  # Database - External Database
+  ###################################
+  postgresql:
+    enabled: false
+  externalDatabase:
+    type: postgres
+    host: #{base-name-sr}#-pg.postgres.database.azure.com     #<-- Azure PostgreSQL Database host
+    user:  osdu_admin@#{base-name-sr}#-pg                     #<-- Azure PostgreSQL Database username, formatted as {username}@{hostname}
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+    port: 5432
+    properties: "?sslmode=require"
+    database: airflow
+
+  ###################################
+  # Database - External Redis
+  ###################################
+  redis:
+    enabled: false
+  externalRedis:
+    host: #{base-name-sr}#-cache.redis.cache.windows.net    #<-- Azure Redis Cache host
+    port: 6380
+    passwordSecret: "redis"
+    passwordSecretKey: "redis-password"
+
+  ###################################
+  # Airflow - DAGs Configs
+  ###################################
+  dags:
+    installRequirements: true
+    persistence:
+      enabled: true
+      existingClaim: airflowdagpvc
+      subPath: "dags"
+
+  ###################################
+  # Airflow - WebUI Configs
+  ###################################
+  web:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    baseUrl: "http://localhost/airflow"
+
+  ###################################
+  # Airflow - Worker Configs
+  ###################################
+  workers:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    autoscaling:
+      enabled: true
+      ## minReplicas is picked from Values.workers.replicas and default value is 1
+      maxReplicas: 3
+      metrics:
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 60
+    resources:
+      requests:
+        memory: "512Mi"
+
+  ###################################
+  # Airflow - Flower Configs
+  ###################################
+  flower:
+    enabled: false
+
+  ###################################
+  # Airflow - Scheduler Configs
+  ###################################
+  scheduler:
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    variables: |
+      {}
+
+  ###################################
+  # Airflow - Common Configs
+  ###################################
   airflow:
     image:
       repository: apache/airflow
@@ -78,67 +202,4 @@ airflow:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: azure-keyvault       
-  dags:
-    installRequirements: true
-    persistence:
-      enabled: true
-      existingClaim: airflowdagpvc
-      subPath: "dags"
-  scheduler:
-    podLabels:
-      aadpodidbinding: "osdu-identity"
-    variables: |
-      {}
-  web:
-    podLabels:
-      aadpodidbinding: "osdu-identity"
-    baseUrl: "http://localhost/airflow"
-  workers:
-    podLabels:
-      aadpodidbinding: "osdu-identity"
-    autoscaling:
-      enabled: true
-      ## minReplicas is picked from Values.workers.replicas and default value is 1
-      maxReplicas: 3
-      metrics:
-      - type: Resource
-        resource:
-          name: memory
-          target:
-            type: Utilization
-            averageUtilization: 60
-    resources:
-      requests:
-        memory: "512Mi"             
-  flower:
-    enabled: false
-  postgresql:
-    enabled: false
-  externalDatabase:
-    type: postgres
-    ## Azure PostgreSQL Database username, formatted as {username}@{hostname}
-    user:  osdu_admin@#{base-name-sr}#-pg
-    passwordSecret: "postgres"
-    passwordSecretKey: "postgres-password"
-    ## Azure PostgreSQL Database host
-    host: #{base-name-sr}#-pg.postgres.database.azure.com
-    port: 5432
-    properties: "?sslmode=require"
-    database: airflow
-  redis:
-    enabled: false
-  externalRedis:
-    ## Azure Redis Cache host
-    host: #{base-name-sr}#-cache.redis.cache.windows.net
-    port: 6380
-    passwordSecret: "redis"
-    passwordSecretKey: "redis-password"
-  ingress:
-    web:
-      path: "/airflow"
-    
-image:
-  repository: #{container-registry}#.azurecr.io
-  branch: #{ENVIRONMENT_NAME}#
-  tag: #{Build.SourceVersion}#
+              secretProviderClass: azure-keyvault
