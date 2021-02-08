@@ -297,12 +297,14 @@ jobs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/system/schema-service.git'
         destinationGitRepositoryUri: '$(SCHEMA_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
       displayName: 'ingestion-workflow'
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow.git'
         destinationGitRepositoryUri: '$(INGESTION_WORKFLOW_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
       displayName: 'seismic-store-service'
       inputs:
