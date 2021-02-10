@@ -194,9 +194,14 @@ airflow:
           key: application-appid
     - name: AIRFLOW_VAR_APPINSIGHTS_KEY
       valueFrom:
-         secretKeyRef:
+        secretKeyRef:
           name: central-logging
-          key: appinsights                              
+          key: appinsights
+    - name: AIRFLOW_VAR_KEYVAULT_URI
+      valueFrom:
+        configMapKeyRef:
+          name: osdu-svc-properties
+          key: ENV_KEYVAULT                                    
     extraConfigmapMounts:
         - name: remote-log-config
           mountPath: /opt/airflow/config
