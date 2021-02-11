@@ -2,6 +2,12 @@
 
 # Current Master
 
+# v0.4 (2021-2-11)
+
+__Service Onboarded__
+- [Issue 60 - Seismic DNS Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/44)
+- [Issue 111 - CSV DAGS](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/111)
+
 __Infra Changes__
 - [Issue 106 - Arch Change - Data Partition - Ingestion Workflow Database and Storage new collections and fileshares](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/106)
 
