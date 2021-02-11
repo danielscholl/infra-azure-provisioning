@@ -57,7 +57,7 @@ __Pros:__
 
 3. Support for automatic renewal of certificates that are stored in your key vault.
 
-__Pros:__
+__Cons:__
 
 1. When using Key Vault with Application Gateway, customers will need to select "Public endpoint (all networks)" when configuring the networking section on Key Vault. Application Gateway currently does not support integration with Key Vault if Key Vault is not configured to allow "Public endpoints (all networks)" access.
 
