@@ -2,7 +2,7 @@
 
 # Current Master
 
-# v0.4 (2021-2-11)
+# v0.5 (2021-2-11)
 
 __Service Onboarded__
 - [Issue 60 - Seismic DMS Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/44)
