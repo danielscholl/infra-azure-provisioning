@@ -42,7 +42,7 @@ grant_type=refresh_token
 @WORKLFOW_HOST = {{ENDPOINT}}/api/workflow/v1
 @data_partition_id = opendes
 @kind = {{data_partition_id}}:wks:Manifest:1.0.0
-@workflow_name = osdu_ingest
+@workflow_name = Osdu_ingest
 @tag = {{data_partition_id}}-public-usa-check-1
 
 
