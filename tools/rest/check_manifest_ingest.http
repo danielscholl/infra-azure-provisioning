@@ -1267,8 +1267,8 @@ data-partition-id: {{data_partition_id}}
         ],
         "Datasets": [
           {
-            "id": "{{data_partition_id}}:dataset--Generic:44e3a00738b24c948fc4696bf37999999",
-            "kind": "{{data_partition_id}}:{{source}}:dataset--Generic:1.0.0",
+            "id": "{{data_partition_id}}:dataset--File.Generic:44e3a00738b24c948fc4696bf37999999",
+            "kind": "{{data_partition_id}}:{{source}}:dataset--File.Generic:1.0.0",
             "acl": {
               "viewers": [
                 "data.default.viewer@{{data_partition_id}}.contoso.com"
@@ -1313,6 +1313,10 @@ data-partition-id: {{data_partition_id}}
 
 
 
+# -----------------------
+# Search #TC-5
+# -----------------------
+## Search for Wellbores with WelboreID=
 
 ###
 # @name searchRecord
@@ -1322,7 +1326,8 @@ Content-Type: application/json
 data-partition-id: {{data_partition_id}}
 
 {
-  "kind": "{{data_partition_id}}:{{source}}:master-data--Well:1.0.0",
+  "kind": "{{data_partition_id}}:{{source}}:work-product-component--WellboreMarkerSet:1.0.0",
+  "query": "(data.WellboreID: \"osdu:master-data--Wellbore:7587:\")",
   "offset": 0,
   "limit": 1
 }
