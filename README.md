@@ -221,7 +221,7 @@ cp .envrc .envrc_${UNIQUE}
 ```
 
 ## Configure Back Up
-Back is enabled by default. To set the backup policies, utilize the script 
+Back is enabled by default. To set the backup policies, utilize the script
 [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools).
 The script should be run whenever you bring up a Resource Group in your deployment.
 
