@@ -2,6 +2,10 @@
 
 # Current Master
 
+__Bug Fixes__
+- [Feature 125 - Enable Manifest Ingestion](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/125)
+- [Bug 119 - Add Airflow python package `python-keycloak`](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/119)
+
 # v0.5 (2021-2-11)
 
 __Service Onboarded__
