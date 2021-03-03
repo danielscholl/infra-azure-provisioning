@@ -91,6 +91,7 @@ az pipelines variable-group create \
   DATA_PARTITION_ID="opendes" \
   TENANT_NAME="opendes" \
   VENDOR="azure" \
+  OSDU_TENANT="opendes" \
   NOTIFICATION_REGISTER_BASE_URL="https://${DNS_HOST}" \
   NOTIFICATION_BASE_URL="https://${DNS_HOST}/api/notification/v1/" \
   REGISTER_CUSTOM_PUSH_URL_HMAC="https://${DNS_HOST}/api/register/v1/test/challenge/1" \
