@@ -45,7 +45,6 @@ grant_type=refresh_token
 
 @data_partition_id = opendes
 @tag =  {{data_partition_id}}-public-usa-check-1
-@schemaId = <a_valid_schema_id>
 @kind = {{data_partition_id}}:wks:reference-data--ProcessingParameterType:1.0.0
 
 
