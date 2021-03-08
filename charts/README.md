@@ -252,6 +252,12 @@ airflow:
       AIRFLOW__CORE__PLUGINS_FOLDER: "/opt/airflow/plugins"
       AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
       AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
+      AIRFLOW_VAR_CORE__CONFIG__DATALOAD_CONFIG_PATH: "/opt/airflow/dags/configs/dataload.ini"
+      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1/schema"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2"
+      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2/records"
+      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
+      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow"
     extraEnv:
       - name: AIRFLOW__CORE__FERNET_KEY
         valueFrom:
@@ -276,15 +282,19 @@ airflow:
         configMap: airflow-remote-log-config
         readOnly: true
     extraPipPackages: [
-        "flask-bcrypt",
+        "flask-bcrypt==0.7.1",
         "apache-airflow[statsd]",
         "apache-airflow[kubernetes]",
-        "apache-airflow-backport-providers-microsoft-azure",
-        "dataclasses",
+        "apache-airflow-backport-providers-microsoft-azure==2021.2.5",
+        "dataclasses==0.8",
         "google-cloud-storage",
-        "azure-identity",
-        "azure-keyvault-secrets",
-        "msal",
+        "python-keycloak==0.24.0",
+        "msal==1.9.0",
+        "azure-identity==1.5.0",
+        "azure-keyvault-secrets==4.2.0",
+        "azure-storage-blob",
+        "azure-servicebus==7.0.1",
+        "toposort==1.6",
         "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_api-0.0.4.tar.gz"
     ]
     extraVolumeMounts:
