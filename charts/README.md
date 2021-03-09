@@ -254,7 +254,7 @@ airflow:
       AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
       AIRFLOW_VAR_CORE__CONFIG__DATALOAD_CONFIG_PATH: "/opt/airflow/dags/configs/dataload.ini"
       AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1/schema"
-      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query"
       AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2/records"
       AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
       AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow"
