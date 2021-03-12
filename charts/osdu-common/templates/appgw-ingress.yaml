@@ -103,3 +103,7 @@ spec:
               serviceName: ingestion-service
               servicePort: 80
             path: /api/ingestion/*
+          - backend:
+              serviceName: well-delivery
+              servicePort: 80
+            path: /api/well-delivery/*
