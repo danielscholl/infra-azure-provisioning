@@ -2,7 +2,16 @@
 
 # Current Master
 
+# v0.7 (2021-3-11)
+
+__Service Onboarded__
+- [Issue 81 - Entitlements V2](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/81)
+  > Not integrated yet to other services until M5.
+
 __Bug Fixes__
+- [Bug 130 - Variable Script Change Indexer Service - STORAGE_QUERY_RECORD_HOST](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/130)
+- [Bug 129 - Envoy Filters Indentation formating](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/129)
+- [Bug 124 - Documentation SDMS](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/124)
 - [Bug 119 - Add Airflow python package `python-keycloak`](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/119)
 
 
