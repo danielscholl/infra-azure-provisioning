@@ -168,6 +168,7 @@ data-partition-id: {{data_partition_id}}
               "TBD:TBD"
             ],
             "title": "True Vertical Depth",
+            "type": "double",
             "example": [
               20711,
               "TBD"
@@ -207,6 +208,7 @@ data-partition-id: {{data_partition_id}}
               "TBD:TBD"
             ],
             "title": "Longuitude",
+            "type": "double",
             "example": [
               -119.2,
               "TBD"
@@ -442,6 +444,7 @@ data-partition-id: {{data_partition_id}}
               "TBD:TBD"
             ],
             "title": "Latitude",
+            "type": "double",
             "example": [
               60.2,
               "TBD"
@@ -625,7 +628,7 @@ data-partition-id: {{data_partition_id}}
     },
     {
       "path": "STATUS_DATE",
-      "kind": "datetime"
+      "kind": "string"
     },
     {
       "path": "PERMIT_NUMBER",
@@ -669,7 +672,6 @@ GET {{STORAGE_HOST}}/schemas/{{kind}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 data-partition-id: {{data_partition_id}}
-
 
 
 # -----------------------
