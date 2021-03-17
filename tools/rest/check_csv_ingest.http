@@ -532,148 +532,6 @@ data-partition-id: {{data_partition_id}}
 
 
 
-
-# -----------------------
-# API STORAGE
-# -----------------------
-###
-# @name createStorageSchema
-POST {{STORAGE_HOST}}/schemas
-Authorization: Bearer {{access_token}}
-Content-Type: application/json
-data-partition-id: {{data_partition_id}}
-
-{
-  "kind": "{{kind}}",
-  "schema": [
-    {
-      "path": "UWI",
-      "kind": "string"
-    },
-    {
-      "path": "WB_NAME",
-      "kind": "string"
-    },
-    {
-      "path": "WB_NUMBER",
-      "kind": "string"
-    },
-    {
-      "path": "SPUD_DATE",
-      "kind": "datetime"
-    },
-    {
-      "path": "MD",
-      "kind": "double"
-    },
-    {
-      "path": "TVD",
-      "kind": "double"
-    },
-    {
-      "path": "OPERATOR",
-      "kind": "string"
-    },
-    {
-      "path": "LONGUITUDE",
-      "kind": "double"
-    },
-    {
-      "path": "LATITUDE",
-      "kind": "double"
-    },
-    {
-      "path": "ELEVATION",
-      "kind": "double"
-    },
-    {
-      "path": "ELEVATION_REF",
-      "kind": "string"
-    },
-    {
-      "path": "LEASE",
-      "kind": "string"
-    },
-    {
-      "path": "FIELD",
-      "kind": "string"
-    },
-    {
-      "path": "BASIN",
-      "kind": "string"
-    },
-    {
-      "path": "FORMATION_AT_TD",
-      "kind": "string"
-    },
-    {
-      "path": "COUNTRY",
-      "kind": "string"
-    },
-    {
-      "path": "STATE",
-      "kind": "string"
-    },
-    {
-      "path": "COUNTY",
-      "kind": "string"
-    },
-    {
-      "path": "CLASS",
-      "kind": "string"
-    },
-    {
-      "path": "STATUS",
-      "kind": "string"
-    },
-    {
-      "path": "STATUS_DATE",
-      "kind": "string"
-    },
-    {
-      "path": "PERMIT_NUMBER",
-      "kind": "string"
-    },
-    {
-      "path": "PERMIT_DATE",
-      "kind": "datetime"
-    },
-    {
-      "path": "INITIAL_COMPLETION_DATE",
-      "kind": "datetime"
-    },
-    {
-      "path": "WELLBORE_SHAPE",
-      "kind": "string"
-    },
-    {
-      "path": "ORIGINAL_OPERATOR",
-      "kind": "string"
-    },
-    {
-      "path": "EPSG_CODE",
-      "kind": "string"
-    },
-    {
-      "path": "CRS",
-      "kind": "string"
-    },
-    {
-      "path": "UNIT_SYSTEM",
-      "kind": "string"
-    }
-  ],
-  "ext": null
-}
-
-###
-# @name getStorageSchema
-GET {{STORAGE_HOST}}/schemas/{{kind}}
-Authorization: Bearer {{access_token}}
-Accept: application/json
-data-partition-id: {{data_partition_id}}
-
-
 # -----------------------
 # API: file
 # -----------------------
@@ -854,7 +712,7 @@ data-partition-id: {{data_partition_id}}
 # API: search
 # -----------------------
 ###
-# @name searchRecord
+# @name searchRecord1
 POST {{SEARCH_HOST}}/query
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
@@ -864,16 +722,67 @@ data-partition-id: {{data_partition_id}}
   "kind": "{{kind}}",
   "query": "data.UWI:\"MS1010\"",
   "offset": 0,
-  "limit": 1
+  "limit": 10
 }
 
-@all_totalCount = {{searchRecord.response.body.totalCount}}
-@record_id = {{searchRecord.response.body.results[0].id}}
+@all_totalCount = {{searchRecord1.response.body.totalCount}}
+@record_id1 = {{searchRecord1.response.body.results[0].id}}
 
 
 ###
-# @name ValidateRecord
-GET {{STORAGE_HOST}}/records/{{record_id}}
+# @name ValidateRecord1
+GET {{STORAGE_HOST}}/records/{{record_id1}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+
+
+###
+# @name searchRecord2
+POST {{SEARCH_HOST}}/query
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+data-partition-id: {{data_partition_id}}
+
+{
+  "kind": "{{kind}}",
+  "query": "data.UWI:\"MS1011\"",
+  "offset": 0,
+  "limit": 10
+}
+
+@all_totalCount = {{searchRecord2.response.body.totalCount}}
+@record_id2 = {{searchRecord2.response.body.results[0].id}}
+
+
+###
+# @name ValidateRecord2
+GET {{STORAGE_HOST}}/records/{{record_id2}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+
+# -----------------------
+# CLEANUP
+# -----------------------
+
+###
+# @name deleteRecord1
+DELETE {{STORAGE_HOST}}/records/{{record_id1}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+
+###
+# @name deleteRecord2
+DELETE {{STORAGE_HOST}}/records/{{record_id2}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+
+###
+# @name deleteTag
+DELETE {{LEGAL_HOST}}/legaltags/{{tag}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
 data-partition-id: {{data_partition_id}}
