@@ -39,7 +39,7 @@ spec:
             - "-c"
             - >
               ( echo "cat <<EOF" ; cat /etc/pgbouncer/users.txt.template ; echo EOF ) | sh > /etc/pgbouncer/users.txt \
-              && exec pgbouncer  /etc/pgbouncer/pgbouncer.ini
+                && exec pgbouncer /etc/pgbouncer/pgbouncer.ini
           ports:
             - name: pgbouncer
               containerPort: {{ .Values.pgbouncer.port }}
