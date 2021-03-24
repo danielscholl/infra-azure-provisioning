@@ -23,6 +23,23 @@ customConfig:
     createUser: "True"
 
 ################################################################################
+# Specify pgbouncer configuration
+#
+pgbouncer:
+  enabled: true
+  port: 6543
+  max_client_connections: 3000
+  airflowdb:
+    name: airflow
+    host: #{base-name-sr}#-pg.postgres.database.azure.com
+    port: 5432
+    pool_size: 100
+    user:  osdu_admin@#{base-name-sr}#-pg
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+
+
+################################################################################
 # Specify the airflow configuration
 #
 airflow:
@@ -58,12 +75,11 @@ airflow:
     enabled: false
   externalDatabase:
     type: postgres
-    host: #{base-name-sr}#-pg.postgres.database.azure.com     #<-- Azure PostgreSQL Database host
-    user:  osdu_admin@#{base-name-sr}#-pg                     #<-- Azure PostgreSQL Database username, formatted as {username}@{hostname}
+    host: airflow-pgbouncer.osdu.svc.cluster.local           #<-- Azure PostgreSQL Database host or phbouncer host (if pgbouncer is enabled)
+    user: osdu_admin@#{base-name-sr}#-pg                     #<-- Azure PostgreSQL Database username, formatted as {username}@{hostname}
     passwordSecret: "postgres"
     passwordSecretKey: "postgres-password"
-    port: 5432
-    properties: "?sslmode=require"
+    port: 6543
     database: airflow
 
   ###################################

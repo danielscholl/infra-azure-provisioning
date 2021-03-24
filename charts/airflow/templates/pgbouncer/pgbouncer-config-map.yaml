@@ -1,0 +1,12 @@
+{{- if .Values.pgbouncer.enabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: airflow-pgbouncer-config
+  labels:
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+data:
+  pgbouncer.ini: {{ include "airflow.pgbouncer_config" . | b64enc }}
+  users.txt.template: {{ include "airflow.pgbouncer_users_template" . | b64enc }}
+{{- end }}
