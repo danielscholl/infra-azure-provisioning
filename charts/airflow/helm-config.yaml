@@ -75,7 +75,7 @@ airflow:
     enabled: false
   externalDatabase:
     type: postgres
-    host: airflow-pgbouncer.osdu.svc.cluster.local           #<-- Azure PostgreSQL Database host or phbouncer host (if pgbouncer is enabled)
+    host: airflow-pgbouncer.osdu.svc.cluster.local           #<-- Azure PostgreSQL Database host or pgbouncer host (if pgbouncer is enabled)
     user: osdu_admin@#{base-name-sr}#-pg                     #<-- Azure PostgreSQL Database username, formatted as {username}@{hostname}
     passwordSecret: "postgres"
     passwordSecretKey: "postgres-password"
