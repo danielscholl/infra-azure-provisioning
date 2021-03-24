@@ -30,7 +30,7 @@ spec:
         - name: pgbouncer
           image: mcr.microsoft.com/azure-oss-db-tools/pgbouncer-sidecar:pgbouncerv1.13
           imagePullPolicy: IfNotPresent
-           command:
+          command:
             - "/bin/sh"
           args:
             - "-c"
