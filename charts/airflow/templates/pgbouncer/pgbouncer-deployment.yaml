@@ -8,7 +8,7 @@ metadata:
     component: pgbouncer
     release: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     rollingUpdate:
       maxSurge: 1
