@@ -1,4 +1,4 @@
-# Frequently asked questions
+ # Frequently asked questions
 
 This document answers some of the most common questions we have recieved from customers about OSDU on Azure. Please feel free to contribute with any additional information that may be valuable to others.
 
@@ -132,6 +132,10 @@ Security Layers of OSDU API’s currently exist for User Authentication and Auth
 ## What mechanisms currently exist to Ingest Data can Azure Data Factory be leveraged for Data Ingestion?
 
 Data Ingestion is currently under development and due to initial OSDU community restraints that exist the workflow integrated to the open source code base leverages Airflow for its workflow engine.
+
+## How do I setup and manage users for Airflow?
+
+Airflow Web authentication is now rbac enabled. To understand user roles, create new users and manage users please refer [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/airflow-rbac.md).
 
 # Infrastructure Upgrade Walkthroughs
 
