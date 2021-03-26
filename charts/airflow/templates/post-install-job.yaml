@@ -50,6 +50,10 @@ spec:
             secretKeyRef:
               name: airflow
               key: admin-password
+        - name: AIRFLOW_RBAC_CREATE_USER
+          value: "{{ .Values.customConfig.rbac.createUser }}"
+        - name: AIRFLOW_RBAC_ENABLED
+          value: "{{ .Values.airflow.airflow.config.AIRFLOW__WEBSERVER__RBAC }}"
       volumes:
       - name: config-volume
         configMap:
