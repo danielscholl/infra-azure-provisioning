@@ -84,6 +84,8 @@ __Process: Project Milestones__
 
 Each month a Project Milestone is initiated that tracks the Issues/Bugs and Merge Requests planned and worked on.
 
+- [Milestone 4](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/milestones/7)
+- [Milestone 3](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/milestones/6)
 - [January-21  Milestone](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/milestones/5)
 - [December-20 Milestone](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/milestones/4)
 
