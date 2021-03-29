@@ -92,3 +92,59 @@ There are mainly two reasons for airflow worker pods not able to get into runnin
 - The maximum node limit might have reached on AKS cluster, hence increasing the node limit will let AKS to provision new nodes thereby changing the pod state from Pending to running
 - Another reason is even though the node limit is increased the new nodes are not getting launched, this issue is related to exhaustion of subnet address space used by virtual machine scale set used by AKS
 
+
+### How to scale airflow webserver to execute 100 requests per second for Trigger Dag and Get Dag Run Status APIs
+
+The below configurations are recommended ones for airflow webserver
+- AIRFLOW__WEBSERVER__WORKERS: 10 (Number of workers to run the Gunicorn web server)
+- AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 0 (Number of seconds to wait before refreshing a batch of workers)
+- AIRFLOW__CORE__STORE_SERIALIZED_DAGS: True (Whether to serialise DAGs and persist them in DB. If set to True, Webserver reads from DB instead of parsing DAG files)
+- AIRFLOW__CORE__STORE_DAG_CODE: True (Whether to persist DAG files code in DB. If set to True, Webserver reads file contents from DB instead of trying to access files in a DAG folder)
+- AIRFLOW__WEBSERVER__WORKER_CLASS: gevent (The worker class gunicorn should use)
+- AIRFLOW__CORE__MIN_SERIALIZED_DAG_UPDATE_INTERVAL: 300 (Updating serialized DAG can not be faster than a minimum interval to reduce database write rate)
+- AIRFLOW__CORE__MIN_SERIALIZED_DAG_FETCH_INTERVAL: 300 (This config controls when your DAGs are updated in the Webserver)
+
+
+For the below configurations 
+1. AIRFLOW__CORE__MIN_SERIALIZED_DAG_UPDATE_INTERVAL 
+2. AIRFLOW__CORE__MIN_SERIALIZED_DAG_FETCH_INTERVAL
+
+The value should be reduced/increased as per need basis
+
+
+We will need around 12 airflow webserver containers to hold this load consistently for long durations
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+```
+web:
+    replicas: 12
+```
+The suggested resource requests and limit for airflow webserver pod in Kubernetes is
+- CPU : Request - 3000m, Limits - 3800m
+- Memory: Request - 2Gi, Limit - 2Gi
+
+We will need to increase the default timeout value for liveness probe from 3 seconds to 60 seconds
+The default value of 3s can result in frequent pod restarts
+
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+
+```
+web:
+    - livenessProbe:
+        timeoutSeconds: 60
+```
+
+### How to change resource requests for airflow webserver?
+To change resource requests for airflow webserver the configuration for webserver needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+
+**Example:** If you want to change resource requests to 3000m cpu and 2048Mi memory
+```
+web:
+    # Below configuration needs to be added, do not remove exisiting configuration
+        resources:
+          requests:
+            cpu: 3000m
+            memory: 2Gi
+          limits:
+            cpu: 3800m
+            memory: 2Gi    
+```
