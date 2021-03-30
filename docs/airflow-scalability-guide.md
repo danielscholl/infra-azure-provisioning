@@ -87,6 +87,16 @@ workers:
 
 ```
 
+### How to change the number of airflow worker pods to be launched?
+To change number of airflow worker pods the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L101)
+
+**Example:** If you want to have 5 airflow worker pods to be running
+```
+workers:
+    # Below configuration needs to be added, do not remove exisiting configuration
+    replicas: 5
+```
+
 ### How to resolve airflow worker pods which are stuck in Pending state?
 There are mainly two reasons for airflow worker pods not able to get into running state
 - The maximum node limit might have reached on AKS cluster, hence increasing the node limit will let AKS to provision new nodes thereby changing the pod state from Pending to running
