@@ -9,6 +9,8 @@ def addNamespace(namespace, manifest):
     if 'subjects' in manifest:
         manifest['subjects'][0]['namespace'] = namespace
 def removeReplicasFromWorkerStatefulSet(manifest):
+    # This function removes replicas property if autoscaling is enabled.
+    # This is done to make sure kubernetes does not reset the pod count when autoscaling is enabled
     if manifest['kind'] == 'StatefulSet' and manifest['metadata']['name'] == 'airflow-worker':
         if manifest['metadata']['labels']['autoscalingEnabled']:
             del manifest['spec']['replicas']
