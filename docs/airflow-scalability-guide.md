@@ -158,3 +158,7 @@ web:
             cpu: 3800m
             memory: 2Gi    
 ```
+
+### When do you need to scale the PostgreSQL database used by airflow?
+- If the CPU consumption on Azure PostgreSQL database hits more than 80% when airflow workers are executing tasks
+- If there are errors around acquiring new connections to the Azure PostgreSQL database in PGBouncer logs 
