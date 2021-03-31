@@ -141,7 +141,7 @@ Data Ingestion is currently under development and due to initial OSDU community 
 
 ## How do I setup and manage users for Airflow?
 
-Airflow Web authentication is now rbac enabled. To understand user roles, create new users and manage users please refer [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/airflow-rbac.md).
+Airflow Web authentication is now rbac enabled. To understand user roles, create new users and manage users please refer [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/airflow-rbac-guide.md).
 
 # Infrastructure Upgrade Walkthroughs
 
