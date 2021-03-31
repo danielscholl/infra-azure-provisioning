@@ -117,6 +117,22 @@ customConfig:
     createUser: "True"
 
 ################################################################################
+# Specify pgbouncer configuration
+#
+pgbouncer:
+  enabled: true
+  port: 6543
+  max_client_connections: 3000
+  airflowdb:
+    name: airflow
+    host: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg.postgres.database.azure.com
+    port: 5432
+    pool_size: 100
+    user:  osdu_admin@$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+
+################################################################################
 # Specify the airflow configuration
 #
 airflow:
@@ -152,14 +168,14 @@ airflow:
     enabled: false
   externalDatabase:
     type: postgres
+    ## Azure PostgreSQL Database host or pgbouncer host (if pgbouncer is enabled)
+    host: airflow-pgbouncer.osdu.svc.cluster.local         
     ## Azure PostgreSQL Database username, formatted as {username}@{hostname}
-    user:  osdu_admin@$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg
+    user: osdu_admin@$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg
     passwordSecret: "postgres"
     passwordSecretKey: "postgres-password"
-    ## Azure PostgreSQL Database host
-    host: $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/base-name-sr --query value -otsv)-pg.postgres.database.azure.com
-    port: 5432
-    properties: "?sslmode=require"
+    port: 6543
+    database: airflow
     database: airflow
 
   ###################################
