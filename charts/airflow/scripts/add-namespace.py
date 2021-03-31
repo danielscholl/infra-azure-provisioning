@@ -10,7 +10,8 @@ def addNamespace(namespace, manifest):
         manifest['subjects'][0]['namespace'] = namespace
 def removeReplicasFromWorkerStatefulSet(manifest):
     if manifest['kind'] == 'StatefulSet' and manifest['metadata']['name'] == 'airflow-worker':
-        del manifest['spec']['replicas']
+        if manifest['metadata']['labels']['autoscalingEnabled']:
+            del manifest['spec']['replicas']
 
 
 def addingNamespace(namespace):
