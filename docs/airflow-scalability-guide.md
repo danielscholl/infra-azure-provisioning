@@ -34,7 +34,7 @@ As a prerequisite we need to determine the worker concurrency for airflow worker
 Lets say the worker concurrency is 25, in order to execute 500 concurrent tasks the number of airflow worker pods needed are 20 (500 / 25 = 20)
 
 ### How to change airflow configuration?
-To change the airflow configuration it requires adding/updating in `config` section of [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L136)
+To change the airflow configuration it requires adding/updating in `config` section of [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L159)
 
 **Example:** If you want to change AIRFLOW__CORE__DAG_CONCURRENCY to say 100
 ```
@@ -45,7 +45,7 @@ airflow:
 ```
 
 ### How to increase default pool size of airflow?
-To increase default pool size the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L128)
+To increase default pool size the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L144)
 
 **Example:** If you want to change default pool size to say 1000
 ```
@@ -61,7 +61,7 @@ scheduler:
 ```
 
 ### How to change resource requests for airflow scheduler?
-To change resource requests for airflow scheduler the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L128)
+To change resource requests for airflow scheduler the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L144)
 
 **Example:** If you want to change resource requests to 3000m cpu and 2048Mi memory
 ```
@@ -74,7 +74,7 @@ scheduler:
 ```
 
 ### How to change resource requests for airflow workers?
-To change resource requests for airflow worker the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L101)
+To change resource requests for airflow worker the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L117)
 
 **Example:** If you want to change resource requests to 2000m cpu and 1024Mi memory
 ```
@@ -88,7 +88,7 @@ workers:
 ```
 
 ### How to change the number of airflow worker pods to be launched?
-To change number of airflow worker pods the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L101)
+To change number of airflow worker pods the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L117)
 
 **Example:** If you want to have 5 airflow worker pods to be running
 ```
@@ -123,7 +123,7 @@ The value should be reduced/increased as per need basis
 
 
 We will need around 12 airflow webserver containers to hold this load consistently for long durations
-This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
 ```
 web:
     replicas: 12
@@ -135,7 +135,7 @@ The suggested resource requests and limit for airflow webserver pod in Kubernete
 We will need to increase the default timeout value for liveness probe from 3 seconds to 60 seconds
 The default value of 3s can result in frequent pod restarts
 
-This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
 
 ```
 web:
@@ -144,7 +144,7 @@ web:
 ```
 
 ### How to change resource requests for airflow webserver?
-To change resource requests for airflow webserver the configuration for webserver needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L93)
+To change resource requests for airflow webserver the configuration for webserver needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
 
 **Example:** If you want to change resource requests to 3000m cpu and 2048Mi memory
 ```
