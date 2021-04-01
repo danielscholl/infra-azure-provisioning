@@ -30,7 +30,7 @@ Create the ADF instance by following instructions [here](https://docs.microsoft.
 ### Create a copy activity
 Go to the `Author & Monitor` section from your data factory instance.
 
-![image.png](/.attachments/image-e695a578-1e1f-4fb8-8cef-e79fb11de2fb.png)
+![select-monitor](images/backup-restore/monitor-selection.png)
 
 Select the `Copy Data` option.
 
