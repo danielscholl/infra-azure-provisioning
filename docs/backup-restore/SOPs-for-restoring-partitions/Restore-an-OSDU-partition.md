@@ -121,7 +121,7 @@ To restore data in partition service, call the POST API of partition service wit
 ## Post restoration cleanup
 
 ### Migrate data back to the old cosmos account
-Migrate data back to original cosmos db account by following these [instructions](/SOPs-for-restoring-partitions/Migrate-data-from-one-cosmos-db-to-another).
+Migrate data back to original cosmos db account by following these [instructions](docs/backup-restore/SOPs-for-restoring-partitions/Migrate-data-from-one-cosmos-db-to-another.md).
 
 ### Delete the newly created cosmos db account
 
