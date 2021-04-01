@@ -16,11 +16,11 @@ You can use the table below to set up a team of recovery engineers.
 
 |Stream|Expertise |Depends on|Resouces|Engineers Identified |
 |--|--|--|--|--|
-|Orchestration|Can function as the PoC. Has RBAC to all. Can approve, validate and coordinate the steps performed by all the restore engineers. In case of mock drills, induce data corruption. |None|[SOP-restore-an-OSDU-partition](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/4/SOP-restore-an-OSDU-partition),  [Back up and restore drill](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/16/Backup-and-restore-drill)|
-|AKS|Basics of AKS, az CLI, Azure KV|None|[SOP-restore-an-OSDU-partition](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/4/SOP-restore-an-OSDU-partition)|
-|CosmosDB restore |SQL, Azure KV, Basics of CosmosDB |AKS | [SOP-restore-an-OSDU-partition](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/4/SOP-restore-an-OSDU-partition)|
-|Storage Account restore | Azure KV, Basic understanding of Storage Account |AKS| [SOP-restore-an-OSDU-partition](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/4/SOP-restore-an-OSDU-partition)|
-|Elastic restore|Basics of ES, Indexer Service,  Search service. |All of the above| [SOP-restore-an-OSDU-partition](https://dev.azure.com/ms-slb-cobuild/ms-slb-delfi-collab/_wiki/wikis/ms-slb-delfi-collab.wiki/4/SOP-restore-an-OSDU-partition)|
+|Orchestration|Can function as the PoC. Has RBAC to all. Can approve, validate and coordinate the steps performed by all the restore engineers. In case of mock drills, induce data corruption. |None|[SOP-restore-an-OSDU-partition](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md),  [Back up and restore drill](docs/backup-restore/Backup-and-restore-on-OSDU-phase-1/Backup-and-restore-drill.md)|
+|AKS|Basics of AKS, az CLI, Azure KV|None|[SOP-restore-an-OSDU-partition](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md)|
+|CosmosDB restore |SQL, Azure KV, Basics of CosmosDB |AKS | [SOP-restore-an-OSDU-partition](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md)|
+|Storage Account restore | Azure KV, Basic understanding of Storage Account |AKS| [SOP-restore-an-OSDU-partition](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md)|
+|Elastic restore|Basics of ES, Indexer Service,  Search service. |All of the above| [SOP-restore-an-OSDU-partition](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md)|
 
 
 
