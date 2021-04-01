@@ -29,7 +29,7 @@ In general data validation is manual task and the metrices vary depending upon t
 
 ## Configuring Backup/ restore policies
 
-[This wiki](docs/backup-restore/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU.md) talks about how to enable back up and restore policies. For this drill, we'll enable backup policies on [Cosmos db account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-cosmosdb-account) and [Storage account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-storage-accounts)
+[This wiki](docs/backup-restore/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU.md) talks about how to enable back up and restore policies. For this drill, we'll enable backup policies on [Cosmos db account](docs/backup-restore/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU.md#enabling-back-up-for-cosmosdb-account) and [Storage account](docs/backup-restore/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU.md#enabling-back-up-for-storage-accounts)
 
 ## Restoring data
 [This wiki](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md) talks about how you can store the data in an OSDU partition. 
