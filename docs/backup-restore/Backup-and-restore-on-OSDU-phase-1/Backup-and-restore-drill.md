@@ -29,10 +29,10 @@ In general data validation is manual task and the metrices vary depending upon t
 
 ## Configuring Backup/ restore policies
 
-[This wiki](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU) talks about how to enable back up and restore policies. For this drill, we'll enable backup policies on [Cosmos db account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-cosmosdb-account) and [Storage account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-storage-accounts)
+[This wiki](docs/backup-restore/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU.md) talks about how to enable back up and restore policies. For this drill, we'll enable backup policies on [Cosmos db account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-cosmosdb-account) and [Storage account](/SOPs-for-Enabling-and-Configuring-Backup/Enable-and-configure-Backup-for-OSDU#enabling-back-up-for-storage-accounts)
 
 ## Restoring data
-[This wiki](/SOPs-for-restoring-partitions/SOP:-restore-an-OSDU-partition) talks about how you can store the data in an OSDU partition. 
+[This wiki](docs/backup-restore/SOPs-for-restoring-partitions/Restore-an-OSDU-partition.md) talks about how you can store the data in an OSDU partition. 
 
 Note that you can restore the data only after back up policies are configured and one round of data back up has been done. If you are using the standard scripts to enable backup policies, you can start with data restore after 12 hours of configuring policies.
 
