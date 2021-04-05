@@ -91,4 +91,4 @@ Compare the data in target containers with source containers manually to see if 
 ## Cleanup the provisioned resources.
 
 Delete the azure data factory that you created in this step to avoid extra cost.
-![image.png](images/backup-restore/delete-ADF.png)
+![image.png](docs/images/backup-restore/delete-ADF.png)
