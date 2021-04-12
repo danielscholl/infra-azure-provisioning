@@ -53,6 +53,10 @@ locals {
 
   resource_group_name = format("%s-%s-%s-rg", var.prefix, local.workspace, random_string.workspace_scope.result)
   template_path       = "./dashboard_templates"
+
+  central_group_prefix = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
+  partition_group_prefix = trim(data.terraform_remote_state.partition_resources.outputs.data_partition_group_name, "-rg")
+  service_group_prefix   = trim(data.terraform_remote_state.service_resources.outputs.services_resource_group_name, "-rg")
 }
 
 #-------------------------------
@@ -132,9 +136,9 @@ resource "azurerm_dashboard" "default_dashboard" {
   dashboard_properties = templatefile("${local.template_path}/default.tpl", {
     tenantName           = var.tenant_name
     subscriptionId       = data.azurerm_client_config.current.subscription_id
-    centralGroupPrefix   = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
-    partitionGroupPrefix = trim(data.terraform_remote_state.partition_resources.outputs.data_partition_group_name, "-rg")
-    serviceGroupPrefix   = trim(data.terraform_remote_state.service_resources.outputs.services_resource_group_name, "-rg")
+    centralGroupPrefix   = local.central_group_prefix
+    partitionGroupPrefix = local.partition_group_prefix
+    serviceGroupPrefix   = local.service_group_prefix
     partitionStorage     = data.terraform_remote_state.partition_resources.outputs.storage_account
   })
 }
@@ -150,6 +154,53 @@ resource "azurerm_dashboard" "appinsights_dashboard" {
 
   dashboard_properties = templatefile("${local.template_path}/appinsights.tpl", {
     subscriptionId     = data.azurerm_client_config.current.subscription_id
-    centralGroupPrefix = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
+    centralGroupPrefix = local.central_group_prefix
   })
+}
+
+#-------------------------------
+# Action Group
+#-------------------------------
+resource "azurerm_monitor_action_group" "ag" {
+  name                ="${local.base_name}-action-group"
+  resource_group_name = azurerm_resource_group.main.name
+  short_name          = "${local.base_name}-ag"
+
+  # There can be multiple email receivers
+  email_receiver {
+    name = "Dev Team"
+    email_address = var.email-id
+    use_common_alert_schema = false
+  }
+}
+
+#-------------------------------
+# CPU Usage Alert Rule
+#-------------------------------
+resource "azurerm_monitor_scheduled_query_rules_alert" "CPU-Usage-Alert" {
+  name                = "${local.base_name}-cpu-alert-rule"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  action {
+    action_group           = [azurerm_monitor_action_group.ag.id]
+  }
+
+  data_source_id = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${local.central_group_prefix}-rg/providers/Microsoft.Insights/components/${local.central_group_prefix}-ai"
+  description    = "Alert when CPU Usage of OSDU service is greater than threshold value"
+  enabled        = false
+  query       = var.query
+  severity    = var.severity
+  frequency   = var.frequency
+  time_window = var.time-window
+  trigger {
+    operator  = "GreaterThan"
+    threshold = var.cpu-usage-threshold
+    metric_trigger {
+      operator            = "GreaterThan"
+      threshold           = var.metric-trigger-threshold
+      metric_trigger_type = "Total"
+      metric_column       = "cloud_RoleName"
+    }
+  }
 }
