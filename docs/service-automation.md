@@ -139,6 +139,7 @@ This variable group will be used to hold the specific environment values necessa
 | ELASTIC_ENDPOINT                              | `$(opendes-elastic-endpoint)`     |
 | ELASTIC_USERNAME                              | `$(opendes-elastic-username)`     |
 | ELASTIC_PASSWORD                              | `$(opendes-elastic-password)`     |
+| ENTV2_REDIS_TTL_SECONDS                       | `1`                               |
 | ENVIRONMENT_NAME                              | <your_environment_name_or_identifier>     |
 | IDENTITY_CLIENT_ID                            | `$(osdu-identity-id)`             |
 | INTEGRATION_TESTER                            | `$(app-dev-sp-username)`          |
@@ -180,6 +181,7 @@ az pipelines variable-group create \
   ELASTIC_ENDPOINT='$('${DATA_PARTITION_NAME}'-elastic-endpoint)' \
   ELASTIC_USERNAME='$('${DATA_PARTITION_NAME}'-elastic-username)' \
   ELASTIC_PASSWORD='$('${DATA_PARTITION_NAME}'-elastic-password)' \
+  ENTV2_REDIS_TTL_SECONDS="1" \
   ENVIRONMENT_NAME="$ENVIRONMENT_NAME" \
   IDENTITY_CLIENT_ID='$(identity_id)' \
   INTEGRATION_TESTER='$(app-dev-sp-username)' \
