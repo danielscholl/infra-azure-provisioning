@@ -42,7 +42,7 @@ UNIQUE="<your_osdu_unique>"         # ie: demo
 DNS_HOST="<your_osdu_fqdn>"         # ie: osdu-$UNIQUE.contoso.com
 DATA_PARTITION="<your_partition>"   # ie:opendes
 ACR_REGISTRY="<repository>"         # ie: msosdu.azurecr.io
-TAG="<app_version>"                 # ie: 0.7.0
+TAG="<app_version>"                 # ie: 0.8.0
 
 # This logs your local Azure CLI in using the configured service principal.
 az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
@@ -75,8 +75,7 @@ UNIQUE="<your_osdu_unique>"         # ie: demo
 AZURE_DNS_NAME="<your_osdu_fqdn>"   # ie: osdu-$UNIQUE.contoso.com
 DATA_PARTITION="<your_partition>"   # ie:opendes
 ACR_REGISTRY="<your_acr_fqdn>"      # ie: myacr.azurecr.io
-DAG_NAME=="zgy_dag"    
-TAG="latest"                        # For now latest image would be updated from the Open ZGY Project to here
+TAG="<app_version>"                 # ie: 0.8.0
 
 # This logs your local Azure CLI in using the configured service principal.
 az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
@@ -85,18 +84,19 @@ GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 
 cat > .env << EOF
-DAG_IMAGE=${ACR_REGISTRY}/$DAG_NAME:${TAG}
-SHARED_TENANT=$SHARED_TENANT
-AZURE_TENANT_ID=$AZURE_TENANT_ID
+DAG_TASK_IMAGE=$DAG_TASK_IMAGE:$TAG
+SHARED_TENANT=$DATA_PARTITION
 AZURE_DNS_NAME=$AZURE_DNS_NAME
-AZURE_AD_APP_RESOURCE_ID=$AZURE_AD_APP_RESOURCE_ID
-AZURE_CLIENT_ID=$AZURE_CLIENT_ID
-AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET
+AZURE_TENANT_ID=$ARM_TENANT_ID
+AZURE_AD_APP_RESOURCE_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/aad-client-id --query value -otsv)
+AZURE_CLIENT_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-username --query value -otsv)
+AZURE_CLIENT_SECRET=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-password --query value -otsv)
 EOF
 
-(cd ../../.. && docker build -f deployments/scripts/azure/Dockerfile -t $ACR_REGISTRY/$DAG_NAME:$TAG .)
-docker run --env-file .env $ACR_REGISTRY/$DAG_NAME:$TAG
+docker run -it --env-file .env $ACR_REGISTRY/segy-to-zgy-conversion-dag:$TAG
 ```
+
+
 
 ## SEGY to VDS DAG Conversion - DAG Loading
 
