@@ -24,6 +24,7 @@
 feature_flag = {
   osdu_namespace = false
   flux           = false
+  sa_lock        = false
 }
 
 prefix = "osdu-mvp"
