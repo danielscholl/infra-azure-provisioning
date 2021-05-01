@@ -1108,3 +1108,19 @@ az pipelines create \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
+
+21. Add a Pipeline for __policy-service__  to deploy the Policy Service.
+
+    _Repo:_ `policy`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/ingestion/docs is alive.
+
+```bash
+az pipelines create \
+  --name 'policy-service'  \
+  --repository policy \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
