@@ -6,9 +6,9 @@ metadata:
 spec:
   limits:
   - default:
-      memory: {{ .Values.global.resourceLimits.default-memory-limits }}
-      cpu: {{ .Values.global.resourceLimits.default-cpu-limits }}
+      memory: {{ .Values.global.resourceLimits.defaultMemoryLimits }}
+      cpu: {{ .Values.global.resourceLimits.defaultCpuLimits }}
     defaultRequest:
-      memory: {{ .Values.global.resourceLimits.default-memory-requests }}
-      cpu: {{ .Values.global.resourceLimits.default-cpu-requests }}
+      memory: {{ .Values.global.resourceLimits.defaultMemoryRequests }}
+      cpu: {{ .Values.global.resourceLimits.defaultCpuRequests }}
     type: Container

@@ -41,7 +41,7 @@ global:
   # Specify the resource limits
   #
   resourceLimits:
-    default-cpu-requests: "0.5"
-    default-memory-requests: "4Gi"
-    default-cpu-limits: "1"
-    default-memory-limits: "4Gi"
+    defaultCpuRequests: "0.5"
+    defaultMemoryRequests: "4Gi"
+    defaultCpuLimits: "1"
+    defaultMemoryLimits: "4Gi"
