@@ -10,7 +10,7 @@ https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-se
 https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service
 https://community.opengroup.org/osdu/platform/system/schema-service
 ```
-![File Structure](./docs/images/directory-structure.png "File Structure")
+![File Structure](./images/directory-structure.png "File Structure")
 
 Change directory to `infra-azure-provisioning`
 
