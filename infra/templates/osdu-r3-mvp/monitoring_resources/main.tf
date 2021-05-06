@@ -57,6 +57,8 @@ locals {
   central_group_prefix = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
   partition_group_prefix = trim(data.terraform_remote_state.partition_resources.outputs.data_partition_group_name, "-rg")
   service_group_prefix   = trim(data.terraform_remote_state.service_resources.outputs.services_resource_group_name, "-rg")
+
+  action-group-id-suffix = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.main.name}/providers/microsoft.insights/actiongroups/"
 }
 
 #-------------------------------
@@ -159,48 +161,69 @@ resource "azurerm_dashboard" "appinsights_dashboard" {
 }
 
 #-------------------------------
-# Action Group
+# Action Groups
 #-------------------------------
-resource "azurerm_monitor_action_group" "ag" {
-  name                ="${local.base_name}-action-group"
+resource "azurerm_monitor_action_group" "action-groups" {
+  for_each            = var.action-groups
+  name                = each.value.name
   resource_group_name = azurerm_resource_group.main.name
-  short_name          = "${local.base_name}-ag"
+  short_name          = each.value.short-name
 
-  # There can be multiple email receivers
-  email_receiver {
-    name = "Dev Team"
-    email_address = var.email-id
-    use_common_alert_schema = false
+  # There can be 0 or more email receivers
+  dynamic "email_receiver" {
+    for_each = each.value.email-receiver
+    content {
+      name                    = email_receiver.value.name
+      email_address           = email_receiver.value.email-address
+      use_common_alert_schema = false
+    }
+  }
+
+  # There can be 0 or more sms receivers
+  dynamic "sms_receiver" {
+    for_each = each.value.sms-receiver
+    content {
+      name         = sms_receiver.value.name
+      country_code = sms_receiver.value.country-code
+      phone_number = sms_receiver.value.phone
+    }
   }
 }
 
 #-------------------------------
-# CPU Usage Alert Rule
+# Custom Log Search Type Alerts
 #-------------------------------
-resource "azurerm_monitor_scheduled_query_rules_alert" "CPU-Usage-Alert" {
-  name                = "${local.base_name}-cpu-alert-rule"
+resource "azurerm_monitor_scheduled_query_rules_alert" "alerts" {
+  for_each            = var.log-alerts
+  name                = each.value.alert-rule-name
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
   action {
-    action_group           = [azurerm_monitor_action_group.ag.id]
+    action_group = [for name in each.value.action-group-name :
+    format("%s%s", local.action-group-id-suffix, name)
+    ]
   }
 
   data_source_id = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${local.central_group_prefix}-rg/providers/Microsoft.Insights/components/${local.central_group_prefix}-ai"
-  description    = "Alert when CPU Usage of OSDU service is greater than threshold value"
-  enabled        = false
-  query       = var.query
-  severity    = var.severity
-  frequency   = var.frequency
-  time_window = var.time-window
+  description    = each.value.description
+  enabled        = each.value.enabled
+  query          = each.value.query
+  severity       = each.value.severity
+  frequency      = each.value.frequency
+  time_window    = each.value.time-window
   trigger {
-    operator  = "GreaterThan"
-    threshold = var.cpu-usage-threshold
-    metric_trigger {
-      operator            = "GreaterThan"
-      threshold           = var.metric-trigger-threshold
-      metric_trigger_type = "Total"
-      metric_column       = "cloud_RoleName"
+    operator  = each.value.trigger-operator
+    threshold = each.value.trigger-threshold
+    dynamic "metric_trigger" {
+      # create this block only if alert is of `metric` type
+      for_each = each.value.metric-type ? [1] : []
+      content {
+        operator            = each.value.metric-trigger-operator
+        threshold           = each.value.metric-trigger-threshold
+        metric_trigger_type = each.value.metric-trigger-type
+        metric_column       = each.value.metric-trigger-column
+      }
     }
   }
 }
