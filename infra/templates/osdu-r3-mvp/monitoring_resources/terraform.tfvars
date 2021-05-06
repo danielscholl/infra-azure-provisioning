@@ -19,3 +19,63 @@ dashboards = {
   default     = true
   appinsights = true
 }
+
+# Populated below is a collection of sample action groups.
+action-groups = {
+  DevActionGroup = {
+    name       = "DevActionGroup",
+    short-name = "dev-ag",
+    email-receiver = [
+      {
+        name                = "primary receiver",
+        email-address       = "xxxx",
+        common-alert-schema = false
+      },
+      {
+        name                = "secondary receiver",
+        email-address       = "xxxx",
+        common-alert-schema = false
+      }
+    ],
+    sms-receiver = []
+  },
+  ProdActionGroup = {
+    name           = "ProdActionGroup",
+    short-name     = "prod-ag",
+    email-receiver = [],
+    sms-receiver = [
+      {
+        name         = "local support",
+        country-code = "xx",
+        phone        = "xxxxxx"
+      }
+    ]
+  }
+}
+
+# Populated below is data to configure a sample alert.
+log-alerts = {
+  #------------Storage Service Alerts----------------#
+  storage-cpu-alert = {
+    service-name    = "storage",
+    alert-rule-name = "CPU Soft limit",
+    description     = "CPU Soft limit alert rule for storage service",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "false",
+    severity          = 3,
+    frequency         = 15,
+    time-window       = 15,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "performanceCounters\n| where cloud_RoleName == \"storage\"\n| where category == \"Processor\" and name == \"% Processor Time\"\n| summarize AggregatedValue = avg(value) by bin(timestamp, 15min)",
+    # Threshold value for CPU usage which when exceeded will raise alert
+    trigger-threshold       = 60,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 0,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "timestamp"
+  }
+}
