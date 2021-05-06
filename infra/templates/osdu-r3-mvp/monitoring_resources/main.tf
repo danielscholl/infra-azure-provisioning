@@ -54,7 +54,7 @@ locals {
   resource_group_name = format("%s-%s-%s-rg", var.prefix, local.workspace, random_string.workspace_scope.result)
   template_path       = "./dashboard_templates"
 
-  central_group_prefix = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
+  central_group_prefix   = trim(data.terraform_remote_state.central_resources.outputs.central_resource_group_name, "-rg")
   partition_group_prefix = trim(data.terraform_remote_state.partition_resources.outputs.data_partition_group_name, "-rg")
   service_group_prefix   = trim(data.terraform_remote_state.service_resources.outputs.services_resource_group_name, "-rg")
 
@@ -201,7 +201,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "alerts" {
 
   action {
     action_group = [for name in each.value.action-group-name :
-    format("%s%s", local.action-group-id-suffix, name)
+      format("%s%s", local.action-group-id-suffix, name)
     ]
   }
 
