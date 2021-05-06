@@ -1,6 +1,6 @@
 # Monitoring OSDU using Alerts
 
-Alerts can be created to monitor OSDU based on pre-defined log queries (also called scheduled query rules). Depending on the give frequency, the log query will be run
+Alerts can be created to monitor OSDU based on pre-defined log queries (also called scheduled query rules). Depending on the given frequency, the log query will be run
 and an alert will be fired if the criteria is met. Using 'Action Groups' we can define the kind of action to be taken when the alert is fired.
 
 ## Create your own Alert
