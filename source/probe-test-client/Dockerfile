@@ -5,7 +5,8 @@ COPY package.json ./
 COPY package-lock.json ./
 
 RUN rm -rf node_modules/
-RUN npm i -g npm
+RUN npm install
+RUN npm install applicationinsights --save
 RUN npm i --save lodash
 RUN npm i --save lodash.isequal
 

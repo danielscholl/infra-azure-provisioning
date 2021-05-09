@@ -3,10 +3,10 @@
 const request = require("supertest");
 const config = require("../config");
 const testUtils = require("../utils/testUtils");
-const appInsights = require("applicationinsights");
+let appInsights = require("applicationinsights");
 
 // Configure AI
-let version = '0.1.2';
+let version = '0.1.3';
 if (process.env.VERSION !== undefined) {
   version = process.env.VERSION;
 }
@@ -15,12 +15,11 @@ let probeId_majorVersion = testUtils.between(1, 100000);
 let probeId_minorVersion = testUtils.between(1, 100000);
 const probeId = `${probeId_majorVersion}.${probeId_minorVersion}`;
 
-appInsights.setup().start();
+appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 const client = appInsights.defaultClient;
 appInsights.defaultClient.context.tags[
   appInsights.defaultClient.context.keys.cloudRole
 ] = `azure-probe-test:${version}`;
-
 appInsights.defaultClient.context.tags[
   appInsights.defaultClient.context.keys.sessionId
 ] = probeId;
@@ -48,6 +47,7 @@ const failApiRequest = (test, errorResponse) => {
       errorResponse: errorResponse,
     },
   });
+  client.flush();
 
   console.log(
     `Failed API ${test.api}!, Run ID: ${test.runId}, Expected response code(s) ${test.expectedResponse}, but got error \"${errorResponse}\"`
@@ -71,6 +71,7 @@ const passApiRequest = (test) => {
       expectedResponses: test.expectedResponses,
     },
   });
+  client.flush();
 };
 
 const scenarioRequest = (runId, service, scenarioName, failedTests) => {
@@ -92,6 +93,7 @@ const scenarioRequest = (runId, service, scenarioName, failedTests) => {
       failedTests: failedTests,
     },
   });
+  client.flush();
 };
 
 const logScenarioResults = (scenarioName, passed) => {
@@ -99,11 +101,11 @@ const logScenarioResults = (scenarioName, passed) => {
   client.trackMetric({
     name: scenarioName,
     value: val,
-    session_Id: probeId,
   });
 };
 
 module.exports = {
+  probeId: probeId,
   failApiRequest: failApiRequest,
   passApiRequest: passApiRequest,
   scenarioRequest: scenarioRequest,
