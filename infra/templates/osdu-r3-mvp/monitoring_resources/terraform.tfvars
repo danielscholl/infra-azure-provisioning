@@ -53,7 +53,7 @@ action-groups = {
   }
 }
 
-# Populated below is data to configure a sample alert.
+# Populated below is data to configure two sample alerts - one based on metric measurement and the other based on number of results.
 log-alerts = {
   #------------Storage Service Alerts----------------#
   storage-cpu-alert = {
@@ -77,5 +77,27 @@ log-alerts = {
     # Type can be based on total breaches or consecutive breaches of threshold.
     metric-trigger-type   = "Total",
     metric-trigger-column = "timestamp"
+  },
+  storage-put-record-duration = {
+    service-name    = "storage",
+    alert-rule-name = "Put Record Duration",
+    description     = "Alert for duration of storage service PUT record API call",
+    # Alert based on Number of results hence metric-type is false
+    metric-type       = false
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["DevActionGroup"],
+    # Since it is alert based on number of results, the query must end with "| count"
+    query = "requests\n| where cloud_RoleName == \"storage\"\n| where name == \"PUT RecordApi/createOrUpdateRecords \"\n| where duration/1000 > 60\n| count",
+    # Number of results > 1 => alert is triggered.
+    trigger-threshold = 0,
+    trigger-operator  = "GreaterThan",
+    #------ Supply dummy values for below variables since it is not a metric based alert -----#
+    metric-trigger-operator  = null,
+    metric-trigger-threshold = null,
+    metric-trigger-type      = null,
+    metric-trigger-column    = null
   }
 }
