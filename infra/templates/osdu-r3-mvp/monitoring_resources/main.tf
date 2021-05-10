@@ -165,7 +165,7 @@ resource "azurerm_dashboard" "appinsights_dashboard" {
 #-------------------------------
 resource "azurerm_monitor_action_group" "action-groups" {
   for_each            = var.action-groups
-  name                = each.value.name
+  name                = "${local.base_name}-${each.value.name}"
   resource_group_name = azurerm_resource_group.main.name
   short_name          = each.value.short-name
 
@@ -195,13 +195,13 @@ resource "azurerm_monitor_action_group" "action-groups" {
 #-------------------------------
 resource "azurerm_monitor_scheduled_query_rules_alert" "alerts" {
   for_each            = var.log-alerts
-  name                = each.value.alert-rule-name
+  name                = "${each.value.alert-rule-name}-${local.base_name}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
   action {
     action_group = [for name in each.value.action-group-name :
-      format("%s%s", local.action-group-id-prefix, name)
+      format("%s${local.base_name}-%s", local.action-group-id-prefix, name)
     ]
   }
 

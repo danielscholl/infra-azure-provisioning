@@ -58,7 +58,7 @@ log-alerts = {
   #------------Storage Service Alerts----------------#
   storage-cpu-alert = {
     service-name    = "storage",
-    alert-rule-name = "CPU Soft limit",
+    alert-rule-name = "CPU-Soft-Limit",
     description     = "CPU Soft limit alert rule for storage service",
     # Alert based on metric measurement
     metric-type       = true
@@ -80,7 +80,7 @@ log-alerts = {
   },
   storage-put-record-duration = {
     service-name    = "storage",
-    alert-rule-name = "Put Record Duration",
+    alert-rule-name = "Put-Record-Duration",
     description     = "Alert for duration of storage service PUT record API call",
     # Alert based on Number of results hence metric-type is false
     metric-type       = false
@@ -92,7 +92,7 @@ log-alerts = {
     # Since it is alert based on number of results, the query must end with "| count"
     query = "requests\n| where cloud_RoleName == \"storage\"\n| where name == \"PUT RecordApi/createOrUpdateRecords \"\n| where duration/1000 > 60\n| count",
     # Number of results > 1 => alert is triggered.
-    trigger-threshold = 0,
+    trigger-threshold = 1,
     trigger-operator  = "GreaterThan",
     #------ Supply dummy values for below variables since it is not a metric based alert -----#
     metric-trigger-operator  = null,
