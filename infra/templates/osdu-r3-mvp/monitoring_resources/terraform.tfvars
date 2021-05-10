@@ -89,8 +89,7 @@ log-alerts = {
     frequency         = 5,
     time-window       = 5,
     action-group-name = ["DevActionGroup"],
-    # Since it is alert based on number of results, the query must end with "| count"
-    query = "requests\n| where cloud_RoleName == \"storage\"\n| where name == \"PUT RecordApi/createOrUpdateRecords \"\n| where duration/1000 > 60\n| count",
+    query = "requests\n| where cloud_RoleName == \"storage\"\n| where name == \"PUT RecordApi/createOrUpdateRecords \"\n| where duration/1000 > 60\n",
     # Number of results > 1 => alert is triggered.
     trigger-threshold = 1,
     trigger-operator  = "GreaterThan",
