@@ -4,9 +4,6 @@ The feature enables the customers to manage and provision certificates used on t
 
 In this approach, we use certificate uploaded by customer to Keyvault. 
 
-**NOTE: Presently we support BYOC for Automated Pipelines only.** 
-
-
 
 ### Upload your own certificate 
 
