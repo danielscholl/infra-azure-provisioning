@@ -97,7 +97,7 @@ locals {
   eg_sbtopic_subscriber           = "servicebusrecordstopic"
   eventgrid_name                  = "${local.base_name_21}-grid"
   eventgrid_records_topic         = format("%s-recordstopic", local.eventgrid_name)
-  eventgrid_legaltagsstatus_topic = format("%s-legaltagsstatuschangedtopic", local.eventgrid_name)
+  eventgrid_legaltagstate_topic = format("%s-legaltagstatechangetopic", local.eventgrid_name)
   rbac_principals = [
     data.terraform_remote_state.central_resources.outputs.osdu_identity_principal_id,
     data.terraform_remote_state.central_resources.outputs.principal_objectId
@@ -309,7 +309,7 @@ module "event_grid" {
       name = local.eventgrid_records_topic
     },
     {
-      name = local.eventgrid_legaltagsstatus_topic
+      name = local.eventgrid_legaltagstate_topic
     }
   ]
 
@@ -326,12 +326,12 @@ resource "azurerm_role_assignment" "event_grid_topics_role" {
 }
 
 // Add EventGrid EventSubscription Contributor access to Principal For Legal Tags
-resource "azurerm_role_assignment" "event_grid_topics_role_legaltagsstatus" {
+resource "azurerm_role_assignment" "event_grid_topics_role_legaltagstate" {
   count = length(local.rbac_principals)
 
   role_definition_name = "EventGrid EventSubscription Contributor"
   principal_id         = local.rbac_principals[count.index]
-  scope                = lookup(module.event_grid.topics, local.eventgrid_legaltagsstatus_topic)
+  scope                = lookup(module.event_grid.topics, local.eventgrid_legaltagstate_topic)
 }
 
 // Add a Service Bus Topic subscriber that is used by WKS service.

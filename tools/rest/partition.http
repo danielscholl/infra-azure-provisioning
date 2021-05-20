@@ -104,13 +104,13 @@ data-partition-id: {{data_partition_id}}
             "sensitive": true,
             "value": "eventgrid-recordstopic-accesskey"
         },
-        "eventgrid-legaltagsstatuschangedtopic": {
+        "eventgrid-legaltagstatechangetopic": {
             "sensitive": true,
-            "value": "eventgrid-legaltagsstatuschangedtopic"
+            "value": "eventgrid-legaltagstatechangetopic"
         },
-        "eventgrid-legaltagsstatuschangedtopic-accesskey": {
+        "eventgrid-legaltagstatechangetopic-accesskey": {
             "sensitive": true,
-            "value": "eventgrid-legaltagsstatuschangedtopic-accesskey"
+            "value": "eventgrid-legaltagstatechangetopic-accesskey"
         }
         "eventgrid-resourcegroup": {
             "sensitive": true,
