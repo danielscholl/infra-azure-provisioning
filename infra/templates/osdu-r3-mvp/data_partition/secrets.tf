@@ -48,9 +48,9 @@ locals {
   eventgrid_recordschangedtopic_key_name         = format("%s-eventgrid-recordstopic-accesskey", var.data_partition_name)
   eventgrid_records_topic_name                   = format("%s-recordstopic", local.eventgrid_domain_name)
   eventgrid_records_topic_endpoint               = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_records_topic, var.resource_group_location)
-  eventgrid_legaltagstatechangetopic_key_name = format("%s-eventgrid-legaltagstatechangetopic-accesskey", var.data_partition_name)
-  eventgrid_legaltagstate_topic_name           = format("%s-legaltagstatechangetopic", local.eventgrid_domain_name)
-  eventgrid_legaltagstate_topic_endpoint       = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_legaltagstate_topic, var.resource_group_location)
+  eventgrid_legaltagstatechangetopic_key_name    = format("%s-eventgrid-legaltagstatechangetopic-accesskey", var.data_partition_name)
+  eventgrid_legaltagstate_topic_name             = format("%s-legaltagstatechangetopic", local.eventgrid_domain_name)
+  eventgrid_legaltagstate_topic_endpoint         = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_legaltagstate_topic, var.resource_group_location)
   encryption_key_identifier_name                 = format("%s-encryption-key-identifier", var.data_partition_name)
   event_grid_resourcegroup_name                  = format("%s-eventgrid-resourcegroup", var.data_partition_name)
 

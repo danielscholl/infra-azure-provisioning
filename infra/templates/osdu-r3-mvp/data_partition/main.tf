@@ -97,7 +97,7 @@ locals {
   eg_sbtopic_subscriber           = "servicebusrecordstopic"
   eventgrid_name                  = "${local.base_name_21}-grid"
   eventgrid_records_topic         = format("%s-recordstopic", local.eventgrid_name)
-  eventgrid_legaltagstate_topic = format("%s-legaltagstatechangetopic", local.eventgrid_name)
+  eventgrid_legaltagstate_topic   = format("%s-legaltagstatechangetopic", local.eventgrid_name)
   rbac_principals = [
     data.terraform_remote_state.central_resources.outputs.osdu_identity_principal_id,
     data.terraform_remote_state.central_resources.outputs.principal_objectId
