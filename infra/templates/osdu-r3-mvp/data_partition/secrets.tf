@@ -43,16 +43,16 @@ locals {
   sb_namespace_name = format("%s-sb-namespace", var.data_partition_name)
   sb_connection     = format("%s-sb-connection", var.data_partition_name)
 
-  eventgrid_domain_name                    = format("%s-eventgrid", var.data_partition_name)
-  eventgrid_domain_key_name                = format("%s-key", local.eventgrid_domain_name)
-  eventgrid_recordschangedtopic_key_name   = format("%s-eventgrid-recordstopic-accesskey", var.data_partition_name)
-  eventgrid_records_topic_name             = format("%s-recordstopic", local.eventgrid_domain_name)
-  eventgrid_records_topic_endpoint         = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_records_topic, var.resource_group_location)
-  eventgrid_legaltagschangedtopic_key_name = format("%s-eventgrid-legaltagschangedtopic-accesskey", var.data_partition_name)
-  eventgrid_legaltags_topic_name           = format("%s-legaltagschangedtopic", local.eventgrid_domain_name)
-  eventgrid_legaltags_topic_endpoint       = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_legaltags_topic, var.resource_group_location)
-  encryption_key_identifier_name           = format("%s-encryption-key-identifier", var.data_partition_name)
-  event_grid_resourcegroup_name            = format("%s-eventgrid-resourcegroup", var.data_partition_name)
+  eventgrid_domain_name                  = format("%s-eventgrid", var.data_partition_name)
+  eventgrid_domain_key_name              = format("%s-key", local.eventgrid_domain_name)
+  eventgrid_recordschangedtopic_key_name = format("%s-eventgrid-recordstopic-accesskey", var.data_partition_name)
+  eventgrid_records_topic_name           = format("%s-recordstopic", local.eventgrid_domain_name)
+  eventgrid_records_topic_endpoint       = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_records_topic, var.resource_group_location)
+  eventgrid_legaltagsstatuschangedtopic_key_name = format("%s-eventgrid-legaltagsstatuschangedtopic-accesskey", var.data_partition_name)
+  eventgrid_legaltagsstatus_topic_name           = format("%s-legaltagsstatuschangedtopic", local.eventgrid_domain_name)
+  eventgrid_legaltagsstatus_topic_endpoint       = format("https://%s.%s-1.eventgrid.azure.net/api/events", local.eventgrid_legaltagsstatus_topic, var.resource_group_location)
+  encryption_key_identifier_name         = format("%s-encryption-key-identifier", var.data_partition_name)
+  event_grid_resourcegroup_name          = format("%s-eventgrid-resourcegroup", var.data_partition_name)
 
   elastic_endpoint = format("%s-elastic-endpoint", var.data_partition_name)
   elastic_username = format("%s-elastic-username", var.data_partition_name)
@@ -173,9 +173,9 @@ resource "azurerm_key_vault_secret" "recordstopic_name" {
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
-resource "azurerm_key_vault_secret" "legaltagschangedtopic_name" {
-  name         = local.eventgrid_legaltags_topic_name
-  value        = local.eventgrid_legaltags_topic_endpoint
+resource "azurerm_key_vault_secret" "legaltagsstatuschangedtopic_name" {
+  name         = local.eventgrid_legaltagsstatus_topic_name
+  value        = local.eventgrid_legaltagsstatus_topic_endpoint
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
@@ -197,9 +197,9 @@ resource "azurerm_key_vault_secret" "eventgrid_topic_key" {
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
-resource "azurerm_key_vault_secret" "eventgrid_legaltagschangedtopic_key" {
-  name         = local.eventgrid_legaltagschangedtopic_key_name
-  value        = lookup(module.event_grid.topic_accesskey_map, local.eventgrid_legaltags_topic)
+resource "azurerm_key_vault_secret" "eventgrid_legaltagsstatuschangedtopic_key" {
+  name         = local.eventgrid_legaltagsstatuschangedtopic_key_name
+  value        = lookup(module.event_grid.topic_accesskey_map, local.eventgrid_legaltagsstatus_topic)
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
