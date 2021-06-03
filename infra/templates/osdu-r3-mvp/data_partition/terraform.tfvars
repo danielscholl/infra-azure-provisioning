@@ -52,6 +52,10 @@ cosmos_databases = [
   {
     name       = "osdu-db"
     throughput = 12000
+  },
+  {
+    name       = "status-db"
+    throughput = 12000
   }
 ]
 
@@ -216,13 +220,13 @@ cosmos_sql_collections = [
   },
   {
     name                  = "Status"
-    database_name         = "osdu-db"
+    database_name         = "status-db"
     partition_key_path    = "/partitionId"
     partition_key_version = null
   },
   {
     name                  = "DataSetDetails"
-    database_name         = "osdu-db"
+    database_name         = "status-db"
     partition_key_path    = "/partitionId"
     partition_key_version = null
   }
