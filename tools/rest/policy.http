@@ -84,5 +84,41 @@ Accept: application/json
             "tags": "123"
         }
 
+    }
 }
+
+###
+# @name Create policy
+PUT {{POLICY_HOST}}/policies/test
+data-partition-id: {{data_partition_id}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+package test
+
+default allow = false
+
+allow = true {
+    input.operation == "view"
 }
+
+###
+# @name getPolicies - test
+GET {{POLICY_HOST}}/policies/test
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+
+###
+# @name Delete policy
+DELETE {{POLICY_HOST}}/policies/test
+data-partition-id: {{data_partition_id}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+###
+# @name getPolicies - test deleted
+GET {{POLICY_HOST}}/policies/test
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
