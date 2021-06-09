@@ -59,10 +59,11 @@ data-partition-id: {{data_partition_id}}
 
 ###
 # @name evaluate policy
-POST {{POLICY_HOST}}/api/policy/v1/evaluations/query
+POST {{POLICY_HOST}}/evaluations/query
 data-partition-id: {{data_partition_id}}
 Authorization: Bearer {{access_token}}
 Accept: application/json
+
 {
     "policyId" : "search",
     "input": {
