@@ -210,26 +210,50 @@ variable "ssl_certificate_file" {
   default     = ""
 }
 
-variable "aks_agent_vm_count" {
-  description = "The initial number of agent pools / nodes allocated to the AKS cluster"
+variable "aks_system_agent_vm_count" {
+  description = "The initial number of agent pools / nodes allocated to the system Agent pool"
   type        = string
-  default     = "3"
+  default     = "6"
 }
 
-variable "aks_agent_vm_maxcount" {
-  description = "The max number of nodes allocated to the AKS cluster"
+variable "aks_system_agent_vm_maxcount" {
+  description = "The max number of nodes allocated to the system Agent pool"
   type        = string
   default     = "10"
 }
 
-variable "aks_agent_vm_size" {
+variable "aks_system_agent_vm_size" {
   type        = string
-  description = "The size of each VM in the Agent Pool (e.g. Standard_F1). Changing this forces a new resource to be created."
+  description = "The size of each VM in the system Agent Pool (e.g. Standard_F1). Changing this forces a new resource to be created."
   default     = "Standard_D2s_v3"
 }
 
-variable "aks_agent_vm_disk" {
-  description = "The initial sice of each VM OS Disk."
+variable "aks_system_agent_vm_disk" {
+  description = "The initial sice of each VM OS Disk for the system Agent pool"
+  type        = number
+  default     = 30
+}
+
+variable "aks_services_agent_vm_count" {
+  description = "The initial number of agent pools / nodes allocated to the services Agent pool"
+  type        = string
+  default     = "10"
+}
+
+variable "aks_services_agent_vm_maxcount" {
+  description = "The max number of nodes allocated to the services Agent pool"
+  type        = string
+  default     = "10"
+}
+
+variable "aks_services_agent_vm_size" {
+  type        = string
+  description = "The size of each VM in the services Agent Pool (e.g. Standard_F1). Changing this forces a new resource to be created."
+  default     = "Standard_D2s_v3"
+}
+
+variable "aks_services_agent_vm_disk" {
+  description = "The initial sice of each VM OS Diskfor the services Agent pool"
   type        = number
   default     = 30
 }
@@ -300,4 +324,15 @@ variable "appgw_max_capacity" {
   description = "Maximum number of instances to run in the App Gateway"
   type        = number
   default     = 10
+}
+
+variable "max_pods" {
+  type    = string
+  default = 30
+}
+
+variable "istio_int_load_balancer_ip" {
+  description = "A IP addresse of an internal istio LB"
+  type        = string
+  default     = ""
 }

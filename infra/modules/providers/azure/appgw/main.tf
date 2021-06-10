@@ -137,7 +137,9 @@ resource "azurerm_application_gateway" "main" {
   }
 
   backend_address_pool {
-    name = format("http-%s", local.backend_address_pool_name)
+    name         = format("http-%s", local.backend_address_pool_name)
+    fqdns        = length(var.backend_address_pool_fqdns) == 0 ? null : var.backend_address_pool_fqdns
+    ip_addresses = length(var.backend_address_pool_ips) == 0 ? null : var.backend_address_pool_ips
   }
 
   ########
@@ -179,7 +181,9 @@ resource "azurerm_application_gateway" "main" {
   }
 
   backend_address_pool {
-    name = format("https-%s", local.backend_address_pool_name)
+    name         = format("https-%s", local.backend_address_pool_name)
+    fqdns        = length(var.backend_address_pool_fqdns) == 0 ? null : var.backend_address_pool_fqdns
+    ip_addresses = length(var.backend_address_pool_ips) == 0 ? null : var.backend_address_pool_ips
   }
 
   ssl_policy {

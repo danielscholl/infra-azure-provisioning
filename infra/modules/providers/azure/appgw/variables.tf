@@ -102,3 +102,15 @@ variable "ssl_policy_min_protocol_version" {
   type        = string
   default     = "TLSv1_2"
 }
+
+variable "backend_address_pool_ips" {
+  description = "A list of IP Addresses which should be part of the Backend Address Pool"
+  type        = list(any)
+  default     = []
+}
+
+variable "backend_address_pool_fqdns" {
+  description = "A list of FQDN's which should be part of the Backend Address Pool"
+  type        = list(any)
+  default     = []
+}
