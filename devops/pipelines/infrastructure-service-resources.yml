@@ -53,11 +53,7 @@ stages:
 - template: /devops/infra-prepare-stage.yml
   parameters:
     environments:
-<<<<<<< HEAD
     - name: 'demo'
-=======
-    - name: 'testing'
->>>>>>> 77836587... Added services node pool
       enablePrIsolation: false
       resourceNameIsolationLevel: 8
 
