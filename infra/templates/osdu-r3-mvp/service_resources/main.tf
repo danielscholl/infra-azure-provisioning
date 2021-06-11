@@ -439,7 +439,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "services" {
   os_disk_size_gb       = var.aks_services_agent_vm_disk
   enable_auto_scaling   = true
   max_pods              = var.max_pods
-  node_labels           = { nodepool = "autoscaling" }
+  node_labels           = { nodepool = "services" }
 
   tags = var.resource_tags
 }
