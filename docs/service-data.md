@@ -10,6 +10,7 @@ Schema Service has standard shared schemas that have to be loaded.
 UNIQUE="<your_osdu_unique>"         # ie: demo
 AZURE_DNS_NAME="<your_osdu_fqdn>"   # ie: osdu-$UNIQUE.contoso.com
 DATA_PARTITION="<your_partition>"   # ie:opendes
+ACR_REGISTRY="<repository>"         # ie: msosdu.azurecr.io
 TAG="<app_version>"                 # ie: 0.8.0
 
 # This logs your local Azure CLI in using the configured service principal.
@@ -28,7 +29,7 @@ AZURE_CLIENT_SECRET=$(az keyvault secret show --id https://${ENV_VAULT}.vault.az
 EOF
 
 # Execute container to load the schema's
-docker run --env-file .env msosdu.azurecr.io/schema-load:$TAG
+docker run --env-file .env $ACR_REGISTRY/schema-load:$TAG
 ```
 
 ## CSV Parser DAG Loading
@@ -52,7 +53,7 @@ ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 
 cat > .env << EOF
 CSV_PARSER_IMAGE=${ACR_REGISTRY}/csv-parser:${TAG}
-SHARED_TENANT=$DATA_PARTITION
+DATA_PARTITION=$DATA_PARTITION
 AZURE_TENANT_ID=$ARM_TENANT_ID
 AZURE_DNS_NAME=$DNS_HOST
 AZURE_AD_APP_RESOURCE_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/aad-client-id --query value -otsv)
