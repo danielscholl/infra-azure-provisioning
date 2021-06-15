@@ -213,13 +213,13 @@ variable "ssl_certificate_file" {
 variable "aks_system_agent_vm_count" {
   description = "The initial number of agent pools / nodes allocated to the system Agent pool"
   type        = string
-  default     = "6"
+  default     = "3"
 }
 
 variable "aks_system_agent_vm_maxcount" {
   description = "The max number of nodes allocated to the system Agent pool"
   type        = string
-  default     = "10"
+  default     = "3"
 }
 
 variable "aks_system_agent_vm_size" {
