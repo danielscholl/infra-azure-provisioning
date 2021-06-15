@@ -222,7 +222,7 @@ airflow:
         memory: "2Gi"
       limits:
         cpu: "3000m"
-        memory: "2Gi"  
+        memory: "2Gi"
     podLabels:
       aadpodidbinding: "osdu-identity"
     podAnnotations:
@@ -233,6 +233,13 @@ airflow:
   # Airflow - Worker Configs
   ###################################
   workers:
+    resources:
+      requests:
+        cpu: "1200m"
+        memory: "5Gi"
+      limits:
+        cpu: "1200m"
+        memory: "5Gi"
     podLabels:
       aadpodidbinding: "osdu-identity"
     autoscaling:
@@ -246,9 +253,6 @@ airflow:
           target:
             type: Utilization
             averageUtilization: 50
-    resources:
-      requests:
-        memory: "512Mi"
 
   ###################################
   # Airflow - Flower Configs
@@ -260,6 +264,13 @@ airflow:
   # Airflow - Scheduler Configs
   ###################################
   scheduler:
+    resources:
+      requests:
+        cpu: "3000m"
+        memory: "1Gi"
+      limits:
+        cpu: "3000m"
+        memory: "1Gi"
     podLabels:
       aadpodidbinding: "osdu-identity"
     variables: |

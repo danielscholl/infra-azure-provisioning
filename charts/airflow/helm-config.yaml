@@ -157,7 +157,6 @@ airflow:
       # DO NOT DELETE THIS LABEL. SET IT TO "false" WHEN AUTOSCALING IS DISABLED, SET IT TO "true" WHEN AUTOSCALING IS ENABLED
       autoscalingEnabled: "false"
 
-
   ###################################
   # Airflow - Flower Configs
   ###################################
