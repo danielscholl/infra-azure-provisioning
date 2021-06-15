@@ -12,6 +12,7 @@ For loading CSV Parser DAG we would need to create two docker images
 ```bash
 TAG="latest"
 ACR_REGISTRY="msosdu.azurecr.io"
+mvn clean install -pl provider/csv-parser-azure -am
 cd provider/csv-parser-azure
 docker build -t ${ACR_REGISTRY}/csv-parser:${TAG} . 
 docker push ${ACR_REGISTRY}/csv-parser:${TAG}
