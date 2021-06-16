@@ -332,6 +332,18 @@ sb_topics = [
     ]
   },
   {
+    name                = "legaltagschangedtopiceg"
+    enable_partitioning = true
+    subscriptions = [
+      {
+        name               = "eg_sb_legaltagssubscription"
+        max_delivery_count = 5
+        lock_duration      = "PT5M"
+        forward_to         = ""
+      }
+    ]
+  },
+  {
     name                = "statuschangedtopic"
     enable_partitioning = true
     subscriptions = [
@@ -355,4 +367,5 @@ sb_topics = [
       }
     ]
   }
+
 ]
