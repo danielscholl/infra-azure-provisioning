@@ -320,11 +320,11 @@ resource "azurerm_role_assignment" "appgwcontributor" {
   role_definition_name = "Contributor"
 }
 
-// Give AD Principal Access rights to Change the Istio Application Gateway
-resource "azurerm_role_assignment" "istio_appgw_contributor_for_adsp" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway.id
-  role_definition_name = "Contributor"
+resource "azurerm_key_vault_access_policy" "kv_policy_for_adsp" {
+  key_vault_id            = data.terraform_remote_state.central_resources.outputs.keyvault_id
+  tenant_id               = azurerm_function_app.app_func.identity.0.tenant_id
+  object_id               = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
+  certificate_permissions = ["get", "list", "import", "update"]
 }
 
 // Give AGIC Identity the rights to look at the Resource Group
@@ -338,13 +338,6 @@ resource "azurerm_role_assignment" "agic_resourcegroup_reader" {
 resource "azurerm_role_assignment" "agic_app_gw_mi" {
   principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
   scope                = module.appgateway.managed_identity_resource_id
-  role_definition_name = "Managed Identity Operator"
-}
-
-// Give AD Principal Access rights to Operate the Gateway Identity
-resource "azurerm_role_assignment" "agic_istio_app_gw_contributor_for_adsp" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway.managed_identity_resource_id
   role_definition_name = "Managed Identity Operator"
 }
 
@@ -446,7 +439,7 @@ resource "azurerm_role_assignment" "osdu_identity_mi_operator" {
   role_definition_name = "Managed Identity Operator"
 }
 
-// Give AD Principal Access rights to AKS cluster
+# // Give AD Principal Access rights to AKS cluster
 resource "azurerm_role_assignment" "aks_contributor" {
   principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
   scope                = module.aks.id
@@ -513,20 +506,11 @@ resource "kubernetes_cron_job" "cert-checker" {
                 }
               }
               env {
-                name = "ENV_APPGW_NAME"
+                name = "ENV_KEYVAULT_NAME"
                 value_from {
                   config_map_key_ref {
                     name = element(kubernetes_config_map.appgw_configmap.metadata[*].name, 0)
-                    key  = "ENV_APPGW_NAME"
-                  }
-                }
-              }
-              env {
-                name = "ENV_APPGW_IP"
-                value_from {
-                  config_map_key_ref {
-                    name = element(kubernetes_config_map.appgw_configmap.metadata[*].name, 0)
-                    key  = "ENV_APPGW_IP"
+                    key  = "ENV_KEYVAULT_NAME"
                   }
                 }
               }
@@ -541,31 +525,34 @@ resource "kubernetes_cron_job" "cert-checker" {
               }
               command = ["/bin/bash"]
               args = ["-c", <<EOT
+
                   SIDECAR_PORT=15020
                   K8S_CERT_SECRET=osdu-certificate
                   K8S_NAMESPACE_NAME=osdu
-                  APPGW_CERT_NAME=appgw-ssl-cert
+                  KV_CERT_NAME=appgw-ssl-cert
 
                   function check_expire_date() {
-                    APPGWEXPIREDATE=$(echo | openssl s_client -showcerts -connect $${ENV_APPGW_IP}:443 2>/dev/null | openssl x509 -enddate -noout | cut -d '=' -f2)
-                    APPGWEXPIREDATE=$(date "+%Y-%m-%d" --date="$${APPGWEXPIREDATE}")
+                    az keyvault certificate download  --vault-name  $${ENV_KEYVAULT_NAME} -n $${KV_CERT_NAME} --file $${KV_CERT_NAME}.pem
+                    KV_CERT_EXPIREDATE=$(openssl x509 -in $${KV_CERT_NAME}.pem -enddate -noout |  cut -d '=' -f2)
+                    KV_CERT_EXPIREDATE=$(date "+%Y-%m-%d" --date="$${KV_CERT_EXPIREDATE}")
 
                     az aks get-credentials --resource-group $${ENV_SR_GROUP_NAME} --name $${ENV_CLUSTER_NAME}
                     SECRETEXPIREDATE=$(kubectl get cert -n $${K8S_NAMESPACE_NAME} $${K8S_CERT_SECRET} -o jsonpath='{.status.notAfter}' | cut -d 'T' -f1)
 
-                    if [ $${APPGWEXPIREDATE} = $${SECRETEXPIREDATE} ]; then
-                      echo "APPGWEXPIREDATE: $${APPGWEXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
-                      echo "The APPGW cert is up to date"
+                    if [ $${KV_CERT_EXPIREDATE} = $${SECRETEXPIREDATE} ]; then
+                      echo "KV_CERT_EXPIREDATE: $${KV_CERT_EXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
+                      echo "The KV cert is up to date"
                       exit 0
                     else
-                      echo "APPGWEXPIREDATE: $${APPGWEXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
-                      echo "The APPGW cert is not up to date"
+                      echo "KV_CERT_EXPIREDATE: $${KV_CERT_EXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
+                      echo "The KV cert is not up to date"
                     fi
+                    rm -f $${KV_CERT_NAME}.pem
                   }
 
                   cleanup() {
                       echo Clean all existing files
-                      rm -f cert.crt cert.key osdu-certificate.pfx
+                      rm -f cert.crt cert.key osdu-certificate.pfx $${KV_CERT_NAME}.pem
                       curl -X POST "http://localhost:$${SIDECAR_PORT}/quitquitquit"
                   }
 
@@ -600,14 +587,13 @@ resource "kubernetes_cron_job" "cert-checker" {
                     -in cert.crt \
                     -inkey cert.key
 
-                  az network application-gateway ssl-cert create -g $${ENV_SR_GROUP_NAME} --gateway-name $${ENV_APPGW_NAME} \
-                    -n $${APPGW_CERT_NAME} --cert-file osdu-certificate.pfx
+                  az keyvault certificate import --vault-name $${ENV_KEYVAULT_NAME} -n $${KV_CERT_NAME} -f osdu-certificate.pfx
 
                   sleep 5
 
                   check_expire_date
-                  
-                  echo "Cannot change APPGW cert"
+
+                  echo "Cannot update KV cert"
                   exit 1
 EOT
               ]
