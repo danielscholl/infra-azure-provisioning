@@ -194,7 +194,7 @@ module "sdms_storage_account" {
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
 
-  resource_tags = var.resource_tags
+  resource_tags = merge(var.resource_tags, var.resource_tags_sdms)
 }
 
 // Add Access Control to Principal
