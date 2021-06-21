@@ -128,6 +128,18 @@ locals {
 
   cosmosdb_name = "${local.base_name}-system-db"
 
+  availability_zones = [
+    "1",
+    "2",
+    "3"
+  ]
+
+  gateway_zones = [
+    "Zone 1",
+    "Zone 2",
+    "Zone 3"
+  ]
+
   role = "Contributor"
   rbac_principals = [
     // OSDU Identity
@@ -288,9 +300,13 @@ module "appgateway" {
   ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
   ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
 
+  gateway_zones = local.gateway_zones
+
   resource_tags = var.resource_tags
   min_capacity  = var.appgw_min_capacity
   max_capacity  = var.appgw_max_capacity
+
+
 }
 
 // Give AGIC Identity Access rights to Change the Application Gateway
@@ -325,6 +341,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.main.name
 
   dns_prefix         = local.aks_dns_prefix
+  availability_zones = local.availability_zones
   agent_vm_count     = var.aks_agent_vm_count
   agent_vm_size      = var.aks_agent_vm_size
   agent_vm_disk      = var.aks_agent_vm_disk

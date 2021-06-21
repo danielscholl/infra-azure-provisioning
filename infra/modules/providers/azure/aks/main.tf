@@ -87,6 +87,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     max_pods            = var.max_pods
     max_count           = var.auto_scaling_default_node == true ? var.max_node_count : null
     min_count           = var.auto_scaling_default_node == true ? var.agent_vm_count : null
+    availability_zones  = var.availability_zones
   }
 
   network_profile {
