@@ -109,3 +109,10 @@ cosmos_databases = [
   }
 ]
 
+# Redis Queue
+redis_queue_sku_name = "Premium"
+redis_queue_zones = [
+  1,
+  2
+]
+

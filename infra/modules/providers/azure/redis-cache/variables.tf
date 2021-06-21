@@ -44,6 +44,12 @@ variable "minimum_tls_version" {
   default     = "1.2"
 }
 
+variable "zones" {
+  description = "A list of a one or more Availability Zones, where the Redis Cache should be allocated."
+  type        = list(number)
+  default     = []
+}
+
 # Standard & Premium Tier Inputs (optional)
 
 variable "memory_features" {
