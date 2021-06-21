@@ -30,7 +30,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.41.0"
+      version = "=2.64.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -128,7 +128,7 @@ locals {
 
   cosmosdb_name = "${local.base_name}-system-db"
 
-  availability_zones = [
+  nodepool_zones = [
     "1",
     "2",
     "3"
@@ -341,7 +341,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.main.name
 
   dns_prefix         = local.aks_dns_prefix
-  availability_zones = local.availability_zones
+  availability_zones = local.nodepool_zones
   agent_vm_count     = var.aks_agent_vm_count
   agent_vm_size      = var.aks_agent_vm_size
   agent_vm_disk      = var.aks_agent_vm_disk
