@@ -145,8 +145,8 @@ variable "redis_queue_sku_name" {
 
 variable "redis_queue_zones" {
   description = "A list of a one or more Availability Zones, where the Redis Cache should be allocated."
-  type        = list(number)
-  default     = [1, 2]
+  type        = list(string)
+  default     = ["1", "2"]
 }
 
 variable "postgres_databases" {
