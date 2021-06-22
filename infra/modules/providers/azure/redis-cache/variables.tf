@@ -82,7 +82,7 @@ variable "premium_tier_config" {
 variable "zones" {
   description = "A list of a one or more Availability Zones, where the Redis Cache should be allocated."
   type        = list(string)
-  default     = ["1"]
+  default     = null
 }
 
 
