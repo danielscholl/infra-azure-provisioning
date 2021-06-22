@@ -136,9 +136,9 @@ locals {
   ]
 
   gateway_zones = [
-    "Zone 1",
-    "Zone 2",
-    "Zone 3"
+    "1",
+    "2",
+    "3"
   ]
 
   role = "Contributor"
