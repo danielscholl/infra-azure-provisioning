@@ -112,6 +112,7 @@ locals {
   storage_name = "${replace(local.base_name_21, "-", "")}config"
 
   redis_cache_name = "${local.base_name}-cache"
+  redis_queue_name = "${local.base_name}-queue"
   postgresql_name  = "${local.base_name}-pg"
 
   vnet_name           = "${local.base_name_60}-vnet"
@@ -482,6 +483,30 @@ resource "azurerm_role_assignment" "redis_cache" {
   role_definition_name = local.role
   principal_id         = local.rbac_principals[count.index]
   scope                = module.redis_cache.id
+}
+
+module "redis_queue" {
+  source = "../../../modules/providers/azure/redis-cache"
+
+  name                = local.redis_queue_name
+  resource_group_name = azurerm_resource_group.main.name
+  capacity            = var.redis_capacity
+  sku_name            = var.redis_queue_sku_name
+  zones               = var.redis_queue_zones
+
+  memory_features     = var.redis_config_memory
+  premium_tier_config = var.redis_config_schedule
+
+  resource_tags = var.resource_tags
+}
+
+// Add Contributor Role Access
+resource "azurerm_role_assignment" "redis_queue" {
+  count = length(local.rbac_principals)
+
+  role_definition_name = local.role
+  principal_id         = local.rbac_principals[count.index]
+  scope                = module.redis_queue.id
 }
 
 
