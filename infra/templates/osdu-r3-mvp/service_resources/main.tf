@@ -134,8 +134,7 @@ locals {
 
   gateway_zones = [
     "1",
-    "2",
-    "3"
+    "2"
   ]
 
   role = "Contributor"
@@ -312,6 +311,7 @@ resource "azurerm_role_assignment" "appgwcontributor" {
   principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
   scope                = module.appgateway.id
   role_definition_name = "Contributor"
+
 }
 
 // Give AGIC Identity the rights to look at the Resource Group
