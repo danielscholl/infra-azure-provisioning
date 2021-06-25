@@ -101,7 +101,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     vnet_subnet_id       = var.vnet_subnet_id
     enable_auto_scaling  = var.auto_scaling_default_node
     max_pods             = var.max_pods
-    max_count            = var.auto_scaling_default_node == true ? var.max_node_count : null
+    max_count            = var.agent_vm_count
     min_count            = var.auto_scaling_default_node == true ? var.agent_vm_count : null
     orchestrator_version = var.kubernetes_version
   }
