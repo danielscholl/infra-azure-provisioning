@@ -71,6 +71,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "internal" {
   max_count             = var.auto_scaling_default_node == true ? var.max_node_count : null
   min_count             = var.auto_scaling_default_node == true ? var.agent_vm_count : null
   availability_zones    = var.availability_zones
+  mode                  = "System"
 }
 
 resource "azurerm_kubernetes_cluster" "main" {
