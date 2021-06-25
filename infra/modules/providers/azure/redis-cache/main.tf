@@ -27,6 +27,7 @@ resource "azurerm_redis_cache" "arc" {
   minimum_tls_version = var.minimum_tls_version
   tags                = var.resource_tags
   zones               = var.zones
+  replicas_per_master = 1
 
   redis_configuration {
     maxmemory_reserved              = var.memory_features.maxmemory_reserved
