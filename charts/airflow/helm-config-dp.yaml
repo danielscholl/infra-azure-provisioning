@@ -99,10 +99,10 @@ airflow:
     enabled: false
     web:
       path: "/airflow"
-      host: #{DNS_HOST}#
+      host: #{AIRFLOW_DNS_HOST}#
       livenessPath: "/airflow/health"
       tls:
-        BYOCEnabled: false
+        BYOCEnabled: #{DP_ENABLE_KEYVAULT_CERT}#
         secretName: airflow-prod-certificate
 
   ###################################
