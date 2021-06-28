@@ -491,3 +491,22 @@ module "airflow" {
   sr_aks_egress_ip_address = data.terraform_remote_state.service_resources.outputs.aks_egress_ip_address
 }
 
+
+# Reference (https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy)
+resource "azurerm_storage_management_policy" "main" {
+  storage_account_id = module.storage_account.id
+  rule {
+    name    = "auto-delete-from-staging-area"
+    enabled = var.feature_flag.storage_mgmt_policy_enabled
+    filters {
+      prefix_match = ["file-staging-area"]
+      blob_types   = ["blockBlob"]
+
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = var.sa_retention_days
+      }
+    }
+  }
+}
