@@ -41,9 +41,9 @@ steps:
         $(Agent.BuildDirectory)/s/$(HELM_SOURCE)/${{parameters.valuesFile}} => $(Agent.BuildDirectory)/s/$(HELM_SOURCE)/${{parameters.chartPath}}/values.yaml
     condition: ne(variables['HELM_SOURCE'], '')
   - template: helm-install.yml
-      parameters:
-        serviceName: ${{parameters.serviceName}}
-        chartPath: ${{ parameters.chartPath }}
-        valuesFile: ${{ parameters.valuesFile }}
-        baseResourceGroupName: $(base-name-dp)
-        namespace: ${{ parameters.namespace }}
+    parameters:
+      serviceName: ${{parameters.serviceName}}
+      chartPath: ${{ parameters.chartPath }}
+      valuesFile: ${{ parameters.valuesFile }}
+      baseResourceGroupName: $(base-name-dp)
+      namespace: ${{ parameters.namespace }}
