@@ -493,6 +493,7 @@ module "airflow" {
 
 
 # Reference (https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy)
+# Prefix Value (https://stackoverflow.com/questions/65593429/set-lifecycle-management-rule-on-all-blobs-in-a-container)
 resource "azurerm_storage_management_policy" "main" {
   storage_account_id = module.storage_account.id
   rule {
