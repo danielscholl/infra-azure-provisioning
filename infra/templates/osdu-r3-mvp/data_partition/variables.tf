@@ -213,5 +213,5 @@ variable "service_resources_workspace_name" {
 variable "sa_retention_days" {
   description = "Number of days that to retain data in file-staging-area"
   type        = number
-  default     = 7
+  default     = 30
 }
