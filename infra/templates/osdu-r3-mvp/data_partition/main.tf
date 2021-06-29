@@ -496,7 +496,7 @@ module "airflow" {
 resource "azurerm_storage_management_policy" "main" {
   storage_account_id = module.storage_account.id
   rule {
-    name    = "autoDeleteBlobs"
+    name    = "auto-delete-blobs"
     enabled = var.feature_flag.storage_mgmt_policy_enabled
     filters {
       prefix_match = ["file-staging-area"]
