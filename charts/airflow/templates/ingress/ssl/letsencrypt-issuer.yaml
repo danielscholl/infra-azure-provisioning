@@ -3,14 +3,14 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: letsencrypt-prod
+  name: letsencrypt
   namespace: istio-system
 spec:
   acme:
-    email: admin@email.com
+    email: {{ .Values.airflow.ingress.web.tls.certificateAdmin }}
     privateKeySecretRef:
-      name: letsencrypt-prod
-    server: https://acme-v02.api.letsencrypt.org/directory
+      name: letsencrypt
+    server: {{ .Values.airflow.ingress.web.tls.sslServer }}
     solvers:
     - http01:
         ingress:

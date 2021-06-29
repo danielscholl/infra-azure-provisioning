@@ -104,6 +104,8 @@ airflow:
       tls:
         BYOCEnabled: #{DP_ENABLE_KEYVAULT_CERT}#
         secretName: airflow-prod-certificate
+        certificateAdmin: admin@email.com
+        sslServer: https://acme-v02.api.letsencrypt.org/directory
 
   ###################################
   # Database - External Database
