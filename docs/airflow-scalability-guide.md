@@ -198,7 +198,7 @@ web:
 
   AIRFLOW__CORE__SQL_ALCHEMY_POOL_SIZE: 20  (Maximum number of database connections in the connection pool)
 
-  The replicas for PG Bouncer component need to be increased 5 as existing to handle the connection pooling
+  The replicas for PG Bouncer component need to be increased to 5 to handle the connection pooling
   for increased number of clients
 
   Recommendation - Due to increased replicas for pg bouncer high CPU consumption (70%) are observed
