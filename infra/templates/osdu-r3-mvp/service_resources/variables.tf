@@ -34,11 +34,14 @@ variable "feature_flag" {
     osdu_namespace = bool
     flux           = bool
     sa_lock        = bool
+    autoscaling    = bool
+
   })
   default = {
     osdu_namespace = true
     flux           = true
     sa_lock        = true
+    autoscaling    = true
   }
 }
 
@@ -213,13 +216,13 @@ variable "ssl_certificate_file" {
 variable "aks_system_agent_vm_count" {
   description = "The initial number of agent pools / nodes allocated to the system Agent pool"
   type        = string
-  default     = "3"
+  default     = "6"
 }
 
 variable "aks_system_agent_vm_maxcount" {
   description = "The max number of nodes allocated to the system Agent pool"
   type        = string
-  default     = "3"
+  default     = "10"
 }
 
 variable "aks_system_agent_vm_size" {
@@ -333,6 +336,12 @@ variable "max_pods" {
 
 variable "istio_int_load_balancer_ip" {
   description = "A IP addresse of an internal istio LB"
+  type        = string
+  default     = ""
+}
+
+variable "aks_dns_host" {
+  description = "A DNS name whis will use for APPGW backend http setting"
   type        = string
   default     = ""
 }

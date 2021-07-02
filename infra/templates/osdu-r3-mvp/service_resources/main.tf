@@ -30,7 +30,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.41.0"
+      version = "=2.64.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -126,6 +126,19 @@ locals {
   aks_cluster_name  = "${local.base_name_60}-aks"
   aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
   aks_dns_prefix    = local.base_name_60
+
+  availability_zones = [
+    "1",
+    "2",
+    "3"
+  ]
+
+  gateway_zones = [
+    "1",
+    "2",
+    "3"
+  ]
+
 
   role = "Contributor"
   rbac_principals = [
@@ -293,6 +306,8 @@ module "appgateway" {
 }
 
 module "istio_appgateway" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   source = "../../../modules/providers/azure/appgw"
 
   name                = local.istio_app_gw_name
@@ -308,9 +323,12 @@ module "istio_appgateway" {
   ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
   backend_address_pool_ips        = var.istio_int_load_balancer_ip == "" ? null : [var.istio_int_load_balancer_ip]
 
+  gateway_zones = local.gateway_zones
+
   resource_tags = var.resource_tags
   min_capacity  = var.appgw_min_capacity
   max_capacity  = var.appgw_max_capacity
+  host_name     = var.aks_dns_host
 }
 
 // Give AGIC Identity Access rights to Change the Application Gateway
@@ -318,13 +336,6 @@ resource "azurerm_role_assignment" "appgwcontributor" {
   principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
   scope                = module.appgateway.id
   role_definition_name = "Contributor"
-}
-
-resource "azurerm_key_vault_access_policy" "kv_policy_for_adsp" {
-  key_vault_id            = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  tenant_id               = azurerm_function_app.app_func.identity.0.tenant_id
-  object_id               = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  certificate_permissions = ["get", "list", "import", "update"]
 }
 
 // Give AGIC Identity the rights to look at the Resource Group
@@ -370,11 +381,14 @@ module "aks" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "services" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   name                  = "services"
   kubernetes_cluster_id = module.aks.id
   node_count            = var.aks_services_agent_vm_count
   min_count             = var.aks_services_agent_vm_count
   max_count             = var.aks_services_agent_vm_maxcount
+  availability_zones    = local.availability_zones
   vnet_subnet_id        = module.network.subnets.1
   orchestrator_version  = var.kubernetes_version
   vm_size               = var.aks_services_agent_vm_size
@@ -406,6 +420,8 @@ resource "azurerm_role_assignment" "vm_contributor" {
 
 // Give AKS Access to Operate the Network
 resource "azurerm_role_assignment" "subnet_contributor" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   principal_id         = module.aks.principal_id
   scope                = module.network.subnets.1
   role_definition_name = "Contributor"
@@ -441,168 +457,11 @@ resource "azurerm_role_assignment" "osdu_identity_mi_operator" {
 
 # // Give AD Principal Access rights to AKS cluster
 resource "azurerm_role_assignment" "aks_contributor" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
   scope                = module.aks.id
   role_definition_name = "Contributor"
-}
-
-// Cronjob for updating istio-appgw cert
-resource "kubernetes_cron_job" "cert-checker" {
-  metadata {
-    name      = "cert-checker"
-    namespace = "osdu"
-  }
-  spec {
-    concurrency_policy            = "Replace"
-    failed_jobs_history_limit     = 5
-    schedule                      = "0 * * * *"
-    starting_deadline_seconds     = 10
-    successful_jobs_history_limit = 10
-    job_template {
-      metadata {}
-      spec {
-        backoff_limit              = 2
-        ttl_seconds_after_finished = 10
-        template {
-          metadata {}
-          spec {
-            container {
-              name  = "cert-checker"
-              image = "mcr.microsoft.com/azure-cli"
-              env {
-                name = "client_id"
-                value_from {
-                  secret_key_ref {
-                    name = "active-directory"
-                    key  = "principal-clientid"
-                  }
-                }
-              }
-              env {
-                name = "client_secret"
-                value_from {
-                  secret_key_ref {
-                    name = "active-directory"
-                    key  = "principal-clientpassword"
-                  }
-                }
-              }
-              env {
-                name = "tenant_id"
-                value_from {
-                  secret_key_ref {
-                    name = "active-directory"
-                    key  = "tenantid"
-                  }
-                }
-              }
-              env {
-                name = "ENV_SR_GROUP_NAME"
-                value_from {
-                  config_map_key_ref {
-                    name = element(kubernetes_config_map.appgw_configmap.metadata[*].name, 0)
-                    key  = "ENV_SR_GROUP_NAME"
-                  }
-                }
-              }
-              env {
-                name = "ENV_KEYVAULT_NAME"
-                value_from {
-                  config_map_key_ref {
-                    name = element(kubernetes_config_map.appgw_configmap.metadata[*].name, 0)
-                    key  = "ENV_KEYVAULT_NAME"
-                  }
-                }
-              }
-              env {
-                name = "ENV_CLUSTER_NAME"
-                value_from {
-                  config_map_key_ref {
-                    name = element(kubernetes_config_map.appgw_configmap.metadata[*].name, 0)
-                    key  = "ENV_CLUSTER_NAME"
-                  }
-                }
-              }
-              command = ["/bin/bash"]
-              args = ["-c", <<EOT
-
-                  SIDECAR_PORT=15020
-                  K8S_CERT_SECRET=osdu-certificate
-                  K8S_NAMESPACE_NAME=osdu
-                  KV_CERT_NAME=appgw-ssl-cert
-
-                  function check_expire_date() {
-                    az keyvault certificate download  --vault-name  $${ENV_KEYVAULT_NAME} -n $${KV_CERT_NAME} --file $${KV_CERT_NAME}.pem
-                    KV_CERT_EXPIREDATE=$(openssl x509 -in $${KV_CERT_NAME}.pem -enddate -noout |  cut -d '=' -f2)
-                    KV_CERT_EXPIREDATE=$(date "+%Y-%m-%d" --date="$${KV_CERT_EXPIREDATE}")
-
-                    az aks get-credentials --resource-group $${ENV_SR_GROUP_NAME} --name $${ENV_CLUSTER_NAME}
-                    SECRETEXPIREDATE=$(kubectl get cert -n $${K8S_NAMESPACE_NAME} $${K8S_CERT_SECRET} -o jsonpath='{.status.notAfter}' | cut -d 'T' -f1)
-
-                    if [ $${KV_CERT_EXPIREDATE} = $${SECRETEXPIREDATE} ]; then
-                      echo "KV_CERT_EXPIREDATE: $${KV_CERT_EXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
-                      echo "The KV cert is up to date"
-                      exit 0
-                    else
-                      echo "KV_CERT_EXPIREDATE: $${KV_CERT_EXPIREDATE} and SECRETEXPIREDATE: $${SECRETEXPIREDATE}"
-                      echo "The KV cert is not up to date"
-                    fi
-                    rm -f $${KV_CERT_NAME}.pem
-                  }
-
-                  cleanup() {
-                      echo Clean all existing files
-                      rm -f cert.crt cert.key osdu-certificate.pfx $${KV_CERT_NAME}.pem
-                      curl -X POST "http://localhost:$${SIDECAR_PORT}/quitquitquit"
-                  }
-
-                  trap cleanup 0 2 3 6 ERR
-
-                  set -ex
-                  # Wait for internet connection
-                  until nc -z google.com 80
-                  do
-                    sleep 1
-                  done
-                  # Install kubectl
-                  if [ ! -x /usr/local/bin/kubectl ]; then
-                    echo "Download and install kubectl..."
-                    curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-                    chmod a+x /usr/local/bin/kubectl
-                  fi
-
-                  # Install coreutils
-                  apk add --update coreutils
-
-                  az login --service-principal -u $${client_id} -p $${client_secret} --tenant $${tenant_id}
-                  check_expire_date
-
-                  kubectl get secret -n $${K8S_NAMESPACE_NAME} $${K8S_CERT_SECRET} -o jsonpath="{ .data.tls\.crt }" | base64 -d > cert.crt
-                  kubectl get secret -n $${K8S_NAMESPACE_NAME} $${K8S_CERT_SECRET} -o jsonpath="{ .data.tls\.key }" | base64 -d > cert.key
-
-                  openssl pkcs12 \
-                    -passout pass: \
-                    -export \
-                    -out osdu-certificate.pfx \
-                    -in cert.crt \
-                    -inkey cert.key
-
-                  az keyvault certificate import --vault-name $${ENV_KEYVAULT_NAME} -n $${KV_CERT_NAME} -f osdu-certificate.pfx
-
-                  sleep 5
-
-                  check_expire_date
-
-                  echo "Cannot update KV cert"
-                  exit 1
-EOT
-              ]
-            }
-          }
-        }
-      }
-    }
-  }
 }
 
 #-------------------------------

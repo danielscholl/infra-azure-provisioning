@@ -95,8 +95,10 @@ resource "azurerm_monitor_diagnostic_setting" "gw_diagnostics" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "istio_gw_diagnostics" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   name                       = "istio_gw_diagnostics"
-  target_resource_id         = module.istio_appgateway.id
+  target_resource_id         = module.istio_appgateway[count.index].id
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
 
@@ -135,6 +137,8 @@ resource "azurerm_monitor_diagnostic_setting" "istio_gw_diagnostics" {
       enabled = local.retention_policy
     }
   }
+  depends_on = [module.istio_appgateway]
+
 }
 
 #-------------------------------

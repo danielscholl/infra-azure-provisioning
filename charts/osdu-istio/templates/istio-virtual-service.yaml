@@ -11,6 +11,14 @@ spec:
   http:
   - match:
     - uri:
+        exact: "/"
+    route:
+    - destination:
+        host: osdu-common
+        port:
+          number: 80     
+  - match:         
+    - uri:
         prefix: "/api/partition/v1"
     route:
     - destination:

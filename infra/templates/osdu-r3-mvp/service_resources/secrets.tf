@@ -162,3 +162,13 @@ resource "azurerm_key_vault_secret" "redis_password" {
   value        = module.redis_cache.primary_access_key
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
+
+#-------------------------------
+# Istio
+#-------------------------------
+resource "azurerm_key_vault_secret" "istio_int_load_balancer_ip" {
+  count        = var.feature_flag.autoscaling ? 1 : 0
+  name         = "istio-int-load-balancer-ip"
+  value        = var.istio_int_load_balancer_ip == "" ? null : var.istio_int_load_balancer_ip
+  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
+}

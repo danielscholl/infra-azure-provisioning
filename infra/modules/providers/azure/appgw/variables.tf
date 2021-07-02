@@ -114,3 +114,15 @@ variable "backend_address_pool_fqdns" {
   type        = list(any)
   default     = []
 }
+
+variable "host_name" {
+  description = "A DNS name whis will use for APPGW backend http setting"
+  type        = string
+  default     = ""
+}
+
+variable "gateway_zones" {
+  description = ""
+  type        = list(string)
+  default     = null
+}

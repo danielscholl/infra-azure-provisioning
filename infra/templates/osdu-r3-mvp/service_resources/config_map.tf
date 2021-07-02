@@ -56,6 +56,8 @@ resource "kubernetes_config_map" "osduconfigmap" {
 }
 
 resource "kubernetes_config_map" "appgw_configmap" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
   metadata {
     name      = "osdu-istio-appgw-cert"
     namespace = local.osdu_ns
