@@ -30,8 +30,3 @@ cosmos_databases = [
     throughput = 8000
   }
 ]
-
-# Enable lifecycle management policy
-feature_flag = {
-  storage_mgmt_policy_enabled = true
-}
