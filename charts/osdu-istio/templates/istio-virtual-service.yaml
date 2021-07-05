@@ -121,7 +121,6 @@ spec:
         host: unit-service
         port:
           number: 80
-###
   - match:
     - uri:
         prefix: "/api/file"
@@ -136,30 +135,6 @@ spec:
     route:
     - destination:
         host: workflow
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/seistore-svc/api/v3"
-    route:
-    - destination:
-        host: sdms
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/spatial-ref/v1"
-    route:
-    - destination:
-        host: spatial-ref
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/parser/v1"
-    route:
-    - destination:
-        host: csv-parser
         port:
           number: 80
   - match:
@@ -185,7 +160,7 @@ spec:
     - destination:
         host: well-planning
         port:
-          number: 80
+          number: 80                  
   - match:
     - uri:
         prefix: "/api/entitlements/v2"
@@ -196,58 +171,18 @@ spec:
           number: 80
   - match:
     - uri:
-        prefix: "/api/entitlement-manager/v1"
-    route:
-    - destination:
-        host: entitlement-manager
-        port:
-          number: 80
-  - match:
-    - uri:
         prefix: "/seistore-svc/api/v3"
     route:
     - destination:
-        host: seismic-store-service
+        host: sdms
         port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/policy/v1"
-    route:
-    - destination:
-        host: policy-service
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/delfi-techlog-service"
-    route:
-    - destination:
-        host: delfi-techlog-service
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/delfi-techlog-importer-service"
-    route:
-    - destination:
-        host: delfi-techlog-importer-service
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: "/api/mapping"
-    route:
-    - destination:
-        host: mapping
-        port:
-          number: 80
+          number: 80      
   - match:
     - uri:
         prefix: "/api/ingestion"
     route:
     - destination:
-        host: ingestion
+        host: ingestion-service
         port:
           number: 80
   - match:
@@ -258,3 +193,11 @@ spec:
         host: well-delivery
         port:
           number: 80
+  - match:
+    - uri:
+        prefix: "/api/policy/v1"
+    route:
+    - destination:
+        host: policy-service
+        port:
+          number: 80          
