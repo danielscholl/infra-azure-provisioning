@@ -34,11 +34,14 @@ variable "feature_flag" {
     osdu_namespace = bool
     flux           = bool
     sa_lock        = bool
+    autoscaling    = bool
+
   })
   default = {
     osdu_namespace = true
     flux           = true
     sa_lock        = true
+    autoscaling    = true
   }
 }
 
@@ -401,6 +404,12 @@ variable "max_pods" {
 
 variable "istio_int_load_balancer_ip" {
   description = "A IP addresse of an internal istio LB"
+  type        = string
+  default     = ""
+}
+
+variable "aks_dns_host" {
+  description = "A DNS name whis will use for APPGW backend http setting"
   type        = string
   default     = ""
 }

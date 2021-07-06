@@ -70,6 +70,7 @@ feature_flag = {
   osdu_namespace = true
   flux           = true
   sa_lock        = true
+  autoscaling    = true
 }
 
 # cosmos DB SQL collections

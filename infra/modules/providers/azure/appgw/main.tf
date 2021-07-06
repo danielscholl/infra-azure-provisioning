@@ -178,6 +178,7 @@ resource "azurerm_application_gateway" "main" {
     port                  = 443
     protocol              = "Https"
     request_timeout       = 1
+    host_name             = length(var.host_name) == 0 ? null : var.host_name
   }
 
   backend_address_pool {
@@ -192,7 +193,7 @@ resource "azurerm_application_gateway" "main" {
     min_protocol_version = var.ssl_policy_min_protocol_version
   }
 
-  //zones = var.gateway_zones
+  zones = var.gateway_zones
 
   lifecycle {
     ignore_changes = [

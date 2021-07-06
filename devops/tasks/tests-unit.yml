@@ -14,11 +14,14 @@
 
 parameters:
   skip: false
+  terraformWorkspacePrefix: ''
+
 
 steps:
   - task: AzureCLI@1
     displayName: 'Run Unit Tests'
     env:
+      TERRAFORM_WORKSPACE_PREFIX: ${{ parameters.terraformWorkspacePrefix }}
       TF_VAR_remote_state_container: $(TF_VAR_remote_state_container)
       TF_VAR_remote_state_account: $(TF_VAR_remote_state_account)
       TF_VAR_cosmosdb_replica_location: $(TF_VAR_cosmosdb_replica_location)
@@ -66,6 +69,16 @@ steps:
         export ARM_CLIENT_ID=$servicePrincipalId
         export ARM_ACCESS_KEY=$(az storage account keys list --subscription "$ARM_SUBSCRIPTION_ID" --account-name "$(TF_VAR_remote_state_account)" --query "[0].value" --output tsv)
         cd "$ARTIFACT_ROOT"/"$TERRAFORM_TEMPLATE_PATH"
+
+        if [[ "$TERRAFORM_WORKSPACE_PREFIX" == sr* ]]; then
+          # Check if istio appgw enable
+          pushd $(TF_TEMPLATE_WORKING_DIR)
+          [ ! -f $TF_VARFILE ] && TF_VARFILE=override.tfvars
+          AUTOSCALING_ENABLED=$(echo 'var.feature_flag["autoscaling"]' | terraform console -var-file=$TF_VARFILE)
+          echo "AUTOSCALING_ENABLED : ${AUTOSCALING_ENABLED}"
+          export AUTOSCALING_ENABLED
+          popd
+        fi
 
         # Setting the scripts to be run as executable
         chmod -fR 755 *.sh || true
