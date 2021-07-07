@@ -342,27 +342,6 @@ module "appgateway" {
 }
 
 module "istio_appgateway" {
-  source = "../../../modules/providers/azure/appgw"
-
-  name                = local.istio_app_gw_name
-  resource_group_name = azurerm_resource_group.main.name
-
-  vnet_name                       = module.network.name
-  vnet_subnet_id                  = module.network.subnets.0
-  keyvault_id                     = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.secret_id
-  ssl_certificate_name            = local.ssl_cert_name
-  ssl_policy_type                 = var.ssl_policy_type
-  ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
-  ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
-  backend_address_pool_ips        = var.istio_int_load_balancer_ip == "" ? null : [var.istio_int_load_balancer_ip]
-
-  resource_tags = var.resource_tags
-  min_capacity  = var.appgw_min_capacity
-  max_capacity  = var.appgw_max_capacity
-}
-
-module "istio_appgateway" {
   count = var.feature_flag.autoscaling ? 1 : 0
 
   source = "../../../modules/providers/azure/appgw"
@@ -396,13 +375,6 @@ resource "azurerm_role_assignment" "appgwcontributor" {
 
 }
 
-// Give AD Principal Access rights to Change the Istio Application Gateway
-resource "azurerm_role_assignment" "istio_appgw_contributor_for_adsp" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway.id
-  role_definition_name = "Contributor"
-}
-
 // Give AGIC Identity the rights to look at the Resource Group
 resource "azurerm_role_assignment" "agic_resourcegroup_reader" {
   principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
@@ -428,10 +400,10 @@ module "aks" {
 
   dns_prefix         = local.aks_dns_prefix
   availability_zones = local.nodepool_zones
-  agent_vm_count     = var.aks_system_agent_vm_count
-  agent_vm_size      = var.aks_system_agent_vm_size
-  agent_vm_disk      = var.aks_system_agent_vm_disk
-  max_node_count     = var.aks_system_agent_vm_maxcount
+  agent_vm_count     = var.aks_agent_vm_count
+  agent_vm_size      = var.aks_agent_vm_size
+  agent_vm_disk      = var.aks_agent_vm_disk
+  max_node_count     = var.aks_agent_vm_maxcount
   vnet_subnet_id     = module.network.subnets.1
   ssh_public_key     = file(var.ssh_public_key_file)
   kubernetes_version = var.kubernetes_version

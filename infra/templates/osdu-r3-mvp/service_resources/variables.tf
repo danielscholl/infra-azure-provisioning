@@ -244,25 +244,25 @@ variable "ssl_certificate_file" {
   default     = ""
 }
 
-variable "aks_system_agent_vm_count" {
+variable "aks_agent_vm_count" {
   description = "The initial number of agent pools / nodes allocated to the system Agent pool"
   type        = string
   default     = "6"
 }
 
-variable "aks_system_agent_vm_maxcount" {
+variable "aks_agent_vm_maxcount" {
   description = "The max number of nodes allocated to the system Agent pool"
   type        = string
   default     = "10"
 }
 
-variable "aks_system_agent_vm_size" {
+variable "aks_agent_vm_size" {
   type        = string
   description = "The size of each VM in the system Agent Pool (e.g. Standard_F1). Changing this forces a new resource to be created."
   default     = "Standard_D2s_v3"
 }
 
-variable "aks_system_agent_vm_disk" {
+variable "aks_agent_vm_disk" {
   description = "The initial sice of each VM OS Disk for the system Agent pool"
   type        = number
   default     = 30

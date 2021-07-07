@@ -22,9 +22,6 @@ To configure autoscaling you should add the following variables group in **the A
 
 | Variable                              | eg. Value             |
 | ------------------------------------- | --------------------- |
-| TF_VAR_aks_system_agent_vm_count      | 3                     |
-| TF_VAR_aks_system_agent_vm_maxcount   | 7                     |
-| TF_VAR_aks_system_agent_vm_size       | Standard_D8s_v3       |
 | TF_VAR_aks_services_agent_vm_count    | 3                     |
 | TF_VAR_aks_services_agent_vm_maxcount | 7                     |
 | TF_VAR_aks_services_agent_vm_size     | Standard_D8s_v3       |
