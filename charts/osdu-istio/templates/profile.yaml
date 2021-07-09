@@ -29,15 +29,17 @@ spec:
       # Enable the Jaeger deployment for tracing
       enabled: true
   values:
+    global:
+      proxy:
+        logLevel: info
+{{- if and (eq (.Values.global.isDataPartitionDeployment | default false) false)  .Values.global.isAutoscalingEnabled }}
     gateways:
       istio-ingressgateway:
         serviceAnnotations:
           service.beta.kubernetes.io/azure-load-balancer-internal: "true"
         loadBalancerIP: "{{ .Values.global.istio.loadBalancerIP }}"
-    global:
-      proxy:
-        logLevel: info
   components:
     ingressGateways:
     - name: istio-ingressgateway
       enabled: true
+{{- end }} 

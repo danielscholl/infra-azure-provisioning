@@ -1,3 +1,4 @@
+{{- if and (eq (.Values.global.isDataPartitionDeployment | default false) false)  .Values.global.isAutoscalingEnabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

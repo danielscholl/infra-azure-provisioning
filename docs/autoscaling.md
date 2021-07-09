@@ -2,7 +2,7 @@
 
 Explanation of decision to add autoscaling in setup and details of setup located in this [issue](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/167).
 
-Autoscaling enabled by default and has a feature flag to disable it and prevent related resources creation. You can find it in `variables.tf` file in service_resources module [infra\templates\osdu-r3-mvp\service_resources\variables.tf](\infra\templates\osdu-r3-mvp\service_resources\variables.tf) and in `terraform.tfvars` [infra\templates\osdu-r3-mvp\service_resources\terraform.tfvars](infra\templates\osdu-r3-mvp\service_resources\terraform.tfvars). 
+Autoscaling is not enabled by default and has a feature flag to enable it and create related resources. You can find it in `variables.tf` file in service_resources module [infra\templates\osdu-r3-mvp\service_resources\variables.tf](\infra\templates\osdu-r3-mvp\service_resources\variables.tf) and in `terraform.tfvars` [infra\templates\osdu-r3-mvp\service_resources\terraform.tfvars](infra\templates\osdu-r3-mvp\service_resources\terraform.tfvars).
 
 ```
 variable "feature_flag" {
@@ -12,9 +12,17 @@ variable "feature_flag" {
     flux           = bool
     sa_lock        = bool
     autoscaling    = bool
+
   })
+  default = {
+    osdu_namespace = true
+    flux           = true
+    sa_lock        = true
+    autoscaling    = false
+  }
 }
 ```
+To set up Istio to work with autoscaling you should set `isAutoscalingEnabled` flag to **true** in `helm-config.yaml` [charts\helm-config.yaml](charts\helm-config.yaml).
 
 ### Configuration
 
@@ -38,7 +46,7 @@ The feature enables the customers to manage and provision certificates used on t
 
 In this approach, we use certificate uploaded by customer to Keyvault.
 
-### Upload your own certificate 
+### Upload your own certificate in case of autoscaling is enabled
 1. Open Azure portal and open keyvault named `osdu-mvp-crxxx-xxxx-kv`.
 
 2. Make sure you have all the permission on **Certificate Management**. Go access policies by selecting on **_Access Policies_** option on left subsection.
