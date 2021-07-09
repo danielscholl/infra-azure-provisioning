@@ -271,6 +271,11 @@ This variable group will be used to hold the specific environment values which a
 
 This variable group should be linked to the keyvault created in data partition resource group
 
+- aad-client-id
+- app-dev-sp-password
+- app-dev-sp-tenant-id
+- app-dev-sp-username
+- appinsights-key
 - data-partition-tenant-id
 - data-partition-subscription-id
 - base-name-dp
