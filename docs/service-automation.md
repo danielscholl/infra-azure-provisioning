@@ -250,7 +250,7 @@ AIRFLOW_DNS_HOST="<your airflow dns host>"
 
 
 az pipelines variable-group create \
-  --name "Azure Target Env - ${UNIQUE}" \
+  --name "Azure Target Env Data Partition opendes - ${UNIQUE}" \
   --authorize true \
   --variables \
   AAD_CLIENT_ID='$(aad-client-id)' \
