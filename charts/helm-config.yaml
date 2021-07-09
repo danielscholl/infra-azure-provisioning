@@ -1,6 +1,8 @@
 # This file contains the essential configs for the osdu on azure helm chart
 global:
 
+  # Set to 'true' if you'd like to enable autoscaling. Details in 'autoscaling.md'
+  isAutoscalingEnabled: true
   # Service(s) Replica Count
   replicaCount: 2
 

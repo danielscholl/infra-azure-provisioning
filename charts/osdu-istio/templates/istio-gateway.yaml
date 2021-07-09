@@ -21,3 +21,4 @@ spec:
         {{ else }}
         credentialName: osdu-certificate
         {{- end }} 
+{{- end }} 

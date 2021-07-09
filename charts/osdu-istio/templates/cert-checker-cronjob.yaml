@@ -179,3 +179,4 @@ spec:
               exit 1
     {{- end }}  
           restartPolicy: Never
+{{- end }}           
