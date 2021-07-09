@@ -14,7 +14,9 @@ For AKS and App Gateway, once Zone Redundancy is enabled, the failover is Automa
 
 For Redis, once Zone Redundancy is enabled, zone-redundant cache runs on VMs spread across multiple Availability Zones. It provides higher resilience and availability and automatically switches zones(failover) in case of a Zonal Failure.
 
-### Storage
+### Storage (FileShare)
+
+With ZRS enabled for Storage accounts, your data is still accessible for both read and write operations even if a zone becomes unavailable. If a zone becomes unavailable, Azure undertakes networking updates, such as DNS re-pointing. These updates may affect your application if you access data before the updates have completed. Once these updates are completed, operations resume as normal."
 
 ### PostGres
 
