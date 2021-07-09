@@ -34,7 +34,7 @@ Cons
 
 Flow diagram explaining choice between Traffic Manager and Azure Front Door.
 
-![image.png](docs/images/airflow-dr/aks-enterprise-grade.png)
+![image.png](docs/images/airflow-dr/atm-vs-azure-fd.png)
  
     The below approaches were explored were insufficient in solving the scenarios (mostly because gateway is a regional resource or AGIC is part of AKS cluster.
 
