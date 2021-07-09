@@ -2,7 +2,7 @@
 
 
 ## Introduction 
-This is a guide documents the steps to recover from Zonal failures. 
+This is a guide documents recovery from Zonal failures. 
 
 ## Zonal Resiliency Recovery (Airflow Engine) 
 
