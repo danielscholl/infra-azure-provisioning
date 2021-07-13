@@ -129,7 +129,7 @@ locals {
   aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
   aks_dns_prefix    = local.base_name_60
 
-  availability_zones = [
+  nodepool_zones = [
     "1",
     "2",
     "3"
@@ -426,7 +426,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "services" {
   node_count            = var.aks_services_agent_vm_count
   min_count             = var.aks_services_agent_vm_count
   max_count             = var.aks_services_agent_vm_maxcount
-  availability_zones    = local.availability_zones
+  availability_zones    = local.nodepool_zones
   vnet_subnet_id        = module.network.subnets.1
   orchestrator_version  = var.kubernetes_version
   vm_size               = var.aks_services_agent_vm_size
