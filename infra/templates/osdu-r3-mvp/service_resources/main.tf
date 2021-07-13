@@ -128,6 +128,7 @@ locals {
   aks_cluster_name  = "${local.base_name_60}-aks"
   aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
   aks_dns_prefix    = local.base_name_60
+  cosmosdb_name     = "${local.base_name}-system-db"
 
   nodepool_zones = [
     "1",
