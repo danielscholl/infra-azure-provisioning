@@ -331,8 +331,6 @@ module "appgateway" {
   ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
   ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
 
-  gateway_zones = local.gateway_zones
-
   resource_tags = var.resource_tags
   min_capacity  = var.appgw_min_capacity
   max_capacity  = var.appgw_max_capacity
