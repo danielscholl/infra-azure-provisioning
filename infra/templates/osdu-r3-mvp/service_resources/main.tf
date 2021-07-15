@@ -132,8 +132,7 @@ locals {
 
   nodepool_zones = [
     "1",
-    "2",
-    "3"
+    "2"
   ]
 
   gateway_zones = [
