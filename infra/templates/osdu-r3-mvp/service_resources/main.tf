@@ -93,17 +93,17 @@ provider "helm" {
 #-------------------------------
 locals {
   // sanitize names
-  prefix              = replace(trimspace(lower(var.prefix)), "_", "-")
-  workspace           = replace(trimspace(lower(terraform.workspace)), "-", "")
-  suffix              = var.randomization_level > 0 ? "-${random_string.workspace_scope.result}" : ""
+  prefix    = replace(trimspace(lower(var.prefix)), "_", "-")
+  workspace = replace(trimspace(lower(terraform.workspace)), "-", "")
+  suffix    = var.randomization_level > 0 ? "-${random_string.workspace_scope.result}" : ""
 
   // base prefix for resources, prefix constraints documented here: https://docs.microsoft.com/en-us/azure/architecture/best-practices/naming-conventions
-  base_name           = length(local.prefix) > 0 ? "${local.prefix}-${local.workspace}${local.suffix}" : "${local.workspace}${local.suffix}"
-  base_name_21        = length(local.base_name) < 22 ? local.base_name : "${substr(local.base_name, 0, 21 - length(local.suffix))}${local.suffix}"
-  base_name_46        = length(local.base_name) < 47 ? local.base_name : "${substr(local.base_name, 0, 46 - length(local.suffix))}${local.suffix}"
-  base_name_60        = length(local.base_name) < 61 ? local.base_name : "${substr(local.base_name, 0, 60 - length(local.suffix))}${local.suffix}"
-  base_name_76        = length(local.base_name) < 77 ? local.base_name : "${substr(local.base_name, 0, 76 - length(local.suffix))}${local.suffix}"
-  base_name_83        = length(local.base_name) < 84 ? local.base_name : "${substr(local.base_name, 0, 83 - length(local.suffix))}${local.suffix}"
+  base_name    = length(local.prefix) > 0 ? "${local.prefix}-${local.workspace}${local.suffix}" : "${local.workspace}${local.suffix}"
+  base_name_21 = length(local.base_name) < 22 ? local.base_name : "${substr(local.base_name, 0, 21 - length(local.suffix))}${local.suffix}"
+  base_name_46 = length(local.base_name) < 47 ? local.base_name : "${substr(local.base_name, 0, 46 - length(local.suffix))}${local.suffix}"
+  base_name_60 = length(local.base_name) < 61 ? local.base_name : "${substr(local.base_name, 0, 60 - length(local.suffix))}${local.suffix}"
+  base_name_76 = length(local.base_name) < 77 ? local.base_name : "${substr(local.base_name, 0, 76 - length(local.suffix))}${local.suffix}"
+  base_name_83 = length(local.base_name) < 84 ? local.base_name : "${substr(local.base_name, 0, 83 - length(local.suffix))}${local.suffix}"
 
   tenant_id           = data.azurerm_client_config.current.tenant_id
   resource_group_name = format("%s-%s-%s-rg", var.prefix, local.workspace, random_string.workspace_scope.result)
@@ -112,9 +112,9 @@ locals {
   storage_name        = "${replace(local.base_name_21, "-", "")}config"
   system_storage_name = "${replace(local.base_name_21, "-", "")}data"
 
-  redis_cache_name    = "${local.base_name}-cache"
-  redis_queue_name    = "${local.base_name}-queue"
-  postgresql_name     = "${local.base_name}-pg"
+  redis_cache_name = "${local.base_name}-cache"
+  redis_queue_name = "${local.base_name}-queue"
+  postgresql_name  = "${local.base_name}-pg"
 
   vnet_name           = "${local.base_name_60}-vnet"
   fe_subnet_name      = "${local.base_name_21}-fe-subnet"
@@ -125,24 +125,24 @@ locals {
   appgw_identity_name = format("%s-agic-identity", local.app_gw_name)
 
 
-  aks_cluster_name    = "${local.base_name_60}-aks"
-  aks_identity_name   = format("%s-pod-identity", local.aks_cluster_name)
-  aks_dns_prefix      = local.base_name_60
+  aks_cluster_name  = "${local.base_name_60}-aks"
+  aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
+  aks_dns_prefix    = local.base_name_60
 
-  cosmosdb_name       = "${local.base_name}-system-db"
+  cosmosdb_name = "${local.base_name}-system-db"
 
-  nodepool_zones      = [
+  nodepool_zones = [
     "1",
     "2"
   ]
 
-  gateway_zones       = [
+  gateway_zones = [
     "1",
     "2"
   ]
 
-  role                = "Contributor"
-  rbac_principals     = [
+  role = "Contributor"
+  rbac_principals = [
     // OSDU Identity
     data.terraform_remote_state.central_resources.outputs.osdu_identity_principal_id,
 
