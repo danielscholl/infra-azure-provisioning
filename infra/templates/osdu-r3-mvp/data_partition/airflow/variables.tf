@@ -253,13 +253,13 @@ variable "cr_keyvault_id" {
 
 variable "blob_cors_rule" {
   type = list(
-  object(
-  {
-    allowed_origins    = list(string)
-    allowed_methods    = list(string)
-    allowed_headers    = list(string)
-    exposed_headers    = list(string)
-    max_age_in_seconds = number
+    object(
+      {
+        allowed_origins    = list(string)
+        allowed_methods    = list(string)
+        allowed_headers    = list(string)
+        exposed_headers    = list(string)
+        max_age_in_seconds = number
   }))
   default     = []
   description = "List of CORS Rules to be applied on the Blob Service."

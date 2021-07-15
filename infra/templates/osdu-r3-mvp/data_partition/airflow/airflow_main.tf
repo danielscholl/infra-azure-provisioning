@@ -124,14 +124,14 @@ resource "azurerm_storage_share_directory" "sensors" {
 //}
 
 module "storage_account" {
-  source = "../../../../modules/providers/azure/storage-account"
+  source              = "../../../../modules/providers/azure/storage-account"
   name                = var.storage_account_name
   resource_group_name = var.resource_group_name
   container_names     = ["airflow-logs"]
   kind                = "StorageV2"
   replication_type    = "GZRS"
-  resource_tags  = var.resource_tags
-  blob_cors_rule = var.blob_cors_rule
+  resource_tags       = var.resource_tags
+  blob_cors_rule      = var.blob_cors_rule
 }
 
 // Airflow queue for blob create event
