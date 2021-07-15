@@ -117,10 +117,21 @@ resource "azurerm_storage_share_directory" "sensors" {
 }
 
 // Airflow log container
-resource "azurerm_storage_container" "main" {
-  name                  = "airflow-logs"
-  storage_account_name  = var.storage_account_name
-  container_access_type = "private"
+//resource "azurerm_storage_container" "main" {
+//  name                  = "airflow-logs"
+//  storage_account_name  = var.storage_account_name
+//  container_access_type = "private"
+//}
+
+module "storage_account" {
+  source = "../../../../modules/providers/azure/storage-account"
+  name                = var.storage_account_name
+  resource_group_name = var.resource_group_name
+  container_names     = ["airflow-logs"]
+  kind                = "StorageV2"
+  replication_type    = "GZRS"
+  resource_tags  = var.resource_tags
+  blob_cors_rule = var.blob_cors_rule
 }
 
 // Airflow queue for blob create event
