@@ -41,6 +41,11 @@ grant_type=client_credentials
 @domain = contoso.com
 @user_group = users@{{data_partition_id}}.{{domain}}
 
+# ---------------------------------
+# Group Name
+# ---------------------------------
+# This is the identifier for the group you are adding.
+@group_name = app.trusted
 
 # ---------------------------------
 # USER EMAIL ADDRESS
@@ -75,7 +80,22 @@ Authorization: Bearer {{access_token}}
 Accept: application/json
 data-partition-id: {{data_partition_id}}
 
+# -----------------------
+# Create Group
+# -----------------------
 
+###
+# Purpose: Create a new Group.
+# @name createGroup
+POST {{ENTITLEMENTS_HOST}}/groups
+Authorization: Bearer {{access_token}}
+Accept: application/json
+data-partition-id: {{data_partition_id}}
+Content-Type: application/json
+
+{
+  "name": "{{group_name}}"
+}
 
 # -----------------------
 # Create Users
