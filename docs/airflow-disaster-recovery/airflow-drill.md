@@ -3,16 +3,16 @@
 ### AKS
 1.	Deletion of default nodepool along with removal of default nodepool’s zone from the internal nodepool. Using this type of testing distorts the terraform state and may cause the user to recreate entire service resource again. 
 Following steps can be taken:
-    a.	Change the availability zones in internal nodepool such that availability zones aren’t intersecting between internal and default nodepool.
-    b.	Verify that pods in workload section of AKS on azure portal are spread across both nodepools.
-    c.	Delete the one of the nodepool.
-    d.	Post deletion successful, verify that pods get rescheduled to the nodepool in another zone.
+    - 	Change the availability zones in internal nodepool such that availability zones aren’t intersecting between internal and default nodepool.
+    - Verify that pods in workload section of AKS on azure portal are spread across both nodepools.
+    - Delete the one of the nodepool.
+    - Post deletion successful, verify that pods get rescheduled to the nodepool in another zone.
 
 2.	Migrate pods from multiple zones to one:
-    a.	Make sure that internal nodepool and default nodepool are configured for more than 1 availability zone.
-    b.	Verify that pods in workload section of AKS on azure portal are spread across nodepool.
-    c.	Change the internal nodepool’s availability zone and make its value equal to the availability zone in default nodepool.
-    d.	Verify that pods are migrated to the common availability zone.
+    - Make sure that internal nodepool and default nodepool are configured for more than 1 availability zone.
+    - Verify that pods in workload section of AKS on azure portal are spread across nodepool.
+    - Change the internal nodepool’s availability zone and make its value equal to the availability zone in default nodepool.
+    - Verify that pods are migrated to the common availability zone.
 
 Azure manages zonal resiliency for AKS/Storage Account/PostGres/Redis
 
