@@ -4,8 +4,9 @@ kind: ScaledObject
 metadata:
   name: {{ printf "%s" .Release.Name | trunc 63 | trimSuffix "-" }}-worker
 spec:
-  kind: StatefulSet
-  name: {{ printf "%s" .Release.Name | trunc 63 | trimSuffix "-" }}-worker
+  scaleTargetRef:
+    kind: StatefulSet
+    name: {{ printf "%s" .Release.Name | trunc 63 | trimSuffix "-" }}-worker
   pollingInterval: 30
   minReplicaCount: {{ .Values.airflow.workers.autoscale.minReplicas }}
   maxReplicaCount: {{ .Values.airflow.workers.autoscale.maxReplicas }}
