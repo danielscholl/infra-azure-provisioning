@@ -28,12 +28,19 @@ spec:
   triggers:
     - type: postgresql
       metadata:
+      {{- if eq (.Values.pgbouncer.enabled | default false) true }}
+        host: {{ .Values.pgbouncer.airflowdb.host | quote }}
+        userName: {{ .Values.pgbouncer.airflowdb.user | quote }}
+        port: {{ .Values.pgbouncer.airflowdb.port | quote }}
+        dbName: {{ .Values.pgbouncer.airflowdb.name | quote }}
+      {{- else }}
         host: {{ .Values.airflow.externalDatabase.host | quote }}
         userName: {{ .Values.airflow.externalDatabase.user | quote }}
-        passwordFromEnv: DATABASE_PASSWORD
         port: {{ .Values.airflow.externalDatabase.port | quote }}
         dbName: {{ .Values.airflow.externalDatabase.database | quote }}
-        sslmode: "prefer"
+      {{- end}}
+        passwordFromEnv: DATABASE_PASSWORD
+        sslmode: "require"
         targetQueryValue: "1"
         query: "SELECT ceil(COUNT(*)::decimal / {{ .Values.airflow.airflow.config.AIRFLOW__CELERY__WORKER_CONCURRENCY }}) FROM task_instance WHERE state='running' OR state='queued'"
         metricName: "active_tasks_count"
