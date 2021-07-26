@@ -1,4 +1,4 @@
-{{- if and .Values.airflow.web.autoscale.enabled .Values.keda.version_2_enabled -}}
+{{- if and .Values.airflow.workers.autoscale.enabled .Values.keda.version_2_enabled -}}
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
