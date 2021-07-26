@@ -290,10 +290,16 @@ airflow:
       value: "#{AAD_CLIENT_ID}#"
     - name: AIRFLOW_VAR_APPINSIGHTS_KEY
       value: "#{appinsights-key}#"
+    - name: PYTHONPATH
+      value: "/opt/celery"
     extraConfigmapMounts:
         - name: remote-log-config
           mountPath: /opt/airflow/config
           configMap: airflow-remote-log-config
+          readOnly: true
+        - name: celery-config
+          mountPath: /opt/celery
+          configMap: celery-config
           readOnly: true
     extraPipPackages: [
         "flask-bcrypt==0.7.1",
