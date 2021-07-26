@@ -190,9 +190,7 @@ airflow:
       maxReplicas: 20
       scaleDown:
         coolDownPeriod: 300
-    celery:
-      gracefullTermination: true
-      gracefullTerminationPeriod: 600
+    terminationPeriod: 600
     labels:
       # DO NOT DELETE THIS LABEL. SET IT TO "false" WHEN AUTOSCALING IS DISABLED, SET IT TO "true" WHEN AUTOSCALING IS ENABLED
       autoscalingEnabled: "false"
