@@ -19,11 +19,6 @@ For more information, visit our release documentation [here](https://community.o
 - [ ] Create and Update service charts
 - [ ] Upload service charts to ACR.
 
-**Create service release images**
-- [ ] Upload release service images to ACR.
-- [ ] Create and Update service charts
-- [ ] Upload service charts to ACR.
-
 **Create Data seeding**
 - [ ] Update documentation for following seeding data, Config, Manifest DAG, CSV Parser DAG, Schema, Entitlements, Policy, ZGY DAG and VDS DAG.
 - [ ] Create and Upload versioned image for following seeding data, Config, Manifest DAG, CSV Parser DAG, Schema, Entitlements, Policy, ZGY DAG and VDS DAG.
