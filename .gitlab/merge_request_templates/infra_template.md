@@ -18,12 +18,10 @@
 <!-- If this introduces a breaking change, please describe the impact and migration path for existing applications below. -->
 
 ## MR Guildelines
-- [ ] Temporary changes should be made with overrides and reverted. No changes are to be made to the Azure Portal. 
-- [ ] Code in GLab, Dev and Master should be in synch as this is what customers use. 
-- [ ]  Pre-Merge pipeline should be run before merging. 
-- [ ] MRs should output the changes of TF Plan. 
-- [ ] Use existing modules for creation of resources. 
-- [ ]  Any new variables should not break the existing code. (Don’t use library variables and use locals) 
+- [ ] Paste TF Plan for the MR. 
+- [ ] Pre-Merge pipeline should be run before merging. (Azure team)
+- [ ] Does the module exists for new resource. 
+- [ ] Is there a new variable added in the MR. (Don’t use library variables and use locals) 
 
 ## Other information
 -------------------------------------
