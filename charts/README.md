@@ -363,7 +363,7 @@ airflow:
         "jsonschema==3.2.0",
         "pyyaml==5.4.1",
         "requests==2.25.1",
-        "tenacity=8.0.1",
+        "tenacity==8.0.1",
         "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_api-0.10.0.tar.gz"
     ]
     extraVolumeMounts:
