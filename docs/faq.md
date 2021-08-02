@@ -151,6 +151,9 @@ Users in Entitlements V2 can be created and managed using this Rest Client [here
 
 Also refer this documentation [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/osdu-entitlement-roles.md) to understand the heirarchy of groups and which permissions can be enabled by adding specific groups
 
+## How to set up Gitlab/Azure pipelines for Dags
+This [document](./dag-pipelines.md) talks about how Azure/Gitlab pipelines for DAGs can be setup by leveraging common stages
+
 # Infrastructure Upgrade Walkthroughs
 
 This section will outline the process for upgrading infrastructure whenever we have a breaking change in our infrastructure templates.
