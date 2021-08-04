@@ -197,6 +197,7 @@ include:
 ```
 
 Some common Environment Variables required for the DAG pipeline
+- AZURE - the Gitlab pipeline stages are only triggered when this variable is set to `true`
 - AZURE_TENANT_ID - Azure tenant id
 - AZURE_PRINCIPAL_SECRET - Azure service principal secret
 - AZURE_PRINCIPAL_ID - Azure service principal id
