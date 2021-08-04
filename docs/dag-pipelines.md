@@ -241,6 +241,8 @@ The scripts to be used in this stage can be referred from this [**section**](#bu
 
 **Note:**
 - The path for dockerfiles and scripts can be set using `AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR` variable
+- The output dag folder is copied from the docker container to the pipeline job agent VM, hence this variable `AZURE_OUTPUT_DAG_FOLDER`
+should be set with the output_dag folder path as value
 - In case any new environment variables are required for the DAG the ``before_script`` section of the pipeline can be overridden to
   add new additional environment variables, the environment variables are set by creating an .env file
 
@@ -258,8 +260,6 @@ will be inherited after the yml import from the project ``osdu/platform/ci-cd-pi
 Please refer to [**link**](#copy-dag-stage) to get an overview of this stage
 
 **Environment Variables required for this Stage**
-- airflow-storage-key - Airflow Storage Account key
-- airflow-storage - Airflow Storage Account Name
 - AZURE_DEPLOY_PACKAGED_DAG - Enabling/disabling of packaged dags
 
 
