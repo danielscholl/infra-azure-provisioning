@@ -365,6 +365,18 @@ variable "appgw_max_capacity" {
   default     = 10
 }
 
+variable "istio_appgw_min_capacity" {
+  description = "Minimum number of instances to run in the Istio App Gateway"
+  type        = number
+  default     = 2
+}
+
+variable "istio_appgw_max_capacity" {
+  description = "Maximum number of instances to run in the Istio App Gateway"
+  type        = number
+  default     = 10
+}
+
 variable "cosmosdb_replica_location" {
   description = "The name of the Azure region to host replicated data. i.e. 'East US' 'East US 2'. More locations can be found at https://azure.microsoft.com/en-us/global-infrastructure/locations/"
   type        = string

@@ -127,6 +127,12 @@ variable "gateway_zones" {
   default     = null
 }
 
+variable "request_timeout" {
+  description = "The request timeout in seconds"
+  type        = number
+  default     = 1
+}
+
 variable "http_enabled" {
   description = "A toggle for enabling or not of http listener"
   type        = bool

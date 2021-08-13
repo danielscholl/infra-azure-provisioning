@@ -359,11 +359,11 @@ module "istio_appgateway" {
 
   gateway_zones = local.gateway_zones
 
-  resource_tags = var.resource_tags
-  min_capacity  = var.appgw_min_capacity
-  max_capacity  = var.appgw_max_capacity
-  http_enabled  = false
-  host_name     = var.aks_dns_host
+  resource_tags   = var.resource_tags
+  min_capacity    = var.istio_appgw_min_capacity
+  max_capacity    = var.istio_appgw_max_capacity
+  host_name       = var.aks_dns_host
+  request_timeout = 300
 }
 
 // Give AGIC Identity Access rights to Change the Application Gateway
