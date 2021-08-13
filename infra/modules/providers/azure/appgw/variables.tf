@@ -122,7 +122,13 @@ variable "host_name" {
 }
 
 variable "gateway_zones" {
-  description = ""
+  description = "Number of Availability Zones where Application Gateway instances are deployed"
   type        = list(string)
   default     = null
+}
+
+variable "http_enabled" {
+  description = "A toggle for enabling or not of http listener"
+  type        = bool
+  default     = true
 }
