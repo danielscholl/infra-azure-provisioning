@@ -334,6 +334,7 @@ module "appgateway" {
   resource_tags = var.resource_tags
   min_capacity  = var.appgw_min_capacity
   max_capacity  = var.appgw_max_capacity
+  http_enabled  = true
 
   depends_on = [azurerm_key_vault_certificate.default]
 }
@@ -361,6 +362,7 @@ module "istio_appgateway" {
   resource_tags = var.resource_tags
   min_capacity  = var.appgw_min_capacity
   max_capacity  = var.appgw_max_capacity
+  http_enabled  = false
   host_name     = var.aks_dns_host
 }
 
