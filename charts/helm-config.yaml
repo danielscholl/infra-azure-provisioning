@@ -37,6 +37,8 @@ global:
   # based64 encoded username and password
   #
   istio:
+    minReplicaCount: 10
+    maxReplicaCount: 30
     username: #{istio-username}#
     password: #{istio-password}#
     loadBalancerIP: #{istio-int-load-balancer-ip}#

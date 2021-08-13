@@ -144,7 +144,7 @@ resource "azurerm_application_gateway" "main" {
       cookie_based_affinity = "Disabled"
       port                  = 80
       protocol              = "Http"
-      request_timeout       = 1
+      request_timeout       = var.request_timeout
     }
   }
 
@@ -192,7 +192,7 @@ resource "azurerm_application_gateway" "main" {
     cookie_based_affinity = "Disabled"
     port                  = 443
     protocol              = "Https"
-    request_timeout       = 1
+    request_timeout       = var.request_timeout
     host_name             = length(var.host_name) == 0 ? null : var.host_name
   }
 
