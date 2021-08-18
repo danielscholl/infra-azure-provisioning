@@ -2,14 +2,17 @@
 
 __Repository__
 
-Clone the following repository and have them in the same file structure level as infra repository
+Clone the following repository and have them in the same file structure level as infra repository using following commands
 
 ```bash
-https://community.opengroup.org/osdu/platform/system/reference/unit-service
-https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service
-https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service
-https://community.opengroup.org/osdu/platform/system/schema-service
-https://community.opengroup.org/osdu/platform/data-flow/ingestion
+export BRANCH_NAME="release/0.10" // branch name for the release 0.10.0
+
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/unit-service.git
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/unit-service
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/schema-service
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/data-flow/ingestion
 ```
 ![File Structure](./images/directory-structure.png "File Structure")
 
