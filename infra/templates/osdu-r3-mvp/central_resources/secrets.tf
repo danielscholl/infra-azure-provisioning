@@ -154,10 +154,8 @@ resource "azurerm_key_vault_secret" "principal_object_id" {
 
 // Add Application Information to KV
 resource "azurerm_key_vault_secret" "application_id" {
-  count = var.enable_bring_your_own_ad_app ? 0 : 1
-
   name         = "aad-client-id"
-  value        = var.enable_bring_your_own_ad_app ? "" : module.ad_application.id
+  value        = module.ad_application.id
   key_vault_id = module.keyvault.keyvault_id
 }
 
