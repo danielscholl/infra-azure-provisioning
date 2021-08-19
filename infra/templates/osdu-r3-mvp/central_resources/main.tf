@@ -302,7 +302,6 @@ module "service_principal" {
 
 
 module "ad_application" {
-  count  = var.enable_bring_your_own_ad_app ? 0 : 1
   source = "../../../modules/providers/azure/ad-application"
 
   name                       = local.ad_app_name
