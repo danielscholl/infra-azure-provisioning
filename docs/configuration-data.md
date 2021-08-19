@@ -10,7 +10,7 @@ export BRANCH_NAME="release/0.10" // branch name for the release 0.10.0
 
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service.git
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git
-git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/data-flow/ingestion_dags.git
+git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-dags.git
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/schema-service.git
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/unit-service.git
 ```
