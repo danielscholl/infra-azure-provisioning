@@ -146,10 +146,6 @@ DATA_PARTITION="<your_partition>"   # ie:opendes
 ACR_REGISTRY="<your_acr_fqdn>"      # ie: myacr.azurecr.io
 DAG_NAME="vds_dag"
 TAG="latest"                        # For now the latest tag should be used for the image places in the Open VDS Project. For example, 0.10.0
-AZURE_AD_APP_RESOURCE_ID="<your_azure_ad_resource_id>"
-AZURE_CLIENT_ID="<your azure_client_id>"
-AZURE_CLIENT_SECRET="<your azure client secret>"
-SHARED_TENANT="<your shared tenant>" # i.e: opendes
 AZURE_TENANT_ID="<azure tenant>"
 
 # This logs your local Azure CLI in using the configured service principal.
