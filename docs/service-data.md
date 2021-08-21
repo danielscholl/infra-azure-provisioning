@@ -165,5 +165,5 @@ AZURE_CLIENT_SECRET=$(az keyvault secret show --id https://${ENV_VAULT}.vault.az
 EOF
 
 #(cd ../../.. && docker build -f deployments/scripts/azure/Dockerfile -t $ACR_REGISTRY/$DAG_NAME:$TAG .)
-docker run -it --env-file .env $ACR_REGISTRY/$DAG_NAME:$TAG
+docker run -it --env-file .env $ACR_REGISTRY/segy-to-vds-conversion-dag:$TAG
 ```
