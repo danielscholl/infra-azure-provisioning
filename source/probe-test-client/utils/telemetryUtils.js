@@ -19,7 +19,7 @@ appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 const client = appInsights.defaultClient;
 appInsights.defaultClient.context.tags[
   appInsights.defaultClient.context.keys.cloudRole
-] = `probe-test:${version}`;
+] = `osdu-probe:${version}`;
 appInsights.defaultClient.context.tags[
   appInsights.defaultClient.context.keys.sessionId
 ] = probeId;

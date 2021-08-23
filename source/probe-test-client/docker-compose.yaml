@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: msosdu.azurecr.io/probe-test:$VERSION
+    image: msosdu.azurecr.io/osdu-probe:$VERSION
     environment:
       TERM: xterm
       TENANT_ID: $TENANT_ID
