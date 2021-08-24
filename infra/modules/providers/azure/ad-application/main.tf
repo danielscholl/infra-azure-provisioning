@@ -18,7 +18,7 @@ data "azuread_service_principal" "main" {
 }
 
 resource "azuread_application" "main" {
-  count  = var.enable_bring_your_own_ad_app ? 0 : 1
+  count                      = var.enable_bring_your_own_ad_app ? 0 : 1
   name                       = var.name
   homepage                   = coalesce(var.homepage, local.homepage)
   identifier_uris            = local.identifier_uris
@@ -67,7 +67,7 @@ resource "random_password" "main" {
 
 resource "azuread_application_password" "main" {
   count                 = !var.enable_bring_your_own_ad_app && var.password != null ? 1 : 0
-  application_object_id = var.enable_bring_your_own_ad_app ? null  : azuread_application.main[0].object_id
+  application_object_id = var.enable_bring_your_own_ad_app ? null : azuread_application.main[0].object_id
 
   value             = coalesce(var.password, random_password.main[0].result)
   end_date          = local.end_date
