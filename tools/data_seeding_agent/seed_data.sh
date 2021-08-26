@@ -7,14 +7,14 @@ az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $A
 # in the container  legal-service-azure-configuration.
 ENV_VAULT=$(az keyvault list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
 
-IFS=',' read -r -a partitions <<< ${PARTITIONS}
+IFS=',' read -r -a partitions_array <<< ${PARTITIONS}
 
-for index in "${!partitions[@]}"
+for index in "${!partitions_array[@]}"
 do
-    echo "Ingesting file for partition: $index. ${partitions[index]}"
+    echo "Ingesting file for partition: $index. ${partitions_array[index]}"
     
-    STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions[index]}-storage --query value -otsv)
-    STORAGE_ACCOUNT_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions[index]}-storage-key --query value -otsv)
+    STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage --query value -otsv)
+    STORAGE_ACCOUNT_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage-key --query value -otsv)
     FILE_NAME=Legal_COO.json
 
     if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME"==" " ]; then
@@ -59,7 +59,7 @@ do
         fi
     fi
 
-    echo "File ingested for partition: $index. ${partitions[index]}"
+    echo "File ingested for partition: $index. ${partitions_array[index]}"
     
 done
 
