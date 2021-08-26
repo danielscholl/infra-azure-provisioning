@@ -49,7 +49,7 @@ spec:
         - -c
         - |
           SIDECAR_PORT=15020
-          KV_CERT_NAME=appgw-ssl-cert
+          KV_CERT_NAME=istio-appgw-ssl-cert
           K8S_ISTIONAMESPACE_NAME=istio-system
 
           # Cleanup function
@@ -84,7 +84,7 @@ spec:
 
 {{- if .Values.global.istio.enableIstioKeyvaultCert  }}
 
-          K8S_CERT_SECRET=appgw-ssl-cert
+          K8S_CERT_SECRET=istio-appgw-ssl-cert
           K8S_NAMESPACE_NAME=istio-system
 
           # Download BYOC certificate from keyvault
