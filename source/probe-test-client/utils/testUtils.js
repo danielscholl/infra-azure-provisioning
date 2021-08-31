@@ -151,6 +151,21 @@ const services = {
                 path: '/records/',
                 expectedResponse: 200,
             },
+            getRecordByKind: {
+                name: 'getRecordByKind',
+                path: '/query/records?kind=',
+                expectedResponse: 200,
+            },
+            listRecordVersions: {
+                name: 'listRecordVersions',
+                path: '/records/versions/',
+                expectedResponse: 200,
+            },
+            getRecordVersion: {
+                name: 'getRecordVersion',
+                path: '/records/',
+                expectedResponse: 200,
+            },
             deleteRecord: {
                 name: 'deleteRecord',
                 path: '/records/',
@@ -414,6 +429,85 @@ const services = {
                 expectedResponse: 204,
             },
         },
+    },
+    file: {
+        name: "file",
+        host: request(config.api_host.file),
+        api: {
+            getFilesList: {
+                name: 'getFilesList',
+                path: '/getFileList',
+                expectedResponse: [200, 201],
+            },
+            uploadURL: {
+                name: 'uploadURL',
+                path: '/files/uploadURL',
+                expectedResponse: 200,
+            },
+            uploadFile: {
+                name: 'uploadFile',
+                path: '',
+                expectedResponse: [200, 201, 409],
+            },
+            downloadURL: {
+                name: 'downloadURL',
+                path: {
+                    prefix: '/files/',
+                    suffix: '/downloadURL',
+                },
+                expectedResponse: 200,
+            },
+            downloadFile: {
+                name: 'downloadFile',
+                path: '',
+                expectedResponse: 200,
+            },
+            postMetadata: {
+                name: 'postMetadata',
+                path: '/files/metadata',
+                expectedResponse: [200, 201],
+            },
+            getMetadata: {
+                name: 'getMetadata',
+                path: {
+                    prefix: '/files/',
+                    suffix: '/metadata',
+                },
+                expectedResponse: 200,
+            },
+        }
+    },
+    workflow: {
+        name: "workflow",
+        host: request(config.api_host.workflow),
+        api: {
+            createWorkflow: {
+                name: 'createWorkflow',
+                path: '/workflow',
+                expectedResponse: [200, 409],
+            },
+            getWorkflowByName: {
+                name: 'getWorkflowByName',
+                path: '/workflow/',
+                expectedResponse: 200,
+            },
+            runWorkflow: {
+                name: 'runWorkflow',
+                path: {
+                    prefix: '/workflow/',
+                    suffix: '/workflowRun',
+                },
+                expectedResponse: [200],
+            },
+            getWorkflowPreDefinedId: {
+                name: 'getWorkflowPreDefinedId',
+                path: {
+                    prefix: '/workflow/',
+                    suffix: '/workflowRun/',
+                },
+                expectedResponse: 200,
+            },
+        }
     },
 };
 
