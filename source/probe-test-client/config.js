@@ -19,6 +19,8 @@ module.exports = {
     search: `https://${process.env.OSDU_HOST}/api/search/v2/query`,
     schema: `https://${process.env.OSDU_HOST}/api/schema-service/v1`,
     register: `https://${process.env.OSDU_HOST}/api/register/v1`,
+    file: `https://${process.env.OSDU_HOST}/api/file/v2`,
+    workflow: `https://${process.env.OSDU_HOST}/api/workflow/v1`,
   },
   auth_params: {
     grant_type: "client_credentials",
@@ -94,6 +96,18 @@ module.exports = {
       getUnitSystems: true,
     },
     scenario_searchInsertedRecord: {
+      enableScenario: true,
+    },
+    scenario_csv_ingest: {
+      enableScenario: false,
+    },
+    scenario_manifest_ingest: {
+      enableScenario: true,
+    },
+    scenario_recordSchema: {
+      enableScenario: true,
+    },
+    scenario_file_upload: {
       enableScenario: true,
     },
   },
