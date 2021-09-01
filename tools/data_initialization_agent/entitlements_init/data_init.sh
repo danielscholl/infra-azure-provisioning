@@ -17,8 +17,8 @@ fi
 echo "Trying to Fetch Access Token"
 ACCESS_TOKEN=$(sh ./get_access_token.sh)
 if [[ "$ACCESS_TOKEN" == "TOKEN_FETCH_FAILURE" ]]; then
-  echo "Failure fetching Access Token"
-  exit 1
+  currentStatus="failure"
+  currentMessage="${currentMessage}. Failure fetching Access Token. "
 else
   echo "Access Token fetched successfully."
 
