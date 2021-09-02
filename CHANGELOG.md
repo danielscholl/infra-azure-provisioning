@@ -2,6 +2,8 @@
 
 # Current Master
 
+# v0.11.0 (2021-9-1)
+
 # v0.10.0 (2021-8-8)
 
 __Infra Changes__
