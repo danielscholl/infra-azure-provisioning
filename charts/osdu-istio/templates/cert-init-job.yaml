@@ -43,6 +43,11 @@ spec:
             configMapKeyRef:
               name: {{ .Values.global.job.configmap_name }}
               key: ENV_CLUSTER_NAME
+        - name: ENV_APPGW_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.global.job.configmap_name }}
+              key: ENV_APPGW_NAME        
         command:
         - /bin/sh
         args:
@@ -82,14 +87,19 @@ spec:
           az login --service-principal -u ${client_id} -p ${client_secret} --tenant ${tenant_id}
           az aks get-credentials --resource-group ${ENV_SR_GROUP_NAME} --name ${ENV_CLUSTER_NAME}
 
-{{- if .Values.global.istio.enableIstioKeyvaultCert  }}
+{{- if .Values.global.istio.enableIstioKeyvaultCert }}
 
           K8S_CERT_SECRET=istio-appgw-ssl-cert
           K8S_NAMESPACE_NAME=istio-system
 
           # Download BYOC certificate from keyvault
+          echo "Download BYOC certificate from keyvault"
           az keyvault secret download --file ${KV_CERT_NAME}.pfx --vault-name ${ENV_KEYVAULT_NAME} --encoding base64 --name ${KV_CERT_NAME}
 
+          # Upload BYOC certificate to appgw
+          echo "Upload BYOC certificate to appgw" 
+          az network application-gateway ssl-cert create -g ${ENV_SR_GROUP_NAME} --gateway-name ${ENV_APPGW_NAME} -n ${KV_CERT_NAME} --cert-file ${K8S_CERT_SECRET}.pfx --cert-password ""
+          
           # Extract key and crt
           openssl pkcs12 -in ${K8S_CERT_SECRET}.pfx -out cert.pem -passin pass:"" -nodes -passout pass:""
           openssl rsa -in cert.pem -out cert.key
@@ -100,6 +110,9 @@ spec:
           --save-config --dry-run=client \
           --from-file=tls.crt=cert.crt --from-file=tls.key=cert.key \
           -o yaml | kubectl apply -f -
+
+          # Restart istio-ingressgateway pods
+          kubectl rollout restart -n ${K8S_ISTIONAMESPACE_NAME} deployment/istio-ingressgateway
 
 {{ else }}
           

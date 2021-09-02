@@ -66,6 +66,7 @@ resource "kubernetes_config_map" "appgw_configmap" {
     ENV_SR_GROUP_NAME = azurerm_resource_group.main.name
     ENV_KEYVAULT_NAME = data.terraform_remote_state.central_resources.outputs.keyvault_name
     ENV_CLUSTER_NAME  = module.aks.name
+    ENV_APPGW_NAME    = module.istio_appgateway[count.index].name
   }
-  depends_on = [kubernetes_namespace.osdu]
+  depends_on = [kubernetes_namespace.osdu, module.istio_appgateway]
 }
