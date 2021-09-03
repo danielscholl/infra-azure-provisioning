@@ -121,6 +121,17 @@ To enable airflow multi partition turn on the feature flag by following the belo
   | TF_VAR_deploy_dp_airflow | true |
   | TF_VAR_ssl_challenge_required | true (if not using BYOC) <br> false (if using BYOC) |
 
+__Enable BYOAD__
+To enable byoad, turn on the feature flag by following the below steps. If you don't want to create your own AD Application, you can skip it.
+
+1. Go to Pipelines Library in ADO
+2. Go to `Infrastructure Pipeline Variables - demo` variable group
+3. Add or update the below variable
+
+| Variable | Value |
+  |----------|-------|
+| TF_VAR_enable_bring_your_own_ad_app | true |
+
 
 __Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`__
 > This should be linked Secrets from Azure Key Vault `osducommon<random>`
@@ -160,6 +171,9 @@ az pipelines create \
   --yaml-path /devops/pipelines/infrastructure-central-resources.yml  \
   -ojson
 ```
+
+If you've enabled BYOAD, then following steps need to be done - 
+1. Post success of terraform apply for central resources, add application id of custom ad application to aad-client-id key in central resources keyvault.
 
 
 2. `infrastructure-data-partition`

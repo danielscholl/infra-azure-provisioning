@@ -103,7 +103,7 @@ cp terraform.tfvars custom.tfvars
 ```
 
 Execute the following commands to orchestrate a deployment.
-
+If we want to enable BYOAD (Bring your own AD Application), please go through following wiki [byoad-enable](./../../../../docs/byoad-enable.md)
 
 ```bash
 # See what terraform will try to deploy without actually deploying
