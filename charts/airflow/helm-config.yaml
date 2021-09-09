@@ -305,6 +305,10 @@ airflow:
         secretKeyRef:
           name: central-logging
           key: appinsights
+    - name: AIRFLOW_VAR_AZURE_DNS_HOST
+      value: #{DNS_HOST}#
+    - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+      value: "false"
     - name: PYTHONPATH
       value: "/opt/celery"
     # Needed for installing python osdu python sdk. In future this will be changed

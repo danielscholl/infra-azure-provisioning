@@ -341,6 +341,10 @@ airflow:
       # Needed for installing python osdu python sdk. In future this will be changed
       - name: CI_COMMIT_TAG
         value: "v0.11.0"
+      - name: AIRFLOW_VAR_AZURE_DNS_HOST
+        value: #{DNS_HOST}#
+      - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+        value: "false"    
     extraConfigmapMounts:
       - name: remote-log-config
         mountPath: /opt/airflow/config
