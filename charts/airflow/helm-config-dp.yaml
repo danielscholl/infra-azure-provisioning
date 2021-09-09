@@ -290,6 +290,10 @@ airflow:
       value: "#{AAD_CLIENT_ID}#"
     - name: AIRFLOW_VAR_APPINSIGHTS_KEY
       value: "#{appinsights-key}#"
+    - name: AIRFLOW_VAR_AZURE_DNS_HOST
+      value: #{DNS_HOST}#
+    - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+      value: "false"
     - name: PYTHONPATH
       value: "/opt/celery"
     # Needed for installing python osdu python sdk. In future this will be changed
