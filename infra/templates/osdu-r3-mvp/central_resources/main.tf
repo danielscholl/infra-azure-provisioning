@@ -323,7 +323,7 @@ module "ad_application" {
     }
   ]
 
-  enable_bring_your_own_ad_app = var.enable_bring_your_own_ad_app
+  aad_client_id = var.aad_client_id
 }
 
 

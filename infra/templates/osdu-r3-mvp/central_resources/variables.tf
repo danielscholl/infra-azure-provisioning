@@ -40,10 +40,10 @@ variable "feature_flag" {
   }
 }
 
-variable "enable_bring_your_own_ad_app" {
-  description = "Feature flag for BYOA"
-  default     = false
-  type        = bool
+variable "aad_client_id" {
+  description = "Existing Application AppId."
+  type        = string
+  default     = ""
 }
 
 variable "randomization_level" {
