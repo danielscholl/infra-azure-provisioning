@@ -105,6 +105,7 @@ az pipelines variable-group create \
   TF_VAR_principal_password="${TF_VAR_principal_password}" \
   TF_VAR_resource_group_location="${REGION}" \
   TF_VAR_deploy_dp_airflow="false" \
+  TF_VAR_aad_client_id="$TF_VAR_application_clientid" \
   -ojson
 ```
 
@@ -130,7 +131,7 @@ To enable byoad, turn on the feature flag by following the below steps. If you d
 
 | Variable | Value |
   |----------|-------|
-| TF_VAR_enable_bring_your_own_ad_app | true |
+| TF_VAR_aad_client_id | {{application client id of manually created ad application}} |
 
 
 __Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`__
@@ -171,10 +172,6 @@ az pipelines create \
   --yaml-path /devops/pipelines/infrastructure-central-resources.yml  \
   -ojson
 ```
-
-If you've enabled BYOAD, then following steps need to be done - 
-1. Post success of terraform apply for central resources, add application id of custom ad application to aad-client-id key in central resources keyvault.
-
 
 2. `infrastructure-data-partition`
 

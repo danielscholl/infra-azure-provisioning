@@ -174,23 +174,12 @@ __Installed Azure Resources__
 1. Resource Group
 2. Storage Account
 3. Key Vault
-4. A principal to be used by Terraform to create all resources for an OSDU Environment. _(Requires Grant Admin Approval)_
-5. A principal required by an OSDU environment deployment that will have root level access to that environment. _(Requires Grant Admin Approval)_
-6. An AD application to be leveraged in the future that defines and controls access to the OSDU Environment for AD Identity. _(future)_
+4. A principal to be used by Terraform to create all resources for an OSDU Environment.
+5. A principal required by an OSDU environment deployment.
+6. An AD application to be leveraged that defines and controls access to the OSDU Environment for AD Identity.
 7. An AD application to be used for negative integration testing
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group.
-
-
-__Azure AD Admin Consent__
-
-2 service principals have been created that need to have an AD Admin `grant admin consent` on.
-
-1. osdu-mvp-{UNIQUE}-terraform  _(Azure AD Application Graph - Application.ReadWrite.OwnedBy)_
-2. osdu-mvp-{UNIQUE}-principal _(Microsoft Graph - Directory.Read.All)_
-
-For more information on Azure identity and authorization, see the official Microsoft documentation [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent).
-
 
 ## Elastic Search Setup
 
