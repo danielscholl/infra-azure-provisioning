@@ -18,6 +18,10 @@ Login to Azure CLI using the OSDU Environment Service Principal.
 
 ```bash
 # This logs your local Azure CLI in using the configured service principal.
+ARM_CLIENT_ID="<arm client id>"
+ARM_CLIENT_SECRET="<arm client secret>"
+ARM_TENANT_ID="<tenant id>"
+
 az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 ```
 
@@ -26,6 +30,7 @@ __Upload Storage Blob Test Data__
 This [file](../tools/test_data/Legal_COO.json) needs to be loaded into the Data Partition Storage Account in the container  `legal-service-azure-configuration`.
 
 ```bash
+UNIQUE="<your_osdu_unique>" 
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 PARTITION_NAME=opendes
@@ -65,6 +70,7 @@ These files need to be uploaded into the proper Cosmos Collections with the requ
 
 ```bash
 # Retrieve Values from Common Key Vault
+COMMON_VAULT="<common keyvault created in common prepare phase>"
 export NO_DATA_ACCESS_TESTER=$(az keyvault secret show --id https://$COMMON_VAULT.vault.azure.net/secrets/osdu-mvp-${UNIQUE}-noaccess-clientid --query value -otsv)
 
 # Retrieve Values from Environment Key Vault
