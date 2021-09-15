@@ -34,10 +34,6 @@ This is likely an issue with the `Application.ReadWrite.OwnedBy` permissions tha
 
 The common_prepare.sh script is a helper script that helps to perform the activities necessary to provision OSDU on Azure.  These activities can all be performed manually if desired.  Service Principals are created using the command `az ad sp create-for-rbac` which requires Owner permissions on a subscription to perform.
  
-## Why does the Service Principal used by Terraform to create an OSDU Environment Stamp require Azure AD Graph API access levels of `Application.ReadWrite.OwnedBy`?
-
-Terraform is used to provision an OSDU Environment Stamp a Service Principal is the identity used by Terraform to perform this action.  An OSDU Environment Stamp requires an AD Application used for Identity Management which is currently created by the Terraform Scripts.  In order for a Service Principal to be able to create Applications in AD, the permission of `Application.ReadWrite.OwnedBy` is required for the Azure AD Graph API.
- 
 ## Why does the Service Principal used internally within an OSDU Environment Stamp require MS Graph API  access levels of `Directory.ReadAll`?
 
 The OSDU Entitlement Service integrates with Azure AD.  The defined API spec for the service includes a Create method for which input criteria includes an email address.  This email address is looked up in Azure AD to confirm it exists and retrieve the Object Id of the user to be used as the source of identity which requires the permission of `Directory.ReadAll` for the MS Graph API.
@@ -59,7 +55,7 @@ This key pair can be used to ssh into an AKS node if needed.
 * osdu-mvp-xxx-terraform – A principal identity that can be used by Terraform for creating OSDU Resources
 * osdu-mvp-xxx-principal – A principal identity that is fed to an OSDU Deployment to be used as the Root Level Identity for that OSDU Environment
 * osdu-mvp-xxx-noaccess – A negative testing principal identity.
-* osdu-mvp-xxx-application – An AD Application for future use.  (Not currently used yet.)
+* osdu-mvp-xxx-application – An AD Application.
 
 ## What AAD Items are created by the central resource template?
 * osdu-mvp-crxxx-xxxx-app – An AD application that defines the OSDU Environment created.

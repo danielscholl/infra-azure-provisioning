@@ -105,6 +105,7 @@ az pipelines variable-group create \
   TF_VAR_principal_password="${TF_VAR_principal_password}" \
   TF_VAR_resource_group_location="${REGION}" \
   TF_VAR_deploy_dp_airflow="false" \
+  TF_VAR_aad_client_id="$TF_VAR_application_clientid" \
   -ojson
 ```
 
@@ -120,6 +121,17 @@ To enable airflow multi partition turn on the feature flag by following the belo
   |----------|-------|
   | TF_VAR_deploy_dp_airflow | true |
   | TF_VAR_ssl_challenge_required | true (if not using BYOC) <br> false (if using BYOC) |
+
+__Enable BYOAD__
+To enable byoad, turn on the feature flag by following the below steps. If you don't want to create your own AD Application, you can skip it.
+
+1. Go to Pipelines Library in ADO
+2. Go to `Infrastructure Pipeline Variables - demo` variable group
+3. Add or update the below variable
+
+| Variable | Value |
+  |----------|-------|
+| TF_VAR_aad_client_id | {{application client id of manually created ad application}} |
 
 
 __Setup and Configure the ADO Library `Infrastructure Pipeline Secrets - demo`__
@@ -160,7 +172,6 @@ az pipelines create \
   --yaml-path /devops/pipelines/infrastructure-central-resources.yml  \
   -ojson
 ```
-
 
 2. `infrastructure-data-partition`
 

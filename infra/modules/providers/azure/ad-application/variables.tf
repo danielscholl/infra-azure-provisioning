@@ -12,10 +12,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-variable "enable_bring_your_own_ad_app" {
-  description = "Feature flag for BYOA"
-  default     = false
-  type        = bool
+variable "aad_client_id" {
+  description = "Existing Application AppId."
+  type        = string
+  default     = ""
 }
 
 variable "name" {
@@ -120,7 +120,7 @@ locals {
     }
   }
 
-  required_resource_access = [
+  required_resource_access = var.aad_client_id != "" ? [] : [
     for a in local.api_permissions : {
       resource_app_id = local.service_principals[a.name].application_id
       resource_access = concat(

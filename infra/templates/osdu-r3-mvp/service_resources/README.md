@@ -43,7 +43,11 @@ resource_tags = {
 }
 
 # Storage Settings
-storage_shares = [ "airflowdags" ]
+storage_shares = [
+  "airflowdags",
+  "unit",
+  "crs",
+  "crs-conversion"]
 storage_queues = [ "airflowlogqueue" ]
 ```
 

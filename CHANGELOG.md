@@ -2,6 +2,22 @@
 
 # Current Master
 
+# v0.11.0 (2021-9-1)
+__Infra Changes__
+- [Keda Upgrade to 2.x](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/128) - Follow this Documentation to do it: [Keda Upgrade](docs/keda-upgrade.md)
+- [BYOAD Enable](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/197)
+
+__Service Onboarded__
+- [Dataset Service](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/153)
+
+__Feature Changes__
+- [Add multi-partition support in Indexer Queue](https://community.opengroup.org/osdu/platform/system/indexer-queue/-/issues/6)
+- [Notification Service to use Service Bus](https://community.opengroup.org/osdu/platform/system/notification/-/issues/25)
+- [Notification loss, if migration not done](https://community.opengroup.org/osdu/platform/system/notification/-/blob/master/provider/notification-azure/docs/MIGRATION.md)
+
+__Deprecation Notes__
+- The Notification service has started functioning on Service Bus as the underlying PubSub. Starting v0.12.0, Event Grid will be deprecated. In v0.11.0, the service will have two deployments - one using Event Grid and one uses Service Bus.
+
 # v0.10.0 (2021-8-8)
 
 __Infra Changes__

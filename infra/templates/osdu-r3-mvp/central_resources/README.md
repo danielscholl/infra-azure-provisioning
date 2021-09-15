@@ -100,10 +100,17 @@ terraform workspace new $TF_WORKSPACE || terraform workspace select $TF_WORKSPAC
 ```bash
 # File location : /infra-azure-provisioning/infra/templates/osdu-r3-mvp/central_resources
 cp terraform.tfvars custom.tfvars
+
+# Do not run following commands if you wish to use ad application created/managed by terraform and
+# you've used common_prepare.sh for initial setup. Also, it requires setting of AZURE_VAULT, ADO_PROJECT and UNIQUE env variables.
+# These commands pull aad client id from common keyvault for the ad application created by common_prepare.sh. This aad client id is then used in terraform env.
+# if you have created common infra manually without common_prepare.sh, then manually set aad_client_id = "your ad application client id" in custom.tfvars and do not run these commands.
+TF_VAR_application_clientid=$(az keyvault secret show --id https://$AZURE_VAULT.vault.azure.net/secrets/${ADO_PROJECT}-${UNIQUE}-application-clientid --query value -otsv)
+echo -e "aad_client_id = \"$TF_VAR_application_clientid\"" >> custom.tfvars
 ```
 
 Execute the following commands to orchestrate a deployment.
-
+If we want to enable BYOAD (Bring your own AD Application), please go through following wiki [byoad-enable](./../../../../docs/byoad-enable.md)
 
 ```bash
 # See what terraform will try to deploy without actually deploying
