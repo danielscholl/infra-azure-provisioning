@@ -271,12 +271,23 @@ __Automated Pipeline Installation__
 
 1. Setup Airflow DNS to point the deployed airflow in data partition followin directions [here](./docs/dp-airflow-dns-setup.md)
 
+__Steps to load TNO Data__
+
+https://community.opengroup.org/osdu/platform/data-flow/data-loading/open-test-data/-/blob/master/rc--3.0.0/6-data-load-scripts/README.md
 
 __Data Migration for Entitlements from Milestone 4(v0.7.0) or lower, to Milestone 5(v0.8.0) or higher__
 
 Milestone 5(v0.8.0) introduced a breaking changed for Entitlements, which required migration of data using the scipt
 [here](https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements/-/tree/master/data-migration).
 The script should be run whenever you update OSDU installation from less than Milestone 5(v0.8.0) to equivalent or higher.
+
+__Migration scripts for Notification from Milestone 7(v0.10.0) or lower, to Milestone 8(v0.11.0) or higher__
+
+https://community.opengroup.org/osdu/platform/system/notification/-/blob/master/provider/notification-azure/docs/MIGRATION.md
+
+__KEDA upgrade steps from Milestone 7(v0.10.0) or lower, to Milestone 8(v0.11.0) or higher (Not Mandatory)__
+
+https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/keda-upgrade.md
 
 ## How to enable Policy based authorization (optional)
 Follow the steps in the [link](https://community.opengroup.org/osdu/platform/system/search-service/-/blob/master/docs/tutorial/PolicyService-Integration.md) to enbale policy based authoorization.
