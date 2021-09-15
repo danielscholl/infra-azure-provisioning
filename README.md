@@ -281,9 +281,6 @@ Milestone 5(v0.8.0) introduced a breaking changed for Entitlements, which requir
 [here](https://community.opengroup.org/osdu/platform/security-and-compliance/entitlements/-/tree/master/data-migration).
 The script should be run whenever you update OSDU installation from less than Milestone 5(v0.8.0) to equivalent or higher.
 
-## How to enable Policy based authorization (optional)
-Follow the steps in the [link](https://community.opengroup.org/osdu/platform/system/search-service/-/blob/master/docs/tutorial/PolicyService-Integration.md) to enbale policy based authoorization.
-
 __Migration scripts for Notification from Milestone 7(v0.10.0) or lower, to Milestone 8(v0.11.0) or higher__
 
 https://community.opengroup.org/osdu/platform/system/notification/-/blob/master/provider/notification-azure/docs/MIGRATION.md
@@ -291,6 +288,9 @@ https://community.opengroup.org/osdu/platform/system/notification/-/blob/master/
 __KEDA upgrade steps from Milestone 7(v0.10.0) or lower, to Milestone 8(v0.11.0) or higher (Not Mandatory)__
 
 https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/keda-upgrade.md
+
+## How to enable Policy based authorization (optional)
+Follow the steps in the [link](https://community.opengroup.org/osdu/platform/system/search-service/-/blob/master/docs/tutorial/PolicyService-Integration.md) to enbale policy based authoorization.
 
 ## Developer Activities
 
