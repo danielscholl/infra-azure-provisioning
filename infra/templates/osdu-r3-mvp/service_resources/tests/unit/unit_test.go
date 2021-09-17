@@ -36,8 +36,8 @@ var tfOptions = &terraform.Options{
 }
 
 var istioEnabled = os.Getenv("AUTOSCALING_ENABLED")
-var istioResourses = 11
-var totalResources = 138
+var istioResourses = 14
+var totalResources = 141
 
 func TestTemplate(t *testing.T) {
 	expectedAppDevResourceGroup := asMap(t, `{

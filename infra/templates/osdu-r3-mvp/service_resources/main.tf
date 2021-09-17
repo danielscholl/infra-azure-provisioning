@@ -441,6 +441,39 @@ data "azurerm_resource_group" "aks_node_resource_group" {
   name = module.aks.node_resource_group
 }
 
+// Give AD Principal Access rights to Change the Istio Application Gateway
+resource "azurerm_role_assignment" "agic_istio_appgw_contributor" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
+  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
+  scope                = module.istio_appgateway[count.index].id
+  role_definition_name = "Contributor"
+
+  depends_on = [module.istio_appgateway]
+}
+
+// Give AD Principal Access rights to Operate the Istio Application Gateway Identity
+resource "azurerm_role_assignment" "agic_istio_app_gw_contributor_for_adsp" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
+  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
+  scope                = module.istio_appgateway[count.index].managed_identity_resource_id
+  role_definition_name = "Managed Identity Operator"
+
+  depends_on = [module.istio_appgateway]
+}
+
+// Give AD Principal the rights to look at the Resource Group
+resource "azurerm_role_assignment" "agic_istio_resourcegroup_reader" {
+  count = var.feature_flag.autoscaling ? 1 : 0
+
+  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
+  scope                = azurerm_resource_group.main.id
+  role_definition_name = "Reader"
+
+  depends_on = [module.istio_appgateway]
+}
+
 // Give AKS Access rights to Operate the Node Resource Group
 resource "azurerm_role_assignment" "all_mi_operator" {
   principal_id         = module.aks.kubelet_object_id

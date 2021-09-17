@@ -51,6 +51,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.global.job.configmap_name }}
                   key: ENV_CLUSTER_NAME
+            - name: ENV_APPGW_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.job.configmap_name }}
+                  key: ENV_APPGW_NAME
             command:
             - /bin/sh
             args:
@@ -62,6 +67,7 @@ spec:
 
               # Compare expire dates of certificates in Key Vault and in istio-system namespaces
               function check_expire_date() {
+                echo "Compare expire dates of certificates in Key Vault and in istio-system namespaces"
                 az keyvault certificate download  --vault-name  ${ENV_KEYVAULT_NAME} -n ${KV_CERT_NAME} --file ${KV_CERT_NAME}.pem
                 KV_CERT_EXPIREDATE=$(openssl x509 -in ${KV_CERT_NAME}.pem -enddate -noout |  cut -d '=' -f2)
                 KV_CERT_EXPIREDATE=$(date "+%Y-%m-%d" --date="${KV_CERT_EXPIREDATE}")
@@ -84,7 +90,7 @@ spec:
 
               # Cleanup function
               cleanup() {
-                echo Clean all existing files
+                echo "Clean all existing files"
                 rm -f cert.crt cert.key osdu-certificate.pfx ${KV_CERT_NAME}.pem
                 curl -X POST "http://localhost:${SIDECAR_PORT}/quitquitquit"
               }
@@ -111,7 +117,7 @@ spec:
               # Log In in Azure
               az login --service-principal -u ${client_id} -p ${client_secret} --tenant ${tenant_id}
 
-{{- if .Values.global.istio.enableIstioKeyvaultCert  }}
+{{- if .Values.global.istio.enableIstioKeyvaultCert }}
 
               K8S_CERT_SECRET=istio-appgw-ssl-cert
               K8S_NAMESPACE_NAME=istio-system
@@ -120,7 +126,12 @@ spec:
               check_expire_date
 
               # Download BYOC certificate from keyvault
+              echo "Download BYOC certificate from keyvault"
               az keyvault secret download --file ${KV_CERT_NAME}.pfx --vault-name ${ENV_KEYVAULT_NAME} --encoding base64 --name ${KV_CERT_NAME}
+
+              # Upload BYOC certificate to appgw
+              echo "Upload BYOC certificate to appgw" 
+              az network application-gateway ssl-cert update -g ${ENV_SR_GROUP_NAME} --gateway-name ${ENV_APPGW_NAME} -n ${KV_CERT_NAME} --cert-file ${K8S_CERT_SECRET}.pfx --cert-password ""
 
               # Extract key and crt
               openssl pkcs12 -in ${K8S_CERT_SECRET}.pfx -out cert.pem -passin pass:"" -nodes -passout pass:""
@@ -134,6 +145,9 @@ spec:
               -o yaml | kubectl apply -f -
 
               sleep 5
+
+              # Restart istio-ingressgateway pods
+              kubectl rollout restart -n ${K8S_ISTIONAMESPACE_NAME} deployment/istio-ingressgateway
 
               # Check certificate expire date one more time
               check_expire_date
