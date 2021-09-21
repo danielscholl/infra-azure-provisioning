@@ -1,0 +1,12 @@
+version: '3'
+services:
+  helper-services-data-seeding-agent:
+    build:
+      context: ../helper_services_data_seeding_agent
+      dockerfile: ./Dockerfile
+    image: msosdu.azurecr.io/helper-services-data-seeding-agent:$VERSION
+    environment:
+      OSDU_IDENTITY_ID: $OSDU_IDENTITY_ID
+      RESOURCE_GROUP_NAME: $RESOURCE_GROUP_NAME
+      CONFIG_MAP_NAME: $CONFIG_MAP_NAME
+      VERSION: $VERSION
