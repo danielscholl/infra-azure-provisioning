@@ -37,5 +37,4 @@ spec:
                        "*/index-worker",
                        "*/_dps/task-handlers",
                        "/api/indexer/v2/_dps/task-handlers/*",
-                       "*/reindex",
                        "*/configuration/security"]
