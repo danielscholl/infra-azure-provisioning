@@ -86,6 +86,7 @@ Create the helm chart values file necessary to install airflow charts.
 BRANCH="master"
 TAG="latest"
 DNS_HOST="<your_ingress_hostname>"  # ie: osdu.contoso.com
+PIP_EXTRA_INDEX_URL="<pip_extra_index_urls>" # (Optional variable) List of (space separated) extra-index-url for pip repositories
 
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
@@ -344,9 +345,11 @@ airflow:
       - name: BUILD_TAG
         value: "v0.12.0"       
       - name: AIRFLOW_VAR_AZURE_DNS_HOST
-        value: #{DNS_HOST}#
+        value: $DNS_HOST
       - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
         value: "false"    
+      - name: PIP_EXTRA_INDEX_URL
+        value: $PIP_EXTRA_INDEX_URL
       - name: AIRFLOW_VAR_DAG_IMAGE_ACR
         value: #{container-registry}#.azurecr.io
     extraConfigmapMounts:

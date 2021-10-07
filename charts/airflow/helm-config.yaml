@@ -26,7 +26,6 @@ image:
 airflowLogin:
   name: admin
 
-
 airflowAuthentication:
   username: admin
   keyvaultMountPath: /mnt/azure-keyvault/
@@ -318,6 +317,8 @@ airflow:
       value: "v0.12.0"
     - name: BUILD_TAG
       value: "v0.12.0"
+    - name: PIP_EXTRA_INDEX_URL # List of (space separated) extra-index-url for pip repositories
+      value: #{PIP_EXTRA_INDEX_URL}#
     extraConfigmapMounts:
         - name: remote-log-config
           mountPath: /opt/airflow/config
