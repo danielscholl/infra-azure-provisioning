@@ -56,4 +56,5 @@ global:
   job:
     name: cert-checker
     image: mcr.microsoft.com/azure-cli 
-    configmap_name: osdu-istio-appgw-cert    
+    appgw_configmap_name: osdu-istio-appgw-cert
+    osdu_configmap_name: osdu-svc-properties  

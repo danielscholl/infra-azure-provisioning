@@ -13,41 +13,46 @@ spec:
       - name: cert-checker
         image: {{ .Values.global.job.image }}
         env:
-        - name: client_id
-          valueFrom:
-            secretKeyRef:
-              name: active-directory
-              key: principal-clientid
-        - name: client_secret
-          valueFrom:
-            secretKeyRef:
-              name: active-directory
-              key: principal-clientpassword
-        - name: tenant_id
-          valueFrom:
-            secretKeyRef:
-              name: active-directory
-              key: tenantid
-        - name: ENV_SR_GROUP_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.global.job.configmap_name }}
-              key: ENV_SR_GROUP_NAME
-        - name: ENV_KEYVAULT_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.global.job.configmap_name }}
-              key: ENV_KEYVAULT_NAME
-        - name: ENV_CLUSTER_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.global.job.configmap_name }}
-              key: ENV_CLUSTER_NAME
-        - name: ENV_APPGW_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Values.global.job.configmap_name }}
-              key: ENV_APPGW_NAME        
+          - name: client_id
+            valueFrom:
+              secretKeyRef:
+                name: active-directory
+                key: principal-clientid
+          - name: client_secret
+            valueFrom:
+              secretKeyRef:
+                name: active-directory
+                key: principal-clientpassword
+          - name: tenant_id
+            valueFrom:
+              secretKeyRef:
+                name: active-directory
+                key: tenantid
+          - name: ENV_SR_GROUP_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.global.job.appgw_configmap_name }}
+                key: ENV_SR_GROUP_NAME
+          - name: ENV_KEYVAULT_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.global.job.appgw_configmap_name }}
+                key: ENV_KEYVAULT_NAME
+          - name: ENV_CLUSTER_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.global.job.appgw_configmap_name }}
+                key: ENV_CLUSTER_NAME
+          - name: ENV_APPGW_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.global.job.appgw_configmap_name }}
+                key: ENV_APPGW_NAME
+          - name: ENV_SUBSCRIPTION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.global.job.osdu_configmap_name }}
+                key: ENV_SUBSCRIPTION_NAME     
         command:
         - /bin/sh
         args:
@@ -85,6 +90,7 @@ spec:
 
           # Log in in Azure and get cluster credentials
           az login --service-principal -u ${client_id} -p ${client_secret} --tenant ${tenant_id}
+          az account set --subscription ${ENV_SUBSCRIPTION_NAME}
           az aks get-credentials --resource-group ${ENV_SR_GROUP_NAME} --name ${ENV_CLUSTER_NAME}
 
 {{- if .Values.global.istio.enableIstioKeyvaultCert }}
