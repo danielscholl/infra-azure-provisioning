@@ -426,7 +426,7 @@ variable "istio_int_load_balancer_ip" {
 }
 
 variable "aks_dns_host" {
-  description = "A DNS name whis will use for APPGW backend http setting"
+  description = "A DNS name which will be used for APPGW backend http setting"
   type        = string
   default     = ""
 }
