@@ -19,6 +19,7 @@ RUN pip3 install --no-cache --upgrade azure-cosmos
 
 WORKDIR /usr/src/app
 
+COPY data_initialization_agent/access_token/get_access_token.sh ./
 COPY data_seeding_agent/seed_data.sh ./
 COPY test_data/Legal_COO.json ./test_data/
 COPY test_data/tenant_info_1.json ./test_data/
