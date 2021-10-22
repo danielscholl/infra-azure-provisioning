@@ -1,0 +1,68 @@
+{{- $isEnabled := .Values.keda.version_2_enabled | default false -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-log-processor
+  labels:
+    app: airflow-log-processor
+spec:
+  selector:
+    matchLabels:
+      app: airflow-log-processor
+  template:
+    metadata:
+      labels:
+        app: airflow-log-processor
+        aadpodidbinding: "osdu-identity"
+    spec:
+      containers:
+      - name: airflow-log-processor
+        image: {{ .Values.image.repository }}/airflow-function-{{ .Values.image.branch }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: Always
+        env:
+          - name: AzureFunctionsJobHost__functions__0
+            value: queueTrigger
+          - name: FUNCTIONS_WORKER_RUNTIME
+            value: dotnet
+          - name: AzureLogWorkspaceLogName
+            value: airflow_dag
+          - name: AzureLogWorkspaceCustomerId
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.logAnalytics.workspaceId.secretName }}
+                key: {{ .Values.logAnalytics.workspaceId.secretKey }}
+          - name: AzureLogWorkspaceSharedKey
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.logAnalytics.workspaceKey.secretName }}
+                key: {{ .Values.logAnalytics.workspaceKey.secretKey }}
+          - name: AzureWebJobsStorage
+            valueFrom:
+              secretKeyRef:
+                name: airflow
+                key: storage-connection
+---
+kind: ScaledObject
+metadata:
+  name: azure-queue-scaledobject
+{{- if $isEnabled }}
+apiVersion: keda.sh/v1alpha1
+spec:
+  scaleTargetRef:
+    name: airflow-log-processor
+{{- else }}
+apiVersion: keda.k8s.io/v1alpha1
+spec:
+  scaleTargetRef:
+    deploymentName: airflow-log-processor
+{{- end }}
+  triggers:
+  - type: azure-queue
+    metadata:
+      queueName: airflowlogqueue
+      queueLength: "5" # default 5
+      {{- if $isEnabled }}
+      connectionFromEnv: AzureWebJobsStorage
+      {{- else }}
+      connection: AzureWebJobsStorage
+      {{- end }}

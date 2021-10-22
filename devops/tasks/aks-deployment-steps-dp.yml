@@ -19,6 +19,7 @@ parameters:
   skipDeploy: false
   checkoutRepo: self
   namespace: ""
+  baseResourceGroupName: $(base-name-dp)
 
 steps:
   - checkout: ${{ parameters.checkoutRepo }}
@@ -45,5 +46,5 @@ steps:
       serviceName: ${{parameters.serviceName}}
       chartPath: ${{ parameters.chartPath }}
       valuesFile: ${{ parameters.valuesFile }}
-      baseResourceGroupName: $(base-name-dp)
+      baseResourceGroupName: ${{ parameters.baseResourceGroupName }}
       namespace: ${{ parameters.namespace }}

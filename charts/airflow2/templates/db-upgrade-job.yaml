@@ -1,0 +1,59 @@
+{{- $extraPipPackages := .Values.airflow.airflow.extraPipPackages }}
+{{- $volumeMounts := include "osdu.airflow.volumeMounts" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) }}
+{{- $volumes := include "osdu.airflow.volumes" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-upgrade-job
+  labels:
+    app: db-upgrade-job
+    component: db-upgrade
+    chart: {{ include "osdu.airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: db-upgrade-job
+        component: db-upgrade
+        release: {{ .Release.Name }}
+        {{- if .Values.airflow.airflow.dbMigrations.podLabels }}
+        {{- toYaml .Values.airflow.airflow.dbMigrations.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      restartPolicy: OnFailure
+      {{- if .Values.airflow.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.airflow.image.pullSecret }}
+      {{- end }}      
+      serviceAccountName: {{ include "osdu.airflow.serviceAccountName" . }}
+      initContainers:
+        {{- if $extraPipPackages }}
+        {{- include "osdu.airflow.init_container.install_pip_packages" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) | indent 8 }}
+        {{- end }}      
+      containers:
+        - name: db-migrations
+          {{- include "osdu.airflow.image" . | indent 10 }}
+          resources:
+            {{- toYaml .Values.airflow.airflow.dbMigrations.resources | nindent 12 }}
+          envFrom:
+            {{- include "osdu.airflow.envFrom" . | indent 12 }}
+          env:
+            {{- include "osdu.airflow.env" . | indent 12 }}
+          command:
+            {{- include "osdu.airflow.command" . | indent 12 }}
+          args:
+            - "bash"
+            - "-c"
+            - "exec airflow db upgrade"
+          volumeMounts:
+            {{- $volumeMounts | indent 12 }}
+            - name: scripts
+              mountPath: /mnt/scripts
+              readOnly: true
+      volumes:
+        {{- $volumes | indent 8 }}
+        - name: scripts
+          secret:
+            secretName: {{ include "osdu.airflow.fullname" . }}-db-migrations
