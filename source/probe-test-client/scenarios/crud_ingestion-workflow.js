@@ -127,6 +127,7 @@ describe(scenario, (done) => {
                     test.expectedResponse = "Valid Match";
         
                     data.creationTimestamp = "";
+                    data.createdBy = "";
                     if (isEqual(data, sampleIngestionWorkflowResponse)) {
                         telemetryUtils.passApiRequest(test);
                         expect(true).to.be.true;

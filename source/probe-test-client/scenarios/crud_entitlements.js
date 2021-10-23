@@ -73,48 +73,50 @@ describe(scenario, (done) => {
 
         if (config.test_flags.crud_entitlements.enableScenario) {
             describe('Inititalize Users for a Partition', done => {
-            
-                // NOTE: This API can ONLY be called by the application service principal.
-                it('Initialize Entitlements for a Partition', done => {
-                    test.service = testUtils.services.entitlement;
-                    test.api = test.service.api.initTenant;
-                    test.expectedResponse = test.api.expectedResponse;
-    
-                    test.service.host
-                    .post(test.api.path)
-                    .set('Authorization', token)
-                    .set('data-partition-id', testUtils.partition)
-                    .then(res => {
-                        test.expectedResponse.should.be.an('array').that.includes(res.statusCode);
-                        telemetryUtils.passApiRequest(test);
-                      done();
-                    })
-                    .catch(err => {
-                        telemetryUtils.failApiRequest(test, err);
-                        done(err)
+                
+                if (config.test_flags.crud_entitlements.enablePrivilegedAccessScenario) {
+                    // NOTE: This API can ONLY be called by the application service principal.
+                    it('Initialize Entitlements for a Partition', done => {
+                        test.service = testUtils.services.entitlement;
+                        test.api = test.service.api.initTenant;
+                        test.expectedResponse = test.api.expectedResponse;
+        
+                        test.service.host
+                        .post(test.api.path)
+                        .set('Authorization', token)
+                        .set('data-partition-id', testUtils.partition)
+                        .then(res => {
+                            test.expectedResponse.should.be.an('array').that.includes(res.statusCode);
+                            telemetryUtils.passApiRequest(test);
+                          done();
+                        })
+                        .catch(err => {
+                            telemetryUtils.failApiRequest(test, err);
+                            done(err)
+                        });
                     });
-                });
-    
-                // NOTE: The Owner of the partition by default is the service principal.
-                it("Validate the Owner of the Partition", done => {
-                    test.service = testUtils.services.entitlement;
-                    test.api = test.service.api.getGroups;
-                    test.expectedResponse = test.api.expectedResponse;
-    
-                    test.service.host
-                    .get(test.api.path)
-                    .set('Authorization', token)
-                    .set('data-partition-id', testUtils.partition)
-                    .expect(test.expectedResponse)
-                    .then(() => {
-                        telemetryUtils.passApiRequest(test); 
-                        done(); 
-                    })
-                    .catch(err => { 
-                        telemetryUtils.failApiRequest(test, err);
-                        done(err); 
+        
+                    // NOTE: The Owner of the partition by default is the service principal.
+                    it("Validate the Owner of the Partition", done => {
+                        test.service = testUtils.services.entitlement;
+                        test.api = test.service.api.getGroups;
+                        test.expectedResponse = test.api.expectedResponse;
+        
+                        test.service.host
+                        .get(test.api.path)
+                        .set('Authorization', token)
+                        .set('data-partition-id', testUtils.partition)
+                        .expect(test.expectedResponse)
+                        .then(() => {
+                            telemetryUtils.passApiRequest(test); 
+                            done(); 
+                        })
+                        .catch(err => { 
+                            telemetryUtils.failApiRequest(test, err);
+                            done(err); 
+                        });
                     });
-                });
+                }
             });
     
             describe('Create Group', done => {
