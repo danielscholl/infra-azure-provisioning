@@ -1,0 +1,1 @@
+Image Name: ACR.azurecr.io/data-seeding-agent:TAG
