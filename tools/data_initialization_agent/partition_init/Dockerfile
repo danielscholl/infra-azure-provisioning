@@ -19,8 +19,8 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 WORKDIR /usr/src/app
 
 COPY access_token/get_access_token.sh ./
-COPY partition_init/data_init.sh ./
-COPY partition_init/partition_init_api_payload.json ./
+COPY data_init.sh ./
+COPY partition_init_api_payload.json ./
 
 RUN chmod +x ./get_access_token.sh
 RUN chmod +x ./data_init.sh
