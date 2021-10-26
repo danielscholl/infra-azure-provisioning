@@ -1,0 +1,1 @@
+Image Name: ACR.azurecr.io/entitlements-data-init:TAG
