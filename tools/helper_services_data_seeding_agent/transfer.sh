@@ -27,7 +27,23 @@ CRS_CONVERSION_SOURCE_FOLDER="crs-conversion-service/apachesis_setup"
 CRS_CATALOG_SOURCE_FOLDER="crs-catalog-service/data/crs_catalog_v2.json"
 UNIT_SOURCE_FOLDER="unit-service/data/unit_catalog_v2.json"
 
-az login --identity --username $OSDU_IDENTITY_ID
+max_retry_count=7
+current_retry_count=0
+loginStatus=1
+while [ ${current_retry_count} -lt ${max_retry_count} ];
+do
+    az login --identity --username $OSDU_IDENTITY_ID
+    if [ $? -eq 0 ]; then
+      loginStatus=0
+      break
+    fi
+  current_retry_count=$(expr $current_retry_count + 1)
+done
+if [[ ${loginStatus} -ne 0 ]]; then
+  currentStatus="failure"
+  currentMessage="${currentMessage}. az login exited with a failed status."
+fi
+
 ENV_VAULT=$(az keyvault list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
 STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage --query value -otsv)
 if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME" == " " ]; then
