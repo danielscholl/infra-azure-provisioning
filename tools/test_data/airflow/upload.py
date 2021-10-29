@@ -40,8 +40,7 @@ from azure.storage.fileshare import (
     ShareFileClient
 )
 
-DAG_FILE = 'test_dummy_dag.py'
-DESTINATION_DAG_FILE = 'dags/test_dummy_dag.py'
+DAG_FILES = ['test_dummy_dag.py', 'test_simple_custom_operator_dag.py', 'test_simple_http_dag.py', 'test_simple_kubernetes_dag.py', 'test_simple_python_dag.py', 'test_validate_run_config_dag.py']
 
 class FileShareSamples(object):
     connection_string = os.getenv('AIRFLOW_FILE_SHARE_CONNECTION_STRING')
@@ -81,4 +80,7 @@ class FileShareSamples(object):
 
 if __name__ == '__main__':
     sample = FileShareSamples()
-    sample.upload_file_to_share(DAG_FILE, DESTINATION_DAG_FILE)
+    for dag_file in DAG_FILES:
+        print("Uploading dag file: {}".format(dag_file))
+        destination_dag_file = 'dags/{}'.format(dag_file)
+        sample.upload_file_to_share(dag_file, destination_dag_file)
