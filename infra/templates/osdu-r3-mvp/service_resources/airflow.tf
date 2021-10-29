@@ -74,6 +74,12 @@ resource "azurerm_storage_share" "airflow_share" {
   quota                = 50
 }
 
+resource "azurerm_storage_share" "airflow2_share" {
+  name                 = "airflow2dags"
+  storage_account_name = module.storage_account.name
+  quota                = 50
+}
+
 resource "azurerm_storage_share_directory" "dags" {
   name                 = "dags"
   share_name           = azurerm_storage_share.airflow_share.name

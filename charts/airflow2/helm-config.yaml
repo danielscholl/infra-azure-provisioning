@@ -140,7 +140,7 @@ airflow:
     port: 6380
     passwordSecret: "redis"
     passwordSecretKey: "redis-queue-password"
-    databaseNumber: 1  #<-- Adding redis database number according to the Redis config map https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/redis-map.yaml#L7
+    databaseNumber: 2  #<-- Adding redis database number according to the Redis config map https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/redis-map.yaml#L7
 
   ###################################
   # Airflow - DAGs Configs
@@ -228,6 +228,12 @@ airflow:
         memory: "1Gi"
     podLabels:
       aadpodidbinding: "osdu-identity"
+    autoscale:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 20
+      scaleDown:
+        coolDownPeriod: 60
     podAnnotations:
       sidecar.istio.io/inject: "false"
     variables: |
@@ -332,6 +338,8 @@ airflow:
       value: "v0.12.0"
     - name: BUILD_TAG
       value: "v0.12.0"
+    - name: AIRFLOW__API__AUTH_BACKEND
+      value: "airflow.api.auth.backend.basic_auth"
     - name: PIP_EXTRA_INDEX_URL # List of (space separated) extra-index-url for pip repositories
       value: #{PIP_EXTRA_INDEX_URL}#
     extraConfigmapMounts:

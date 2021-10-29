@@ -43,6 +43,10 @@ spec:
         passwordFromEnv: DATABASE_PASSWORD
         sslmode: "require"
         targetQueryValue: "1"
+<<<<<<< HEAD
         query: "SELECT ceil(COUNT(*)::decimal / {{ .Values.airflow.airflow.config.AIRFLOW__CELERY__WORKER_CONCURRENCY }}) FROM task_instance WHERE state='running' OR state='queued'"
+=======
+        query: "SELECT ceil(COUNT(*)::decimal / {{ .Values.airflow.airflow.config.AIRFLOW__CELERY__WORKER_CONCURRENCY }}) FROM task_instance WHERE state='running' OR state='queued' or state='scheduled' or state IS NULL"
+>>>>>>> sasarava/airflow2-helm
         metricName: "active_tasks_count"
 {{- end }}
