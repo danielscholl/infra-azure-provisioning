@@ -113,6 +113,45 @@ resource "azurerm_storage_share_directory" "sensors" {
   depends_on           = [azurerm_storage_share_directory.plugins]
 }
 
+resource "azurerm_storage_share" "airflow2_share" {
+  name                 = "airflow2dags"
+  storage_account_name = module.storage_account.name
+  quota                = 50
+}
+
+resource "azurerm_storage_share_directory" "airflow2_dags" {
+  name                 = "dags"
+  share_name           = azurerm_storage_share.airflow2_share.name
+  storage_account_name = module.storage_account.name
+}
+
+resource "azurerm_storage_share_directory" "airflow2_plugins" {
+  name                 = "plugins"
+  share_name           = azurerm_storage_share.airflow2_share.name
+  storage_account_name = module.storage_account.name
+}
+
+resource "azurerm_storage_share_directory" "airflow2_operators" {
+  name                 = "plugins/operators"
+  share_name           = azurerm_storage_share.airflow2_share.name
+  storage_account_name = module.storage_account.name
+  depends_on           = [azurerm_storage_share_directory.airflow2_plugins]
+}
+
+resource "azurerm_storage_share_directory" "airflow2_hooks" {
+  name                 = "plugins/hooks"
+  share_name           = azurerm_storage_share.airflow2_share.name
+  storage_account_name = module.storage_account.name
+  depends_on           = [azurerm_storage_share_directory.airflow2_plugins]
+}
+
+resource "azurerm_storage_share_directory" "airflow2_sensors" {
+  name                 = "plugins/sensors"
+  share_name           = azurerm_storage_share.airflow2_share.name
+  storage_account_name = module.storage_account.name
+  depends_on           = [azurerm_storage_share_directory.plugins]
+}
+
 // Airflow log container
 resource "azurerm_storage_container" "main" {
   name                  = "airflow-logs"
