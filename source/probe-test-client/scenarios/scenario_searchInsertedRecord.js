@@ -12,7 +12,6 @@ var isEqual = require('lodash.isequal');
 
 const sampleLegalTag = require(`${__dirname}/../testData/ sample_legal_tag.json`);
 const sampleSchema = require(`${__dirname}/../testData/sample_schema.json`);
-const sampleRecord = require(`${__dirname}/../testData/sample_record.json`);
 const sampleQuery = require(`${__dirname}/../testData/sample_query.json`);
 
 // Test Setup
@@ -37,6 +36,33 @@ let kind = `${testUtils.partition}:probetest:dummydata:0.${runId}`;
 let tag = `${testUtils.partition}-probetest-tag`;
 sampleLegalTag.name = tag;
 sampleSchema.kind = kind;
+const sampleRecord = [
+             {
+               "kind": `${kind}`,
+               "acl": {
+                 "viewers": [
+                   `data.default.viewers@${testUtils.partition}.contoso.com`
+                 ],
+                 "owners": [
+                   `data.default.owners@${testUtils.partition}.contoso.com`
+                 ]
+               },
+               "legal": {
+                 "legaltags": [
+                   `${tag}`
+                 ],
+                 "otherRelevantDataCountries": [
+                   "US"
+                 ],
+                 "status": "compliant"
+               },
+               "data": {
+                       "Field": "MyField",
+                       "Basin": "MyBasin",
+                       "Country": "MyCountry"
+               }
+             }
+];
 sampleRecord[0].kind = kind;
 sampleRecord[0].legal.legaltags[0] = tag;
 sampleQuery.kind = kind;
