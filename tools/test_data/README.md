@@ -85,10 +85,3 @@ export GRAPH_DB_HOST=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].n
 cd tools/test_data
 python3 upload-data.py
 ```
-__Upload Graph Cosmos DB Test Data__
-
-> NOTE: requires Maven installed locally
-```bash
-cd entitlements_data_uploader
-mvn compile exec:java -DGRAPH_DB_HOST=$GRAPH_DB_HOST -DGRAPH_DB_PASSWORD=$GRAPH_DB_PASSWORD -DSERVICE_PRINCIPAL_ID=$SERVICE_PRINCIPAL_ID -DNO_DATA_ACCESS_TESTER=$NO_DATA_ACCESS_TESTER -DDOMAIN=contoso.com
-```
