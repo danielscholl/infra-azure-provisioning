@@ -31,7 +31,7 @@ let test = {
 };
 
 // Test Data Setup
-let kind = `${testUtils.partition}:wks:dataset--File.Generic:1.0.0`;
+let kind = `osdu:wks:dataset--File.Generic:1.0.0`;
 let tag =  `${testUtils.partition}-public-usa-check-1`;
 
 let legalTag = {
@@ -169,6 +169,7 @@ describe(scenario, (done) => {
             describe('Get Schema', (done) => {
                 
                 it("Get Schema By ID", done => {
+                    console.log(`Trying to fetch schema with id: ${kind}`)
                     test.service = testUtils.services.schema;
                     test.api = test.service.api.getSchemaById;
                     test.expectedResponse = test.api.expectedResponse;
