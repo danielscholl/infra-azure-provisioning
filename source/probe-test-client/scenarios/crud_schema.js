@@ -30,7 +30,7 @@ let test = {
 
 // Test Data Setup
 const sampleSchemaToCreate = require(`${__dirname}/../testData/sample_schemaToCreate.json`);
-let sampleSchemaId = `${testUtils.partition}:wks:dataset--File.Generic:1.0.0`
+let sampleSchemaId = `osdu:wks:dataset--File.Generic:1.0.0`
 
 // Test Scenario
 describe(scenario, (done) => {
@@ -54,6 +54,7 @@ describe(scenario, (done) => {
         
         if (config.test_flags.crud_schema.getSchemaById) {
             it("Get Schema By ID", done => {
+                console.log(`Trying to fetch schema with id: ${sampleSchemaId}`)
                 test.service = testUtils.services.schema;
                 test.api = test.service.api.getSchemaById;
                 test.expectedResponse = test.api.expectedResponse;
@@ -76,6 +77,7 @@ describe(scenario, (done) => {
 
         if (config.test_flags.crud_schema.getAllSchemas) {
             it("Get All Schemas", done => {
+                console.log(`Trying to fetch all schemas in partition: ${testUtils.partition}`)
                 test.service = testUtils.services.schema;
                 test.api = test.service.api.getSchema;
                 test.expectedResponse = test.api.expectedResponse;
@@ -98,12 +100,13 @@ describe(scenario, (done) => {
 
         if (config.test_flags.crud_schema.createSchema) {
             it("Create Schema", done => {
+                console.log(`Trying to create a new schema with id: ${sampleSchemaToCreate.schemaInfo.schemaIdentity.id}`)
                 test.service = testUtils.services.schema;
                 test.api = test.service.api.createSchema;
                 test.expectedResponse = test.api.expectedResponse;
                 
                 test.service.host
-                .post(test.api.path)
+                .put(test.api.path)
                 .set('Authorization', token)
                 .set('data-partition-id', testUtils.partition)
                 .send(sampleSchemaToCreate)
@@ -121,6 +124,7 @@ describe(scenario, (done) => {
 
         if (config.test_flags.crud_schema.getCreatedSchemaById) {
             it("Get Newly Created Schema By ID", done => {
+                console.log(`Trying to fetch schema with id: ${sampleSchemaToCreate.schemaInfo.schemaIdentity.id}`)
                 test.service = testUtils.services.schema;
                 test.api = test.service.api.getSchemaById;
                 test.expectedResponse = test.api.expectedResponse;
