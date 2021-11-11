@@ -38,8 +38,8 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.externalRedis.passwordSecret }}
-              key: {{ .Values.externalRedis.passwordSecretKey }}
+              name: {{ .Values.airflow.externalRedis.passwordSecret }}
+              key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
           value: "0"
         - name: CLOUD_PROVIDER
@@ -127,8 +127,8 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.externalRedis.passwordSecret }}
-              key: {{ .Values.externalRedis.passwordSecretKey }}
+              name: {{ .Values.airflow.externalRedis.passwordSecret }}
+              key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
           value: "0"
         - name: CLOUD_PROVIDER
