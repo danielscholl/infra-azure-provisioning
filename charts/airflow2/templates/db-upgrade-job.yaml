@@ -56,6 +56,9 @@ spec:
             defaultMode: 420
             name: airflow-remote-log-config
           name: remote-log-config
+        {{- if .Values.airflow.airflow.extraVolumes }}
+        {{ toYaml .Values.airflow.airflow.extraVolumes }}
+        {{- end }}
         - name: scripts
           secret:
             secretName: {{ include "osdu.airflow.fullname" . }}-db-migrations
