@@ -16,6 +16,99 @@ spec:
         job-name: db-upgrade-job
         release: airflow2
     spec:
+      initContainers:
+      - args:
+        - bash
+        - -c
+        - |
+          unset PYTHONUSERBASE && \
+          pip install --user "flask-bcrypt==0.7.1" "apache-airflow[statsd,kubernetes,password]==2.1.2" "apache-airflow-providers-microsoft-azure==3.1.1" "google-cloud-storage" "python-keycloak==0.24.0" "msal==1.9.0" "azure-identity==1.5.0" "azure-keyvault-secrets==4.2.0" "azure-storage-blob" "azure-servicebus==7.0.1" "toposort==1.6" "strict-rfc3339==0.7" "jsonschema==3.2.0" "pyyaml==5.4.1" "requests==2.25.1" "tenacity==6.2.0" "authlib==0.15.4" "plyvel==1.3.0" "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_api-0.11.0.tar.gz" "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_airflow-0.0.1.tar.gz"  && \
+          echo "copying '/home/airflow/.local/*' to '/opt/home-airflow-local'..." && \
+          cp -r /home/airflow/.local/* /opt/home-airflow-local
+        command:
+        - /usr/bin/dumb-init
+        - --
+        - /entrypoint
+        env:
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: postgres
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-queue-password
+              name: redis
+        - name: CONNECTION_CHECK_MAX_COUNT
+          value: "0"
+        - name: CLOUD_PROVIDER
+          value: azure
+        - name: AIRFLOW__CORE__FERNET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: fernet-key
+              name: airflow
+        - name: AIRFLOW_CONN_AZ_LOG
+          valueFrom:
+            secretKeyRef:
+              key: remote-log-connection
+              name: airflow
+        - name: AIRFLOW_VAR_AZURE_TENANT_ID
+          valueFrom:
+            secretKeyRef:
+              key: tenantid
+              name: active-directory
+        - name: AIRFLOW_VAR_AZURE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: principal-clientid
+              name: active-directory
+        - name: AIRFLOW_VAR_AZURE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: principal-clientpassword
+              name: active-directory
+        - name: AIRFLOW_VAR_AAD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: application-appid
+              name: active-directory
+        - name: AIRFLOW_VAR_APPINSIGHTS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: appinsights
+              name: central-logging
+        - name: AIRFLOW_VAR_AZURE_DNS_HOST
+          value: osdu-ingestiontestenv.msft-osdu-test.org
+        - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+          value: "false"
+        - name: AIRFLOW_VAR_DAG_IMAGE_ACR
+          value: osdumvpcringesqn63cr.azurecr.io
+        - name: PYTHONPATH
+          value: /opt/celery
+        - name: CI_COMMIT_TAG
+          value: v0.12.0
+        - name: BUILD_TAG
+          value: v0.12.0
+        - name: AIRFLOW__API__AUTH_BACKEND
+          value: airflow.api.auth.backend.basic_auth
+        - name: PIP_EXTRA_INDEX_URL
+        envFrom:
+        - secretRef:
+            name: airflow2-config-envs
+        image: apache/airflow:2.1.2-python3.8
+        imagePullPolicy: IfNotPresent
+        name: install-pip-packages
+        resources: {}
+        securityContext:
+          runAsGroup: 0
+          runAsUser: 50000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/home-airflow-local
+          name: home-airflow-local      
       containers:
       - args:
         - bash
