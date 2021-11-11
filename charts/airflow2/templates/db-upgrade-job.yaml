@@ -202,9 +202,6 @@ spec:
           subPath: dags
         - mountPath: /home/airflow/.local
           name: home-airflow-local
-        - mountPath: /mnt/azure-keyvault
-          name: azure-keyvault
-          readOnly: true
         - mountPath: /opt/airflow/plugins
           name: dags-data
           subPath: plugins
@@ -227,12 +224,6 @@ spec:
           claimName: airflowdagpvc1
       - emptyDir: {}
         name: home-airflow-local
-      - csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: azure-keyvault-airflow
-        name: azure-keyvault
       - configMap:
           defaultMode: 420
           name: airflow-remote-log-config
