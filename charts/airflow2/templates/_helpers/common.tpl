@@ -14,24 +14,6 @@ Construct the `labels.app` for used by all resources in this chart.
 {{- end -}}
 
 {{/*
-Construct the `labels.chart` for used by all resources in this chart.
-*/}}
-{{- define "osdu.airflow.labels.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Construct the name of the airflow ServiceAccount.
-*/}}
-{{- define "osdu.airflow.serviceAccountName" -}}
-{{- if .Values.airflow.serviceAccount.create -}}
-{{- .Values.airflow.serviceAccount.name | default (include "osdu.airflow.fullname" .) -}}
-{{- else -}}
-{{- .Values.airflow.serviceAccount.name | default "default" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 A flag indicating if a celery-like executor is selected (empty if false)
 */}}
 {{- define "osdu.airflow.executor.celery_like" -}}

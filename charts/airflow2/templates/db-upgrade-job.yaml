@@ -7,8 +7,7 @@ metadata:
   name: db-upgrade-job
   labels:
     app: db-upgrade-job
-    component: db-upgrade
-    chart: {{ include "osdu.airflow.labels.chart" . }}
+    component: db-upgrade    
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -23,11 +22,7 @@ spec:
         {{- end }}
     spec:
       restartPolicy: OnFailure
-      {{- if .Values.airflow.airflow.image.pullSecret }}
-      imagePullSecrets:
-        - name: {{ .Values.airflow.airflow.image.pullSecret }}
-      {{- end }}      
-      serviceAccountName: {{ include "osdu.airflow.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.airflow.serviceAccount.name }}
       initContainers:
         {{- if $extraPipPackages }}
         {{- include "osdu.airflow.init_container.install_pip_packages" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) | indent 8 }}
@@ -53,7 +48,15 @@ spec:
               mountPath: /mnt/scripts
               readOnly: true
       volumes:
-        {{- $volumes | indent 8 }}
+        - name: dags-data
+          persistentVolumeClaim:
+            claimName: airflowdagpvc1
+        - emptyDir: {}
+          name: home-airflow-local
+        - configMap:
+            defaultMode: 420
+            name: airflow-remote-log-config
+          name: remote-log-config
         - name: scripts
           secret:
             secretName: {{ include "osdu.airflow.fullname" . }}-db-migrations

@@ -173,8 +173,6 @@ airflow:
     labels:
       # DO NOT DELETE THIS LABEL. SET IT TO "false" WHEN AUTOSCALING IS DISABLED, SET IT TO "true" WHEN AUTOSCALING IS ENABLED
       autoscalingEnabled: "false"
-    podAnnotations:
-      sidecar.istio.io/userVolumeMount: '[{"name": "azure-keyvault", "mountPath": "/mnt/azure-keyvault", "readonly": true}]'
     baseUrl: "http://localhost/airflow"
 
   ###################################
