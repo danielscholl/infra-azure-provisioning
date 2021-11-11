@@ -1,6 +1,5 @@
 {{- $extraPipPackages := .Values.airflow.airflow.extraPipPackages }}
 {{- $volumeMounts := include "osdu.airflow.volumeMounts" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) }}
-{{- $volumes := include "osdu.airflow.volumes" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
