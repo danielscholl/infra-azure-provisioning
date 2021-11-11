@@ -1,64 +1,150 @@
-{{- $extraPipPackages := .Values.airflow.airflow.extraPipPackages }}
-{{- $volumeMounts := include "osdu.airflow.volumeMounts" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: db-upgrade-job
   labels:
-    app: db-upgrade-job
-    component: db-upgrade    
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: db-upgrade-job  
+  name: db-upgrade-job  
 spec:
+  backoffLimit: 6
   template:
     metadata:
+      creationTimestamp: null
       labels:
+        aadpodidbinding: osdu-identity
         app: db-upgrade-job
-        component: db-upgrade
-        release: {{ .Release.Name }}
-        {{- if .Values.airflow.airflow.dbMigrations.podLabels }}
-        {{- toYaml .Values.airflow.airflow.dbMigrations.podLabels | nindent 8 }}
-        {{- end }}
+        component: db-upgrade        
+        job-name: db-upgrade-job
+        release: airflow2
     spec:
-      restartPolicy: OnFailure
-      serviceAccountName: {{ .Values.airflow.serviceAccount.name }}
-      initContainers:
-        {{- if $extraPipPackages }}
-        {{- include "osdu.airflow.init_container.install_pip_packages" (dict "Release" .Release "Values" .Values "extraPipPackages" $extraPipPackages) | indent 8 }}
-        {{- end }}      
       containers:
-        - name: db-migrations
-          {{- include "osdu.airflow.image" . | indent 10 }}
-          resources:
-            {{- toYaml .Values.airflow.airflow.dbMigrations.resources | nindent 12 }}
-          envFrom:
-            {{- include "osdu.airflow.envFrom" . | indent 12 }}
-          env:
-            {{- include "osdu.airflow.env" . | indent 12 }}
-          command:
-            {{- include "osdu.airflow.command" . | indent 12 }}
-          args:
-            - "bash"
-            - "-c"
-            - "exec airflow db upgrade"
-          volumeMounts:
-            {{- $volumeMounts | indent 12 }}
-            - name: scripts
-              mountPath: /mnt/scripts
-              readOnly: true
-      volumes:
-        {{- if .Values.airflow.airflow.extraVolumes }}
-        {{- toYaml .Values.airflow.airflow.extraVolumes }}
-        {{- end }}
-        - name: dags-data
-          persistentVolumeClaim:
-            claimName: airflowdagpvc1
-        - emptyDir: {}
+      - args:
+        - bash
+        - -c
+        - exec airflow db upgrade
+        command:
+        - /usr/bin/dumb-init
+        - --
+        - /entrypoint
+        env:
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: postgres
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-queue-password
+              name: redis
+        - name: CONNECTION_CHECK_MAX_COUNT
+          value: "0"
+        - name: CLOUD_PROVIDER
+          value: azure
+        - name: AIRFLOW__CORE__FERNET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: fernet-key
+              name: airflow
+        - name: AIRFLOW_CONN_AZ_LOG
+          valueFrom:
+            secretKeyRef:
+              key: remote-log-connection
+              name: airflow
+        - name: AIRFLOW_VAR_AZURE_TENANT_ID
+          valueFrom:
+            secretKeyRef:
+              key: tenantid
+              name: active-directory
+        - name: AIRFLOW_VAR_AZURE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: principal-clientid
+              name: active-directory
+        - name: AIRFLOW_VAR_AZURE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: principal-clientpassword
+              name: active-directory
+        - name: AIRFLOW_VAR_AAD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: application-appid
+              name: active-directory
+        - name: AIRFLOW_VAR_APPINSIGHTS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: appinsights
+              name: central-logging
+        - name: AIRFLOW_VAR_AZURE_DNS_HOST
+          value: osdu-ingestiontestenv.msft-osdu-test.org
+        - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+          value: "false"
+        - name: AIRFLOW_VAR_DAG_IMAGE_ACR
+          value: osdumvpcringesqn63cr.azurecr.io
+        - name: PYTHONPATH
+          value: /opt/celery
+        - name: CI_COMMIT_TAG
+          value: v0.12.0
+        - name: BUILD_TAG
+          value: v0.12.0
+        - name: AIRFLOW__API__AUTH_BACKEND
+          value: airflow.api.auth.backend.basic_auth
+        - name: PIP_EXTRA_INDEX_URL
+        envFrom:
+        - secretRef:
+            name: airflow2-config-envs
+        image: apache/airflow:2.1.2-python3.8
+        imagePullPolicy: IfNotPresent
+        name: db-migrations
+        resources: {}
+        securityContext:
+          runAsGroup: 0
+          runAsUser: 50000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/airflow/dags
+          name: dags-data
+          readOnly: true
+          subPath: dags
+        - mountPath: /home/airflow/.local
           name: home-airflow-local
-        - configMap:
-            defaultMode: 420
-            name: airflow-remote-log-config
-          name: remote-log-config        
-        - name: scripts
-          secret:
-            secretName: {{ include "osdu.airflow.fullname" . }}-db-migrations
+        - mountPath: /mnt/azure-keyvault
+          name: azure-keyvault
+          readOnly: true
+        - mountPath: /opt/airflow/plugins
+          name: dags-data
+          subPath: plugins
+        - mountPath: /opt/airflow/config
+          name: remote-log-config
+          readOnly: true
+        - mountPath: /mnt/scripts
+          name: scripts
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: airflow
+      serviceAccountName: airflow
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: dags-data
+        persistentVolumeClaim:
+          claimName: airflowdagpvc1
+      - emptyDir: {}
+        name: home-airflow-local
+      - csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: azure-keyvault-airflow
+        name: azure-keyvault
+      - configMap:
+          defaultMode: 420
+          name: airflow-remote-log-config
+        name: remote-log-config
+      - name: scripts
+        secret:
+          defaultMode: 420
+          secretName: airflow2-db-migrations
