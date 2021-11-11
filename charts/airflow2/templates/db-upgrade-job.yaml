@@ -48,7 +48,7 @@ spec:
               readOnly: true
       volumes:
         {{- if .Values.airflow.airflow.extraVolumes }}
-        {{ toYaml .Values.airflow.airflow.extraVolumes }}
+        {{- toYaml .Values.airflow.airflow.extraVolumes }}
         {{- end }}
         - name: dags-data
           persistentVolumeClaim:
