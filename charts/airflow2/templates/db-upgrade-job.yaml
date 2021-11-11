@@ -30,7 +30,7 @@ spec:
         - --
         - /entrypoint
         env:
-{{ toYaml .Values.airflow.airflow.extraEnv }}
+{{ toYaml .Values.airflow.airflow.extraEnv | nindent 8 }}
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -68,7 +68,7 @@ spec:
         - --
         - /entrypoint
         env:
-{{ toYaml .Values.airflow.airflow.extraEnv }}
+{{ toYaml .Values.airflow.airflow.extraEnv | nindent 8 }}
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
