@@ -33,13 +33,13 @@ spec:
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: postgres-password
-              name: postgres
+              name: {{ .Values.airflow.externalDatabase.passwordSecret }}
+              key: {{ .Values.airflow.externalDatabase.passwordSecretKey }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: redis-queue-password
-              name: redis
+              name: {{ .Values.externalRedis.passwordSecret }}
+              key: {{ .Values.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
           value: "0"
         - name: CLOUD_PROVIDER
@@ -122,13 +122,13 @@ spec:
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: postgres-password
-              name: postgres
+              name: {{ .Values.airflow.externalDatabase.passwordSecret }}
+              key: {{ .Values.airflow.externalDatabase.passwordSecretKey }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: redis-queue-password
-              name: redis
+              name: {{ .Values.externalRedis.passwordSecret }}
+              key: {{ .Values.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
           value: "0"
         - name: CLOUD_PROVIDER
