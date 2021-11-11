@@ -8,8 +8,8 @@
         "kind": "##KIND##",
         "ReferenceData": [
           {
-            "id": "##PARTITION##:reference-data--ProcessingParameterType:3D%20Kirchhoff%20Depth%20Migration",
-            "kind": "##PARTITION##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:KirchhoffDepthMigration-12345",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
             "acl": {
               "viewers": [
                 "data.default.viewers@##PARTITION##.contoso.com"
