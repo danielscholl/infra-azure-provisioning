@@ -30,6 +30,7 @@ spec:
         - --
         - /entrypoint
         env:
+        {{- toYaml .Values.airflow.airflow.extraEnv }}
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -41,8 +42,7 @@ spec:
               name: {{ .Values.airflow.externalRedis.passwordSecret }}
               key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
-          value: "0"
-        {{ toYaml .Values.airflow.airflow.extraEnv }}
+          value: "0"        
         envFrom:
         - secretRef:
             name: airflow2-config-envs
@@ -68,6 +68,7 @@ spec:
         - --
         - /entrypoint
         env:
+        {{- toYaml .Values.airflow.airflow.extraEnv }}
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -79,8 +80,7 @@ spec:
               name: {{ .Values.airflow.externalRedis.passwordSecret }}
               key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
         - name: CONNECTION_CHECK_MAX_COUNT
-          value: "0"
-        {{ toYaml .Values.airflow.airflow.extraEnv }}
+          value: "0"        
         envFrom:
         - secretRef:
             name: airflow2-config-envs
