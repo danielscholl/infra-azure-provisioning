@@ -162,22 +162,19 @@ The below code snippet can be added in the pipeline yml to include this stage
 stages:
   - template: /devops/dag-pipeline-stages/execute-end-to-end-tests.yml@TemplateRepo
     parameters:
-      dockerfilePath: 'deployments/scripts/azure/dockerFolder/end_to_end_tests_dockerfile'
-      environmentVars: 'AZURE_TEST_CSV_FILE_PATH=$(AZURE_TEST_CSV_FILE_PATH)${NEWLINE}AZURE_POSTMAN_ENVIRONMENT_FILE_URL=$(AZURE_POSTMAN_ENVIRONMENT_FILE_URL)${NEWLINE}CLIENT_ID=$(CLIENT_ID)${NEWLINE}AZURE_TENANT_ID=$(AZURE_DEPLOY_TENANT)${NEWLINE}CLIENT_SECRET=$(CLIENT_SECRET)${NEWLINE}AZURE_REFRESH_TOKEN=$(AZURE_REFRESH_TOKEN)${NEWLINE}AZURE_POSTMAN_COLLECTION_FILE_URL=$(AZURE_POSTMAN_COLLECTION_FILE_URL)${NEWLINE}AZURE_DNS_NAME=$(AZURE_DNS_NAME)${NEWLINE}AZURE_TEST_SCHEMA_FILE_PATH=$(AZURE_TEST_SCHEMA_FILE_PATH)'
+      postmanCollection: '$(AZURE_POSTMAN_COLLECTION_CSV_FILE_URL)'
+      environmentVars: 'TENANT_ID os.environ.get("AZURE_TENANT_ID")${NEWLINE}CLIENT_ID os.environ.get("CLIENT_ID")${NEWLINE}CLIENT_SECRET os.environ.get("CLIENT_SECRET")${NEWLINE}HOSTNAME os.environ.get("AZURE_DNS_NAME")${NEWLINE}refresh_token os.environ.get("AZURE_REFRESH_TOKEN")${NEWLINE}WORKFLOW_HOST os.environ.get("AZURE_DNS_NAME")${NEWLINE}csv_parsing_dag_name dag_name${NEWLINE}csvFilePath os.environ.get("AZURE_TEST_CSV_FILE_PATH")'
 ````
 
 - The template can be imported for reuse by specifying the path in Infra repository
-- ``dockerfilePath`` parameter will take the path of the dockerfile present in DAG repo,the dockerfile and scripts used here are common for both ADO and Gitlab pipelines,
-  refer this [**section**](#end-to-end-test-dag-stage-dockerfile) to know how to prepare this dockerfile and [**section**](#end-to-end-test-dag-stage-scripts) to refer to the
-- scripts which will execute as part of docker container
--  `environmentVars` parameter to pass the environment variables required by the docker container to execute
+- ``postmanCollection`` this parameter is used to set the environment variable which stores the URL for the postman collection (the postman collection should be contributed to the [platform validation project](https://community.opengroup.org/osdu/platform/testing/-/tree/master/Postman%20Collection))
+-  `environmentVars` this parameter here is a string containing the environment variables whose values need to be replaced in the postman environment file. It contains both key and value i.e the variable which needs to be substituted in the env file along with the value, the value is read from the environment variables and should be imported into pipelines
 
 
 **Environment Variables required for this Stage**
 - SERVICE_CONNECTION_NAME - [Azure Subscription manager subscription required by Azure CLI task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops#task-inputs)
-
-
-
+- AZURE_POSTMAN_ENVIRONMENT_FILE_URL - The URL for the postman environment file
+- Also include the variables which we will passed via environmentVars
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -281,30 +278,32 @@ Please refer to [**link**](#register-dag-stage) to get an overview of this stage
 
 ### Stage 5 - Execute End to End Tests
 
-This [**stage**](https://community.opengroup.org/osdu/platform/ci-cd-pipelines/-/blob/master/cloud-providers/azure_dag.yml#340)
+This [**stage**](https://community.opengroup.org/osdu/platform/ci-cd-pipelines/-/blob/master/cloud-providers/azure_dag.yml#343)
 will be inherited after the yml import from the project ``osdu/platform/ci-cd-pipelines/cloud-providers/azure_dag.yml``
 
 Please refer to [**link**](#end-to-end-test-dag-stage) to get an overview of this stage
 
-The dockerfile to be used in this stage can be referred from this [**section**](#end-to-end-test-dag-stage-dockerfile)
-
-The scripts to be used in this stage can be referred from this [**section**](#end-to-end-test-dag-stage-scripts)
-
-
 **Note:**
-- The path for dockerfiles and scripts can be set using `AZURE_DEPLOYMENTS_SCRIPTS_SUBDIR` variable
 - In case any new environment variables are required for the DAG the ``before_script`` section of the pipeline can be overridden to
   add new additional environment variables, the environment variables are set by creating an .env file
-- This stage can be skipped by setting ``AZURE_SKIP_POSTMAN_TESTS`` variables as `true`**
+- This stage can be skipped by setting ``AZURE_SKIP_END_TO_END_POSTMAN_TESTS`` variables as `true`**
 
 ```
-azure_dag_end_to_end_test:
+azure_dag_postman_tests:
   before_script:
-    - <any custom script can be executed>
+    - |
+      # Generating environment file to be passed while running the postman tests
+      cat > python_env_vars.txt << EOF
+      TENANT_ID os.environ.get('AZURE_TENANT_ID')
+      CLIENT_ID os.environ.get('CLIENT_ID')
+      CLIENT_SECRET os.environ.get('CLIENT_SECRET')
+      HOSTNAME os.environ.get('AZURE_DNS_NAME')
+      refresh_token os.environ.get('AZURE_REFRESH_TOKEN')
+      WORKFLOW_HOST os.environ.get('AZURE_DNS_NAME')
+      csv_parsing_dag_name dag_name
+      csvFilePath os.environ.get('AZURE_TEST_CSV_FILE_PATH')
+      EOF
 ```
-
-
-
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
@@ -438,25 +437,14 @@ are part of [**Platform Validation project**](https://community.opengroup.org/os
 
 This stage might not be relevant if dedicated end to end tests are contributed as part of newly onboarded Dags.
 
-This stage is also abstracted and uses a docker container to to run the postman tests
-
 **Example of CSV Parser Repo**
 
-##### End to End Test Dag Stage Dockerfile
-CSV Parser DAG can be taken as a reference on what needs to done to enable these end to end tests
-
-Inside a well known folder structure containing [**deployments/scripts/azure/dockerFolder**](https://community.opengroup.org/osdu/platform/data-flow/ingestion/csv-parser/csv-parser/-/tree/master/deployments/scripts/azure) ``end_to_end_dags_dockerfile``
-defines the logic to execute the postman collection tests using newman utility
 
 ##### End to End Test Dag Stage Scripts
-The folder [**deployments/scripts/azure/end_to_end_tests**](https://community.opengroup.org/osdu/platform/data-flow/ingestion/csv-parser/csv-parser/-/tree/master/deployments/scripts/azure/end_to_end_tests) contains all the helper scripts
-and can be customized as per each DAGs requirements
+There is no need to add any extra scripts to consume this stage, the pipeline stage itself contains the logic required to prepare & execute the postman
+collections, it will perform all the below tasks. Just the environment variables required to run the collection need to be passed
 
-This python [**script**](https://community.opengroup.org/osdu/platform/data-flow/ingestion/csv-parser/csv-parser/-/blob/master/deployments/scripts/azure/end_to_end_tests/bootstrap.py) does all the pre-requisite
-tasks, for instance
 - Downloading Postman collection json file from Platform Validation Project
 - Downloading Environment json file for Postman
 - Performing any bootstrapping/preloading tasks
-
-The bash [**script**](https://community.opengroup.org/osdu/platform/data-flow/ingestion/csv-parser/csv-parser/-/blob/master/deployments/scripts/azure/end_to_end_tests/run_tests.sh)
-will then run the postman tests using [**Newman utility**](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/)
+- Executing the postman collection with newman
