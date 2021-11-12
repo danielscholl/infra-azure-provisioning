@@ -103,7 +103,8 @@ airflow:
         appgw.ingress.kubernetes.io/request-timeout: "300"
         appgw.ingress.kubernetes.io/connection-draining: "true"
         appgw.ingress.kubernetes.io/connection-draining-timeout: "30"
-        cert-manager.io/cluster-issuer: letsencrypt
+        cert-manager.io/cluster-issuer: null
+        appgw.ingress.kubernetes.io/appgw-ssl-certificate: "cert-osdu-osdu-certificate"
         cert-manager.io/acme-challenge-type: http01
       path: "/airflow2"
       host: #{DNS_HOST}#
