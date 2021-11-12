@@ -42,7 +42,7 @@ stages:
                 steps:
                 - download: none
 
-                - template: tasks/aks-deployment-steps-dp.yml
+                - template: tasks/aks-deployment-steps-helm.yml
                   parameters:
                     ${{ if eq(parameters.addDPNameToService, 'true') }}:
                       serviceName: "${{ parameters.DPName }}-${{ parameters.serviceName }}"
