@@ -282,9 +282,9 @@ airflow:
   ###################################
   airflow:
     image:
-      repository: community.opengroup.org:5555/osdu/platform/deployment-and-operations/base-containers-azure/airflow-docker-image/master
-      tag: v0.9
-      pullPolicy: IfNotPresent
+      repository: msosdu.azurecr.io/airflow-docker-image
+      tag: v0.10
+      pullPolicy: Always
       pullSecret: ""
     config:
       AIRFLOW__SCHEDULER__STATSD_ON: "True"
@@ -375,10 +375,7 @@ airflow:
         "jsonschema==3.2.0",
         "pyyaml==5.4.1",
         "requests==2.25.1",
-        "tenacity==8.0.1",
-        "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_api-0.12.0.tar.gz",
-        "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_airflow-0.12.0.tar.gz",
-        "https://azglobalosdutestlake.blob.core.windows.net/pythonsdk/osdu_ingestion-0.12.0.tar.gz"
+        "tenacity==8.0.1"
     ]
     extraVolumeMounts:
       - name: azure-keyvault
