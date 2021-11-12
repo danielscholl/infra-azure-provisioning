@@ -49,10 +49,6 @@ spec:
         image: apache/airflow:2.1.2-python3.8
         imagePullPolicy: IfNotPresent
         name: install-pip-packages
-        resources: {}
-        securityContext:
-          runAsGroup: 0
-          runAsUser: 50000
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -87,10 +83,6 @@ spec:
         image: apache/airflow:2.1.2-python3.8
         imagePullPolicy: IfNotPresent
         name: db-migrations
-        resources: {}
-        securityContext:
-          runAsGroup: 0
-          runAsUser: 50000
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
