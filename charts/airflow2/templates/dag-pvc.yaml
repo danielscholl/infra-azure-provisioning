@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowdagpv1
+  name: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2dagpv
   labels:
     usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
 spec:
@@ -27,7 +27,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: airflowdagpvc1
+  name: airflow2dagpvc
   # Set this annotation to NOT let Kubernetes automatically create
   # a persistent volume for this volume claim.
 spec:

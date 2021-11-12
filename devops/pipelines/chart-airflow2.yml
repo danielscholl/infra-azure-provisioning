@@ -59,8 +59,7 @@ stages:
       chartPath: ${{ variables.chartPath }}
       valuesFile: ${{ variables.valuesFile }}
       skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: true
-      chartModificationScript: "scripts/add-namespace.py"
+      skipCheck: true      
       # Add multiple chart folder paths with pipe(|) seperated
       extractedChartFolder: "templates|charts/airflow/templates"
       baseResourceGroupName: $(base-name-sr)

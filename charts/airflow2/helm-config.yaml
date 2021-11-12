@@ -149,7 +149,7 @@ airflow:
     installRequirements: true
     persistence:
       enabled: true
-      existingClaim: airflowdagpvc1
+      existingClaim: airflow2dagpvc
       subPath: "dags"
 
   ###################################

@@ -119,7 +119,7 @@ spec:
       volumes:
       - name: dags-data
         persistentVolumeClaim:
-          claimName: airflowdagpvc1
+          claimName: airflow2dagpvc
       - emptyDir: {}
         name: home-airflow-local
       - configMap:
