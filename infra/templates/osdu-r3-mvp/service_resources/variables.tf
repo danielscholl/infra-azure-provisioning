@@ -258,7 +258,7 @@ variable "aks_agent_vm_count" {
 variable "aks_agent_vm_maxcount" {
   description = "The max number of nodes allocated to the system Agent pool"
   type        = string
-  default     = "10"
+  default     = "15"
 }
 
 variable "aks_agent_vm_size" {
