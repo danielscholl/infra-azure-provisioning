@@ -18,6 +18,11 @@ const minorVersion = testUtils.between(1, 100000);
 let runId = `${majorVersion}.${minorVersion}`;
 console.log(`run ID: ${runId}`);
 
+function freeze(time) {
+const stop = new Date().getTime() + time;
+while(new Date().getTime() < stop);
+}
+
 let test = {
     runId: runId,
     scenario: scenario,
@@ -330,7 +335,7 @@ describe(scenario, (done) => {
                     });
                 });
             });
-
+            freeze(5000);
             describe('Search Record', (done) => {
                 
                 it("Search: Record", done => {
