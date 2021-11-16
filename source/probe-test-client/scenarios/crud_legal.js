@@ -29,7 +29,8 @@ let test = {
 };
 
 // Test Data Setup
-let tag = 'opendes-public-usa-dataset-1'
+
+let tag = testUtils.partition + '-public-usa-dataset-1'
 const sampleLegalTag = require(`${__dirname}/../testData/sample_legal_tag_crud.json`);
 sampleLegalTag.name = tag
 let data = "";
