@@ -30,9 +30,7 @@ let test = {
 
 // Test Data Setup
 
-let tag = '-public-usa-dataset-1'
-var partitionName=testUtils.partition
-tag=partitionName.concat(tag)
+let tag = testUtils.partition + '-public-usa-dataset-1'
 const sampleLegalTag = require(`${__dirname}/../testData/sample_legal_tag_crud.json`);
 sampleLegalTag.name = tag
 let data = "";
