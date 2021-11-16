@@ -21,6 +21,8 @@ module.exports = {
     register: `https://${process.env.OSDU_HOST}/api/register/v1`,
     file: `https://${process.env.OSDU_HOST}/api/file/v2`,
     workflow: `https://${process.env.OSDU_HOST}/api/workflow/v1`,
+    seismic: `https://${process.env.OSDU_HOST}/seistore-svc/api/v3`,
+    wellbore: `https://${process.env.OSDU_HOST}/api/os-wellbore-ddms`,
   },
   auth_params: {
     grant_type: "client_credentials",
@@ -95,6 +97,18 @@ module.exports = {
       getMeasurements: true,
       getUnitMaps: true,
       getUnitSystems: true,
+    },
+    crud_seismic: {
+      getStatus: true,
+    },
+    crud_wellbore: {
+      getHealth: true,
+      createLog: true,
+      uploadData: true,
+      searchLogs: true,
+    },
+    scenario_seismicUpload: {
+      enableScenario: true,
     },
     scenario_searchInsertedRecord: {
       enableScenario: true,
