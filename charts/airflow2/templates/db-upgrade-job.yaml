@@ -46,7 +46,7 @@ spec:
         envFrom:
         - secretRef:
             name: airflow2-config-envs
-        image: apache/airflow:2.1.2-python3.8
+        image: {{ .Values.airflow.airflow.image.repository }}:{{ .Values.airflow.airflow.image.tag }}
         imagePullPolicy: IfNotPresent
         name: install-pip-packages
         terminationMessagePath: /dev/termination-log
