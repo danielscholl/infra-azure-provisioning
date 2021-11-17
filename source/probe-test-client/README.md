@@ -32,7 +32,7 @@ services:
       APPINSIGHTS_INSTRUMENTATIONKEY: $APPINSIGHTS_INSTRUMENTATIONKEY
       VERSION: $VERSION
 ```
-After filling `docker-compose.yaml` with the appropriate values, the tests can be run be running the command:
+After filling `docker-compose.yaml` with the appropriate values, the tests can be run by running the command:
 ```bash
 docker-compose up --build
 ```
