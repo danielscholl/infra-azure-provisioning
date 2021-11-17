@@ -77,6 +77,7 @@ keda:
 # Specify the airflow configuration
 #
 airflow:
+  version_1_Installed: true
   pgbouncer:
     ## if the pgbouncer Deployment is created
     ##
