@@ -1,4 +1,4 @@
-{{ if .Values.airflow.version_1_Installed  }}
+{{ if not .Values.airflow.version_1_Installed  }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
