@@ -5,10 +5,10 @@ kind: PersistentVolume
 metadata:
   name: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2dagpv
   labels:
-    usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
+    usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2-dag
 spec:
   capacity:
-    storage: 6Gi
+    storage: 5Gi
   accessModes:
     - ReadOnlyMany
   azureFile:
@@ -30,13 +30,14 @@ metadata:
   name: airflow2dagpvc
   # Set this annotation to NOT let Kubernetes automatically create
   # a persistent volume for this volume claim.
-spec:
-  storageClassName: ""
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:  
   accessModes:
     - ReadOnlyMany
   resources:
     requests:
-      storage: 6Gi
+      storage: 5Gi
   selector:
     matchLabels:
-      usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
+      usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2-dag
