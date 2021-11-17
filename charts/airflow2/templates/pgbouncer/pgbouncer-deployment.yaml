@@ -23,8 +23,7 @@ spec:
       labels:
         tier: airflow
         component: pgbouncer
-        release: {{ .Release.Name }}
-        aadpodidbinding: osdu-identity
+        release: {{ .Release.Name }}        
     spec:
       restartPolicy: Always
       containers:
