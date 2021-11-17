@@ -341,16 +341,7 @@ airflow:
     - name: AIRFLOW__API__AUTH_BACKEND
       value: "airflow.api.auth.backend.basic_auth"
     - name: PIP_EXTRA_INDEX_URL # List of (space separated) extra-index-url for pip repositories
-      value: #{PIP_EXTRA_INDEX_URL}#
-    extraConfigmapMounts:
-        - name: remote-log-config
-          mountPath: /opt/airflow/config
-          configMap: airflow-remote-log-config
-          readOnly: true
-        - name: celery-config
-          mountPath: /opt/celery
-          configMap: celery-config
-          readOnly: true
+      value: #{PIP_EXTRA_INDEX_URL}#    
     extraPipPackages: [
         "flask-bcrypt==0.7.1",
         "apache-airflow[statsd,kubernetes,password]==2.1.2",
