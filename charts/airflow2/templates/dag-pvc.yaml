@@ -5,7 +5,7 @@ kind: PersistentVolume
 metadata:
   name: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2dagpv
   labels:
-    usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2-dag
+    usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
 spec:
   capacity:
     storage: 5Gi
@@ -40,4 +40,4 @@ spec:
       storage: 5Gi
   selector:
     matchLabels:
-      usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2-dag
+      usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
