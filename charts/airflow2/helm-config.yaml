@@ -105,6 +105,9 @@ airflow:
         appgw.ingress.kubernetes.io/connection-draining: "true"
         appgw.ingress.kubernetes.io/connection-draining-timeout: "30"
         cert-manager.io/cluster-issuer: null
+        # The certificate is created in app gateway in the format 'cert-{namespace}-{tls-secret-name}'
+        # Here the secret name is osdu-certificate. This secret is created in osdu namespace.
+        # The certificate name needs to be changed if the namespace or the secret name change.
         appgw.ingress.kubernetes.io/appgw-ssl-certificate: "cert-osdu-osdu-certificate"
         cert-manager.io/acme-challenge-type: http01
       path: "/airflow2"
@@ -287,6 +290,7 @@ airflow:
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent
       AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
       AIRFLOW__WEBSERVER__BASE_URL: https://#{DNS_HOST}#/airflow2
+      AIRFLOW_VAR_KEYVAULT_URI: #{COMMON_RESOURCES_KEY_VAULT_NAME}#
     extraEnv:
     - name: CLOUD_PROVIDER
       value: "azure"
