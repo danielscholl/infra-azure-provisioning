@@ -43,6 +43,6 @@ spec:
         passwordFromEnv: DATABASE_PASSWORD
         sslmode: "require"
         targetQueryValue: "1"
-        query: "SELECT ceil(COUNT(*)::decimal / {{ .Values.airflow.airflow.config.AIRFLOW__CELERY__WORKER_CONCURRENCY }}) FROM task_instance WHERE state='running' OR state='queued' or state='scheduled' or state IS NULL"
+        query: "SELECT ceil(COUNT(*)::decimal / {{ .Values.airflow.airflow.config.AIRFLOW__CELERY__WORKER_CONCURRENCY }}) FROM task_instance WHERE state='running' OR state='queued'"
         metricName: "active_tasks_count"
 {{- end }}
