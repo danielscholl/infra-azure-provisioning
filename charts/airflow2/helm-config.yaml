@@ -290,7 +290,7 @@ airflow:
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent
       AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
       AIRFLOW__WEBSERVER__BASE_URL: https://#{DNS_HOST}#/airflow2
-      AIRFLOW_VAR_KEYVAULT_URI: #{COMMON_RESOURCES_KEY_VAULT_NAME}#
+      AIRFLOW_VAR_KEYVAULT_URI: https://#{COMMON_RESOURCES_KEY_VAULT_NAME}#.vault.azure.net/
     extraEnv:
     - name: CLOUD_PROVIDER
       value: "azure"
