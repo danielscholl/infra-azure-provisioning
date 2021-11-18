@@ -1,0 +1,124 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: db-upgrade-job  
+  name: db-upgrade-job  
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        aadpodidbinding: osdu-identity
+        app: db-upgrade-job
+        component: db-upgrade        
+        job-name: db-upgrade-job
+        release: airflow2
+    spec:
+      initContainers:
+      - args:
+        - bash
+        - -c
+        - |
+          unset PYTHONUSERBASE && \
+          pip install --user {{ range .Values.airflow.airflow.extraPipPackages }}{{ . | quote }} {{ end }}  && \
+          echo "copying '/home/airflow/.local/*' to '/opt/home-airflow-local'..." && \
+          cp -r /home/airflow/.local/* /opt/home-airflow-local
+        command:
+        - /usr/bin/dumb-init
+        - --
+        - /entrypoint
+        env:
+{{ toYaml .Values.airflow.airflow.extraEnv | nindent 8 }}
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.airflow.externalDatabase.passwordSecret }}
+              key: {{ .Values.airflow.externalDatabase.passwordSecretKey }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.airflow.externalRedis.passwordSecret }}
+              key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
+        - name: CONNECTION_CHECK_MAX_COUNT
+          value: "0"        
+        envFrom:
+        - secretRef:
+            name: airflow2-config-envs
+        image: {{ .Values.airflow.airflow.image.repository }}:{{ .Values.airflow.airflow.image.tag }}
+        imagePullPolicy: IfNotPresent
+        name: install-pip-packages
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/home-airflow-local
+          name: home-airflow-local      
+      containers:
+      - args:
+        - bash
+        - -c
+        - exec airflow db upgrade
+        command:
+        - /usr/bin/dumb-init
+        - --
+        - /entrypoint
+        env:
+{{ toYaml .Values.airflow.airflow.extraEnv | nindent 8 }}
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.airflow.externalDatabase.passwordSecret }}
+              key: {{ .Values.airflow.externalDatabase.passwordSecretKey }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.airflow.externalRedis.passwordSecret }}
+              key: {{ .Values.airflow.externalRedis.passwordSecretKey }}
+        - name: CONNECTION_CHECK_MAX_COUNT
+          value: "0"        
+        envFrom:
+        - secretRef:
+            name: airflow2-config-envs
+        image: apache/airflow:2.1.2-python3.8
+        imagePullPolicy: IfNotPresent
+        name: db-migrations
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/airflow/dags
+          name: dags-data
+          readOnly: true
+          subPath: dags
+        - mountPath: /home/airflow/.local
+          name: home-airflow-local
+        - mountPath: /opt/airflow/plugins
+          name: dags-data
+          subPath: plugins
+        - mountPath: /opt/airflow/config
+          name: remote-log-config
+          readOnly: true
+        - mountPath: /mnt/scripts
+          name: scripts
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: airflow
+      serviceAccountName: airflow
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: dags-data
+        persistentVolumeClaim:
+          claimName: airflow2dagpvc
+      - emptyDir: {}
+        name: home-airflow-local
+      - configMap:
+          defaultMode: 420
+          name: airflow-remote-log-config
+        name: remote-log-config
+      - name: scripts
+        secret:
+          defaultMode: 420
+          secretName: airflow2-db-migrations

@@ -1,0 +1,43 @@
+{{- $isEnabled := .Values.airflow.isDataPartitionDeployment | default false -}}
+{{ if and $isEnabled .Values.airflow.ingress.web.tls.BYOCEnabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # This Deployment is needed to download the certificate from keyvault via csi provider
+  name: byoc-certificate-downloader
+  namespace: istio-system
+  labels:
+    app: byoc-certificate-downloader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: byoc-certificate-downloader
+  template:
+    metadata:
+      labels:
+        app: byoc-certificate-downloader
+        aadpodidbinding: "osdu-identity"
+    spec:
+      containers:
+      - name: byoc-certificate-downloader
+        image: mcr.microsoft.com/azuredocs/aci-helloworld
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: airflow-tls
+          mountPath: "/mnt/airflow-tls"
+          readOnly: true
+        env:
+        - name: TLS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.airflow.ingress.web.tls.secretName }}
+              key: tls.key
+      volumes:
+      - name: airflow-tls
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: airflow-tls  
+{{ end }}

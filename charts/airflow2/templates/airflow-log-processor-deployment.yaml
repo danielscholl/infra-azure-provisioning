@@ -56,7 +56,6 @@ spec:
   scaleTargetRef:
     deploymentName: airflow-log-processor
 {{- end }}
-  maxReplicaCount: 20
   triggers:
   - type: azure-queue
     metadata:
