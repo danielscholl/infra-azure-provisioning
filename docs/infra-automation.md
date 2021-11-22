@@ -25,7 +25,7 @@ This variable group will be used to hold the common values for infrastructure to
 
   | Variable | Value |
   |----------|-------|
-  | AGENT_POOL | Hosted Ubuntu 1604 |
+  | AGENT_IMAGE | ubuntu-18.04 |
   | BUILD_ARTIFACT_NAME | infra-templates |
   | SERVICE_CONNECTION_NAME | <your_service_connection_name> |
   | TF_VAR_elasticsearch_secrets_keyvault_name | osducommon<your_unique>-kv |
@@ -38,7 +38,7 @@ az pipelines variable-group create \
   --name "Infrastructure Pipeline Variables" \
   --authorize true \
   --variables \
-  AGENT_POOL="Hosted Ubuntu 1604" \
+  AGENT_IMAGE="ubuntu-18.04" \
   BUILD_ARTIFACT_NAME="infra-templates" \
   TF_VAR_elasticsearch_secrets_keyvault_name=$COMMON_VAULT  \
   TF_VAR_elasticsearch_secrets_keyvault_resource_group=osdu-common-${UNIQUE} \
