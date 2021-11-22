@@ -18,7 +18,9 @@ parameters:
 jobs:
 - job: validate_job
   displayName: Code Validation
-  pool: $(AGENT_POOL)
+  # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+  pool:
+    vmImage: $(AGENT_IMAGE)
 
   workspace:
     clean: all

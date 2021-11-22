@@ -26,8 +26,9 @@ stages:
     jobs:
       - job: Execute_End_to_End_Tests
         displayName: Execute End to End Test Cases
+        # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
         pool:
-          name: $(AGENT_POOL)
+          vmImage: $(AGENT_IMAGE)
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: Download Dag files

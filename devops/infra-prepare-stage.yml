@@ -43,7 +43,9 @@ stages:
       jobs:
       - job: TemplateChangeDetection_${{ config.jobName }}_Build
         displayName: Analyze Changes
-        pool: $(AGENT_POOL)
+        # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+        pool:
+          vmImage: $(AGENT_IMAGE)
         steps:
         - template: tasks/detect-cicd.yml
           parameters:
@@ -64,7 +66,9 @@ stages:
       jobs:
       - job: TemplateChangeDetection_${{ config.jobName }}_Deploy
         displayName: Analyze Changes
-        pool: $(AGENT_POOL)
+        # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+        pool:
+          vmImage: $(AGENT_IMAGE)
         steps:
         - template: tasks/detect-cicd.yml
           parameters:
