@@ -35,6 +35,9 @@ stages:
     jobs:
       # To avoid ADO rendering inconsistencies that seems to be caused by stages with empty jobs.
       - job: Environment_${{ environment.name }}_Build
+        pool:
+          vmImage: $(AGENT_IMAGE)
+
 
   - ${{ each config in parameters.configurations }}:
     - stage: ${{ config.jobName }}_${{ environment.name }}_Build
