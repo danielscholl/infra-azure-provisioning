@@ -7,7 +7,7 @@ azure:
     resourcegroup: #{base-name-cr}#-rg
     identity: #{base-name-cr}#-osdu-identity
     identity_id: #{osdu-identity-id}#
-    keyvault: #{COMMON_RESOURCES_KEY_VAULT_NAME}#
+    keyvault: #{base-name-cr}#-kv
     appid: #{aad-client-id}#
 
 ################################################################################
@@ -290,7 +290,7 @@ airflow:
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent
       AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
       AIRFLOW__WEBSERVER__BASE_URL: https://#{DNS_HOST}#/airflow2
-      AIRFLOW_VAR_KEYVAULT_URI: https://#{COMMON_RESOURCES_KEY_VAULT_NAME}#.vault.azure.net/
+      AIRFLOW_VAR_KEYVAULT_URI: https://#{base-name-cr}#-kv.vault.azure.net/
     extraEnv:
     - name: CLOUD_PROVIDER
       value: "azure"
