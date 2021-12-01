@@ -509,6 +509,48 @@ const services = {
             },
         }
     },
+    seismic: {
+        name: "seismic",
+        host: request(config.api_host.seismic),
+        api: {
+            statusCheck: {
+                name: 'statusCheck',
+                path: '/svcstatus',
+                expectedResponse: 200,
+            },
+            createSubproject: {
+                name: 'createSubproject',
+                path: '/subproject/tenant',
+                expectedResponse: 200,
+            },
+            getGCS: {
+                name: 'getGCS',
+                path: '/utility/gcs-access-token',
+                expectedResponse: [200, 201],
+            },
+        }
+    },
+    wellbore: {
+        name: "wellbore",
+        host: request(config.api_host.wellbore),
+        api: {
+            healthCheck: {
+                name: 'healthCheck',
+                path: '/healthz',
+                expectedResponse: 200,
+            },
+            createLog: {
+                name: 'createLog',
+                path: '/ddms/v2/logs',
+                expectedResponse: 200,
+            },
+            searchLogs: {
+                name: 'searchLogs',
+                path: '/ddms/query/logs',
+                expectedResponse: 200,
+            }
+        }
+    },
 };
 
 // TEST DATA
