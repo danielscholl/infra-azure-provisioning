@@ -4,6 +4,12 @@
 
 ## Introduction
 
+### Diagram
+
+![image.png](docs/images/security/appgw-pod.PNG)
+
+![image.png](docs/images/security/pod-pod.PNG)
+
 This document describes how TLS and mTLS secure different parts of the setup and instruct on how to issue a self-signed certificate and upload it to Istio and AppGW, and how to enable mTLS.
 
  The setup consists of 3 "parts" of connections:
