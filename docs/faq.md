@@ -27,6 +27,8 @@ When you are deploying via terraform, once you pick a name for the terraform scr
 
 This is likely an issue with the `Application.ReadWrite.OwnedBy` permissions that is required by the service principal `osdu-mvp-[your unique here]-terraform`. Please verify that the service principal has been granted the permission and that the permission has recieved admin consent.
 
+## Aks upgrade to a higher version is not upgrading nodes of internal node pool after exceeding the time limit
+This is likely an issue with the agent pools or if there are some pods that are requesting larger than available CPU or memory in a node.Inorder to fix this we can go with either scale node pool option for the internal node pool from the Azure portal, or we can manage and plan better resource allocation for such pods.
 
 # Infrastructure Provisioning Questions
 
