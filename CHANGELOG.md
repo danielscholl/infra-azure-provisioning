@@ -2,6 +2,19 @@
 
 # Current Master
 
+# v0.12.0 (2021-11-30)
+
+__Branch__ https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/release/0.12
+
+__Tag__ https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tags/v0.12.0
+
+__Infra Changes__
+- AKS Upgrade to 1.20.9
+
+__Bug Fixes__
+- [Partial indexing issue in Indexer Queue](https://community.opengroup.org/osdu/platform/system/indexer-queue/-/issues/8)
+- [Security fix](https://community.opengroup.org/osdu/platform/system/home/-/issues/90)
+
 # v0.11.0 (2021-9-1)
 
 __Branch__ https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/release/0.11
@@ -44,7 +57,7 @@ __Feature Changes__
 - [Feature 121 - Added support for nested search](https://community.opengroup.org/osdu/platform/system/search-service/-/merge_requests/121)
 
 __Infra Changes__
-- AKS version upgrade to 1.19.11
+- AKS version upgrade to 1.20.9
 - [Feature 277 - Alerts framework for Monitoring](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/277)
 - [Feature 169 - Container hardening for Java based services](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/169)
 - [Feature 159 - Added default JVM Parameters](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/159)
