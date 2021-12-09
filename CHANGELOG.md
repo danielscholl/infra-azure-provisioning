@@ -44,7 +44,7 @@ __Feature Changes__
 - [Feature 121 - Added support for nested search](https://community.opengroup.org/osdu/platform/system/search-service/-/merge_requests/121)
 
 __Infra Changes__
-- AKS version upgrade to 1.19.11
+- AKS version upgrade to 1.20.9
 - [Feature 277 - Alerts framework for Monitoring](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/277)
 - [Feature 169 - Container hardening for Java based services](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/169)
 - [Feature 159 - Added default JVM Parameters](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/159)
