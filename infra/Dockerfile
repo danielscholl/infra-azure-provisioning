@@ -1,4 +1,4 @@
-ARG STEP_1_IMAGE=community.opengroup.org:5555/osdu/platform/deployment-and-operations/base-containers-azure/alpine-terraform:0.0.3
+ARG STEP_1_IMAGE=community.opengroup.org:5555/osdu/platform/deployment-and-operations/base-containers-azure/alpine-terraform:0.0.4
 ARG IMAGE_TAG=0.0.1
 
 FROM ${STEP_1_IMAGE} AS STEP_1
