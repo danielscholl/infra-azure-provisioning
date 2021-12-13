@@ -22,6 +22,11 @@ output "server_name" {
   value       = azurerm_postgresql_server.main.name
 }
 
+output "username" {
+  description = "The admin username"
+  value       = azurerm_postgresql_server.main.administrator_login
+}
+
 output "db_ids" {
   description = "The db ids as an ordered list"
   value       = azurerm_postgresql_database.main.*.id

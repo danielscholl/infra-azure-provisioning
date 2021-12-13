@@ -204,8 +204,22 @@ resource "azurerm_key_vault_certificate" "istio_ssl_certificate" {
 # PostgreSQL
 #-------------------------------
 locals {
+  postgres_name_name     = "postgres-name"
+  postgres_username_name = "postgres-username"
   postgres_password_name = "postgres-password"
   postgres_password      = coalesce(var.postgres_password, random_password.postgres[0].result)
+}
+
+resource "azurerm_key_vault_secret" "postgres_name" {
+  name         = local.postgres_name_name
+  value        = module.postgreSQL.server_name
+  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
+}
+
+resource "azurerm_key_vault_secret" "postgres_username" {
+  name         = local.postgres_username_name
+  value        = module.postgreSQL.username
+  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
 resource "azurerm_key_vault_secret" "postgres_password" {
@@ -213,8 +227,6 @@ resource "azurerm_key_vault_secret" "postgres_password" {
   value        = local.postgres_password
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
-
-
 
 #-------------------------------
 # Azure Redis Cache
