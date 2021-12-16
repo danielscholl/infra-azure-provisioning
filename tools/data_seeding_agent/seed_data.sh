@@ -26,7 +26,7 @@ while [[ $loginAttemptCount -lt $maxRetry ]]; do
             currentMessage="${currentMessage}. az login failed: ${AZ_LOGIN}. Attempt ${loginAttemptCount} of ${maxRetry}. "
             continue
         else
-            if [ -z "$SUBSCRIPTION" -a "$SUBSCRIPTION"==" " ]; then
+            if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
                 az account set --subscription $SUBSCRIPTION
             fi
 

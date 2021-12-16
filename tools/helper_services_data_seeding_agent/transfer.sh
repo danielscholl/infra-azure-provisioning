@@ -34,7 +34,7 @@ while [ ${current_retry_count} -lt ${max_retry_count} ];
 do
     az login --identity --username $OSDU_IDENTITY_ID
     if [ $? -eq 0 ]; then
-      if [ -z "$SUBSCRIPTION" -a "$SUBSCRIPTION"==" " ]; then
+      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
         az account set --subscription $SUBSCRIPTION
       fi
 
