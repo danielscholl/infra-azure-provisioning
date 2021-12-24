@@ -1,6 +1,7 @@
 # Airflow Scalability Guide
 
-This FAQ guide will help you configure airflow to scale according to the needs of the customer
+This FAQ guide will help you configure airflow to scale according to the needs of the customer.
+This guide applies to airflow 1.10.12 and airflow 2.x setup.
 
 ### How to scale airflow to execute 500 concurrent tasks across multiple DAG's?
 
@@ -10,8 +11,7 @@ We need to set the airflow configuration as mentioned below
 - AIRFLOW__CORE__DAG_CONCURRENCY: 500
 - AIRFLOW__CELERY__WORKER_CONCURRENCY: 25 (this value depends on the resource consumption of the task)
 
-We need 20 airflow worker pods to be launched with the above configuration to process 500 concurrent tasks
-
+We need 20 airflow worker pods to be launched with the above configuration to process 500 concurrent tasks.
 The suggested resource requests for airflow scheduler pod is
 - CPU : 3000m
 - Memory: 2048Mi
@@ -34,67 +34,76 @@ As a prerequisite we need to determine the worker concurrency for airflow worker
 Lets say the worker concurrency is 25, in order to execute 500 concurrent tasks the number of airflow worker pods needed are 20 (500 / 25 = 20)
 
 ### How to change airflow configuration?
-To change the airflow configuration it requires adding/updating in `config` section of [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L159)
+To change the airflow configuration it requires adding/updating in `config` section of [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
 
 **Example:** If you want to change AIRFLOW__CORE__DAG_CONCURRENCY to say 100
-```
+```yaml
 airflow:
-    config:
-      # Do not remove the existing configuration
-      AIRFLOW__CORE__DAG_CONCURRENCY: 100 # Newly added configuration
+  config:
+    # Do not remove the existing configuration
+    AIRFLOW__CORE__DAG_CONCURRENCY: 100 # Newly added configuration
 ```
 
 ### How to increase default pool size of airflow?
-To increase default pool size the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L144)
+To increase default pool size the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
 
 **Example:** If you want to change default pool size to say 1000
-```
+```yaml
 scheduler:
-    # Below configuration needs to be added, do not remove exisiting configuration
-    pools: |
-      {
-        "default_pool": {
-          "description": "This is a default pool",
-          "slots": 1000
-        }
+  # Below configuration needs to be added, do not remove exisiting configuration
+  pools: |
+    {
+      "default_pool": {
+        "description": "This is a default pool",
+        "slots": 1000
       }
+    }
 ```
-
-### How to change resource requests for airflow scheduler?
-To change resource requests for airflow scheduler the configuration for scheduler needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L144)
 
 **Example:** If you want to change resource requests to 3000m cpu and 2048Mi memory
-```
+```yaml
 scheduler:
-    # Below configuration needs to be added, do not remove exisiting configuration
-    resources:
-      requests:
-        cpu: "3000m"
-        memory: "2048Mi"
+  # Below configuration needs to be added, do not remove exisiting configuration
+  resources:
+    requests:
+      cpu: "3000m"
+      memory: "2048Mi"
+```
+### How to scale airflow scheduler?
+__Applicable to Airflow2__
+
+In airflow 1.x we can only configure one scheduler. With airflow2 we have to use multiple scheduler to scale out the schedulers. with Airflow2, scheduler can deployed in HA active multi master configuration by increasing replicas of scheduler instance. This can be achived by setting the replica count 3 or updating autoscaling property in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow2/helm-config.yaml)
+
+Example to set 3 scheduler instances
+```yaml
+scheduler:
+  # Below configuration needs to be added, do not remove exisiting configuration
+  # this configuration work with airflow2. In airflow 1.x multiple schedulers will have undefined behaviour.
+  replicas: 3
 ```
 
 ### How to change resource requests for airflow workers?
-To change resource requests for airflow worker the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L117)
+To change resource requests for airflow worker the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
 
 **Example:** If you want to change resource requests to 2000m cpu and 1024Mi memory
-```
+```yaml
 workers:
-    # Below configuration needs to be added, do not remove exisiting configuration
-    resources:
-      requests:
-        cpu: "2000m"
-        memory: "1024Mi"
+  # Below configuration needs to be added, do not remove exisiting configuration
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "1024Mi"
 
 ```
 
 ### How to change the number of airflow worker pods to be launched?
-To change number of airflow worker pods the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L117)
+To change number of airflow worker pods the configuration for worker needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
 
 **Example:** If you want to have 5 airflow worker pods to be running
-```
+```yaml
 workers:
-    # Below configuration needs to be added, do not remove exisiting configuration
-    replicas: 5
+  # Below configuration needs to be added, do not remove exisiting configuration
+  replicas: 5
 ```
 
 ### How to resolve airflow worker pods which are stuck in Pending state?
@@ -115,18 +124,18 @@ The below configurations are recommended ones for airflow webserver
 - AIRFLOW__CORE__MIN_SERIALIZED_DAG_FETCH_INTERVAL: 300 (This config controls when your DAGs are updated in the Webserver)
 
 
-For the below configurations 
-1. AIRFLOW__CORE__MIN_SERIALIZED_DAG_UPDATE_INTERVAL 
+For the below configurations
+1. AIRFLOW__CORE__MIN_SERIALIZED_DAG_UPDATE_INTERVAL
 2. AIRFLOW__CORE__MIN_SERIALIZED_DAG_FETCH_INTERVAL
 
 The value should be reduced/increased as per need basis
 
 
 We will need around 12 airflow webserver containers to hold this load consistently for long durations
-This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
-```
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
+```yaml
 web:
-    replicas: 12
+  replicas: 12
 ```
 The suggested resource requests and limit for airflow webserver pod in Kubernetes is
 - CPU : Request - 3000m, Limits - 3800m
@@ -135,28 +144,28 @@ The suggested resource requests and limit for airflow webserver pod in Kubernete
 We will need to increase the default timeout value for liveness probe from 3 seconds to 60 seconds
 The default value of 3s can result in frequent pod restarts
 
-This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
+This can be changed by adding below configuration in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml)
 
-```
+```yaml
 web:
-    - livenessProbe:
-        timeoutSeconds: 60
+- livenessProbe:
+    timeoutSeconds: 60
 ```
 
 ### How to change resource requests for airflow webserver?
 To change resource requests for airflow webserver the configuration for webserver needs to be changed in [helm-config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/airflow/helm-config.yaml#L109)
 
 **Example:** If you want to change resource requests to 3000m cpu and 2048Mi memory
-```
+```yaml
 web:
-    # Below configuration needs to be added, do not remove exisiting configuration
-        resources:
-          requests:
-            cpu: 3000m
-            memory: 2Gi
-          limits:
-            cpu: 3800m
-            memory: 2Gi    
+# Below configuration needs to be added, do not remove exisiting configuration
+  resources:
+    requests:
+      cpu: 3000m
+      memory: 2Gi
+    limits:
+      cpu: 3800m
+      memory: 2Gi
 ```
 
 ### When do you need to scale the PostgreSQL database used by airflow?
@@ -181,7 +190,7 @@ web:
 ### Configurations used to achieve 1000 Requests per second at Trigger Workflow API in Ingestion Workflow service
 
 - Containers Used
-  - Ingestion workflow Service - 20 AKS pods
+  - Ingestion workflow Service - 30 AKS pods
     - CPU Request - 1000m (1 Core)
     - CPU Limit - 1000m (1 Core)
     - Memory Request - 4Gi
@@ -202,8 +211,8 @@ web:
   for increased number of clients
 
   Recommendation - Due to increased replicas for pg bouncer high CPU consumption (70%) are observed
-  for 8 Core General purpose Azure postgres sql, so 16 core General purpose SKU will be recommended 
+  for 8 Core General purpose Azure postgres sql, so 16 core General purpose SKU will be recommended
   one for such high loads.
-  
 
-
+[Document](https://airflow.apache.org/docs/apache-airflow/stable/concepts/scheduler.html#scheduler-configuration-options) at airflow documentation outlines the factors affecting scheduler performance.
+Some of the [Best Practice](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html) for working with airflow2.
