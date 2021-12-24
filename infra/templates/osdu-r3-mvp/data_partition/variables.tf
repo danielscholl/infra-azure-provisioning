@@ -89,6 +89,12 @@ variable "storage_containers" {
   type        = list(string)
 }
 
+variable "airflow2_enabled" {
+  description = "Feature flag for enabling airflow2"
+  type        = bool
+  default     = false
+}
+
 variable "storage_containers_dp_airflow" {
   description = "The list of storage container names to create for data partition airflow"
   type        = list(string)

@@ -50,6 +50,12 @@ variable "keda_v2_enabled" {
   default     = false
 }
 
+variable "airflow2_enabled" {
+  description = "Feature flag for enabling airflow2"
+  type        = bool
+  default     = false
+}
+
 variable "randomization_level" {
   description = "Number of additional random characters to include in resource names to insulate against unexpected resource name collisions."
   type        = number
