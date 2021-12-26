@@ -88,3 +88,9 @@ variable "resource_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "is_primary_loc_set" {
+  description = "Fix for cosmos location."
+  type        = string
+  default     = null
+}
