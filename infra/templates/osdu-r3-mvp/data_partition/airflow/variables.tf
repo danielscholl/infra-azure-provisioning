@@ -106,6 +106,11 @@ variable "airflow_admin_password" {
   default     = ""
 }
 
+variable "airflow2_enabled" {
+  description = "Feature flag for enabling airflow2"
+  type        = bool
+}
+
 variable "redis_config_schedule" {
   description = "Configures the weekly schedule for server patching (Patch Window lasts for 5 hours). Also enables a single cluster for premium tier and when enabled, the true cache capacity of a redis cluster is capacity * cache_shard_count. 10 is the maximum number of shards/nodes allowed."
   type = object({
