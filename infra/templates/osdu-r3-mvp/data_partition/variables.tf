@@ -229,3 +229,10 @@ variable "ssl_challenge_required" {
   type        = bool
   default     = true
 }
+
+variable "cosmos_primary_loc" {
+  description = "Fix for cosmos location."
+  type        = string
+  default     = null
+}
+
