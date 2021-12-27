@@ -38,8 +38,13 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   }
 
   geo_location {
-    location          = var.primary_replica_location
+    location          = var.is_primary_loc_set == null ? var.primary_replica_location : data.azurerm_resource_group.cosmosdb.location
     failover_priority = 0
+  }
+
+  geo_location {
+    location          = var.primary_replica_location
+    failover_priority = var.is_primary_loc_set == null ? 0 : 1
   }
 }
 
