@@ -73,6 +73,6 @@ Open Istio AppGW (called *istio-gw) in Azure portal, go to HTTP settings, open a
 ## How to enable mTLS in services cluster.
  
 Feature flag `isMtlsEnabled` is responsible for enabling and disabling of mTLS. By default, this feature flag is set to 'false'.
-To enable mTLS you should set the flag to 'true'. To do it you need to add variable `ENABLE_ISTIO_mTLS` in Azure Target Env - <env> variable group and set it to 'true'.
+To enable mTLS you should set the flag to 'true'. To do it you need to add variable `ENABLE_ISTIO_mTLS` in Azure Target Env - <env> variable group and set it to 'true', then run "osdu-istio" pipeline.
 
  

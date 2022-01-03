@@ -137,7 +137,7 @@ spec:
               apk add --update coreutils
 
               # Log In in Azure
-              az login --service-principal -u ${client_id} -p ${client_secret} --tenant ${tenant_id}
+              az login --service-principal -u ${client_id} --password ${client_secret} --tenant ${tenant_id}
               az account set --subscription ${ENV_SUBSCRIPTION_NAME}
 
 {{- if .Values.global.istio.enableIstioKeyvaultCert }}
