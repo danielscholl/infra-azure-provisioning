@@ -40,7 +40,7 @@ metadata:
   namespace: osdu
 spec:
   mtls:
-    {{- if (eq (.Values.global.isMtlsEnabled | default false) true) }}
+    {{- if (eq (.Values.global.istio.isMtlsEnabled | default false) true) }}
     mode: STRICT
     {{ else }}
     mode: PERMISSIVE

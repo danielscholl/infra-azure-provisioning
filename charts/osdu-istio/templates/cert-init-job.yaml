@@ -89,7 +89,7 @@ spec:
           apk add --update coreutils
 
           # Log in in Azure and get cluster credentials
-          az login --service-principal -u ${client_id} -p ${client_secret} --tenant ${tenant_id}
+          az login --service-principal -u ${client_id} --password ${client_secret} --tenant ${tenant_id}
           az account set --subscription ${ENV_SUBSCRIPTION_NAME}
           az aks get-credentials --resource-group ${ENV_SR_GROUP_NAME} --name ${ENV_CLUSTER_NAME}
 
