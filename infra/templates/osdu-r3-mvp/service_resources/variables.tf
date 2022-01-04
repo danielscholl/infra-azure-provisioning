@@ -179,7 +179,8 @@ variable "redis_queue_zones" {
 variable "postgres_databases" {
   description = "The list of names of the PostgreSQL Database, which needs to be a valid PostgreSQL identifier. Changing this forces a new resource to be created."
   default = [
-    "airflow"
+    "airflow",
+    "airflow2"
   ]
 }
 
@@ -299,7 +300,7 @@ variable "aks_services_agent_vm_disk" {
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.19.11"
+  default = "1.20.9"
 }
 
 variable "ssh_public_key_file" {

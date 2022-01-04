@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 # Required Group Variables - `Infrastructure Pipeline Variables`
-  # AGENT_POOL
+  # AGENT_IMAGE
   # BUILD_ARTIFACT_NAME
   # FORCE_RUN
   # TF_WARN_OUTPUT_ERRORS

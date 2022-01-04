@@ -1,0 +1,46 @@
+{{ if not .Values.airflow.version_1_Installed  }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: airflow
+  namespace: {{ .Values.airflow.kubernetesPodOperator.namespace }}
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - create
+      - get
+      - delete
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - pods/log
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - ''
+    resources:
+      - pods/exec
+    verbs:
+      - create
+      - get
+{{ end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: airflow2
+  namespace: {{ .Values.airflow.kubernetesPodOperator.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: airflow
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.airflow.serviceAccount.name }}
+    namespace: airflow2

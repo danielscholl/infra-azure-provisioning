@@ -40,4 +40,21 @@ metadata:
   namespace: osdu
 spec:
   mtls:
+    {{- if (eq (.Values.global.istio.isMtlsEnabled | default false) true) }}
+    mode: STRICT
+    {{ else }}
     mode: PERMISSIVE
+    {{- end }}
+---
+{{- if (eq (.Values.global.istio.isMtlsEnabled | default false) true) }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: osdu-rule
+  namespace: osdu
+spec:
+  host: "*.osdu.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}      

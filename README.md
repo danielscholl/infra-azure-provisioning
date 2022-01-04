@@ -275,6 +275,17 @@ __Steps to load TNO Data__
 
 https://community.opengroup.org/osdu/platform/data-flow/data-loading/open-test-data/-/blob/master/rc--3.0.0/6-data-load-scripts/README.md
 
+__AKS Upgrade Steps__
+
+AKS supports upgrade to only one major version i.e. 1.19 to 1.20
+For checking the compatible upgrade use the following command:
+```bash
+az aks get-versions --location centralus --output table
+```
+Note:
+
+If you want to upgrade AKS version to 1.21 then first upgrade AKS version to 1.20. We have tested the flow for migration to 1.21.
+
 __Data Migration for Entitlements from Milestone 4(v0.7.0) or lower, to Milestone 5(v0.8.0) or higher__
 
 Milestone 5(v0.8.0) introduced a breaking changed for Entitlements, which required migration of data using the scipt

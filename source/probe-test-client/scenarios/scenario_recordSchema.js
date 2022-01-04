@@ -18,6 +18,11 @@ const minorVersion = testUtils.between(1, 100000);
 let runId = `${majorVersion}.${minorVersion}`;
 console.log(`run ID: ${runId}`);
 
+function freeze(time) {
+const stop = new Date().getTime() + time;
+while(new Date().getTime() < stop);
+}
+
 let test = {
     runId: runId,
     scenario: scenario,
@@ -29,7 +34,7 @@ let test = {
 
 // Test Data Setup
 let testApiName = testUtils.services.search.api.search.name;
-let kind = `${testUtils.partition}:wks:reference-data--ProcessingParameterType:1.0.0`;
+let kind = `osdu:wks:reference-data--ProcessingParameterType:1.0.0`;
 let tag =  `${testUtils.partition}-public-usa-check-1`;
 
 let legalTag = {
@@ -164,6 +169,7 @@ describe(scenario, (done) => {
             describe('Get Schema', (done) => {
                 
                 it("Get Schema By ID", done => {
+                    console.log(`Trying to fetch schema with id: ${kind}`)
                     test.service = testUtils.services.schema;
                     test.api = test.service.api.getSchemaById;
                     test.expectedResponse = test.api.expectedResponse;
@@ -329,7 +335,7 @@ describe(scenario, (done) => {
                     });
                 });
             });
-
+            freeze(5000);
             describe('Search Record', (done) => {
                 
                 it("Search: Record", done => {

@@ -11,8 +11,6 @@ const { assert } = require('console');
 var isEqual = require('lodash.isequal');
 
 const sampleLegalTag = require(`${__dirname}/../testData/ sample_legal_tag.json`);
-const sampleSchema = require(`${__dirname}/../testData/sample_schema.json`);
-const sampleRecord = require(`${__dirname}/../testData/sample_record.json`);
 const sampleQuery = require(`${__dirname}/../testData/sample_query.json`);
 
 // Test Setup
@@ -36,7 +34,34 @@ let test = {
 let kind = `${testUtils.partition}:probetest:dummydata:0.${runId}`;
 let tag = `${testUtils.partition}-probetest-tag`;
 sampleLegalTag.name = tag;
-sampleSchema.kind = kind;
+const sampleRecord = [
+             {
+               "kind": `${kind}`,
+               "acl": {
+                 "viewers": [
+                   `data.default.viewers@${testUtils.partition}.contoso.com`
+                 ],
+                 "owners": [
+                   `data.default.owners@${testUtils.partition}.contoso.com`
+                 ]
+               },
+               "legal": {
+                 "legaltags": [
+                   `${tag}`
+                 ],
+                 "otherRelevantDataCountries": [
+                   "US"
+                 ],
+                 "status": "compliant"
+               },
+               "data": {
+                       "Field": "MyField",
+                       "Basin": "MyBasin",
+                       "Country": "MyCountry"
+               }
+             }
+];
+
 sampleRecord[0].kind = kind;
 sampleRecord[0].legal.legaltags[0] = tag;
 sampleQuery.kind = kind;
@@ -149,68 +174,7 @@ describe(scenario, (done) => {
               });
             });
     
-            describe('Prepare Schema', done => {
-                let data;
-          
-                it("Schema: Create", done => {
-                    test.service = testUtils.services.storage;
-                    test.api = test.service.api.createSchema;
-                    test.expectedResponse = test.api.expectedResponse;
-    
-                    test.service.host
-                    .post(test.api.path)
-                    .set('Authorization', token)
-                    .set('data-partition-id', testUtils.partition)
-                    .send(sampleSchema)
-                    .then(res => {
-                        test.expectedResponse.should.be.an('array').that.includes(res.statusCode);
-                        telemetryUtils.passApiRequest(test);
-                      done();
-                    })
-                    .catch(err => {
-                        telemetryUtils.failApiRequest(test, err);
-                        done(err)
-                    });
-                });
-          
-                it('Schema: Get', done => {
-                    test.service = testUtils.services.storage;
-                    test.api = test.service.api.getSchema;
-                    test.expectedResponse = test.api.expectedResponse;
-    
-                    test.service.host
-                    .get(test.api.path + sampleSchema.kind)
-                    .set('Authorization', token)
-                    .set('Accept', 'application/json')
-                    .set('data-partition-id', testUtils.partition)
-                    .expect(test.expectedResponse)
-                    .then(res => {
-                        data = res.body;
-                        telemetryUtils.passApiRequest(test); 
-                        done(); 
-                    })
-                    .catch(err => { 
-                        telemetryUtils.failApiRequest(test, err);
-                        done(err); 
-                    });
-                });
-          
-                it('Schema: Validate', () => {
-                    test.service = testUtils.services.storage;
-                    test.api.name = 'validate_' + test.service.api.getSchema.name;
-                    test.expectedResponse = "Valid Match";
-    
-                    if (isEqual(data, sampleSchema)) {
-                        telemetryUtils.passApiRequest(test);
-                        expect(true).to.be.true;
-                    } else {
-                        telemetryUtils.failApiRequest(test, "Invalid");
-                        console.log(`actual:${JSON.stringify(data)}`);
-                        expect(false).to.be.true;
-                    }
-              });
-            });
-    
+
             describe('Create Record', done => {
                 let data;
           
@@ -315,27 +279,6 @@ describe(scenario, (done) => {
                     test.service.host
                     .delete(test.api.path + recordId)
                     .set('Authorization', token)
-                    .set('data-partition-id', testUtils.partition)
-                    .expect(test.expectedResponse)
-                    .then(() => {
-                        telemetryUtils.passApiRequest(test); 
-                        done(); 
-                    })
-                    .catch(err => { 
-                        telemetryUtils.failApiRequest(test, err);
-                        done(err); 
-                    });
-                });
-    
-                it('Schema: Delete', done => {
-                    test.service = testUtils.services.storage;
-                    test.api = test.service.api.deleteSchema;
-                    test.expectedResponse = test.api.expectedResponse;
-    
-                    test.service.host
-                    .delete(test.api.path + sampleSchema.kind)
-                    .set('Authorization', token)
-                    .set('Accept', 'application/json')
                     .set('data-partition-id', testUtils.partition)
                     .expect(test.expectedResponse)
                     .then(() => {

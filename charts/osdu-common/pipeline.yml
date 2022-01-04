@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 # Required Group Variables - `Azure - OSDU`
-  # AGENT_POOL
+  # AGENT_IMAGE
   # AZURE_TENANT_ID
   # ENV_SUBSCRIPTION_ID
   # ENV_APP_ID

@@ -40,9 +40,9 @@ stages:
   jobs:
   - job: Build_Test_Copy_Publish
     displayName: Perform Maven build and unit test / code coverage
+    # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
     pool:
-      name: $(AGENT_POOL)
-      demands: maven
+      vmImage: $(AGENT_IMAGE)
     workspace:
       clean: all
     steps:

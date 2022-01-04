@@ -1,0 +1,391 @@
+################################################################################
+# Specify the azure environment specific values
+#
+azure:
+    tenant: #{tenant-id}#
+    subscription: #{subscription-id}#
+    resourcegroup: #{base-name-cr}#-rg
+    identity: #{base-name-cr}#-osdu-identity
+    identity_id: #{osdu-identity-id}#
+    keyvault: #{base-name-cr}#-kv
+    appid: #{aad-client-id}#
+
+################################################################################
+# Specify the azure environment specific values
+#
+appinsightstatsd:
+  aadpodidbinding: "osdu-identity"
+
+#################################################################################
+# Specify log analytics configuration
+#
+logAnalytics:
+  workspaceId:
+    secretName: "central-logging"
+    secretKey: "workspace-id"
+  workspaceKey:
+    secretName: "central-logging"
+    secretKey: "workspace-key"
+
+################################################################################
+# Specify any optional override values
+#
+image:
+  repository: #{container-registry}#.azurecr.io
+  branch: #{ENVIRONMENT_NAME}#
+  tag: #{Build.SourceVersion}#
+
+airflowLogin:
+  name: admin
+
+airflowAuthentication:
+  username: admin
+  keyvaultMountPath: /mnt/azure-keyvault/
+  passwordKey: airflow-admin-password
+
+################################################################################
+# Specify any custom configs/environment values
+#
+customConfig:
+  rbac:
+    createUser: "True"
+
+################################################################################
+# Specify pgbouncer configuration
+#
+pgbouncer:
+  enabled: true
+  port: 6543
+  max_client_connections: 3000
+  airflowdb:
+    name: airflow2
+    host: #{base-name-sr}#-pg.postgres.database.azure.com
+    port: 5432
+    pool_size: 100
+    user:  osdu_admin@#{base-name-sr}#-pg
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+
+################################################################################
+# Specify KEDA configuration
+#
+keda:
+  version_2_enabled: false
+
+
+################################################################################
+# Specify the airflow configuration
+#
+airflow:
+  version_1_Installed: true
+  pgbouncer:
+    ## if the pgbouncer Deployment is created
+    ##
+    enabled: false
+
+
+  ##################################
+  # Kubernetes Pod Operator config
+  ##################################
+  kubernetesPodOperator:
+    namespace: airflow
+  
+  serviceAccount:
+    name: airflow
+
+  ###################################
+  # Kubernetes - Ingress Configs
+  ###################################
+  ingress:
+    enabled: true
+    web:
+      annotations:
+        kubernetes.io/ingress.class: azure/application-gateway
+        appgw.ingress.kubernetes.io/request-timeout: "300"
+        appgw.ingress.kubernetes.io/connection-draining: "true"
+        appgw.ingress.kubernetes.io/connection-draining-timeout: "30"
+        cert-manager.io/cluster-issuer: null
+        # The certificate is created in app gateway in the format 'cert-{namespace}-{tls-secret-name}'
+        # Here the secret name is osdu-certificate. This secret is created in osdu namespace.
+        # The certificate name needs to be changed if the namespace or the secret name change.
+        appgw.ingress.kubernetes.io/appgw-ssl-certificate: "cert-osdu-osdu-certificate"
+        cert-manager.io/acme-challenge-type: http01
+      path: "/airflow2"
+      host: #{DNS_HOST}#
+      livenessPath: "/airflow/health"
+      tls:
+        enabled: true
+        secretName: osdu-certificate
+      precedingPaths:
+        - path: "/airflow2/*"
+          serviceName: airflow2-web
+          servicePort: 8080
+
+  ###################################
+  # Database - External Database
+  ###################################
+  postgresql:
+    enabled: false
+  externalDatabase:
+    type: postgres
+    host: airflow-pgbouncer                                  #<-- Azure PostgreSQL Database host or pgbouncer host (if pgbouncer is enabled)
+    user: osdu_admin@#{base-name-sr}#-pg                     #<-- Azure PostgreSQL Database username, formatted as {username}@{hostname}
+    passwordSecret: "postgres"
+    passwordSecretKey: "postgres-password"
+    port: 6543
+    database: airflow2
+
+  ###################################
+  # Database - External Redis
+  ###################################
+  redis:
+    enabled: false
+  externalRedis:
+    host: #{base-name-sr}#-queue.redis.cache.windows.net    #<-- Azure Redis Cache host
+    port: 6380
+    passwordSecret: "redis"
+    passwordSecretKey: "redis-queue-password"
+    databaseNumber: 2  #<-- Adding redis database number according to the Redis config map https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/charts/osdu-common/templates/redis-map.yaml#L7
+
+  ###################################
+  # Airflow - DAGs Configs
+  ###################################
+  dags:
+    installRequirements: true
+    persistence:
+      enabled: true
+      existingClaim: airflow2dagpvc
+      subPath: "dags"
+
+  ###################################
+  # Airflow - WebUI Configs
+  ###################################
+  web:
+    replicas: 1
+    livenessProbe:
+      timeoutSeconds: 60
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "4Gi"
+      limits:
+        cpu: "1000m"
+        memory: "4Gi"
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    autoscale:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 20
+      scaleDown:
+        coolDownPeriod: 60
+    labels:
+      # DO NOT DELETE THIS LABEL. SET IT TO "false" WHEN AUTOSCALING IS DISABLED, SET IT TO "true" WHEN AUTOSCALING IS ENABLED
+      autoscalingEnabled: "false"
+    baseUrl: "http://localhost/airflow"
+
+  ###################################
+  # Airflow - Worker Configs
+  ###################################
+  workers:
+    resources:
+      requests:
+        cpu: "1200m"
+        memory: "5Gi"
+      limits:
+        cpu: "1200m"
+        memory: "5Gi"
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    podAnnotations:
+      sidecar.istio.io/inject: "false"
+    autoscale:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 20
+      scaleDown:
+        coolDownPeriod: 300
+    celery:
+      gracefullTermination: true
+      gracefullTerminationPeriod: 600
+    labels:
+      # DO NOT DELETE THIS LABEL. SET IT TO "false" WHEN AUTOSCALING IS DISABLED, SET IT TO "true" WHEN AUTOSCALING IS ENABLED
+      autoscalingEnabled: "false"
+
+  ###################################
+  # Airflow - Flower Configs
+  ###################################
+  flower:
+    enabled: false
+
+  ###################################
+  # Airflow - Scheduler Configs
+  ###################################
+  scheduler:
+    resources:
+      requests:
+        cpu: "3000m"
+        memory: "1Gi"
+      limits:
+        cpu: "3000m"
+        memory: "1Gi"
+    podLabels:
+      aadpodidbinding: "osdu-identity"
+    autoscale:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 20
+      scaleDown:
+        coolDownPeriod: 60
+    podAnnotations:
+      sidecar.istio.io/inject: "false"
+    variables: |
+      {}
+    
+  ###################################
+  # Airflow - Common Configs
+  ###################################
+  airflow:
+    usersUpdate: null
+    users: null
+    image:
+      repository: msosdu.azurecr.io/airflow2-docker-image
+      tag: v0.20
+      pullPolicy: IfNotPresent
+      pullSecret: ""
+    config:
+      AIRFLOW__SCHEDULER__STATSD_ON: "True"
+      AIRFLOW__SCHEDULER__STATSD_HOST: "appinsights-statsd"
+      AIRFLOW__SCHEDULER__STATSD_PORT: 8125
+      AIRFLOW__SCHEDULER__STATSD_PREFIX: "osdu_airflow2"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "False"
+      ## Enable for Debug purpose
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      AIRFLOW__WEBSERVER__AUTHENTICATE: "True"
+      AIRFLOW__WEBSERVER__AUTH_BACKEND: "airflow.contrib.auth.backends.password_auth"
+      AIRFLOW__WEBSERVER__RBAC: "True"
+      AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.default"
+      AIRFLOW__CORE__REMOTE_LOGGING: "True"
+      AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "az_log"
+      AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "wasb-airflowlog"
+      AIRFLOW__CORE__LOGGING_CONFIG_CLASS: "log_config.DEFAULT_LOGGING_CONFIG"
+      AIRFLOW__CORE__LOG_FILENAME_TEMPLATE: "{{ run_id }}/{{ ti.dag_id }}/{{ ti.task_id }}/{{ ts }}/{% if dag_run.conf is not none and 'correlation_id' in dag_run.conf %}{{ dag_run.conf['correlation_id'] }}{% else %}None{% endif %}/{{ try_number }}.log"
+      AIRFLOW__CELERY__SSL_ACTIVE: "True"
+      AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX: "True"
+      AIRFLOW__CORE__PLUGINS_FOLDER: "/opt/airflow/plugins"
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+      AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
+      AIRFLOW_VAR_CORE__CONFIG__DATALOAD_CONFIG_PATH: "/opt/airflow/dags/configs/dataload.ini"
+      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1/schema"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query"
+      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2/records"
+      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
+      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow"
+      AIRFLOW_VAR_CORE__SERVICE__DATASET__HOST: "http://dataset.osdu.svc.cluster.local/api/dataset/v1"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH_WITH_CURSOR__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query_with_cursor"
+      AIRFLOW__WEBSERVER__WORKERS: 8
+      AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 0
+      AIRFLOW__CORE__STORE_SERIALIZED_DAGS: True #This flag decides whether to serialise DAGs and persist them in DB
+      AIRFLOW__CORE__STORE_DAG_CODE: True #This flag decides whether to persist DAG files code in DB
+      AIRFLOW__WEBSERVER__WORKER_CLASS: gevent
+      AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
+      AIRFLOW__WEBSERVER__BASE_URL: https://#{DNS_HOST}#/airflow2
+      AIRFLOW_VAR_KEYVAULT_URI: https://#{base-name-cr}#-kv.vault.azure.net/
+    extraEnv:
+    - name: CLOUD_PROVIDER
+      value: "azure"
+    - name: AIRFLOW__CORE__FERNET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: airflow
+          key: fernet-key
+    - name: AIRFLOW_CONN_AZ_LOG
+      valueFrom:
+        secretKeyRef:
+          name: airflow
+          key: remote-log-connection
+    - name: AIRFLOW_VAR_AZURE_TENANT_ID
+      valueFrom:
+        secretKeyRef:
+          name: active-directory
+          key: tenantid
+    - name: AIRFLOW_VAR_AZURE_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: active-directory
+          key: principal-clientid
+    - name: AIRFLOW_VAR_AZURE_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: active-directory
+          key: principal-clientpassword
+    - name: AIRFLOW_VAR_AAD_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: active-directory
+          key: application-appid
+    - name: AIRFLOW_VAR_APPINSIGHTS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: central-logging
+          key: appinsights
+    - name: AIRFLOW_VAR_AZURE_DNS_HOST
+      value: #{DNS_HOST}#
+    - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
+      value: "false"
+    - name: AIRFLOW_VAR_DAG_IMAGE_ACR
+      value: #{container-registry}#.azurecr.io
+    - name: PYTHONPATH
+      value: "/opt/celery"
+    # Needed for installing python osdu python sdk. In future this will be changed
+    - name: CI_COMMIT_TAG
+      value: "v0.12.0"
+    - name: BUILD_TAG
+      value: "v0.12.0"
+    - name: AIRFLOW__API__AUTH_BACKEND
+      value: "airflow.api.auth.backend.basic_auth"
+    - name: PIP_EXTRA_INDEX_URL # List of (space separated) extra-index-url for pip repositories
+      value: #{PIP_EXTRA_INDEX_URL}#    
+    extraPipPackages: [
+        "flask-bcrypt==0.7.1",
+        "apache-airflow[statsd,kubernetes,password]==2.1.2",
+        "apache-airflow-providers-microsoft-azure==3.1.1",
+        "google-cloud-storage",
+        "python-keycloak==0.24.0",
+        "msal==1.9.0",
+        "azure-identity==1.5.0",
+        "azure-keyvault-secrets==4.2.0",
+        "azure-storage-blob",
+        "azure-servicebus==7.0.1",
+        "toposort==1.6",
+        "strict-rfc3339==0.7",
+        "jsonschema==3.2.0",
+        "pyyaml==5.4.1",
+        "requests==2.25.1",
+        "tenacity==6.2.0",
+        "authlib==0.15.4",
+        "plyvel==1.3.0"
+    ]
+    extraVolumeMounts:
+        - name: azure-keyvault
+          mountPath: "/mnt/azure-keyvault"
+          readOnly: true
+        - name: dags-data
+          mountPath: /opt/airflow/plugins
+          subPath: plugins
+        - name: remote-log-config
+          mountPath: /opt/airflow/config
+          readOnly: true
+    extraVolumes:
+        - name: azure-keyvault
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-keyvault-airflow
+        - name: remote-log-config        
+          configMap: 
+            name: airflow-remote-log-config
+    dbMigrations:
+      podLabels:
+        aadpodidbinding: "osdu-identity"

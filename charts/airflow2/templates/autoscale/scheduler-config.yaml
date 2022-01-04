@@ -1,0 +1,33 @@
+{{- if .Values.airflow.scheduler.autoscale.enabled -}}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ printf "%s" .Release.Name | trunc 63 | trimSuffix "-" }}-scheduler
+  labels:
+    component: scheduler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ printf "%s" .Release.Name | trunc 63 | trimSuffix "-" }}-scheduler
+  minReplicas: {{ .Values.airflow.scheduler.autoscale.minReplicas }}
+  maxReplicas: {{ .Values.airflow.scheduler.autoscale.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+  behavior:
+    scaleUp:
+      policies:
+      - type: Percent
+        value: 200
+        periodSeconds: 30
+    scaleDown:
+      policies:
+      - type: Percent
+        value: 30
+        periodSeconds: {{ .Values.airflow.scheduler.autoscale.scaleDown.coolDownPeriod }}
+{{- end }}

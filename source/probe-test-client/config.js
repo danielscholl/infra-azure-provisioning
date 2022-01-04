@@ -81,10 +81,10 @@ module.exports = {
     },
     crud_schema: {
       getSchemaById: true,
-      getAllSchemas: false, // 500 error
-      createSchema: false, // 400 error
+      getAllSchemas: true,
+      createSchema: true,
       getCreatedSchemaById: true,
-      deleteSchema: true,
+      deleteSchema: false, // delete is not a valid scenario in schema service
     },
     crud_search: {
       standardQueries: true,

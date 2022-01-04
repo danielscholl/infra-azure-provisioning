@@ -24,7 +24,9 @@ jobs:
 
 - job: Provision_${{ parameters.configuration.jobName }}_${{ parameters.environment }}_ComputeWs
   displayName: Initialize Deployment
-  pool: $(AGENT_POOL)
+  # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+  pool:
+    vmImage: $(AGENT_IMAGE)
   dependsOn: TemplateChangeDetection_${{ parameters.configuration.jobName }}_Deploy
   condition: or(coalesce(variables.FORCE_RUN, ${{ parameters.forceRun }}), eq(dependencies.TemplateChangeDetection_${{ parameters.configuration.jobName }}_Deploy.outputs['${{ parameters.configuration.jobName }}.needs_cicd'], 'true'))
 
@@ -38,7 +40,9 @@ jobs:
 
 - deployment: Provision_${{ parameters.configuration.jobName }}_${{ parameters.environment }}
   displayName: Execute Deployment
-  pool: $(AGENT_POOL)
+  # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+  pool:
+    vmImage: $(AGENT_IMAGE)
   dependsOn: Provision_${{ parameters.configuration.jobName }}_${{ parameters.environment }}_ComputeWs
 
   ${{ if parameters.configuration.deploymentTimeoutInMinutes }}:

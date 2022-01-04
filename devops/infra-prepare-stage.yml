@@ -35,6 +35,9 @@ stages:
     jobs:
       # To avoid ADO rendering inconsistencies that seems to be caused by stages with empty jobs.
       - job: Environment_${{ environment.name }}_Build
+        pool:
+          vmImage: $(AGENT_IMAGE)
+
 
   - ${{ each config in parameters.configurations }}:
     - stage: ${{ config.jobName }}_${{ environment.name }}_Build
@@ -43,7 +46,9 @@ stages:
       jobs:
       - job: TemplateChangeDetection_${{ config.jobName }}_Build
         displayName: Analyze Changes
-        pool: $(AGENT_POOL)
+        # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+        pool:
+          vmImage: $(AGENT_IMAGE)
         steps:
         - template: tasks/detect-cicd.yml
           parameters:
@@ -64,7 +69,9 @@ stages:
       jobs:
       - job: TemplateChangeDetection_${{ config.jobName }}_Deploy
         displayName: Analyze Changes
-        pool: $(AGENT_POOL)
+        # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
+        pool:
+          vmImage: $(AGENT_IMAGE)
         steps:
         - template: tasks/detect-cicd.yml
           parameters:

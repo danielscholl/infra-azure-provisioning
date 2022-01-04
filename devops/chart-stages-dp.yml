@@ -36,8 +36,9 @@ stages:
 
         jobs:
         - deployment: Deploy
+          # Using Microsoft Hosted Agent Pool with Ubuntu 18.04 as it contains JDK 8 as default
           pool:
-            name: $(AGENT_POOL)
+            vmImage: $(AGENT_IMAGE)
           environment: ${{ environment }}
           strategy:
             runOnce:

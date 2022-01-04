@@ -7,7 +7,7 @@ This variable group will be used to hold the common values for the services to b
 | Variable                                      | Value |
 |-----------------------------------------------|-------|
 | ADMIN_EMAIL                                   | <your_sslcert_admin_email>                  |
-| AGENT_POOL                                    | `Hosted Ubuntu 1604`                        |
+| AGENT_IMAGE                                    | `ubuntu-18.04`                        |
 | AZURE_AD_GUEST_EMAIL                          | `$(ad-guest-email)`                         |
 | AZURE_AD_GUEST_OID                            | `$(ad-guest-oid)`                           |
 | AZURE_AD_OTHER_APP_RESOURCE_ID                | `$(osdu-mvp-<your_unique>-application-clientid)` |
@@ -61,7 +61,7 @@ az pipelines variable-group create \
   --authorize true \
   --variables \
   ADMIN_EMAIL=$ADMIN_EMAIL \
-  AGENT_POOL="Hosted Ubuntu 1604" \
+  AGENT_IMAGE="ubuntu-18.04" \
   AZURE_AD_GUEST_EMAIL='$(ad-guest-email)' \
   AZURE_AD_GUEST_OID='$(ad-guest-oid)' \
   AZURE_AD_OTHER_APP_RESOURCE_ID='$(osdu-mvp-'${UNIQUE}'-application-clientid)' \

@@ -300,6 +300,7 @@ module "cosmosdb_account" {
   consistency_level        = var.cosmosdb_consistency_level
   databases                = var.cosmos_databases
   sql_collections          = var.cosmos_sql_collections
+  is_primary_loc_set       = var.cosmos_primary_loc
 
   resource_tags = var.resource_tags
 }
