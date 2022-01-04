@@ -17,8 +17,8 @@ let runId = `${majorVersion}.${minorVersion}`;
 
 console.log(`run ID: ${runId}`);
 
-const sampleLogCreate = require(`${__dirname}/../testData/sample_create_log.json`);
-const sampleLogData = require(`${__dirname}/../testData/sample_log_data.json`);
+const sampleLogCreate = require(`${__dirname}/../testData/sample_wellbore_create_log.json`);
+const sampleLogData = require(`${__dirname}/../testData/sample_wellbore_log_data.json`);
 const sampleLogQuery = {
   "query": "string"
 };
