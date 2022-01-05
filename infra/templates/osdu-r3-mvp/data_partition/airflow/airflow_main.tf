@@ -143,7 +143,7 @@ resource "azurerm_storage_share_directory" "airflow2_operators" {
   name                 = "plugins/operators"
   share_name           = azurerm_storage_share.airflow2_share[0].name
   storage_account_name = var.storage_account_name
-  depends_on           = [azurerm_storage_share_directory.plugins]
+  depends_on           = [azurerm_storage_share_directory.airflow2_plugins]
 }
 
 resource "azurerm_storage_share_directory" "airflow2_hooks" {
@@ -151,7 +151,7 @@ resource "azurerm_storage_share_directory" "airflow2_hooks" {
   name                 = "plugins/hooks"
   share_name           = azurerm_storage_share.airflow2_share[0].name
   storage_account_name = var.storage_account_name
-  depends_on           = [azurerm_storage_share_directory.plugins]
+  depends_on           = [azurerm_storage_share_directory.airflow2_plugins]
 }
 
 resource "azurerm_storage_share_directory" "airflow2_sensors" {
@@ -159,7 +159,7 @@ resource "azurerm_storage_share_directory" "airflow2_sensors" {
   name                 = "plugins/sensors"
   share_name           = azurerm_storage_share.airflow2_share[0].name
   storage_account_name = var.storage_account_name
-  depends_on           = [azurerm_storage_share_directory.plugins]
+  depends_on           = [azurerm_storage_share_directory.airflow2_plugins]
 }
 
 // Airflow queue for blob create event
