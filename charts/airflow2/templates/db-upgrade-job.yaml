@@ -45,7 +45,7 @@ spec:
           value: "0"        
         envFrom:
         - secretRef:
-            name: airflow2-config-envs
+            name: {{ .Release.Name }}-config-envs
         image: {{ .Values.airflow.airflow.image.repository }}:{{ .Values.airflow.airflow.image.tag }}
         imagePullPolicy: IfNotPresent
         name: install-pip-packages
@@ -79,7 +79,7 @@ spec:
           value: "0"        
         envFrom:
         - secretRef:
-            name: airflow2-config-envs
+            name: {{ .Release.Name }}-config-envs
         image: apache/airflow:2.1.2-python3.8
         imagePullPolicy: IfNotPresent
         name: db-migrations
@@ -121,4 +121,4 @@ spec:
       - name: scripts
         secret:
           defaultMode: 420
-          secretName: airflow2-db-migrations
+          secretName: {{ .Release.Name }}-db-migrations

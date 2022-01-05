@@ -1,14 +1,14 @@
-{{- $isEnabled := .Values.airflow.isDataPartitionDeployment | default false -}}
-{{ if and $isEnabled .Values.airflow.ingress.web.tls.BYOCEnabled }}
+{{- $isEnabled := .Values.global.isDataPartitionDeployment | default false -}}
+{{ if and $isEnabled .Values.global.ingress.enableKeyvaultCert }}
 apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
 kind: SecretProviderClass
 metadata:
-  name: airflow-tls
+  name: osdu-tls
   namespace: istio-system
 spec:
   provider: azure
   secretObjects:
-  - secretName: {{ .Values.airflow.ingress.web.tls.secretName }}
+  - secretName: osdu-certificate
     type: kubernetes.io/tls
     data: 
     - objectName: istio-ssl-certificate
@@ -19,10 +19,10 @@ spec:
     usePodIdentity: "true"
     useVMManagedIdentity: "false"
     userAssignedIdentityID: ""
-    resourceGroup: "{{ .Values.azure.resourcegroup }}"
-    keyvaultName: "{{ .Values.azure.keyvault }}"
-    subscriptionId: "{{ .Values.azure.subscription }}"
-    tenantId: "{{ .Values.azure.tenant }}"
+    resourceGroup: "{{ .Values.global.azure.dp.resourcegroup }}"
+    keyvaultName: "{{ .Values.global.azure.dp.keyvault }}"
+    subscriptionId: "{{ .Values.global.azure.dp.subscription }}"
+    tenantId: "{{ .Values.global.azure.dp.tenant }}"
     objects: |
       array:
         - |

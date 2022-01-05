@@ -1,0 +1,21 @@
+{{- $isEnabled := .Values.global.isDataPartitionDeployment | default false -}}
+{{ if and $isEnabled .Values.global.ingress.enableKeyvaultCert }}
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: osdu-identity
+  namespace: istio-system
+spec:
+  type: 0
+  resourceID: "/subscriptions/{{ .Values.global.azure.dp.subscription }}/resourcegroups/{{ .Values.global.azure.dp.resourcegroup }}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{{ .Values.global.azure.dp.identity }}"
+  clientID: "{{ .Values.global.azure.dp.identity_id }}"
+---
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentityBinding
+metadata:
+  name: osdu-identity-binding
+  namespace: istio-system
+spec:
+  azureIdentity: osdu-identity
+  selector: osdu-identity
+{{ end }}
