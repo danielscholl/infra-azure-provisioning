@@ -95,14 +95,15 @@ airflow:
   ingress:
     enabled: false
     web:
-      path: "/airflow"
+      path: "/airflow/"
       host: #{AIRFLOW_DNS_HOST}#
       livenessPath: "/airflow/health"
       tls:
         BYOCEnabled: #{DP_ENABLE_KEYVAULT_CERT}#
-        secretName: airflow-prod-certificate
+        secretName: osdu-certificate
         certificateAdmin: admin@email.com
         sslServer: https://acme-v02.api.letsencrypt.org/directory
+      istioGateway: osdu/istio-gateway
 
   ###################################
   # Database - External Database

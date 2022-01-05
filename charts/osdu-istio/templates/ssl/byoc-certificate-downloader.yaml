@@ -1,5 +1,5 @@
-{{- $isEnabled := .Values.airflow.isDataPartitionDeployment | default false -}}
-{{ if and $isEnabled .Values.airflow.ingress.web.tls.BYOCEnabled }}
+{{- $isEnabled := .Values.global.isDataPartitionDeployment | default false -}}
+{{ if and $isEnabled .Values.global.ingress.enableKeyvaultCert }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,20 +24,20 @@ spec:
         image: mcr.microsoft.com/azuredocs/aci-helloworld
         imagePullPolicy: IfNotPresent
         volumeMounts:
-        - name: airflow-tls
-          mountPath: "/mnt/airflow-tls"
+        - name: osdu-tls
+          mountPath: "/mnt/osdu-tls"
           readOnly: true
         env:
         - name: TLS_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.airflow.ingress.web.tls.secretName }}
+              name: osdu-certificate
               key: tls.key
       volumes:
-      - name: airflow-tls
+      - name: osdu-tls
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: airflow-tls  
+            secretProviderClass: osdu-tls  
 {{ end }}

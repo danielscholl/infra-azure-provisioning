@@ -8,7 +8,7 @@ spec:
   hosts:
   - {{ .Values.airflow.ingress.web.host | quote }}
   gateways:
-  - airflow-gateway
+  - {{ .Values.airflow.ingress.web.istioGateway | quote }}
   http:
   - match:
     - uri:

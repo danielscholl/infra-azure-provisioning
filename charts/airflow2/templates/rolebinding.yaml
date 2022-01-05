@@ -1,8 +1,7 @@
-{{ if not .Values.airflow.version_1_Installed  }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: airflow
+  name: airflow2
   namespace: {{ .Values.airflow.kubernetesPodOperator.namespace }}
 rules:
   - apiGroups:
@@ -29,7 +28,6 @@ rules:
     verbs:
       - create
       - get
-{{ end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
@@ -39,7 +37,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: airflow
+  name: airflow2
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.airflow.serviceAccount.name }}

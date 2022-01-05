@@ -1,0 +1,16 @@
+{{- $isEnabled := .Values.global.isDataPartitionDeployment | default false -}}
+{{ if and $isEnabled (not .Values.global.ingress.enableKeyvaultCert) }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: osdu-certificate
+  namespace: istio-system
+spec:
+  secretName: osdu-certificate
+  issuerRef:
+    kind: Issuer
+    name: letsencrypt
+  commonName: {{ .Values.global.ingress.hostname }}
+  dnsNames:
+  - {{ .Values.global.ingress.hostname }}
+{{ end }}
