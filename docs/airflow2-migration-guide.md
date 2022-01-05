@@ -9,8 +9,8 @@ We have opted for a incremental approach where airflow 1.10.12 installation rema
 ### Upgrading Airflow2
 There are 2 methods that can be chosen to perform installation at this point in time.
 
-    1. Manual Upgrade -- Typically used when the desire is to manually make modifications to the environment and have full control all updates and deployments.
-    2. Pipeline Upgrade -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
+1. Manual Upgrade -- Typically used when the desire is to manually make modifications to the environment and have full control all updates and deployments.
+2. Pipeline Upgrade -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
 
 
 ### Manual upgrading step ( preferred approach)
