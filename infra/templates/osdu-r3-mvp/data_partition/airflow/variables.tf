@@ -109,6 +109,7 @@ variable "airflow_admin_password" {
 variable "airflow2_enabled" {
   description = "Feature flag for enabling airflow2"
   type        = bool
+  default     = false
 }
 
 variable "redis_config_schedule" {
