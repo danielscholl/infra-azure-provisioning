@@ -1,4 +1,6 @@
-{{- if and (eq (.Values.global.isDataPartitionDeployment | default false) false)  .Values.global.isAutoscalingEnabled }}
+{{- $isDP := .Values.global.isDataPartitionDeployment | default false -}}
+{{- $autoscaleEnabled := .Values.global.isAutoscalingEnabled -}}
+{{- if or $isDP $autoscaleEnabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -17,7 +19,7 @@ spec:
       tls:
         mode: SIMPLE
         {{- if .Values.global.istio.enableIstioKeyvaultCert }}
-        credentialName: istio-appgw-ssl-cert
+        credentialName: istio-appgw-ssl-cert        
         {{ else }}
         credentialName: osdu-certificate
         {{- end }} 

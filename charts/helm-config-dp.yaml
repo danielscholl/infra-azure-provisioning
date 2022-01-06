@@ -15,8 +15,16 @@ global:
     resourcegroup: #{base-name-cr}#-rg
     identity: #{base-name-cr}#-osdu-identity
     identity_id: #{osdu-identity-id}#
-    keyvault: #{COMMON_RESOURCES_KEY_VAULT_NAME}#
+    keyvault: #{base-name-cr}#-kv
     appid: #{aad-client-id}#
+
+    dp:
+      tenant: #{data-partition-tenant-id}#
+      subscription: #{data-partition-subscription-id}#
+      resourcegroup: #{base-name-dp}#-rg
+      identity: #{base-name-dp}#-osdu-identity
+      identity_id: #{management-identity-id}#
+      keyvault: #{base-name-dp}#-kv
 
   ################################################################################
   # Specify the Ingress Settings
@@ -27,10 +35,10 @@ global:
   #     https://acme-v02.api.letsencrypt.org/directory --> Production Server
   #
   ingress:
-    hostname: #{DNS_HOST}#
+    hostname: #{AIRFLOW_DNS_HOST}#
     admin: #{ADMIN_EMAIL}#
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
-    enableKeyvaultCert: #{ENABLE_KEYVAULT_CERT}#
+    enableKeyvaultCert: #{DP_ENABLE_KEYVAULT_CERT}#                     
 
   ################################################################################
   # Specify the istio specific values
@@ -39,6 +47,7 @@ global:
   istio:
     username: #{istio-username}#
     password: #{istio-password}#
+    dns_host: #{AIRFLOW_DNS_HOST}#
 
   ################################################################################
   # Specify the resource limits
