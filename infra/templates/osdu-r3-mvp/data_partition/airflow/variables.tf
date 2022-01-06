@@ -71,7 +71,8 @@ variable "container_registry_sku" {
 variable "postgres_databases" {
   description = "The list of names of the PostgreSQL Database, which needs to be a valid PostgreSQL identifier. Changing this forces a new resource to be created."
   default = [
-    "airflow"
+    "airflow",
+    "airflow2"
   ]
 }
 
@@ -103,6 +104,12 @@ variable "airflow_admin_password" {
   description = "Airflow admin password"
   type        = string
   default     = ""
+}
+
+variable "airflow2_enabled" {
+  description = "Feature flag for enabling airflow2"
+  type        = bool
+  default     = false
 }
 
 variable "redis_config_schedule" {

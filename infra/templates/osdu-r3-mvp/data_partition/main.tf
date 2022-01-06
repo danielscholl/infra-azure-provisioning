@@ -471,6 +471,8 @@ module "airflow" {
 
   central_resources_workspace_name = var.central_resources_workspace_name
 
+  airflow2_enabled = var.airflow2_enabled
+
   remote_state_account   = var.remote_state_account
   remote_state_container = var.remote_state_container
 
