@@ -8,6 +8,7 @@ const config = require(`${__dirname}/../config`);
 const testUtils = require(`${__dirname}/../utils/testUtils`);
 const telemetryUtils = require(`${__dirname}/../utils/telemetryUtils`);
 const { assert } = require('console');
+const { SSL_OP_EPHEMERAL_RSA } = require('constants');
 
 // Test Setup
 let scenario = "scenario_seismicUpload";
@@ -16,6 +17,11 @@ const majorVersion = testUtils.between(1, 100000);
 const minorVersion = testUtils.between(1, 100000);
 let runId = `${majorVersion}.${minorVersion}`;
 console.log(`run ID: ${runId}`);
+
+function freeze(time) {
+    const stop = new Date().getTime() + time;
+    while(new Date().getTime() < stop);
+}
 
 let test = {
     runId: runId,
@@ -133,7 +139,6 @@ describe(scenario, (done) => {
                         });
                 });
             });
-
             describe('Delete Subproject', (done) => {
                 //cleanup
                 it("Delete Test Subproject.", done => {
@@ -160,6 +165,7 @@ describe(scenario, (done) => {
         }
 
         afterEach(function () {
+            freeze(5000);
             if (this.currentTest.state === 'failed') {
                 test.failedTests += 1;
             }
