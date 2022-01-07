@@ -13,7 +13,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
 2. Pipeline Upgrade -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
 
 
-### Manual upgrading step ( preferred approach)
+### Upgrading Manual installation ( preferred approach)
  1. Run infra [setup](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp) to create necessary infra for the airflow2 setup.
  2. Follow [documentation](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/blob/master/osdu-airflow2/README.md) to deploy airflow2 using helm chart.
  3. Validate airflow2 is up and running at {base_url}/airflow2 endpoint
