@@ -17,7 +17,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
  1. Run infra [setup](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/infra/templates/osdu-r3-mvp) to create necessary infra for the airflow2 setup.
  2. Follow [documentation](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/blob/master/osdu-airflow2/README.md) to deploy airflow2 using helm chart.
  3. Validate airflow2 is up and running at {osdu_endpoint}/airflow2 endpoint
- 4. Copy the Existing DAG's to the `airflowdags` to `airflow2dags` after upgrading the DAG's to airflow2.
+ 4. Copy the Existing DAG's to the `airflowdags` to `airflow2dags` after [upgrading](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) the DAG's to airflow2.
  5. Validate the uploaded dags are getting parse by airflow and are visible in the airflow webserver UI.
  6. Deploy workflow service using `helm-chart-azure` as described in the [document](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/tree/master/osdu-azure/workflow#airflow-2-migration).
 
@@ -36,7 +36,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
     -ojson
     ```
  3. Validate airflow2 is up and running at {osdu_endpoint}/airflow2 endpoint
- 4. Copy the Existing DAG's to the `airflowdags` to `airflow2dags` after upgrading the DAG's to airflow2.
+ 4. Copy the Existing DAG's to the `airflowdags` to `airflow2dags` after [upgrading](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) the DAG's to airflow2.
  5. Validate the uploaded dags are getting parse by airflow and are visible in the airflow webserver UI.
  6. Deploy workflow service using `helm-chart-azure` as described in the [document](https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow/-/tree/master/provider/workflow-azure#airflow-2-migration).
 
