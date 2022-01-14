@@ -42,7 +42,7 @@ func asMap(t *testing.T, jsonString string) map[string]interface{} {
 func TestTemplate(t *testing.T) {
 
 	expectedResult := asMap(t, `{
-		"kubernetes_version": "1.20.9"
+		"kubernetes_version": "1.21.7"
 	}`)
 
 	testFixture := infratests.UnitTestFixture{
