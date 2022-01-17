@@ -348,8 +348,8 @@ airflow:
         value: $DNS_HOST
       - name: AIRFLOW_VAR_AZURE_ENABLE_MSI
         value: "false"    
-      - name: PIP_EXTRA_INDEX_URL
-        value: $PIP_EXTRA_INDEX_URL
+      - name: AIRFLOW_VAR_ENV_VARS_ENABLED
+        value: "true"
       - name: AIRFLOW_VAR_DAG_IMAGE_ACR
         value: #{container-registry}#.azurecr.io
     extraConfigmapMounts:
