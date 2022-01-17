@@ -314,8 +314,8 @@ airflow:
       value: "v0.12.0"
     - name: BUILD_TAG
       value: "v0.12.0"
-    - name: PIP_EXTRA_INDEX_URL # List of (space separated) extra-index-url for pip repositories
-      value: #{PIP_EXTRA_INDEX_URL}#
+    - name: AIRFLOW_VAR_ENV_VARS_ENABLED
+      value: "true"
     extraConfigmapMounts:
         - name: celery-config
           mountPath: /opt/celery
