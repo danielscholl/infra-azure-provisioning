@@ -228,7 +228,7 @@ airflow:
   airflow:
     image:
       repository: msosdu.azurecr.io/airflow-docker-image
-      tag: v0.10
+      tag: v0.10.1
       pullPolicy: Always
       pullSecret: ""
     config:
@@ -254,12 +254,15 @@ airflow:
       AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
       AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
       AIRFLOW_VAR_CORE__CONFIG__DATALOAD_CONFIG_PATH: "/opt/airflow/dags/configs/dataload.ini"
-      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/schema-service/v1/schema"
-      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/search/v2/query"
-      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/storage/v2/records"
+      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/schema-service/v1"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/search/v2"
+      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/storage/v2"
       AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "https://#{OSDU_SVC_ENDPOINT}#/api/file/v2"
-      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "https://#{OSDU_SVC_ENDPOINT}#/api/workflow"
+      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "https://#{OSDU_SVC_ENDPOINT}#/api/workflow/v1"
       AIRFLOW_VAR_CORE__SERVICE__SEARCH_WITH_CURSOR__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/search/v2/query_with_cursor"
+      AIRFLOW_VAR_CORE__SERVICE__PARTITION__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/partition/v1"
+      AIRFLOW_VAR_CORE__SERVICE__LEGAL__HOST: "https://#{OSDU_SVC_ENDPOINT}#/api/legal/v1"
+      AIRFLOW_VAR_CORE__SERVICE__ENTITLEMENTS__URL: "https://#{OSDU_SVC_ENDPOINT}#/api/entitlements/v2"
       AIRFLOW__WEBSERVER__WORKERS: 8
       AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 0
       AIRFLOW__CORE__STORE_SERIALIZED_DAGS: True #This flag decides whether to serialise DAGs and persist them in DB
