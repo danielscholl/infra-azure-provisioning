@@ -283,7 +283,7 @@ airflow:
   airflow:
     image:
       repository: msosdu.azurecr.io/airflow-docker-image
-      tag: v0.10
+      tag: v0.10.1
       pullPolicy: Always
       pullSecret: ""
     config:
@@ -309,12 +309,15 @@ airflow:
       AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
       AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
       AIRFLOW_VAR_CORE__CONFIG__DATALOAD_CONFIG_PATH: "/opt/airflow/dags/configs/dataload.ini"
-      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1/schema"
-      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query"
-      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2/records"
+      AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1"
+      AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2"
+      AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2"
       AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
-      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow"
+      AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow/v1"
       AIRFLOW_VAR_CORE__SERVICE__DATASET__HOST: "http://dataset.osdu.svc.cluster.local/api/dataset/v1"
+      AIRFLOW_VAR_CORE__SERVICE__PARTITION__URL: "http://partition.osdu.svc.cluster.local/api/partition/v1"
+      AIRFLOW_VAR_CORE__SERVICE__LEGAL__HOST: "http://legal.osdu.svc.cluster.local/api/legal/v1"
+      AIRFLOW_VAR_CORE__SERVICE__ENTITLEMENTS__URL: "http://entitlements.osdu.svc.cluster.local/api/entitlements/v2"
       AIRFLOW__WEBSERVER__WORKERS: 15
       AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 0
       AIRFLOW__CORE__STORE_SERIALIZED_DAGS: True #This flag decides whether to serialise DAGs and persist them in DB
