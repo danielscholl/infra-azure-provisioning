@@ -47,7 +47,7 @@ let legalTag = {
             "US"
         ],
         "contractId": "A1234",
-        "expirationDate": "2021-12-31",
+        "expirationDate": "3021-12-31",
         "originator": "MyCompany",
         "dataType": "Transferred Data",
         "securityClassification": "Public",

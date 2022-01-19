@@ -6,7 +6,7 @@
         "US"
       ],
       "contractId": "A1234",
-      "expirationDate": "2023-12-31",
+      "expirationDate": "3023-12-31",
       "originator": "MyCompany",
       "dataType": "Transferred Data",
       "securityClassification": "Public",
