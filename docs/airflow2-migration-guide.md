@@ -22,7 +22,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
  1. Run infra [setup](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/infra/templates/osdu-r3-mvp/service_resources/README.md) to create necessary infra for the airflow2 setup.
  2. Follow [documentation](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/blob/master/osdu-airflow2/README.md) to deploy airflow2 using helm chart.
  3. Validate airflow2 is up and running at {osdu_endpoint}/airflow2 endpoint
- 4. Copy the Existing community DAG's to the `airflowdags` to `airflow2dags`. Any custom DAG's need to be [upgraded](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) to airflow2.
+ 4. Copy the latest community DAG's to the `airflowdags` to `airflow2dags`. Any custom DAG's need to be [upgraded](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) to airflow2.
  5. Validate the uploaded dags are getting parse by airflow and are visible in the airflow webserver UI.
  6. Deploy workflow service using `helm-chart-azure` as described in the [document](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/tree/master/osdu-azure/workflow#airflow-2-migration).
 
@@ -41,7 +41,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
     -ojson
     ```
  3. Validate airflow2 is up and running at {osdu_endpoint}/airflow2 endpoint
- 4. Copy the Existing community DAG's to the `airflowdags` to `airflow2dags`. Any custom DAG's need to be [upgraded](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) to airflow2..
+ 4. Copy the latest community DAG's to the `airflowdags` to `airflow2dags`. Any custom DAG's need to be [upgraded](https://airflow.apache.org/docs/apache-airflow/stable/upgrading-from-1-10/index.html#step-5-upgrade-airflow-dags) to airflow2..
  5. Validate the uploaded dags are getting parse by airflow and are visible in the airflow webserver UI.
  6. Deploy workflow service using `helm-chart-azure` as described in the [document](https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-workflow/-/tree/master/provider/workflow-azure#airflow-2-migration).
 
@@ -67,5 +67,11 @@ We can remove Airflow1 installation by deleting the following has components:
 4. fileshare
 5. Application Gateway Rules
 
+To remove the above components we can
+
+1. For pipeline deployment
+   by removing the components from flux repo
+2. For Manual deployment:
+   by invoking `helm delete <component>`
 
 Metadata and Logs will be preserved, as metadata is kept in postgres and logs in log analytics.
