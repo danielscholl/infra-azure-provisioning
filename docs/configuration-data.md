@@ -99,7 +99,6 @@ FILE_SHARE="airflow2dags"
 # Airflow 2.x is recommended over Airflow 1.x
 # To keep on using Airflow 1.x use "airflowdags"
 FILE_NAME="manifest_ingestion_dags.zip"
-PROJECT_FOLDER=$(realpath ../ingestion-dags/src)
 
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
