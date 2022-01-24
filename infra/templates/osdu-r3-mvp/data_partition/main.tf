@@ -115,11 +115,12 @@ locals {
   resource_group_name = format("%s-%s-%s-rg", var.prefix, local.workspace, random_string.workspace_scope.result)
   retention_policy    = var.log_retention_days == 0 ? false : true
 
-  storage_name        = "${replace(local.base_name_21, "-", "")}data"
-  sdms_storage_name   = "${replace(local.base_name_21, "-", "")}sdms"
-  ingest_storage_name = "${replace(local.base_name_21, "-", "")}ingest"
-  cosmosdb_name       = "${local.base_name}-db"
-  sb_namespace        = "${local.base_name_21}-bus"
+  storage_name              = "${replace(local.base_name_21, "-", "")}data"
+  sdms_storage_name         = "${replace(local.base_name_21, "-", "")}sdms"
+  ingest_storage_name       = "${replace(local.base_name_21, "-", "")}ingest"
+  hierarchical_storage_name = "${replace(local.base_name_21, "-", "")}hiercl"
+  cosmosdb_name             = "${local.base_name}-db"
+  sb_namespace              = "${local.base_name_21}-bus"
 
   eg_sbtopic_subscriber               = "servicebusrecordstopic"
   eg_sbtopic_schema_subscriber        = "servicebusschemachangedtopic"
@@ -286,6 +287,37 @@ resource "azurerm_role_assignment" "ingest_storage_data_contributor" {
   scope                = module.ingest_storage_account.id
 }
 
+module "hierarchical_storage_account" {
+  source = "../../../modules/providers/azure/storage-account"
+
+  name                = local.hierarchical_storage_name
+  resource_group_name = azurerm_resource_group.main.name
+  container_names     = var.storage_containers_hierarchical
+  kind                = "StorageV2"
+  replication_type    = var.storage_replication_type
+
+  resource_tags  = var.resource_tags
+  is_hns_enabled = true
+}
+
+// Add Access Control to Principal
+resource "azurerm_role_assignment" "hierarchical_storage_access" {
+  count = length(local.rbac_principals)
+
+  role_definition_name = "Contributor"
+  principal_id         = local.rbac_principals[count.index]
+  scope                = module.hierarchical_storage_account.id
+}
+
+// Add Data Contributor Role to Principal
+resource "azurerm_role_assignment" "hierarchical_storage_data_contributor" {
+  count      = length(local.rbac_principals)
+  depends_on = [azurerm_role_assignment.hierarchical_storage_access]
+
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = local.rbac_principals[count.index]
+  scope                = module.hierarchical_storage_account.id
+}
 
 #-------------------------------
 # CosmosDB

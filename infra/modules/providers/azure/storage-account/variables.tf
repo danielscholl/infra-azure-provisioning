@@ -111,3 +111,9 @@ variable "min_tls_version" {
   type        = string
   default     = "TLS1_2"
 }
+
+variable "is_hns_enabled" {
+  description = "configure a hierarchical namespace for the storage account"
+  type        = bool
+  default     = false
+}
