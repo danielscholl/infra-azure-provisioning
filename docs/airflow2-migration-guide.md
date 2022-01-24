@@ -72,6 +72,11 @@ To remove the above components we can
 1. For pipeline deployment
    by removing the components from flux repo
 2. For Manual deployment:
-   by invoking `helm delete <component>`
+   by invoking `helm delete <type> <component> -n <namespace>`
+
+   1. helm delete deployments airflow-web -n osdu
+   2. helm delete deployments airflow-scheduler -n osdu
+   3. helm delete statefulsets airflow-worker -n osdu
+   4. helm delete deployments airflow-pgbouncer -n osdu
 
 Metadata and Logs will be preserved, as metadata is kept in postgres and logs in log analytics.
