@@ -47,6 +47,12 @@ storage_containers = [
   "file-staging-area",
   "file-persistent-area"
 ]
+
+storage_containers_hierarchical = [
+  "datalake-staging-area",
+  "datalake-persistent-area"
+]
+
 storage_containers_dp_airflow = [
   "airflow-logs"
 ]

@@ -37,7 +37,7 @@ var tfOptions = &terraform.Options{
 
 var deploy_dp_airflow = os.Getenv("TF_VAR_deploy_dp_airflow")
 var airflow_dp_resource_count = 88
-var expected_resource_count = 139
+var expected_resource_count = 149
 
 func TestTemplate(t *testing.T) {
 

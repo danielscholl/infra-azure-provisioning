@@ -103,6 +103,14 @@ data-partition-id: {{data_partition_id}}
             "sensitive": true,
             "value": "ingest-storage-key"
         },
+        "hierarchical-storage-account-name": {
+            "sensitive": true,
+            "value": "hierarchical-storage"
+        },
+        "hierarchical-storage-account-key": {
+            "sensitive": true,
+            "value": "hierarchical-storage-key"
+        },
         "eventgrid-recordstopic": {
             "sensitive": true,
             "value": "eventgrid-recordstopic"
