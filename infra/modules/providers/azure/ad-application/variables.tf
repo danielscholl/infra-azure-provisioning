@@ -96,7 +96,7 @@ locals {
 
   public_client = var.native ? true : false
 
-  default_identifier_uris = [format("http://%s", var.name)]
+  default_identifier_uris = [format("api://%s", var.name)]
 
   identifier_uris = var.native ? [] : coalescelist(var.identifier_uris, local.default_identifier_uris)
 
