@@ -44,8 +44,8 @@ This variable group will be used to hold the common values for the services to b
 | NOTIFICATION_REGISTER_BASE_URL                | `https://<your_fqdn>`                       |
 | NOTIFICATION_BASE_URL                         | `https://<your_fqdn>/api/notification/v1/`  |
 | REGISTER_CUSTOM_PUSH_URL_HMAC                 | `https://<your_fqdn>/api/register/v1/test/challenge/1`|
-| AGENT_IMAGE                                   | `ubuntu-latest`                             | 
-| PROVIDER_NAME                                 | `azure` 
+| AGENT_IMAGE                                   | `ubuntu-latest`                             |
+| PROVIDER_NAME                                 | `azure`
 | ENABLE_KEYVAULT_CERT                          | `false`              Set this variable to `true` if you want to use your own certificate from Keyvault certificate - appgw-ssl-cert
 
 
@@ -767,7 +767,7 @@ az pipelines variable-group create \
   --name "Azure Service Release - ingestion-service" \
   --authorize true \
   --variables \
-  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/ingest-azure" 
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/ingest-azure"
   MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine=""` \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/ingest-test-azurepom.xml" \
   SERVICE_RESOURCE_NAME='$(AZURE_INGESTION_SERVICE_NAME)' \
@@ -828,35 +828,36 @@ az pipelines create \
   -ojson
 ```
 
-4. Add a Pipeline for __chart-osdu-airflow__  to deploy airflow.
+4. Add a Pipeline for __chart-osdu-airflow__  to deploy airflow2.
 
     _Repo:_ `infra-azure-provisioning`
-    _Path:_ `/devops/pipelines/chart-airflow.yml`
+    _Path:_ `/devops/pipelines/chart-airflow2.yml`
     _Validate:_ Airflow Pods are running except for airflow-setup-default-user which is a job pod.
+
 
 ```bash
 az pipelines create \
-  --name 'chart-airflow'  \
+  --name 'chart-airflow2'  \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /devops/pipelines/chart-airflow.yml  \
+  --yaml-path /devops/pipelines/chart-airflow2.yml  \
   -ojson
 ```
 
-5. Add a Pipeline for __chart-osdu-airflow-opendes__  to deploy airflow in data partition if it is enabled.
+5. Add a Pipeline for __chart-osdu-airflow-opendes__  to deploy airflow2 in data partition if it is enabled.
 
     _Repo:_ `infra-azure-provisioning`
-    _Path:_ `/charts/airflow/pipeline-dp.yml`
+    _Path:_ `/charts/airflow2/pipeline-dp.yml`
     _Validate:_ Airflow Pods are running except for airflow-setup-default-user which is a job pod.
 
 ```bash
 az pipelines create \
-  --name 'chart-airflow-opendes'  \
+  --name 'chart-airflow2-opendes'  \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /charts/airflow/pipeline-dp.yml  \
+  --yaml-path /charts/airflow2/pipeline-dp.yml  \
   -ojson
 ```
 
