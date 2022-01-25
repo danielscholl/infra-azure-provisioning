@@ -14,8 +14,8 @@ The following steps need before migration:
 ### Upgrading Airflow2
 There are 2 methods that can be chosen to perform installation at this point in time.
 
-1. Manual Upgrade -- Typically used when the desire is to manually make modifications to the environment and have full control all updates and deployments.
-2. Pipeline Upgrade -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
+1. **Manual Upgrade** -- Typically used when the desire is to manually make modifications to the environment and have full control all updates and deployments.
+2. **Pipeline Upgrade** -- Typically used when the need is to only access the Data Platform but allow for automatic upgrades of infrastructure and services.
 
 
 ### Upgrading Manual installation ( preferred approach)
@@ -26,7 +26,7 @@ There are 2 methods that can be chosen to perform installation at this point in 
  5. Validate the uploaded dags are getting parse by airflow and are visible in the airflow webserver UI.
  6. Deploy workflow service using `helm-chart-azure` as described in the [document](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/tree/master/osdu-azure/workflow#airflow-2-migration).
 
-### Automated Pipeline Installation
+### Upgrading Automated Pipeline Installation
  1. Trigger the [`infrastructure-service-resources`](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/docs/infra-automation.md) pipeline to create infrastructure required for airflow2.
  2. Create new pipeline for the airflow2 deployment using
  Repo: `infra-azure-provisioning` Path: `/devops/pipelines/chart-airflow2.yml`.Validate: Airflow Pods are running except for airflow-setup-default-user which is a job pod.
@@ -61,22 +61,25 @@ Redeploy the `workflow-service` after the changes.
 Once the Upgrade to airflow2 is concluded, airflow1 installation can removed.
 
 We can remove Airflow1 installation by deleting the following has components:
-1. Airflow1 webserver pods
-2. Airflow1 scheduler pods
-3. Airflow1 workers pods
-4. fileshare
-5. Application Gateway Rules
+- Remove Airflow helm chart
+- Remove associated fileshare
+- Remove associated Application Gateway Rules
 
-To remove the above components we can
+To remove the above Airflow 1.10.x helm chart we can follow details below
 
-1. For pipeline deployment
-   by removing the components from flux repo
-2. For Manual deployment:
-   by invoking `helm delete <type> <component> -n <namespace>`
+   ### For pipeline deployment
 
-   1. helm delete deployments airflow-web -n osdu
-   2. helm delete deployments airflow-scheduler -n osdu
-   3. helm delete statefulsets airflow-worker -n osdu
-   4. helm delete deployments airflow-pgbouncer -n osdu
+   - Navigate the `k8-gitops-manifests` repo in ADO
+   - Delete the folder mentioned at `/providers/azure/hld-registry/airflow`.
+   - Commit and push changes to `k8-gitops-manifests` repo.
 
-Metadata and Logs will be preserved, as metadata is kept in postgres and logs in log analytics.
+   ### For Manual deployment:
+
+   We can delete the airflow1 installation by running the cmd below on the aks cluster
+   ```sh
+   helm delete airflow -n airflow
+   ```
+   Note:
+
+    1. Metadata and Logs will be preserved, as metadata is kept in postgres and logs in log analytics.
+    2. An update would release will follow for infrastructure clean using Terraform.
