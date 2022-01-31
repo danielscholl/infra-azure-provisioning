@@ -26,6 +26,8 @@ spec:
             value: dotnet
           - name: AzureLogWorkspaceLogName
             value: airflow_dag
+          - name: AzureLogAnalyticsEnabled
+            value: {{ .Values.logAnalytics.isEnabled | quote}}
           - name: AzureLogWorkspaceCustomerId
             valueFrom:
               secretKeyRef:

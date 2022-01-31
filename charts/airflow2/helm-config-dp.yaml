@@ -20,6 +20,7 @@ appinsightstatsd:
 # Specify log analytics configuration
 #
 logAnalytics:
+  isEnabled: "true"
   workspaceId:
     secretName: "dp-logging"
     secretKey: "workspace-id"
