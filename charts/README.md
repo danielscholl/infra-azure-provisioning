@@ -99,6 +99,18 @@ cat > config_airflow.yaml << EOF
 appinsightstatsd:
   aadpodidbinding: "osdu-identity"
 
+#################################################################################
+# Specify log analytics configuration
+#
+logAnalytics:
+  isEnabled: "true"
+  workspaceId:
+    secretName: "central-logging"
+    secretKey: "workspace-id"
+  workspaceKey:
+    secretName: "central-logging"
+    secretKey: "workspace-key"
+
 ################################################################################
 # Specify any optional override values
 #

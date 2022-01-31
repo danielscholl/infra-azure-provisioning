@@ -1,16 +1,12 @@
 using System;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System.IO;
-using System.ComponentModel.Design.Serialization;
 using System.Text.RegularExpressions;
-using System.Text;
 
 namespace MyFunctionProj
 {
@@ -25,16 +21,19 @@ namespace MyFunctionProj
             // get blob url
             JObject o = JObject.Parse(myQueueItem);
             string blobUrl = (string)o["data"]["url"];
-            string runID = blobUrl.Split("/")[5]; // the 2nd part after containerName
+            string runId = blobUrl.Split("/")[5]; // the 2nd part after containerName
+            string dagName = blobUrl.Split("/")[6];
+            string dagTaskName = blobUrl.Split("/")[7];
             string correlationId = blobUrl.Split("/")[9];
+            string tryNumber = blobUrl.Split("/")[10].Split(".")[0];
+
             log.LogInformation($"C# Queue trigger function processed: blobUrl - {blobUrl}");
             log.LogInformation($"C# Queue trigger function processed: correlationId - {correlationId}");
             string connection = GetEnvironmentVariable("AzureWebJobsStorage");
             string customerId = GetEnvironmentVariable("AzureLogWorkspaceCustomerId");
             string sharedKey = GetEnvironmentVariable("AzureLogWorkspaceSharedKey");
             string logName = GetEnvironmentVariable("AzureLogWorkspaceLogName");
-
-            log.LogInformation(connection);
+            string isLogAnalyticsEnabled = GetEnvironmentVariable("AzureLogAnalyticsEnabled");
 
             // parse blob url
             BlobClient blob = new BlobClient(new Uri(blobUrl));
@@ -78,9 +77,15 @@ namespace MyFunctionProj
                     if (logLineEntity != null)
                     {
                         string json = JsonConvert.SerializeObject(logLineEntity);
-                        //log.LogInformation($"Executing send last record: {json}");
-                        ApiHelper.SendLogs(json: json, customerId: customerId, sharedKey: sharedKey, logName: logName, log: log);
-                        
+                        if (isLogAnalyticsEnabled.Equals("false"))
+                        {
+                            log.LogInformation(json);
+                        }
+                        else
+                        {
+                            ApiHelper.SendLogs(json: json, customerId: customerId, sharedKey: sharedKey, logName: logName, log: log);
+                        }
+
                     }
                     log.LogInformation($"Congrats!!! Job finished with {lineNumber} lines!");
                     // quit the entire loop
@@ -95,8 +100,14 @@ namespace MyFunctionProj
                     if (logLineEntity != null)
                     {
                         string json = JsonConvert.SerializeObject(logLineEntity);
-                        //log.LogInformation($"Executing send record: {json}");
-                        ApiHelper.SendLogs(json: json, customerId: customerId, sharedKey: sharedKey, logName: logName, log: log);
+                        if (isLogAnalyticsEnabled.Equals("false"))
+                        {
+                            log.LogInformation(json);
+                        }
+                        else
+                        {
+                            ApiHelper.SendLogs(json: json, customerId: customerId, sharedKey: sharedKey, logName: logName, log: log);
+                        }
                     }
 
                     // reset object
@@ -104,13 +115,16 @@ namespace MyFunctionProj
 
                     // then start to deal the next record
                     logLineEntity.LogFileName = blobUrl;
-                    logLineEntity.RunID = runID;
+                    logLineEntity.RunID = runId;
                     logLineEntity.CorrelationId = correlationId;
                     logLineEntity.LogTimestamp = m.Value;
-                    logLineEntity.Task = task.Match(line).Value;
                     logLineEntity.LogLevel = logLevel.Match(line).Value;
                     logLineEntity.Content = content.Match(line).Value;
                     logLineEntity.LineNumber = lineNumber;
+                    logLineEntity.DagTaskName = dagTaskName;
+                    logLineEntity.DagName = dagName;
+                    logLineEntity.TryNumber = tryNumber;
+                    logLineEntity.Task = task.Match(line).Value;
 
                 }
                 // line not starting with timestap, another line of content
@@ -130,12 +144,15 @@ namespace MyFunctionProj
     public class LogLineEntity
     {
         public string LogTimestamp { get; set; }
-        public string Task { get; set; }
-        public string LogLevel { get; set; }
+        public string DagTaskName { get; set; }
+        public string DagName { get; set; }
         public string Content { get; set; }
-        public string LogFileName { get; set; }
         public string RunID { get; set; }
         public string CorrelationId { get; set; }
+        public string LogLevel { get; set; }
+        public string TryNumber { get; set; }
+        public string LogFileName { get; set; }
+        public string Task { get; set; }
         public int LineNumber { get; set; }
     }
 }
