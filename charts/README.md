@@ -336,6 +336,7 @@ airflow:
       AIRFLOW__CORE__STORE_DAG_CODE: True #This flag decides whether to persist DAG files code in DB
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent    
       AIRFLOW_VAR_CORE__SERVICE__SEARCH_WITH_CURSOR__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query_with_cursor"
+      AIRFLOW_VAR_CORE__CONFIG__SHOW_SKIPPED_IDS: True
     extraEnv:
       - name: AIRFLOW__CORE__FERNET_KEY
         valueFrom:
