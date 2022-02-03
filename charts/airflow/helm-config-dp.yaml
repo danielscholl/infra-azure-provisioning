@@ -270,6 +270,7 @@ airflow:
       AIRFLOW__CORE__STORE_DAG_CODE: True #This flag decides whether to persist DAG files code in DB
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent
       AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
+      AIRFLOW_VAR_CORE__CONFIG__SHOW_SKIPPED_IDS: True
     extraEnv:
     - name: CLOUD_PROVIDER
       value: "azure"
