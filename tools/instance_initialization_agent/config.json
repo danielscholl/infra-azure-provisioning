@@ -1,0 +1,19 @@
+{
+    "services": {
+        "partition": {
+            "hostUrl": "http://partition.{namespace}.svc.cluster.local",
+            "api": {
+                "partition-init": "{partitionHost}/api/partition/v1/partitions/{partition}"
+            }
+        },
+        "entitlements": {
+            "hostUrl": "http://entitlements.{namespace}.svc.cluster.local",
+            "api": {
+                "tenant-init": "{entitlementsHost}/api/entitlements/v2/tenant-provisioning",
+                "add-user": "{entitlementsHost}/api/entitlements/v2/groups/users@{partition}.{serviceDomain}/members",
+                "add-ops-user": "{entitlementsHost}/api/entitlements/v2/groups/users.datalake.ops@{partition}.{serviceDomain}/members",
+                "add-root-user": "{entitlementsHost}/api/entitlements/v2/groups/users.data.root@{partition}.{serviceDomain}/members"
+            }
+        }
+    }
+}
