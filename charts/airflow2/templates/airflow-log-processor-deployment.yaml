@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: airflow-log-processor
-        aadpodidbinding: "osdu-identity"
+        aadpodidbinding: "osdu-airflow2-identity"
     spec:
       containers:
       - name: airflow-log-processor

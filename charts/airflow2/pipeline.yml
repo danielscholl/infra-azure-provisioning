@@ -33,6 +33,8 @@ variables:
     value: "charts/airflow2"
   - name: valuesFile
     value: "charts/airflow2/helm-config.yaml"
+  - name: podOperatorNamespace
+    value: "airflow"
 
 stages:
 
@@ -41,6 +43,8 @@ stages:
       sourceFolder: "source"
       #multiple file paths to be provided with pipe(|) seperated
       dockerFilePaths: "airflow-function|airflow-statsd"
+      baseResourceGroupName: $(base-name-sr)
+      podOperatorNamespace: ${{ variables.podOperatorNamespace }}
       providers:
         - name: Azure
           environments: ["dev", "glab"]

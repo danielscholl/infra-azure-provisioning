@@ -1,3 +1,4 @@
+{{- if not (eq .Release.Namespace .Values.airflow.kubernetesPodOperator.namespace) }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
@@ -41,4 +42,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.airflow.serviceAccount.name }}
-    namespace: airflow2
+    namespace: {{ .Release.Namespace}}
+{{- end }}
