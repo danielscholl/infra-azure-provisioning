@@ -14,7 +14,7 @@ azure:
 # Specify the azure environment specific values
 #
 appinsightstatsd:
-  aadpodidbinding: "osdu-identity"
+  aadpodidbinding: "osdu-airflow2-identity"
 
 #################################################################################
 # Specify log analytics configuration
@@ -173,7 +173,7 @@ airflow:
         cpu: "1000m"
         memory: "4Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     autoscale:
       enabled: false
       minReplicas: 2
@@ -197,7 +197,7 @@ airflow:
         cpu: "1200m"
         memory: "5Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     podAnnotations:
       sidecar.istio.io/inject: "false"
     autoscale:
@@ -231,7 +231,7 @@ airflow:
         cpu: "3000m"
         memory: "1Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     autoscale:
       enabled: false
       minReplicas: 2
@@ -394,4 +394,4 @@ airflow:
             name: airflow-remote-log-config
     dbMigrations:
       podLabels:
-        aadpodidbinding: "osdu-identity"
+        aadpodidbinding: "osdu-airflow2-identity"

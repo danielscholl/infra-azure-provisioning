@@ -1,11 +1,9 @@
-{{- $isEnabled := .Values.airflow.isDataPartitionDeployment | default false -}}
-{{- $prefixNamespaceString := printf "%s-" .Release.Namespace }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflow2dagpv
+  name: {{ .Release.Namespace }}-airflow2dagpv
   labels:
-    usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
+    usage: {{ .Release.Namespace }}-airflowtwo-dag
 spec:
   capacity:
     storage: 5Gi
@@ -40,4 +38,4 @@ spec:
       storage: 5Gi
   selector:
     matchLabels:
-      usage: {{ $isEnabled | ternary $prefixNamespaceString "" }}airflowtwo-dag
+      usage: {{ .Release.Namespace }}-airflowtwo-dag

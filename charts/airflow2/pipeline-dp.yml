@@ -54,6 +54,8 @@ variables:
     value: "charts/osdu-istio"
   - name: istioValuesFile
     value: "charts/helm-config-dp.yaml"
+  - name: podOperatorNamespace
+    value: "airflow"
 
 stages:
   - template: pipeline-stages/airflow-custom-stages.yml
@@ -61,6 +63,8 @@ stages:
       sourceFolder: "source"
       #multiple file paths to be provided with pipe(|) seperated
       dockerFilePaths: "airflow-function|airflow-statsd"
+      baseResourceGroupName: $(base-name-dp)
+      podOperatorNamespace: ${{ variables.podOperatorNamespace }}
       providers:
         - name: Azure
           environments: ["dev", "glab"]
