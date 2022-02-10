@@ -1,6 +1,7 @@
 import json
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
+from json.decoder import JSONDecodeError
 from pprint import pprint
 
 """ [Config Map Exception Helper]
@@ -80,11 +81,20 @@ def writeOutputToConfigMap(status, message, ConfigMapName, Namespace, Partitions
         print("Write To Config Map, Attempt ", str(attemptCount))
         writeSuccess = False
         
-        existingMessage = readConfig["message"] if type(readConfig["message"]) is dict else json.loads(readConfig["message"])
+        existingMessage = {}
+        try:
+            existingMessage = readConfig["message"] if type(readConfig["message"]) is dict else json.loads(readConfig["message"])
+        except JSONDecodeError as j:
+            print("Existing message could not be loaded as json")
+            pprint(j)
+        except Exception as ex:
+            print("Exception encountered while attempting to read message")
+            pprint(ex)
+        
         if configmapWriteHistory == 1:
             existingMessage["previousIteration"] = "~~REDACTED~~" # Removing >=2 level historical info to adhere to config map length constraints
         else:
-            existingMessage = "~~REDACTED~~" # Removing All historical info to adhere to config map length constraints
+            existingMessage = {"message": "~~REDACTED~~"} # Removing All historical info to adhere to config map length constraints
         
         finalStatus = status["ops"]
         for partitionEval in Partitions:
