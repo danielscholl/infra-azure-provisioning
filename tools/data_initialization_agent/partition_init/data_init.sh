@@ -115,7 +115,7 @@ echo "Current Message: ${currentMessage}"
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
   az login --identity --username $OSDU_IDENTITY_ID
   if [ $? -eq 0 ]; then
-      if [ -z "$SUBSCRIPTION" -a "$SUBSCRIPTION"==" " ]; then
+      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
         az account set --subscription $SUBSCRIPTION
       fi
   fi
