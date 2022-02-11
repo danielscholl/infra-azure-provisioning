@@ -343,6 +343,12 @@ echo "Current Message: ${currentMessage}"
 
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
   az login --identity --username $OSDU_IDENTITY_ID
+  if [ $? -eq 0 ]; then
+      if [ -z "$SUBSCRIPTION" -a "$SUBSCRIPTION"==" " ]; then
+        az account set --subscription $SUBSCRIPTION
+      fi
+  fi
+  
   ENV_AKS=$(az aks list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
   az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $ENV_AKS
   kubectl config set-context $RESOURCE_GROUP_NAME --cluster $ENV_AKS
