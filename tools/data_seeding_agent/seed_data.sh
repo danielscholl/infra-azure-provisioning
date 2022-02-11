@@ -19,13 +19,17 @@ while [[ $loginAttemptCount -lt $maxRetry ]]; do
         echo "Manual fetch access token successful. Attempt ${loginAttemptCount} of ${maxRetry}."
         currentMessage="${currentMessage}. Manual fetch access token successful. Attempt ${loginAttemptCount} of ${maxRetry}. "
         AZ_LOGIN=$(az login --identity --username $OSDU_IDENTITY_ID)
-        echo $AZ_LOGIN
+        echo "AzLogin: ${AZ_LOGIN}"
 
         if [[ ${AZ_LOGIN} == *"AzureConnectionError"* ]] || [[ ${AZ_LOGIN} == *"Failed to connect to MSI"* ]];then
             echo "az login failed. Attempt ${loginAttemptCount} of ${maxRetry}."
             currentMessage="${currentMessage}. az login failed: ${AZ_LOGIN}. Attempt ${loginAttemptCount} of ${maxRetry}. "
             continue
         else
+            if [ -z "$SUBSCRIPTION" -a "$SUBSCRIPTION"==" " ]; then
+                az account set --subscription $SUBSCRIPTION
+            fi
+
             echo "az login successful. Attempt ${loginAttemptCount} of ${maxRetry}."
             currentMessage="${currentMessage}. az login successful. Attempt ${loginAttemptCount} of ${maxRetry}. "
             break
@@ -36,6 +40,7 @@ done
 # The Legal_COO.json file needs to be loaded into the Data Partition Storage Account,
 # in the container  legal-service-azure-configuration.
 ENV_VAULT=$(az keyvault list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
+echo "KeyVault: ${ENV_VAULT}"
 
 IFS=',' read -r -a partitions_array <<< ${PARTITIONS}
 
@@ -47,7 +52,9 @@ while [[ $retryCount -lt $maxRetry ]]; do
         echo "Ingesting Legal_COO.json file for partition: $index. ${partitions_array[index]}"
         
         STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage --query value -otsv)
+        echo "STORAGE_ACCOUNT_NAME: ${STORAGE_ACCOUNT_NAME}"
         STORAGE_ACCOUNT_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage-key --query value -otsv)
+        echo "STORAGE_ACCOUNT_KEY: ${STORAGE_ACCOUNT_KEY}"
         FILE_NAME=Legal_COO.json
     
         if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME"==" " ]; then
@@ -103,8 +110,10 @@ while [[ $retryCount -lt $maxRetry ]]; do
         echo "Ingesting tenant_info_*.json file(s) for partition: $index. ${partitions_array[index]}"
     
         export COSMOS_ENDPOINT=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-cosmos-endpoint --query value -otsv)
+        echo "COSMOS_ENDPOINT: ${COSMOS_ENDPOINT}"
         export COSMOS_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-cosmos-primary-key --query value -otsv)
-    
+        echo "COSMOS_KEY: ${COSMOS_KEY}"
+
         if [ -z "$COSMOS_ENDPOINT" -a "$COSMOS_ENDPOINT"==" " ]; then
             currentStatus="failure"
             currentMessage="${currentMessage}. COSMOS_ENDPOINT Not Found, Partition ${partitions_array[index]}. "
@@ -139,7 +148,6 @@ echo "Current Status: ${currentStatus}"
 echo "Current Message: ${currentMessage}"
 
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
-  az login --identity --username $OSDU_IDENTITY_ID
   ENV_AKS=$(az aks list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
   az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $ENV_AKS
   kubectl config set-context $RESOURCE_GROUP_NAME --cluster $ENV_AKS
