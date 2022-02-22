@@ -16,11 +16,14 @@ prefix      = "osdu-mvp"
 tenant_name = "azureglobal1"
 
 dashboards = {
-  default         = true
-  appinsights     = true
-  airflow_infra   = true
-  airflow_service = true
-  airflow_dags    = true
+  default           = true
+  appinsights       = true
+  airflow_infra     = true
+  airflow_service   = true
+  airflow_dags      = true
+  airflow_2_dags    = true
+  airflow_2_infra   = true
+  airflow_2_service = true
 }
 
 # Populated below is a collection of sample action groups.
