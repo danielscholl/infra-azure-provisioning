@@ -848,7 +848,7 @@ az pipelines create \
 5. Add a Pipeline for __chart-osdu-airflow-opendes__  to deploy airflow2 in data partition if it is enabled.
 
     _Repo:_ `infra-azure-provisioning`
-    _Path:_ `/charts/airflow2/pipeline-dp.yml`
+    _Path:_ `/devops/pipelines/chart-airflow2-dp.yml`
     _Validate:_ Airflow Pods are running except for airflow-setup-default-user which is a job pod.
 
 ```bash
@@ -857,7 +857,7 @@ az pipelines create \
   --repository infra-azure-provisioning  \
   --branch master  \
   --repository-type tfsgit  \
-  --yaml-path /charts/airflow2/pipeline-dp.yml  \
+  --yaml-path /devops/pipelines/chart-airflow2-dp.yml  \
   -ojson
 ```
 

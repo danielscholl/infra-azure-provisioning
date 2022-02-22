@@ -23,6 +23,12 @@ trigger:
     exclude:
       - /**/*.md
 
+resources:
+  repositories:
+  - repository: helm-charts-azure
+    name: helm-charts-azure
+    type: git
+
 variables:
   - group: "Azure - OSDU"
   - group: "Azure - OSDU secrets"
@@ -30,18 +36,15 @@ variables:
   - name: serviceName
     value: "airflow2"
   - name: chartPath
-    value: "charts/airflow2"
+    value: "osdu-airflow2"
   - name: valuesFile
-    value: "charts/airflow2/helm-config.yaml"
+    value: "osdu-airflow2/values-sr-pipeline.yaml"
   - name: podOperatorNamespace
     value: "airflow"
 
 stages:
-  - template: /charts/airflow2/pipeline-stages/airflow-custom-stages.yml
+  - template: /devops/airflow-prerequisites.yml
     parameters:
-      sourceFolder: "source"
-      #multiple file paths to be provided with pipe(|) seperated
-      dockerFilePaths: "airflow-function|airflow-statsd"
       baseResourceGroupName: $(base-name-sr)
       podOperatorNamespace: ${{ variables.podOperatorNamespace }}
       providers:
@@ -50,6 +53,7 @@ stages:
 
   - template: /devops/chart-stages-helm.yml
     parameters:
+      checkoutRepo: helm-charts-azure
       serviceName: ${{ variables.serviceName }}
       chartPath: ${{ variables.chartPath }}
       valuesFile: ${{ variables.valuesFile }}
