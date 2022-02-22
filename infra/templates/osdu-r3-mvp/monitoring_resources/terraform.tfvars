@@ -127,6 +127,30 @@ log-alerts = {
     metric-trigger-type   = "Consecutive",
     metric-trigger-column = "HostName"
   },
+  airflow-2-scheduler-host-count-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-scheduler-host-count-alert",
+    description         = "Alert to trigger when the host count of airflow scheduler goes below the reqd count",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "KubePodInventory\n| where ControllerName contains \"airflow2-scheduler\"\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains \"airflow2-scheduler\"\n| where ContainerName endswith \"airflow-scheduler\"\n| project Computer, InstanceName, ContainerName, PodName, PodStatus, TimeGenerated, Count = 1\n| parse kind=regex PodName with partitionId \"-airflow2-scheduler-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = avg(Count) by  bin(TimeGenerated, 30sec), HostName = strcat(clusterName, \"-\", \"airflow2-scheduler\"), clusterName",
+    # Threshold value for Scheduler Host Count, which when is less than will raise alert
+    trigger-threshold       = 1,
+    trigger-operator        = "LessThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 2,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Consecutive",
+    metric-trigger-column = "HostName"
+  },
   airflow-web-host-count-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -151,6 +175,30 @@ log-alerts = {
     metric-trigger-type   = "Consecutive",
     metric-trigger-column = "HostName"
   },
+  airflow-2-web-host-count-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-web-host-count-alert",
+    description         = "Alert to trigger when the host count of airflow web goes below the reqd count",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "KubePodInventory\n| where ControllerName contains \"airflow2-web\"\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains \"airflow2-web\"\n| where ContainerName endswith \"airflow-web\"\n| project Computer, InstanceName, ContainerName, PodName, PodStatus, TimeGenerated, Count = 1\n| parse kind=regex PodName with partitionId \"-airflow2-web-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = avg(Count) by  bin(TimeGenerated, 30sec), HostName = strcat(clusterName, \"-\", \"airflow2-web\"), clusterName",
+    # Threshold value for Web Host Count, which when is less than will raise alert
+    trigger-threshold       = 2,
+    trigger-operator        = "LessThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 2,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Consecutive",
+    metric-trigger-column = "HostName"
+  },
   airflow-worker-host-count-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -165,6 +213,30 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "KubePodInventory\n| where ControllerName contains \"airflow-worker\"\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains \"airflow-worker\"\n| where ContainerName endswith \"airflow-worker\"\n| project Computer, InstanceName, ContainerName, PodName, PodStatus, TimeGenerated, Count = 1\n| parse kind=regex PodName with partitionId \"-airflow-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = avg(Count) by  bin(TimeGenerated, 30sec), HostName = strcat(clusterName, \"-\", \"airflow-worker\"), clusterName",
+    # Threshold value for Worker Host Count, which when is less than will raise alert
+    trigger-threshold       = 1,
+    trigger-operator        = "LessThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 2,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Consecutive",
+    metric-trigger-column = "HostName"
+  },
+  airflow-2-worker-host-count-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-worker-host-count-alert",
+    description         = "Alert to trigger when the host count of airflow worker goes below the reqd count",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "KubePodInventory\n| where ControllerName contains \"airflow2-worker\"\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains \"airflow2-worker\"\n| where ContainerName endswith \"airflow-worker\"\n| project Computer, InstanceName, ContainerName, PodName, PodStatus, TimeGenerated, Count = 1\n| parse kind=regex PodName with partitionId \"-airflow2-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = avg(Count) by  bin(TimeGenerated, 30sec), HostName = strcat(clusterName, \"-\", \"airflow2-worker\"), clusterName",
     # Threshold value for Worker Host Count, which when is less than will raise alert
     trigger-threshold       = 1,
     trigger-operator        = "LessThan",
@@ -200,6 +272,30 @@ log-alerts = {
     metric-trigger-type   = "Total",
     metric-trigger-column = "PodName"
   },
+  airflow-2-scheduler-CPU-Usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-scheduler-CPU-Usage-alert",
+    description         = "Alert to trigger when the CPU Usage of the Scheduler goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'cpuLimitNanoCores';\nlet usageCounterName = 'cpuUsageNanoCores';\nlet cloudRoleName= \"airflow2-scheduler\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-scheduler\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-scheduler-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for CPU usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
   airflow-web-CPU-Usage-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -224,6 +320,30 @@ log-alerts = {
     metric-trigger-type   = "Total",
     metric-trigger-column = "PodName"
   },
+  airflow-2-web-CPU-Usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-web-CPU-Usage-alert",
+    description         = "Alert to trigger when the CPU Usage of the Airflow Web goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'cpuLimitNanoCores';\nlet usageCounterName = 'cpuUsageNanoCores';\nlet cloudRoleName= \"airflow2-web\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-web\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-web-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for CPU usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
   airflow-worker-CPU-Usage-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -238,6 +358,30 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "let capacityCounterName = 'cpuLimitNanoCores';\nlet usageCounterName = 'cpuUsageNanoCores';\nlet cloudRoleName= \"airflow-worker\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith cloudRoleName\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for CPU usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
+  airflow-worker-CPU-Usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-worker-CPU-Usage-alert",
+    description         = "Alert to trigger when the CPU Usage of the Airflow Worker goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'cpuLimitNanoCores';\nlet usageCounterName = 'cpuUsageNanoCores';\nlet cloudRoleName= \"airflow2-worker\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-worker\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
     # Threshold value for CPU usage which when exceeded will raise alert
     trigger-threshold       = 80,
     trigger-operator        = "GreaterThan",
@@ -297,6 +441,30 @@ log-alerts = {
     metric-trigger-type   = "Total",
     metric-trigger-column = "PodName"
   },
+  airflow-2-scheduler-memory-usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-scheduler-memory-usage-alert",
+    description         = "Alert to trigger when the Memory Usage of the Scheduler goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'memoryLimitBytes';\nlet usageCounterName = 'memoryRssBytes';\nlet cloudRoleName= \"airflow2-scheduler\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-scheduler\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-scheduler-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for Memory usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
   airflow-web-memory-usage-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -321,6 +489,30 @@ log-alerts = {
     metric-trigger-type   = "Total",
     metric-trigger-column = "PodName"
   },
+  airflow-2-web-memory-usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-web-memory-usage-alert",
+    description         = "Alert to trigger when the Memory Usage of the Airflow Web goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'memoryLimitBytes';\nlet usageCounterName = 'memoryRssBytes';\nlet cloudRoleName= \"airflow2-web\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-web\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-web-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for Memory usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
   airflow-worker-memory-usage-alert = {
     # Scope for log query.
     log-analytics-scope = true,
@@ -335,6 +527,30 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "let capacityCounterName = 'memoryLimitBytes';\nlet usageCounterName = 'memoryRssBytes';\nlet cloudRoleName= \"airflow-worker\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith cloudRoleName\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for Memory usage which when exceeded will raise alert
+    trigger-threshold       = 80,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "PodName"
+  },
+  airflow-2-worker-memory-usage-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-worker-memory-usage-alert",
+    description         = "Alert to trigger when the Memory Usage of the Airflow Worker goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let capacityCounterName = 'memoryLimitBytes';\nlet usageCounterName = 'memoryRssBytes';\nlet cloudRoleName= \"airflow2-worker\";\nKubePodInventory\n| where ControllerName has cloudRoleName\n| extend InstanceName = strcat(ClusterId, '/', ContainerName), ContainerName = strcat(ControllerName, '/', tostring(split(ContainerName, '/')[1])), PodName = Name\n| where PodStatus in ('Running')\n| where PodName contains cloudRoleName\n| where ContainerName endswith \"airflow-worker\"\n| distinct Computer, InstanceName, ContainerName, PodName\n| join\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == capacityCounterName\n    | summarize LimitValue = max(CounterValue) by Computer, InstanceName, bin(TimeGenerated, 15m)\n    | project Computer, InstanceName, LimitValue, limitA=100\n    )\n    on Computer, InstanceName\n| join kind=inner\n    hint.strategy=shuffle (\n    Perf\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == usageCounterName\n    | project Computer, InstanceName, UsageValue = CounterValue,\nlimit=100, TimeGenerated\n)\non Computer, InstanceName\n| project PodName, TimeGenerated, UsagePercent = UsageValue * 100.0 / LimitValue\n| parse kind=regex PodName with partitionId \"-airflow2-worker-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\npartitionId)\n| extend PodName = case(clusterName == \"common-cluster\", strcat(clusterName, \"-\" ,PodName),\nPodName)\n| summarize AggregatedValue=max(UsagePercent) by PodName, bin(TimeGenerated, 5m), clusterName",
     # Threshold value for Memory usage which when exceeded will raise alert
     trigger-threshold       = 80,
     trigger-operator        = "GreaterThan",
@@ -394,6 +610,30 @@ log-alerts = {
     metric-trigger-type   = "Total",
     metric-trigger-column = "clusterName"
   },
+  airflow-2-service-error-rate-alert = {
+    # Scope for log query.
+    log-analytics-scope = true,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-service-error-rate-alert",
+    description         = "Alert to trigger when error rate for 5xx goes above the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 10,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "let ContainerIdList = KubePodInventory\n    | where Name has \"airflow2-web\"\n    | where strlen(ContainerID) > 0\n    | distinct ContainerID, PodLabel, Namespace, PodIp, Name;\nContainerLog\n| where ContainerID in (ContainerIdList)\n| where LogEntry contains \"HTTP/1.1\" and LogEntry !contains \"/airflow2/health\"\n| lookup kind=leftouter (ContainerIdList) on ContainerID\n| project-away Image, ImageTag, Repository, Name, TimeOfCommand\n| project-rename PodName=Name1\n| parse kind=regex PodName with partitionId \"-airflow2-web-[[:graph:]]\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| parse kind=regex LogEntry with '[[:graph:]] HTTP/1.1\" ' values\n| extend status = toint(split(values, \" \")[0]), timeTaken = toint(split(values, \" \")[1])\n| extend HTTPStatus = case(status between (200 .. 299), \"2XX\",\n    status between (300 .. 399), \"3XX\",\n    status between (400 .. 499), \"4XX\",\n    status between (500 .. 599), \"5XX\",\n    \"XX\")\n| where HTTPStatus == \"5XX\"\n| summarize AggregatedValue = count() by HTTPStatus, bin(TimeGenerated, 5m), clusterName",
+    # Threshold value for Error Rate of 5XX errors which when exceeded will raise alert
+    trigger-threshold       = 20,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "clusterName"
+  },
   airflow-scheduler-heartbeat-alert = {
     # Scope for log query.
     log-analytics-scope = false,
@@ -408,6 +648,30 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "customMetrics\n| where name has \"scheduler_heartbeat\"\n| parse kind=regex name with @\"([0-9a-zA-Z_])*\\.\" partitionId @\"\\.scheduler_heartbeat\" \n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue= max(value) by bin(timestamp, 30sec), HostName = strcat(clusterName, \"-airflow-scheduler\")",
+    # Threshold value for scheduler heartbeat which if it falls below will raise alert
+    trigger-threshold       = 2,
+    trigger-operator        = "LessThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 2,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Consecutive",
+    metric-trigger-column = "HostName"
+  },
+  airflow-2-scheduler-heartbeat-alert = {
+    # Scope for log query.
+    log-analytics-scope = false,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-scheduler-heartbeat-alert",
+    description         = "Alert to trigger when scheduler heartbeat goes below the threshold limit",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "customMetrics\n| where name matches regex \"osdu_airflow2.*scheduler_heartbeat\"\n| parse kind=regex name with @\"osdu_airflow2\\.\" partitionId @\"\\.scheduler_heartbeat\" \n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue= max(value) by bin(timestamp, 30sec), HostName = strcat(clusterName, \"-airflow2-scheduler\")",
     # Threshold value for scheduler heartbeat which if it falls below will raise alert
     trigger-threshold       = 2,
     trigger-operator        = "LessThan",
@@ -442,6 +706,30 @@ log-alerts = {
     metric-trigger-type   = "Consecutive",
     metric-trigger-column = "Operation"
   },
+  airflow-2-dag-processor-timeout-alert = {
+    # Scope for log query.
+    log-analytics-scope = false,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-dag-processor-timeout-alert",
+    description         = "Alert to trigger when dag-processor timeouts occur",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "customMetrics\n| where name matches regex \"osdu_airflow2.*dag_processing.processor_timeouts\"\n| parse kind=regex name with @\"osdu_airflow2\\.\" partitionId @\"\\.dag_processing\\.processor_timeouts\" \n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = max(value) by bin(timestamp, 1m), Operation = strcat(clusterName, \"-dag_processing.processor_timeouts\"), MetricName = \"dag_processing.processor_timeouts\", clusterName",
+    # Threshold value for processing timeouts which when occurs will raise alert
+    trigger-threshold       = 0,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 2,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Consecutive",
+    metric-trigger-column = "Operation"
+  },
   airflow-import-errors-alert = {
     log-analytics-scope = false,
     service-name        = "airflow",
@@ -455,6 +743,29 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "customMetrics\n| where name has \"dag_processing.import_errors\"\n| parse kind=regex name with @\"([0-9a-zA-Z_])*\\.\" partitionId @\"\\.dag_processing\\.import_errors\" \n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = sum(value) by bin(timestamp, 5m), Operation= strcat(\"MetricName: \", name, \" Data-Partition: \", clusterName )\n",
+    # Threshold value for Import Error which when exceeded will raise alert
+    trigger-threshold       = 0,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "GreaterThan",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 0,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "Operation"
+  },
+  airflow-2-import-errors-alert = {
+    log-analytics-scope = false,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-import-errors-alert",
+    description         = "Import Errors alert rule for airflow service",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "true",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "customMetrics\n| where name matches regex \"osdu_airflow2.*dag_processing.import_errors\"\n| parse kind=regex name with @\"osdu_airflow2\\.\" partitionId @\"\\.dag_processing\\.import_errors\" \n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| summarize AggregatedValue = sum(value) by bin(timestamp, 5m), Operation= strcat(\"MetricName: \", name, \" Data-Partition: \", clusterName )",
     # Threshold value for Import Error which when exceeded will raise alert
     trigger-threshold       = 0,
     trigger-operator        = "GreaterThan",
@@ -480,6 +791,29 @@ log-alerts = {
     time-window       = 5,
     action-group-name = ["ProdActionGroup", "DevActionGroup"],
     query             = "customMetrics\n| where name has \"dagrun.duration.success\" or name has \"dagrun.duration.failed\"\n| parse kind=regex name with @\"([0-9a-zA-Z_])*\\.\" partitionId @\"\\.dagrun\\.duration\\.([0-9a-zA-Z_\\.])*\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| parse kind=regex name with @\"([0-9a-zA-Z_])*\\.dagrun\\.duration\\.([0-9a-zA-Z_])*\\.\" dagName\n| where dagName has \"sample_python_dag\"\n| extend duration = value / 1000\n| summarize AggregatedValue= max(duration) by Operation = strcat(dagName,\"-dagrun.duration\"), bin(timestamp, 5m), clusterName",
+    # Expected dag run duration
+    trigger-threshold       = 150,
+    trigger-operator        = "GreaterThan",
+    metric-trigger-operator = "Equal",
+    # Number of times the threshold value is allowed to exceed
+    metric-trigger-threshold = 1,
+    # Type can be based on total breaches or consecutive breaches of threshold.
+    metric-trigger-type   = "Total",
+    metric-trigger-column = "Operation"
+  },
+  airflow-2-dagrun-duration-alert = {
+    log-analytics-scope = false,
+    service-name        = "airflow2",
+    alert-rule-name     = "airflow-2-dagrun-duration-alert",
+    description         = "Alert rule when the dag run duration exceeds expected time limit.",
+    # Alert based on metric measurement
+    metric-type       = true
+    enabled           = "false",
+    severity          = 3,
+    frequency         = 5,
+    time-window       = 5,
+    action-group-name = ["ProdActionGroup", "DevActionGroup"],
+    query             = "customMetrics\n| where name matches regex \"osdu_airflow2.*dagrun.duration.success.*\" or name matches regex \"osdu_airflow2.*dagrun.duration.failed.*\"\n| parse kind=regex name with @\"osdu_airflow2\\.\" partitionId @\"\\.dagrun\\.duration\\..*\"\n| extend clusterName = case(partitionId == \"\", \"common-cluster\",\n    partitionId)\n| parse kind=regex name with @\"osdu_airflow2.*\\.dagrun\\.duration\\..*\\.\" dagName\n| where dagName has \"sample_python_dag\"\n| extend duration = value / 1000\n| summarize AggregatedValue= max(duration) by Operation = strcat(dagName,\"-dagrun.duration\"), bin(timestamp, 5m), clusterName",
     # Expected dag run duration
     trigger-threshold       = 150,
     trigger-operator        = "GreaterThan",

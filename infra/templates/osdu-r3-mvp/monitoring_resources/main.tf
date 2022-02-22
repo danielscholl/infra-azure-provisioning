@@ -189,6 +189,48 @@ resource "azurerm_dashboard" "airflow_dags_dashboard" {
   })
 }
 
+resource "azurerm_dashboard" "airflow_2_infra_dashboard" {
+  count = var.dashboards.airflow_2_infra ? 1 : 0
+
+  name                = "${local.base_name}-airflow-2-infra-dash"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  tags                = var.resource_tags
+
+  dashboard_properties = templatefile("${local.template_path}/airflow2/airflow2-infra.tpl", {
+    subscriptionId     = data.azurerm_client_config.current.subscription_id
+    centralGroupPrefix = local.central_group_prefix
+  })
+}
+
+resource "azurerm_dashboard" "airflow_2_service_dashboard" {
+  count = var.dashboards.airflow_2_service ? 1 : 0
+
+  name                = "${local.base_name}-airflow-2-service-dash"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  tags                = var.resource_tags
+
+  dashboard_properties = templatefile("${local.template_path}/airflow2/airflow2-service.tpl", {
+    subscriptionId     = data.azurerm_client_config.current.subscription_id
+    centralGroupPrefix = local.central_group_prefix
+  })
+}
+
+resource "azurerm_dashboard" "airflow_2_dags_dashboard" {
+  count = var.dashboards.airflow_2_dags ? 1 : 0
+
+  name                = "${local.base_name}-airflow-2-dags-dash"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  tags                = var.resource_tags
+
+  dashboard_properties = templatefile("${local.template_path}/airflow2/airflow2-dags.tpl", {
+    subscriptionId     = data.azurerm_client_config.current.subscription_id
+    centralGroupPrefix = local.central_group_prefix
+  })
+}
+
 resource "azurerm_dashboard" "appinsights_dashboard" {
   count = var.dashboards.appinsights ? 1 : 0
 
