@@ -30,7 +30,6 @@ ACR_REGISTRY="<your_acr_fqdn>"                # ie: msosdu.azurecr.io
 FILE_SHARE="<airflow_file_share_name>"         
 # Optional variable, it takes default value of "airflow2dags", Airflow 2.x is recommended over Airflow 1.x
 # To keep on using Airflow 1.x use "airflowdags"
-NAMESPACE="<airflow_namespace>"               # Optional defaults to airflow2, use airflow for Airflow 1.x
 CSV_DAG_IMAGE="$ACR_REGISTRY/csv-parser-dag"
 TAG="0.13.0"
 
