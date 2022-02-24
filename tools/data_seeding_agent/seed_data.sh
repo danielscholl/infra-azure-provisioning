@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Cleanup function
+cleanup() {
+  echo "Terminating istio sidecar"
+  curl -X POST "http://localhost:15020/quitquitquit"
+  exit
+}
+
+trap cleanup EXIT
+
 currentStatus=""
 currentMessage=""
 retryCount=0

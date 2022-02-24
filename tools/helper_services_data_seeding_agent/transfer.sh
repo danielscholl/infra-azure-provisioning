@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Cleanup function
+cleanup() {
+  echo "Terminating istio sidecar"
+  curl -X POST "http://localhost:15020/quitquitquit"
+  exit
+}
+
+trap cleanup EXIT
+
 mkdir -p tmp
 cd tmp
 wget -O azcopy_v10.tar.gz https://aka.ms/downloadazcopy-v10-linux && tar -xf azcopy_v10.tar.gz --strip-components=1
