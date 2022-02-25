@@ -36,8 +36,11 @@ var tfOptions = &terraform.Options{
 }
 
 var istioEnabled = os.Getenv("AUTOSCALING_ENABLED")
+var disableAirflow1 = getEnv("TF_VAR_disable_airflow1", "false")
+
 var istioResourses = 14
 var totalResources = 160
+var resourcesToRemoveForAirflow1 = 6
 
 func TestTemplate(t *testing.T) {
 	expectedAppDevResourceGroup := asMap(t, `{
@@ -53,6 +56,10 @@ func TestTemplate(t *testing.T) {
 		expectedResourceCount = totalResources - istioResourses
 	}
 
+	if disableAirflow1 == "true" {
+		expectedResourceCount = expectedResourceCount - resourcesToRemoveForAirflow1
+	}
+
 	testFixture := infratests.UnitTestFixture{
 		GoTest:                          t,
 		TfOptions:                       tfOptions,
@@ -63,4 +70,11 @@ func TestTemplate(t *testing.T) {
 	}
 
 	infratests.RunUnitTests(&testFixture)
+}
+
+func getEnv(key, fallback string) string {
+    if value, ok := os.LookupEnv(key); ok {
+        return value
+    }
+    return fallback
 }

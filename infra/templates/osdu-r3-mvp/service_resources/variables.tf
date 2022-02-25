@@ -439,9 +439,3 @@ variable "disable_airflow1" {
   type        = bool
   default     = false
 }
-
-variable "airflow2_enabled" {
-  description = "Enable this flag to decomission airflow 1 resources"
-  type        = bool
-  default     = true
-}

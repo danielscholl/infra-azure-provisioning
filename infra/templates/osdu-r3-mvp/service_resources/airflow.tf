@@ -115,28 +115,24 @@ resource "azurerm_storage_share_directory" "sensors" {
 }
 
 resource "azurerm_storage_share" "airflow2_share" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "airflow2dags"
   storage_account_name = module.storage_account.name
   quota                = 50
 }
 
 resource "azurerm_storage_share_directory" "airflow2_dags" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "dags"
   share_name           = azurerm_storage_share.airflow2_share.name
   storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "airflow2_plugins" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "plugins"
   share_name           = azurerm_storage_share.airflow2_share.name
   storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "airflow2_operators" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "plugins/operators"
   share_name           = azurerm_storage_share.airflow2_share.name
   storage_account_name = module.storage_account.name
@@ -144,7 +140,6 @@ resource "azurerm_storage_share_directory" "airflow2_operators" {
 }
 
 resource "azurerm_storage_share_directory" "airflow2_hooks" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "plugins/hooks"
   share_name           = azurerm_storage_share.airflow2_share.name
   storage_account_name = module.storage_account.name
@@ -152,7 +147,6 @@ resource "azurerm_storage_share_directory" "airflow2_hooks" {
 }
 
 resource "azurerm_storage_share_directory" "airflow2_sensors" {
-  count = var.airflow2_enabled ? 1 : 0
   name                 = "plugins/sensors"
   share_name           = azurerm_storage_share.airflow2_share.name
   storage_account_name = module.storage_account.name

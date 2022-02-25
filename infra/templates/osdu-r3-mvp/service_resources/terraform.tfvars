@@ -123,4 +123,3 @@ cosmos_databases = [
 ]
 
 disable_airflow1 = false
-airflow2_enabled = true

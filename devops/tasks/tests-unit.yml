@@ -47,6 +47,8 @@ steps:
       TF_VAR_aks_dns_host: $(TF_VAR_aks_dns_host)
       ${{ if ne(variables['TF_VAR_ssl_challenge_required'], '') }}:
         TF_VAR_ssl_challenge_required: $(TF_VAR_ssl_challenge_required)
+      ${{ if ne(variables['TF_VAR_disable_airflow1'], '') }}:
+        TF_VAR_disable_airflow1: $(TF_VAR_disable_airflow1)
 
     condition: not(coalesce(variables.SKIP_TESTS, ${{ parameters.skip }}))
     inputs:
