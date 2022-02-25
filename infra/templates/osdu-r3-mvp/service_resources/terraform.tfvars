@@ -121,3 +121,6 @@ cosmos_databases = [
     throughput = 12000
   }
 ]
+
+disable_airflow1 = false
+airflow2_enabled = true
