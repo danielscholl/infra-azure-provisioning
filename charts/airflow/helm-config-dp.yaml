@@ -229,7 +229,7 @@ airflow:
   airflow:
     image:
       repository: msosdu.azurecr.io/airflow-docker-image
-      tag: v0.10.1
+      tag: v0.10.2-20220309-1
       pullPolicy: Always
       pullSecret: ""
     config:
