@@ -35,6 +35,9 @@ resource_tags = {
 
 # Storage Settings
 storage_replication_type = "LRS"
+storage_containers = [
+  "policy-bundles"
+]
 
 # Database Settings
 cosmosdb_consistency_level = "Session"

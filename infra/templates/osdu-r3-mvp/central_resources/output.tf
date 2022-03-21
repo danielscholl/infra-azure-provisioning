@@ -80,3 +80,8 @@ output "app_insights_name" {
   description = "The name of the appinsights resource"
   value       = module.app_insights.app_insights_name
 }
+
+output "storage_containers" {
+  description = "Map of storage account containers."
+  value       = module.storage_account.containers
+}

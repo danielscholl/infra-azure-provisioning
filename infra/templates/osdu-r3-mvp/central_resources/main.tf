@@ -181,7 +181,7 @@ module "storage_account" {
 
   name                = local.storage_name
   resource_group_name = azurerm_resource_group.main.name
-  container_names     = []
+  container_names     = var.storage_containers
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
 
@@ -194,6 +194,14 @@ resource "azurerm_role_assignment" "storage_access" {
 
   role_definition_name = local.role
   principal_id         = local.rbac_principals[count.index]
+  scope                = module.storage_account.id
+}
+
+
+resource "azurerm_role_assignment" "storage_app_access" {
+
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = module.ad_application.name
   scope                = module.storage_account.id
 }
 

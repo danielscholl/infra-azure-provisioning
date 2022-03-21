@@ -137,3 +137,8 @@ variable "cosmos_graphs" {
   }))
   default = []
 }
+
+variable "storage_containers" {
+  description = "The list of storage container names to create. Names must be unique per storage account."
+  type        = list(string)
+}

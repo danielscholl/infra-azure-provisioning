@@ -45,8 +45,7 @@ storage_containers = [
   "osdu-wks-mappings",
   "wdms-osdu",
   "file-staging-area",
-  "file-persistent-area",
-  "policy-bundles"
+  "file-persistent-area"
 ]
 
 storage_containers_hierarchical = [
