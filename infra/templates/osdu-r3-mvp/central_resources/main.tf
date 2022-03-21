@@ -320,6 +320,12 @@ module "ad_application" {
       oauth2_permissions = [
         "User.Read"
       ]
+    },
+    {
+      name = "Azure Storage"
+      oauth2_permissions = [
+        "user_impersonation"
+      ]
     }
   ]
 
