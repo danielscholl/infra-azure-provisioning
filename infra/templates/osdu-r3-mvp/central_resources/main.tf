@@ -197,14 +197,6 @@ resource "azurerm_role_assignment" "storage_access" {
   scope                = module.storage_account.id
 }
 
-
-resource "azurerm_role_assignment" "storage_app_access" {
-
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = module.ad_application.name
-  scope                = module.storage_account.id
-}
-
 #-------------------------------
 # CosmosDB
 #-------------------------------
@@ -327,12 +319,6 @@ module "ad_application" {
       name = "Microsoft Graph"
       oauth2_permissions = [
         "User.Read"
-      ]
-    },
-    {
-      name = "Azure Storage"
-      oauth2_permissions = [
-        "user_impersonation"
       ]
     }
   ]
