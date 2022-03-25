@@ -181,7 +181,7 @@ module "storage_account" {
 
   name                = local.storage_name
   resource_group_name = azurerm_resource_group.main.name
-  container_names     = var.storage_containers
+  container_names     = []
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
 
