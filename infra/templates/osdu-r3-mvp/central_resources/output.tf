@@ -80,3 +80,9 @@ output "app_insights_name" {
   description = "The name of the appinsights resource"
   value       = module.app_insights.app_insights_name
 }
+
+
+output "app_object_id" {
+  description = "The id of the app"
+  value       = module.ad_application.object_id
+}

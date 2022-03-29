@@ -150,6 +150,8 @@ locals {
     // Service Principal
     data.terraform_remote_state.central_resources.outputs.principal_objectId
   ]
+
+  app_id = data.terraform_remote_state.central_resources.outputs.app_object_id
 }
 
 
@@ -263,9 +265,10 @@ resource "azurerm_role_assignment" "airflow_log_queue_processor_roles" {
 }
 
 resource "azurerm_role_assignment" "storage_app_access" {
+  count = length(local.rbac_principals)
 
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = module.ad_application.name
+  principal_id         = module.ad_application.object_id
   scope                = module.storage_account.id
 }
 
