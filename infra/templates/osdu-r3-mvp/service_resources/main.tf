@@ -129,8 +129,6 @@ locals {
   aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
   aks_dns_prefix    = local.base_name_60
   cosmosdb_name     = "${local.base_name}-system-db"
-  ad_app_name       = "${local.base_name}-app"
-
 
   nodepool_zones = [
     "1",
@@ -259,13 +257,6 @@ resource "azurerm_role_assignment" "airflow_log_queue_processor_roles" {
 
   role_definition_name = "Storage Queue Data Message Processor"
   principal_id         = local.rbac_principals[count.index]
-  scope                = module.storage_account.id
-}
-
-resource "azurerm_role_assignment" "storage_app_access" {
-
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = module.ad_application.name
   scope                = module.storage_account.id
 }
 
@@ -685,32 +676,4 @@ resource "azurerm_management_lock" "system_sa_lock" {
   name       = "osdu_system_sa_lock"
   scope      = module.system_storage_account.id
   lock_level = "CanNotDelete"
-}
-
-module "ad_application" {
-  source = "../../../modules/providers/azure/ad-application"
-
-  name                       = local.ad_app_name
-  oauth2_allow_implicit_flow = true
-  group_membership_claims    = "None"
-
-  reply_urls = [
-    "http://localhost:8080",
-    "http://localhost:8080/auth/callback"
-  ]
-
-  api_permissions = [
-    {
-      name = "Microsoft Graph"
-      oauth2_permissions = [
-        "User.Read"
-      ]
-    },
-    {
-      name = "Azure Storage"
-      oauth2_permissions = [
-        "user_impersonation"
-      ]
-    }
-  ]
 }
