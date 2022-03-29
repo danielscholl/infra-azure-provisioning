@@ -150,8 +150,6 @@ locals {
     // Service Principal
     data.terraform_remote_state.central_resources.outputs.principal_objectId
   ]
-
-  app_id = data.terraform_remote_state.central_resources.outputs.app_object_id
 }
 
 
