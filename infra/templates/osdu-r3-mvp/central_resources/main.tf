@@ -301,7 +301,7 @@ module "service_principal" {
 
 }
 
-resource "azuread_service_principal" "app_service_principal" {
+data "azuread_service_principal" "app_service_principal" {
   application_id = module.ad_application.id
 }
 
