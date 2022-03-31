@@ -15,6 +15,10 @@
             "sensitive": true,
             "value": "elastic-password"
         },
+        "elastic-ssl-enabled": {
+            "sensitive": true,
+            "value": "elastic-ssl-enabled"
+        },
         "cosmos-connection": {
             "sensitive": true,
             "value": "cosmos-connection"
@@ -98,6 +102,30 @@
          "eventgrid-gsmtopic-accesskey": {
             "sensitive": true,
             "value": "eventgrid-statuschangedtopic-accesskey"
+        },
+        "eventgrid-statuschangedtopic": {
+            "sensitive": true,
+            "value": "eventgrid-statuschangedtopic"
+        },
+         "eventgrid-statuschangedtopic-accesskey": {
+            "sensitive": true,
+            "value": "eventgrid-statuschangedtopic-accesskey"
+        },
+        "eventgrid-schemachangedtopic": {
+            "sensitive": true,
+            "value": "eventgrid-schemachangedtopic"
+        },
+         "eventgrid-schemachangedtopic-accesskey": {
+            "sensitive": true,
+            "value": "eventgrid-schemachangedtopic-accesskey"
+        },
+        "pds-storage": {
+            "sensitive": true,
+            "value": "pds-storage"
+        },
+        "pds-storage-key": {
+            "sensitive": true,
+            "value": "pds-storage-key"
         }
     }
 }

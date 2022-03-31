@@ -40,7 +40,8 @@ from azure.storage.fileshare import (
     ShareFileClient
 )
 
-DAG_FILES = ['test_dummy_dag.py', 'test_simple_custom_operator_dag.py', 'test_simple_http_dag.py', 'test_simple_kubernetes_dag.py', 'test_simple_python_dag.py', 'test_validate_run_config_dag.py']
+# Add 'test_simple_custom_operator_dag.py' to the list below to upload simple custom operator dag
+DAG_FILES = ['test_dummy_dag.py', 'test_simple_http_dag.py', 'test_simple_kubernetes_dag.py', 'test_simple_python_dag.py', 'test_validate_run_config_dag.py']
 
 class FileShareSamples(object):
     connection_string = os.getenv('AIRFLOW_FILE_SHARE_CONNECTION_STRING')

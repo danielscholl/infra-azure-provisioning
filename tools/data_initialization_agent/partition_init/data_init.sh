@@ -1,13 +1,22 @@
 #!/bin/bash
 
+# Cleanup function
+cleanup() {
+  echo "Terminating istio sidecar"
+  curl -X POST "http://localhost:15020/quitquitquit"
+  exit
+}
+
+trap cleanup EXIT
+
 currentStatus=""
 currentMessage=""
 
-OSDU_URI=${OSDU_HOST}
-
-if [[ ${OSDU_HOST} != "https://"* ]] || [[ ${OSDU_HOST} != "http://"* ]]; then
-  OSDU_URI="https://${OSDU_HOST}"
+if [[ -z "${NAMESPACE}" ]]; then
+  NAMESPACE="osdu-azure"
 fi
+
+PARTITION_HOST="http://partition.${NAMESPACE}.svc.cluster.local"
 
 echo "Trying to Fetch Access Token"
 ACCESS_TOKEN=$(sh ./get_access_token.sh)
@@ -27,7 +36,7 @@ else
     partition_count=$(expr $partition_count + 1)
     echo "Intitializing Partition: ${partitions_array[index]}"
   
-    OSDU_PARTITION_INIT_URI=${OSDU_URI}/api/partition/v1/partitions/${partitions_array[index]}
+    OSDU_PARTITION_INIT_URI=${PARTITION_HOST}/api/partition/v1/partitions/${partitions_array[index]}
     echo "Partition Initialization Endpoint: ${OSDU_PARTITION_INIT_URI}"
   
     i=0
@@ -114,6 +123,12 @@ echo "Current Message: ${currentMessage}"
 
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
   az login --identity --username $OSDU_IDENTITY_ID
+  if [ $? -eq 0 ]; then
+      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
+        az account set --subscription $SUBSCRIPTION
+      fi
+  fi
+  
   ENV_AKS=$(az aks list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
   az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $ENV_AKS
   kubectl config set-context $RESOURCE_GROUP_NAME --cluster $ENV_AKS
