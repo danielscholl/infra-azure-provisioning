@@ -48,7 +48,7 @@ module.exports = {
     },
     crud_entitlements: {
       enableScenario: true,
-      enablePrivilegedAccessScenario: false, // Disabled for OEP
+      enablePrivilegedAccessScenario: false,
     },
     crud_ingestion_workflow: {
       getAllWorkflows: true,
