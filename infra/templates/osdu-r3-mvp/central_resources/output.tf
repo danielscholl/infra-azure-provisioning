@@ -83,5 +83,5 @@ output "app_insights_name" {
 
 output "storage_app_principal_id" {
   description = "The principal id of the app having Azure Storage access"
-  value       = azuread_service_principal.app_service_principal.id
+  value       = data.azuread_service_principal.app_service_principal.id
 }
