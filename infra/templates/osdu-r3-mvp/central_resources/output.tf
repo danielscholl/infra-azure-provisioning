@@ -82,7 +82,7 @@ output "app_insights_name" {
 }
 
 
-output "app_object_id" {
-  description = "The id of the app"
-  value       = module.ad_application.object_id
+output "storage_app_principal_id" {
+  description = "The principal id of the app having Azure Storage access"
+  value       = azuread_service_principal.app_service_principal.id
 }
