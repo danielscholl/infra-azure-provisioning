@@ -20,7 +20,7 @@ parameters:
 stages:
   - ${{ each provider in parameters.providers }}:
     - ${{ each environment in provider.environments }}:
-      - stage: 'Publish_Images_${{ provider.name }}_${{ environment }}'
+      - stage: 'Airflow_Pre_Install_Steps_${{ provider.name }}_${{ environment }}'
 
         variables:
           - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
@@ -46,3 +46,8 @@ stages:
                     sourceFolder: ${{ parameters.sourceFolder }}
                     dockerFilePaths: ${{ parameters.dockerFilePaths }}
                     checkoutRepo: ${{ parameters.checkoutRepo }}
+                
+                - template: create-pod-operator-namespace.yml
+                  parameters:
+                    baseResourceGroupName: ${{ parameters.baseResourceGroupName }}
+                    podOperatorNamespace: ${{ parameters.podOperatorNamespace }}

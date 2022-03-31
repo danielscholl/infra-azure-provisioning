@@ -99,6 +99,18 @@ cat > config_airflow.yaml << EOF
 appinsightstatsd:
   aadpodidbinding: "osdu-identity"
 
+#################################################################################
+# Specify log analytics configuration
+#
+logAnalytics:
+  isEnabled: "true"
+  workspaceId:
+    secretName: "central-logging"
+    secretKey: "workspace-id"
+  workspaceKey:
+    secretName: "central-logging"
+    secretKey: "workspace-key"
+
 ################################################################################
 # Specify any optional override values
 #
@@ -283,7 +295,7 @@ airflow:
   airflow:
     image:
       repository: msosdu.azurecr.io/airflow-docker-image
-      tag: v0.10.1
+      tag: v0.10.2-20220309-1
       pullPolicy: Always
       pullSecret: ""
     config:
@@ -312,7 +324,7 @@ airflow:
       AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1"
       AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2"
       AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2"
-      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
+      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file"
       AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow/v1"
       AIRFLOW_VAR_CORE__SERVICE__DATASET__HOST: "http://dataset.osdu.svc.cluster.local/api/dataset/v1"
       AIRFLOW_VAR_CORE__SERVICE__PARTITION__URL: "http://partition.osdu.svc.cluster.local/api/partition/v1"
@@ -324,6 +336,7 @@ airflow:
       AIRFLOW__CORE__STORE_DAG_CODE: True #This flag decides whether to persist DAG files code in DB
       AIRFLOW__WEBSERVER__WORKER_CLASS: gevent    
       AIRFLOW_VAR_CORE__SERVICE__SEARCH_WITH_CURSOR__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2/query_with_cursor"
+      AIRFLOW_VAR_CORE__CONFIG__SHOW_SKIPPED_IDS: True
     extraEnv:
       - name: AIRFLOW__CORE__FERNET_KEY
         valueFrom:

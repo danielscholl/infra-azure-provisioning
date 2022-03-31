@@ -89,6 +89,11 @@ variable "storage_containers" {
   type        = list(string)
 }
 
+variable "storage_containers_hierarchical" {
+  description = "The list of storage container names to create for hierarchical storage. Names must be unique per storage account."
+  type        = list(string)
+}
+
 variable "airflow2_enabled" {
   description = "Feature flag for enabling airflow2"
   type        = bool
@@ -99,6 +104,7 @@ variable "storage_containers_dp_airflow" {
   description = "The list of storage container names to create for data partition airflow"
   type        = list(string)
 }
+
 variable "blob_cors_rule" {
   type = list(
     object(

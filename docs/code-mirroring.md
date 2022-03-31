@@ -30,6 +30,7 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | ingestion-service         | https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-service.git |
 | dataset                   | https://community.opengroup.org/osdu/platform/system/dataset.git |
 | policy                    | https://community.opengroup.org/osdu/platform/security-and-compliance/policy.git |
+| helm-charts-azure         | https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure.git |
 ```bash
 export ADO_ORGANIZATION=<organization_name>
 export ADO_PROJECT=osdu-mvp
@@ -60,6 +61,7 @@ SERVICE_LIST="infra-azure-provisioning \
               wellbore-domain-services \
               ingestion-service \
               dataset \
+              helm-charts-azure \
               policy"
 
 
@@ -103,6 +105,7 @@ Variable Group Name:  `Mirror Variables`
 | INGESTION_SERVICE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/ingestion-service |
 | DATASET_REPO | https://dev.azure.com/osdu-demo/osdu/_git/dataset |
 | POLICY_REPO | https://dev.azure.com/osdu-demo/osdu/_git/policy |
+| HELM_CHARTS_AZURE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/helm-charts-azure |
 | ACCESS_TOKEN | <your_personal_access_token> |
 
 
@@ -140,6 +143,7 @@ az pipelines variable-group create \
   INGESTION_SERVICE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/ingestion-service \
   DATASET_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/dataset \
   POLICY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/policy \
+  HELM_CHARTS_AZURE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/helm-charts-azure \
   ACCESS_TOKEN=$ACCESS_TOKEN \
   -ojson
 ```
@@ -354,6 +358,13 @@ jobs:
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/security-and-compliance/policy.git'
         destinationGitRepositoryUri: '$(POLICY_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+    
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'helm-charts-azure'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure.git'
+        destinationGitRepositoryUri: '$(HELM_CHARTS_AZURE_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
 

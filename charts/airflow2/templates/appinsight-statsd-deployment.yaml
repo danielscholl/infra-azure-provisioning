@@ -24,7 +24,7 @@ spec:
     metadata:
       labels:
         app: appinsights-statsd
-        aadpodidbinding: "osdu-identity"
+        aadpodidbinding: "osdu-airflow2-identity"
     spec:
       containers:
       - name: appinsights-statsd

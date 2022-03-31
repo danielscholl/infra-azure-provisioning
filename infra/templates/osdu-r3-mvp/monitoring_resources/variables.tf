@@ -20,18 +20,24 @@ variable "prefix" {
 variable "dashboards" {
   description = "(Optional) A toggle for dashboards"
   type = object({
-    default         = bool
-    appinsights     = bool
-    airflow_infra   = bool
-    airflow_service = bool
-    airflow_dags    = bool
+    default           = bool
+    appinsights       = bool
+    airflow_infra     = bool
+    airflow_service   = bool
+    airflow_dags      = bool
+    airflow_2_infra   = bool
+    airflow_2_service = bool
+    airflow_2_dags    = bool
   })
   default = {
-    default         = true
-    appinsights     = true
-    airflow_infra   = true
-    airflow_service = true
-    airflow_dags    = true
+    default           = true
+    appinsights       = true
+    airflow_infra     = true
+    airflow_service   = true
+    airflow_dags      = true
+    airflow_2_infra   = true
+    airflow_2_service = true
+    airflow_2_dags    = true
   }
 }
 

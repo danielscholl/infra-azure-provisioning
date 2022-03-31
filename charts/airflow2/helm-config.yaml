@@ -14,12 +14,13 @@ azure:
 # Specify the azure environment specific values
 #
 appinsightstatsd:
-  aadpodidbinding: "osdu-identity"
+  aadpodidbinding: "osdu-airflow2-identity"
 
 #################################################################################
 # Specify log analytics configuration
 #
 logAnalytics:
+  isEnabled: "true"
   workspaceId:
     secretName: "central-logging"
     secretKey: "workspace-id"
@@ -172,7 +173,7 @@ airflow:
         cpu: "1000m"
         memory: "4Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     autoscale:
       enabled: false
       minReplicas: 2
@@ -196,7 +197,7 @@ airflow:
         cpu: "1200m"
         memory: "5Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     podAnnotations:
       sidecar.istio.io/inject: "false"
     autoscale:
@@ -230,7 +231,7 @@ airflow:
         cpu: "3000m"
         memory: "1Gi"
     podLabels:
-      aadpodidbinding: "osdu-identity"
+      aadpodidbinding: "osdu-airflow2-identity"
     autoscale:
       enabled: false
       minReplicas: 2
@@ -279,7 +280,7 @@ airflow:
       AIRFLOW_VAR_CORE__SERVICE__SCHEMA__URL: "http://schema-service.osdu.svc.cluster.local/api/schema-service/v1"
       AIRFLOW_VAR_CORE__SERVICE__SEARCH__URL: "http://search-service.osdu.svc.cluster.local/api/search/v2"
       AIRFLOW_VAR_CORE__SERVICE__STORAGE__URL: "http://storage.osdu.svc.cluster.local/api/storage/v2"
-      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file/v2"
+      AIRFLOW_VAR_CORE__SERVICE__FILE__HOST: "http://file.osdu.svc.cluster.local/api/file"
       AIRFLOW_VAR_CORE__SERVICE__WORKFLOW__HOST: "http://ingestion-workflow.osdu.svc.cluster.local/api/workflow/v1"
       AIRFLOW_VAR_CORE__SERVICE__DATASET__HOST: "http://dataset.osdu.svc.cluster.local/api/dataset/v1"
       AIRFLOW_VAR_CORE__SERVICE__PARTITION__URL: "http://partition.osdu.svc.cluster.local/api/partition/v1"
@@ -294,6 +295,7 @@ airflow:
       AIRFLOW__CELERY__WORKER_CONCURRENCY: 16 # Do not remove this config as it is used for autoscaling as well
       AIRFLOW__WEBSERVER__BASE_URL: https://#{DNS_HOST}#/airflow2
       AIRFLOW_VAR_KEYVAULT_URI: https://#{base-name-cr}#-kv.vault.azure.net/
+      AIRFLOW_VAR_CORE__CONFIG__SHOW_SKIPPED_IDS: True
     extraEnv:
     - name: CLOUD_PROVIDER
       value: "azure"
@@ -367,7 +369,8 @@ airflow:
         "requests==2.25.1",
         "tenacity==6.2.0",
         "authlib==0.15.4",
-        "plyvel==1.3.0"
+        "plyvel==1.3.0",
+        "apache-airflow-providers-cncf-kubernetes==2.0.2"
     ]
     extraVolumeMounts:
         - name: azure-keyvault
@@ -391,4 +394,4 @@ airflow:
             name: airflow-remote-log-config
     dbMigrations:
       podLabels:
-        aadpodidbinding: "osdu-identity"
+        aadpodidbinding: "osdu-airflow2-identity"

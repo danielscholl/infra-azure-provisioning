@@ -301,6 +301,9 @@ module "service_principal" {
 
 }
 
+resource "azuread_service_principal" "app_service_principal" {
+  application_id = module.ad_application.id
+}
 
 module "ad_application" {
   source = "../../../modules/providers/azure/ad-application"
@@ -319,6 +322,12 @@ module "ad_application" {
       name = "Microsoft Graph"
       oauth2_permissions = [
         "User.Read"
+      ]
+    },
+    {
+      name = "Azure Storage"
+      oauth2_permissions = [
+        "user_impersonation"
       ]
     }
   ]

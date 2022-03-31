@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Cleanup function
+cleanup() {
+  echo "Terminating istio sidecar"
+  curl -X POST "http://localhost:15020/quitquitquit"
+  exit
+}
+
+trap cleanup EXIT
+
 mkdir -p tmp
 cd tmp
 wget -O azcopy_v10.tar.gz https://aka.ms/downloadazcopy-v10-linux && tar -xf azcopy_v10.tar.gz --strip-components=1
@@ -34,6 +43,10 @@ while [ ${current_retry_count} -lt ${max_retry_count} ];
 do
     az login --identity --username $OSDU_IDENTITY_ID
     if [ $? -eq 0 ]; then
+      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
+        az account set --subscription $SUBSCRIPTION
+      fi
+
       loginStatus=0
       break
     fi
@@ -85,7 +98,6 @@ echo "Current Status: ${currentStatus}"
 echo "Current Message: ${currentMessage}"
 
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
-  az login --identity --username $OSDU_IDENTITY_ID
   ENV_AKS=$(az aks list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
   az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $ENV_AKS
   kubectl config set-context $RESOURCE_GROUP_NAME --cluster $ENV_AKS

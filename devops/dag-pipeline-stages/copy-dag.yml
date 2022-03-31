@@ -66,18 +66,21 @@ stages:
                   if [ -d "./dags/" ]; then
                     # Copying the zipped dag inside the dags folder
                     azcopy cp "./dags/*.zip" "https://${accountName}.file.core.windows.net/airflowdags/dags?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
+                    azcopy cp "./dags/*.zip" "https://${accountName}.file.core.windows.net/airflow2dags/dags?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
                   fi
                 else
                     echo "Packaged Dags are disabled"
                     if [ -d "./dags/" ]; then
                       # Copying all the contents inside the dags folder
                       azcopy cp "./dags/*" "https://${accountName}.file.core.windows.net/airflowdags/dags?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
+                      azcopy cp "./dags/*" "https://${accountName}.file.core.windows.net/airflow2dags/dags?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
                       cd dags
 
                       # Now syncing only the folders which are part of source to remove the deleted files
                       for directory in *; do
                         if [ -d "$directory" ]; then
                           azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflowdags/dags/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
+                          azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflow2dags/dags/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
                         fi
                       done
                       cd ..
@@ -86,6 +89,7 @@ stages:
                     if [ -d "./plugins/" ]; then
                       # Copying all the contents inside the plugins folder
                       azcopy cp "./plugins/*" "https://${accountName}.file.core.windows.net/airflowdags/plugins?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
+                      azcopy cp "./plugins/*" "https://${accountName}.file.core.windows.net/airflow2dags/plugins?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true
                       cd plugins
 
                       if [ -d "operators" ]; then
@@ -94,6 +98,7 @@ stages:
                         for directory in *; do
                           if [ -d "$directory" ]; then
                             azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflowdags/plugins/operators/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
+                            azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflow2dags/plugins/operators/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
                           fi
                         done
                         cd ..
@@ -105,6 +110,7 @@ stages:
                         for directory in *; do
                           if [ -d "$directory" ]; then
                             azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflowdags/plugins/hooks/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
+                            azcopy sync "./$directory/" "https://${accountName}.file.core.windows.net/airflow2dags/plugins/hooks/$directory?${AZURE_STORAGE_SAS_TOKEN}" --recursive=true --delete-destination=true
                           fi
                         done
                         cd ..

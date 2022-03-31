@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: airflow-log-processor
-        aadpodidbinding: "osdu-identity"
+        aadpodidbinding: "osdu-airflow2-identity"
     spec:
       containers:
       - name: airflow-log-processor
@@ -26,6 +26,8 @@ spec:
             value: dotnet
           - name: AzureLogWorkspaceLogName
             value: airflow_dag
+          - name: AzureLogAnalyticsEnabled
+            value: {{ .Values.logAnalytics.isEnabled | quote}}
           - name: AzureLogWorkspaceCustomerId
             valueFrom:
               secretKeyRef:

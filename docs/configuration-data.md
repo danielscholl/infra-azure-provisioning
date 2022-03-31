@@ -85,24 +85,27 @@ az storage file upload-batch \
 
 # Ingest Manifest DAGS
 
+Manifest Ingestion Dags have now support for Packaged dags therefore we will upload a zip folder containing manifest dags
+
+###Steps
+- Clone manifest ingestion repository from [here](https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-dags/-/tree/master)
+- Ensure python 3.8 or higher is installed
+- From root of the repository run the command
+``python deployments/scripts/azure/zip_dags.py``
+- This will output a zipped file named as "manifest_ingestion_dags.zip"
+- Now execute the below script to upload the dag zip file to File share
 ```bash
-FILE_SHARE="airflowdags"
-PROJECT_FOLDER=$(realpath ../ingestion-dags/src)
+FILE_SHARE="airflow2dags"
+# Airflow 2.x is recommended over Airflow 1.x
+# To keep on using Airflow 1.x use "airflowdags"
+FILE_NAME="manifest_ingestion_dags.zip"
 
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
 
-az storage file upload-batch \
+az storage file upload \
   --account-name $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage --query value -otsv) \
   --account-key $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage-key --query value -otsv) \
-  --destination $FILE_SHARE \
-  --source ${PROJECT_FOLDER} \
-  --pattern "*.ini"
-
-az storage file upload-batch \
-  --account-name $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage --query value -otsv) \
-  --account-key $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage-key --query value -otsv) \
-  --destination $FILE_SHARE \
-  --source ${PROJECT_FOLDER} \
-  --pattern "*.py"
+  --share-name $FILE_SHARE/dags \
+  --source $FILE_NAME
 ```

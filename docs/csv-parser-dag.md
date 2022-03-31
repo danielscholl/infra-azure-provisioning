@@ -24,32 +24,28 @@ docker push ${ACR_REGISTRY}/csv-parser:${TAG}
 
 ```bash
 # Setup Variables
-UNIQUE="<your_osdu_unique>"         # ie: demo
-AZURE_DNS_NAME="<your_osdu_fqdn>"   # ie: osdu-$UNIQUE.contoso.com
-DATA_PARTITION="<your_partition>"   # ie:opendes
-ACR_REGISTRY="<your_acr_fqdn>"      # ie: myacr.azurecr.io
-
-CSV_PARSER_IMAGE="$ACR_REGISTRY/csv-parser"
+KEY_VAULT_NAME="<your_keyvault_name>"
+AZURE_DNS_NAME="<your_osdu_fqdn>"             # ie: osdu-$UNIQUE.contoso.com
+ACR_REGISTRY="<your_acr_fqdn>"                # ie: msosdu.azurecr.io
+FILE_SHARE="<airflow_file_share_name>"         
+# Optional variable, it takes default value of "airflow2dags", Airflow 2.x is recommended over Airflow 1.x
+# To keep on using Airflow 1.x use "airflowdags"
 CSV_DAG_IMAGE="$ACR_REGISTRY/csv-parser-dag"
-TAG="latest"
+TAG="0.13.0"
 
 # This logs your local Azure CLI in using the configured service principal.
 az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 
-GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
-ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
-
 cat > .env << EOF
-CSV_PARSER_IMAGE=$CSV_PARSER_IMAGE:$TAG
-DATA_PARTITION=$DATA_PARTITION
+TAG=$TAG
+KEY_VAULT_NAME=$KEY_VAULT_NAME
 AZURE_TENANT_ID=$ARM_TENANT_ID
 AZURE_DNS_NAME=$AZURE_DNS_NAME
-AZURE_AD_APP_RESOURCE_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/aad-client-id --query value -otsv)
-AZURE_CLIENT_ID=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-username --query value -otsv)
-AZURE_CLIENT_SECRET=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/app-dev-sp-password --query value -otsv)
+AZURE_CLIENT_ID=$(az keyvault secret show --id https://${KEY_VAULT_NAME}.vault.azure.net/secrets/app-dev-sp-username --query value -otsv)
+AZURE_CLIENT_SECRET=$(az keyvault secret show --id https://${KEY_VAULT_NAME}.vault.azure.net/secrets/app-dev-sp-password --query value -otsv)
 EOF
 
-docker build -f deployments/scripts/azure/Dockerfile -t $CSV_DAG_IMAGE:$TAG .
+docker build -f deployments/scripts/azure/dag_bootstrap/Dockerfile -t $CSV_DAG_IMAGE:$TAG .
 docker push $CSV_DAG_IMAGE:$TAG
 docker run -it --env-file .env $CSV_DAG_IMAGE:$TAG
 ```
