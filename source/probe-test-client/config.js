@@ -69,10 +69,10 @@ module.exports = {
       getCreatedPartition: true,
     },
     crud_policy: {
-      getAllPolicies: false, //OAK doesn't have policy service
+      getAllPolicies: false,
       evaluatePolicy: false, // {"code":"resource_not_found","message":"storage_not_found_error: policy id \"test\""}
       createTestPolicy: false, // {"code":"resource_not_found","message":"storage_not_found_error: policy id \"test\""}
-      getTestPolicy: false, //OAK doesn't have policy service
+      getTestPolicy: false,
     },
     crud_register: {
       subscriptionScenario: false, // Add hard coded secret in testData/sample_register_subscription_create.json
