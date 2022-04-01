@@ -358,8 +358,10 @@ def main():
         status["ops"] = False
         log("Catastrophic Unhandled Exception encountered: {exception}".format(exception=json.dumps(ex)))
     finally:
-        writeOutputToConfigMap(status=status, message=message, ConfigMapName=ConfigMapName, Namespace=Namespace, Partitions=Partitions)
+        finalStatus = writeOutputToConfigMap(status=status, message=message, ConfigMapName=ConfigMapName, Namespace=Namespace, Partitions=Partitions)
         terminateIstioSidecar()
+        if not finalStatus:
+            sys.exit(1);
 
 if __name__ == '__main__':
     main()
