@@ -292,6 +292,12 @@ resource "azurerm_role_assignment" "system_storage_data_contributor" {
   scope                = module.system_storage_account.id
 }
 
+resource "azurerm_role_assignment" "storage_blob_contributor" {
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.terraform_remote_state.central_resources.outputs.storage_app_principal_id
+  scope                = module.system_storage_account.id
+}
+
 
 #-------------------------------
 # Network
