@@ -102,13 +102,13 @@ module.exports = {
       getStatus: true,
     },
     crud_wellbore: {
-      getHealth: true,
-      createLog: true,
-      uploadData: true,
-      searchLogs: true,
+      getHealth: false,
+      createLog: false,
+      uploadData: false,
+      searchLogs: false,
     },
     scenario_seismicUpload: {
-      enableScenario: true,
+      enableScenario: false,
     },
     scenario_searchInsertedRecord: {
       enableScenario: true,
