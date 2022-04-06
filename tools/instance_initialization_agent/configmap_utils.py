@@ -57,10 +57,11 @@ def readFromConfigMap(attemptNum, ConfigMapName, Namespace):
     return {"status": readStatus, "message": readMessage}
 
 """ [Write to Config Map]
-Write to the config map, with a retry mechanism, handling is message is too long to communicate.
+Write to the config map, with a retry mechanism, handling is message is too long to communicate. Returns the value of finalStatus
 """
 def writeOutputToConfigMap(status, message, ConfigMapName, Namespace, Partitions):
     configmapWriteHistory = 1
+    finalStatus = True
 
     print("Final Status: ")
     pprint(status)
@@ -145,3 +146,5 @@ def writeOutputToConfigMap(status, message, ConfigMapName, Namespace, Partitions
         
         if attemptCount >= 3 or writeSuccess:
             break
+
+    return finalStatus
