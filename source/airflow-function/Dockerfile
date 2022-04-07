@@ -1,9 +1,18 @@
+FROM debian
+
+#Update lib for vulnerablitiy fix
+USER root
+RUN apt-get update \
+    && apt-get install -y --only-upgrade debian=1.1.1k-1+deb11u2
+    
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS installer-env
 
 COPY . /src/dotnet-function-app
 RUN cd /src/dotnet-function-app && \
     mkdir -p /home/site/wwwroot && \
     dotnet publish *.csproj --output /home/site/wwwroot
+
 
 # To enable ssh & remote debugging on app service change the base image to the one below
 # FROM mcr.microsoft.com/azure-functions/dotnet:3.0-appservice
