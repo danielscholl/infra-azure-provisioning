@@ -178,6 +178,7 @@ __Installed Azure Resources__
 5. A principal required by an OSDU environment deployment.
 6. An AD application to be leveraged that defines and controls access to the OSDU Environment for AD Identity.
 7. An AD application to be used for negative integration testing
+8. Assign "Azure Storage" "user_impersonation" api permission to the ad application
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group.
 
