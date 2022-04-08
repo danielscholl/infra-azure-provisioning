@@ -680,8 +680,8 @@ resource "azurerm_management_lock" "sa_lock" {
   lock_level = "CanNotDelete"
 }
 
-resource "azurerm_management_lock" "system_sa_lock" {
-  name       = "osdu_system_sa_lock"
-  scope      = module.system_storage_account.id
-  lock_level = "CanNotDelete"
-}
+#resource "azurerm_management_lock" "system_sa_lock" {
+#  name       = "osdu_system_sa_lock"
+#  scope      = module.system_storage_account.id
+#  lock_level = "CanNotDelete"
+#}
