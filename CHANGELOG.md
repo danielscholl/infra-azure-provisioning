@@ -270,3 +270,10 @@ __New Services__
 - Indexer-Queue
 - Indexer
 - Search
+
+
+__Bundle Server Changes__
+
+- New container for storing policy bundles is created in service resource storage account
+- Assigned a role assignment "Storage Blob Data Contributor" to storage account and assign access to common service principal 
+- Api permission of 'Azure Storage' is assigned to common service principal application
