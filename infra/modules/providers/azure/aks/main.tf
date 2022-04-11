@@ -79,6 +79,12 @@ resource "azurerm_kubernetes_cluster_node_pool" "internal" {
   availability_zones    = var.availability_zones
   mode                  = "System"
   orchestrator_version  = var.kubernetes_version
+
+  lifecycle {
+    ignore_changes = [
+      node_count
+    ]
+  }
 }
 
 resource "azurerm_kubernetes_cluster" "main" {
@@ -145,17 +151,12 @@ resource "azurerm_kubernetes_cluster" "main" {
     }
   }
 
-  addon_profile {
-
-    oms_agent {
-      enabled                    = var.oms_agent_enabled
+  # Add-ons
+  azure_policy_enabled = var.azure_policy_enabled
+  dynamic "oms_agent" {
+    for_each = var.oms_agent_enabled ? [1] : []
+    content {
       log_analytics_workspace_id = local.log_analytics_id
-    }
-
-    # adding this as a patch to disable azurerm provider from redeploying due to unset
-    # internal "optional value".  To be removed when azurerm provider is fixed.
-    kube_dashboard {
-      enabled = var.enable_kube_dashboard
     }
   }
 

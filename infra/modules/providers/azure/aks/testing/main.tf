@@ -64,10 +64,10 @@ module "aks" {
   ssh_public_key      = "${trimspace(tls_private_key.key.public_key_openssh)} k8sadmin"
   vnet_subnet_id      = module.network.subnets.0
 
-  msi_enabled           = true
-  kubeconfig_to_disk    = false
-  oms_agent_enabled     = true
-  enable_kube_dashboard = false
+  msi_enabled          = true
+  kubeconfig_to_disk   = false
+  oms_agent_enabled    = true
+  azure_policy_enabled = false
 
   resource_tags = {
     osdu = "module"

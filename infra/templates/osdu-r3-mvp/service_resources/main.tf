@@ -30,7 +30,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.64.0"
+      version = "= 2.98.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -421,7 +421,7 @@ module "aks" {
   oms_agent_enabled         = true
   auto_scaling_default_node = true
   kubeconfig_to_disk        = false
-  enable_kube_dashboard     = false
+  azure_policy_enabled      = true
 
   resource_tags = var.resource_tags
 }

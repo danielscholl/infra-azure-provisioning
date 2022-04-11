@@ -86,6 +86,7 @@ resource "azurerm_application_gateway" "main" {
   }
 
   identity {
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.main.id]
   }
 
