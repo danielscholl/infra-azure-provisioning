@@ -36,7 +36,7 @@ output "kube_config_block" {
 }
 
 output "kubeconfig_done" {
-  value = join("", local_file.cluster_credentials.*.id)
+  value = join("", local_sensitive_file.cluster_credentials.*.id)
 }
 
 output "principal_id" {
