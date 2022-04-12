@@ -1,0 +1,143 @@
+{
+    "executionContext": {
+      "Payload": {
+        "AppKey": "test-app",
+        "data-partition-id": "##PARTITION##"
+      },
+      "manifest": {
+        "kind": "##KIND##",
+        "ReferenceData": [
+          {
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:KirchhoffDepthMigration",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "acl": {
+              "viewers": [
+                "data.default.viewers@##PARTITION##.contoso.com"
+              ],
+              "owners": [
+                "data.default.owners@##PARTITION##.contoso.com"
+              ]
+            },
+            "legal": {
+              "legaltags": [
+                "##TAG##"
+              ],
+              "otherRelevantDataCountries": [
+                "US"
+              ]
+            },
+            "data": {
+              "Name": "3D Kirchhoff Depth Migration",
+              "ID": "3D%20Kirchhoff%20Depth%20Migration",
+              "Code": "3D Kirchhoff Depth Migration",
+              "Source": "Workbook Published/ProcessingParameterType.1.0.0.xlsx; commit SHA 0b4db59a."
+            }
+          },
+          {
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:AngleMute-12345",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "acl": {
+              "viewers": [
+                "data.default.viewers@##PARTITION##.contoso.com"
+              ],
+              "owners": [
+                "data.default.owners@##PARTITION##.contoso.com"
+              ]
+            },
+            "legal": {
+              "legaltags": [
+                "##TAG##"
+              ],
+              "otherRelevantDataCountries": [
+                "US"
+              ]
+            },
+            "data": {
+              "Name": "Angle Mute",
+              "ID": "Angle%20Mute",
+              "Code": "Angle Mute",
+              "Source": "Workbook Published/ProcessingParameterType.1.0.0.xlsx; commit SHA 0b4db59a."
+            }
+          },
+          {
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:Conversion%20To%20PP%20TWT",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "acl": {
+              "viewers": [
+                "data.default.viewers@##PARTITION##.contoso.com"
+              ],
+              "owners": [
+                "data.default.owners@##PARTITION##.contoso.com"
+              ]
+            },
+            "legal": {
+              "legaltags": [
+                "##TAG##"
+              ],
+              "otherRelevantDataCountries": [
+                "US"
+              ]
+            },
+            "data": {
+              "Name": "Conversion To PP TWT",
+              "ID": "Conversion%20To%20PP%20TWT",
+              "Code": "Conversion To PP TWT",
+              "Source": "Workbook Published/ProcessingParameterType.1.0.0.xlsx; commit SHA 0b4db59a."
+            }
+          },
+          {
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:Conversion%20To%20PS%20TWT",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "acl": {
+              "viewers": [
+                "data.default.viewers@##PARTITION##.contoso.com"
+              ],
+              "owners": [
+                "data.default.owners@##PARTITION##.contoso.com"
+              ]
+            },
+            "legal": {
+              "legaltags": [
+                "##TAG##"
+              ],
+              "otherRelevantDataCountries": [
+                "US"
+              ]
+            },
+            "data": {
+              "Name": "Conversion To PS TWT",
+              "ID": "Conversion%20To%20PS%20TWT",
+              "Code": "Conversion To PS TWT",
+              "Source": "Workbook Published/ProcessingParameterType.1.0.0.xlsx; commit SHA 0b4db59a."
+            }
+          },
+          {
+            "id": "##PARTITION##:reference-data--ProcessingParameterType:Convert%20Back%20To%20Depth",
+            "kind": "##AUTHORITY##:##SOURCE##:reference-data--ProcessingParameterType:1.0.0",
+            "acl": {
+              "viewers": [
+                "data.default.viewers@##PARTITION##.contoso.com"
+              ],
+              "owners": [
+                "data.default.owners@##PARTITION##.contoso.com"
+              ]
+            },
+            "legal": {
+              "legaltags": [
+                "##TAG##"
+              ],
+              "otherRelevantDataCountries": [
+                "US"
+              ]
+            },
+            "data": {
+              "Name": "Convert Back To Depth",
+              "ID": "Convert%20Back%20To%20Depth",
+              "Code": "Convert Back To Depth",
+              "Source": "Workbook Published/ProcessingParameterType.1.0.0.xlsx; commit SHA 0b4db59a."
+            }
+          }
+        ]
+      }
+    }
+  }
