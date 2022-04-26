@@ -28,13 +28,16 @@ spec:
             notRequestPrincipals: ["*"]
       to:
         - operation:
-            notPaths: ["/","*/index.html",
-                       "*/v2/api-docs",
-                       "*/swagger","*/swagger-resources","*/swagger-ui.html",
-                       "*/actuator/health",
-                       "/api/indexer/v2/swagger-resources/*",
-                       "/api/indexer/v2/webjars/*",
+            notPaths: ["/",
+                       "/api/indexer/v2/health",
+                       "/api/indexer/v2/actuator/health",
+                       "/api/indexer/v2/v3/api-docs",
+                       "/api/indexer/v2/swagger-resources",
+                       "/api/indexer/v2/swagger-resources/configuration/*",
+                       "/api/indexer/v2/swagger-ui/index.html",
+                       "/api/indexer/v2/swagger-ui/swagger-ui*",
+                       "/api/indexer/v2/swagger-ui/springfox*",
+                       "/api/indexer/v2/webjars/**",
                        "*/index-worker",
                        "*/_dps/task-handlers",
-                       "/api/indexer/v2/_dps/task-handlers/*",
-                       "*/configuration/security"]
+                       "/api/indexer/v2/_dps/task-handlers/*" ]
