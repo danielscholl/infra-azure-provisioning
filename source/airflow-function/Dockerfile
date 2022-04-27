@@ -16,4 +16,4 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
 
 COPY --from=installer-env ["/home/site/wwwroot", "/home/site/wwwroot"]
 USER root
-RUN apt-get update && apt-get install -y --only-upgrade libicu63=63.1-6+deb10u2
+RUN apt-get update && apt-get install -y --only-upgrade libicu63=63.1-6+deb10u3
