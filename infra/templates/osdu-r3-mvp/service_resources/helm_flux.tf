@@ -105,5 +105,13 @@ resource "helm_release" "flux" {
     value = "flux"
   }
 
+  dynamic "set" {
+    for_each = var.feature_flag.flux_disableScanning ? [1] : []
+    content {
+      name  = "registry.disableScanning"
+      value = "true"
+    }
+  }
+
   depends_on = [kubernetes_namespace.flux, kubernetes_secret.flux_ssh]
 }
