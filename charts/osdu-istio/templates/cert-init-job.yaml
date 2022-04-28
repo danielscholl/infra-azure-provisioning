@@ -9,6 +9,7 @@ metadata:
 spec:
   template:
     spec:
+      ttlSecondsAfterFinished: 604800
       containers:
       - name: cert-checker
         image: {{ .Values.global.job.image }}

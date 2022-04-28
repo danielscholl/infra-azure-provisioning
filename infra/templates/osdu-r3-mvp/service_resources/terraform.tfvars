@@ -68,10 +68,11 @@ storage_queues = []
 
 # Feature Toggles
 feature_flag = {
-  osdu_namespace = true
-  flux           = true
-  sa_lock        = true
-  autoscaling    = false
+  osdu_namespace       = true
+  flux                 = true
+  sa_lock              = true
+  autoscaling          = false
+  flux_disableScanning = true
 }
 
 # Feature flag for keda v2
