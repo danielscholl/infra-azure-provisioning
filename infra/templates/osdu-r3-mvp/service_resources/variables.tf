@@ -433,3 +433,9 @@ variable "aks_dns_host" {
   type        = string
   default     = ""
 }
+
+variable "disable_airflow1" {
+  description = "Enable this flag to decomission airflow 1 resources"
+  type        = bool
+  default     = false
+}

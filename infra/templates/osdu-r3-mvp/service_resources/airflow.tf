@@ -69,6 +69,7 @@ resource "azurerm_key_vault_secret" "airflow_admin_password" {
 
 // Create Fileshare and folder structure
 resource "azurerm_storage_share" "airflow_share" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "airflowdags"
   storage_account_name = module.storage_account.name
   quota                = 50
@@ -76,18 +77,21 @@ resource "azurerm_storage_share" "airflow_share" {
 
 
 resource "azurerm_storage_share_directory" "dags" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "dags"
   share_name           = azurerm_storage_share.airflow_share.name
   storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "plugins" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "plugins"
   share_name           = azurerm_storage_share.airflow_share.name
   storage_account_name = module.storage_account.name
 }
 
 resource "azurerm_storage_share_directory" "operators" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "plugins/operators"
   share_name           = azurerm_storage_share.airflow_share.name
   storage_account_name = module.storage_account.name
@@ -95,6 +99,7 @@ resource "azurerm_storage_share_directory" "operators" {
 }
 
 resource "azurerm_storage_share_directory" "hooks" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "plugins/hooks"
   share_name           = azurerm_storage_share.airflow_share.name
   storage_account_name = module.storage_account.name
@@ -102,6 +107,7 @@ resource "azurerm_storage_share_directory" "hooks" {
 }
 
 resource "azurerm_storage_share_directory" "sensors" {
+  count                = var.disable_airflow1 ? 0 : 1
   name                 = "plugins/sensors"
   share_name           = azurerm_storage_share.airflow_share.name
   storage_account_name = module.storage_account.name
