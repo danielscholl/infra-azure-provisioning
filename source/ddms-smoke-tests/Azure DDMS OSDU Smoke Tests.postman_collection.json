@@ -1,0 +1,2198 @@
+{
+	"info": {
+		"_postman_id": "20303344-9ba7-4b55-beb6-d0d56ec2ad1a",
+		"name": "Azure DDMS OSDU Smoke Tests",
+		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"item": [
+				{
+					"name": "Get Token - client_credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+									"});",
+									"",
+									"var body = pm.response.json()",
+									"pm.collectionVariables.set(\"access_token\", body.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Ocp-Apim-Subscription-Key",
+								"type": "text",
+								"value": "xxxxxxxx",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{OIDC_CLIENT_ID}}",
+									"description": "Supply your client id as an environment variable",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{OIDC_CLIENT_SECRET}}",
+									"description": "Supply your client secret as an environment variable",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{OIDC_SCOPE}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{OIDC_TOKEN_URL}}",
+							"host": [
+								"{{OIDC_TOKEN_URL}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Init Instance",
+			"item": [
+				{
+					"name": "Configure Context",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const partition = pm.environment.get('DATA_PARTITION_ID')",
+									"const user = pm.environment.get('OIDC_CLIENT_ID')",
+									"pm.collectionVariables.set('entitlement_user', user)",
+									"pm.collectionVariables.set('entitlement_domain', `${partition}.contoso.com`)",
+									"pm.collectionVariables.set(\"legal_dafault_tag\", `${partition}-default`)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "This value should be the desired data partition id.",
+								"key": "Data-Partition-Id",
+								"type": "text",
+								"value": "{{DATA_PARTITION_ID}}"
+							},
+							{
+								"key": "Data-Partition-Id",
+								"value": "int",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{entitlements_host}}/groups",
+							"host": [
+								"{{entitlements_host}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Entitlements - Add `Root` as `users.datalake.admins`",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// User should be added or already exists",
+									"pm.test(\"Status code is 200 or 409\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,409]);",
+									"});",
+									"",
+									"pm.test(\"Status description - OK or Conflict\", function () {",
+									"    pm.expect(pm.response.status).to.be.oneOf([\"OK\",\"Conflict\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"description": "This value should be the desired data partition id.",
+								"key": "data-partition-id",
+								"type": "text",
+								"value": "{{DATA_PARTITION_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\" : \"{{entitlement_user}}\",\n  \"role\" : \"OWNER\"\n}"
+						},
+						"url": {
+							"raw": "{{entitlements_host}}/groups/:group_email/members",
+							"host": [
+								"{{entitlements_host}}"
+							],
+							"path": [
+								"groups",
+								":group_email",
+								"members"
+							],
+							"variable": [
+								{
+									"key": "group_email",
+									"value": "users.datalake.admins@{{entitlement_domain}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Legal - Create Default Tag",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Tags should be added or already exists",
+									"pm.test(\"Status code is 201 or 409\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,409]);",
+									"});",
+									"",
+									"pm.test(\"Status description - OK or Conflict\", function () {",
+									"    pm.expect(pm.response.status).to.be.oneOf([\"OK\",\"Conflict\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Data-Partition-Id",
+								"value": "{{DATA_PARTITION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{legal_dafault_tag}}\",\n    \"description\": \"A legaltag used for demonstration purposes.\",\n    \"properties\": {\n        \"countryOfOrigin\": [\n            \"US\"\n        ],\n        \"contractId\": \"No Contract Related\",\n        \"expirationDate\": \"2099-01-01\",\n        \"dataType\": \"Public Domain Data\",\n        \"originator\": \"OSDU\",\n        \"securityClassification\": \"Public\",\n        \"exportClassification\": \"EAR99\",\n        \"personalData\": \"No Personal Data\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{legal_host}}/legaltags",
+							"host": [
+								"{{legal_host}}"
+							],
+							"path": [
+								"legaltags"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Wellbore DDMS",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": [
+						{
+							"name": "Configure Context",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const partition = pm.environment.get('DATA_PARTITION_ID')",
+											"const user = pm.environment.get('OIDC_CLIENT_ID')",
+											"pm.collectionVariables.set('wellbore_well_name', `testwell`)",
+											"pm.collectionVariables.set('wellbore_well_id', `12345`)",
+											"pm.collectionVariables.set('wellbore_wellbore_name', `testwellbore`)",
+											"pm.collectionVariables.set('wellbore_wellbore_id', `12345`)",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "This value should be the desired data partition id.",
+										"key": "Data-Partition-Id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"key": "Data-Partition-Id",
+										"value": "int",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v2/about",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v2",
+										"about"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Wellbore DDMS - Get Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json.service).to.be.equal('Wellbore DDMS OSDU');",
+											"    pm.expect(json.cloudEnvironment).to.be.equal('az');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v2/about",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v2",
+										"about"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Get Healthz",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json.status).to.be.equal('healthy');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/healthz",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"healthz"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Get Version",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json.service).to.be.equal('Wellbore DDMS OSDU');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v2/version",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v2",
+										"version"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Create Well",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Have valid body\", function () {\r",
+											"    let json = pm.response.json();\r",
+											"    pm.expect(json.recordCount).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"acl\": {\n            \"owners\": [\n                \"data.default.owners@{{entitlement_domain}}\"\n            ],\n            \"viewers\": [\n                \"data.default.viewers@{{entitlement_domain}}\"\n            ]\n        },\n        \"data\": {\n            \"ExtensionProperties\": {},\n            \"FacilityName\": \"{{wellbore_well_name}}\",\n            \"FacilityNameAliases\": [\n                {\n                    \"AliasName\": \"20-000-00000-00\",\n                    \"AliasNameTypeID\": \"{{DATA_PARTITION_ID}}:reference-data--AliasNameType:UniqueIdentifier:\"\n                }\n            ]\n        },\n        \"id\": \"{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}\",\n        \"kind\": \"osdu:wks:master-data--Well:1.0.0\",\n        \"legal\": {\n            \"legaltags\": [\n                \"{{legal_dafault_tag}}\"\n            ],\n            \"otherRelevantDataCountries\": [\n                \"FR\",\n                \"US\"\n            ],\n            \"status\": \"compliant\"\n        }\n    }\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wells",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wells"
+									]
+								},
+								"description": "<p>Required roles: 'users.datalake.editors' or 'users.datalake.admins'.</p>"
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Get Well",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wells/{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wells",
+										"{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}"
+									]
+								},
+								"description": "Get the Well object using its **id**. \n<p>Required roles: 'users.datalake.viewers' or 'users.datalake.editors' or 'users.datalake.admins'.\n\"In addition, users must be a member of data groups to access the data.</p>\n"
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Create Wellbore",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Have valid body\", function () {\r",
+											"    let json = pm.response.json();\r",
+											"    pm.expect(json.recordCount).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"acl\": {\n            \"owners\": [\n                \"data.default.owners@{{entitlement_domain}}\"\n            ],\n            \"viewers\": [\n                \"data.default.viewers@{{entitlement_domain}}\"\n            ]\n        },\n        \"data\": {\n            \"ExtensionProperties\": {},\n            \"FacilityName\": \"{{wellbore_wellbore_name}}\",\n            \"FacilityNameAliases\": [\n                {\n                    \"AliasName\": \"33-089-00300-00-01\",\n                    \"AliasNameTypeID\": \"{{DATA_PARTITION_ID}}:reference-data--AliasNameType:UniqueIdentifier:\"\n                }\n            ],\n            \"FacilityOperators\": [\n                {\n                    \"FacilityOperatorID\": \"Francois Vinyes\"\n                }\n            ],\n            \"SpatialLocation\": {\n                \"Wgs84Coordinates\": {\n                    \"features\": [\n                        {\n                            \"geometry\": {\n                                \"coordinates\": [\n                                    [\n                                        -103.2380248,\n                                        46.8925081,\n                                        5301\n                                    ],\n                                    [\n                                        -103.2380248,\n                                        46.8925081,\n                                        2801\n                                    ],\n                                    [\n                                        -103.2378748,\n                                        46.892608100000004,\n                                        301\n                                    ],\n                                    [\n                                        -103.23742477750001,\n                                        46.89270811,\n                                        -2199\n                                    ],\n                                    [\n                                        -103.23667470999663,\n                                        46.892808120001,\n                                        -4699\n                                    ],\n                                    [\n                                        -103.2356245974865,\n                                        46.892908130002,\n                                        -7199\n                                    ]\n                                ],\n                                \"type\": \"LineString\"\n                            },\n                            \"properties\": {\n                                \"name\": \"Newton 2-31-Lat-1\"\n                            },\n                            \"type\": \"Feature\"\n                        }\n                    ],\n                    \"type\": \"FeatureCollection\"\n                }\n            },\n            \"WellID\": \"{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}:\"\n        },\n        \"id\": \"{{DATA_PARTITION_ID}}:master-data--Wellbore:{{wellbore_wellbore_id}}\",\n        \"kind\": \"osdu:wks:master-data--Wellbore:1.0.0\",\n        \"legal\": {\n            \"legaltags\": [\n                \"{{legal_dafault_tag}}\"\n            ],\n            \"otherRelevantDataCountries\": [\n                \"FR\",\n                \"US\"\n            ]\n        },\n        \"meta\": [\n            {\n                \"kind\": \"Unit\",\n                \"name\": \"Measure depth default unit\",\n                \"persistableReference\": \"persistableReference\",\n                \"propertyNames\": [\n                    \"symbol\"\n                ],\n                \"propertyValues\": [\n                    \"ft\"\n                ]\n            }\n        ]\n    }\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wellbores",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wellbores"
+									]
+								},
+								"description": "<p>Required roles: 'users.datalake.editors' or 'users.datalake.admins'.</p>"
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Get Wellbore",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wellbores/{{DATA_PARTITION_ID}}:master-data--Wellbore:{{wellbore_wellbore_id}}",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wellbores",
+										"{{DATA_PARTITION_ID}}:master-data--Wellbore:{{wellbore_wellbore_id}}"
+									]
+								},
+								"description": "Get the Wellbore object using its **id**.\n<p>Required roles: 'users.datalake.viewers' or 'users.datalake.editors' or 'users.datalake.admins'.\n\"In addition, users must be a member of data groups to access the data.</p>\n"
+							},
+							"response": []
+						},
+						{
+							"name": "!FIXME: Wellbore DDMS - Query all Wellbores",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"limit\": 10,\n    \"offset\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/query/wellbores",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"query",
+										"wellbores"
+									]
+								},
+								"description": "Get all Wellbores object.  <p>The wellbore kind is *:wks:master-data--Wellbore:*\n        returns all records directly based on existing schemas</p>\n<p>Required roles: 'users.datalake.viewers' or 'users.datalake.editors' or 'users.datalake.admins'.\n\"In addition, users must be a member of data groups to access the data.</p>\n"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": [
+						{
+							"name": "Wellbore DDMS - Delete Well",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wells/{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wells",
+										"{{DATA_PARTITION_ID}}:master-data--Well:{{wellbore_well_id}}"
+									]
+								},
+								"description": "<p>Required roles: 'users.datalake.editors' or 'users.datalake.admins'.</p>"
+							},
+							"response": []
+						},
+						{
+							"name": "Wellbore DDMS - Delete Wellbore",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "identifier of the data partition to query",
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"url": {
+									"raw": "{{wellbore_ddms_host}}/ddms/v3/wellbores/{{DATA_PARTITION_ID}}:master-data--Wellbore:{{wellbore_wellbore_id}}",
+									"host": [
+										"{{wellbore_ddms_host}}"
+									],
+									"path": [
+										"ddms",
+										"v3",
+										"wellbores",
+										"{{DATA_PARTITION_ID}}:master-data--Wellbore:{{wellbore_wellbore_id}}"
+									]
+								},
+								"description": "<p>Required roles: 'users.datalake.editors' or 'users.datalake.admins'.</p>"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Seismic DDMS",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": [
+						{
+							"name": "Seismic DDMS - Set Context",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json.ready).to.be.equal(true);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let DATA_PARTITION_ID = pm.environment.get('DATA_PARTITION_ID')",
+											"pm.collectionVariables.set('seismic_project', DATA_PARTITION_ID)",
+											"pm.collectionVariables.set('seismic_subproject', \"test123\")",
+											"pm.collectionVariables.set('seismic_segy_file_name', \"test.sgy\")",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{DATA_PARTITION_ID}}-default"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/svcstatus/readiness",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"svcstatus",
+										"readiness"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Seismic DDMS - Check Readines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Have valid body\", function () {\r",
+											"    let json = pm.response.json();\r",
+											"    pm.expect(json.ready).to.be.equal(true);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/svcstatus/readiness",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"svcstatus",
+										"readiness"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Check Access",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Have valid body\", function () {\r",
+											"    let json = pm.response.json();\r",
+											"    pm.expect(json.status).to.be.equal('running');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/svcstatus/access",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"svcstatus",
+										"access"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Check Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Have valid body\", function () {\r",
+											"    let text = pm.response.text();\r",
+											"    pm.expect(text).to.be.equal('service OK');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/svcstatus",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"svcstatus"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Check Path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Status description - OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/ls?sdpath=sd://{{seismic_project}}&wmode=dirs&limit=0&cursor=0",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"ls"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{seismic_project}}"
+										},
+										{
+											"key": "wmode",
+											"value": "dirs"
+										},
+										{
+											"key": "limit",
+											"value": "0"
+										},
+										{
+											"key": "cursor",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Register Tenant",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"Project created or exists\", function () {",
+											"    if(pm.response.status == 409) {",
+											"        let text = pm.response.text();",
+											"        pm.expect(text).contains(\"has been registered already\");",
+											"",
+											"    } else if(pm.response.status == 200) {",
+											"        let json = pm.response.json();",
+											"        // TODO",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"gcpid\": \"{{seismic_project}}\",\n\t\"esd\": \"{{entitlement_domain}}\",\n    \"default_acl\": \"users.datalake.admins@{{entitlement_domain}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/tenant/{{seismic_project}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"tenant",
+										"{{seismic_project}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Check Tenant Exists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Status description - OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/tenant/sdpath?datapartition={{seismic_project}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"tenant",
+										"sdpath"
+									],
+									"query": [
+										{
+											"key": "datapartition",
+											"value": "{{seismic_project}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Register Subproject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let json = pm.response.json();",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Subproject created\", function () {",
+											"    var child = Object.keys(json);",
+											"    pm.expect(json.name).to.eql(pm.variables.get(\"seismic_subproject\"));",
+											"    pm.expect(json.tenant).to.eql(pm.variables.get(\"seismic_project\"));",
+											"    pm.expect(json.ltag).to.eql(pm.variables.get(\"legal_dafault_tag\"));",
+											"    pm.expect(json.gcs_bucket).to.exist;",
+											"});",
+											"",
+											"let seismic_default_admins = json.acls.admins[0];",
+											"let seismic_default_viewers = json.acls.viewers[0];",
+											"pm.collectionVariables.set('seismic_default_admins', seismic_default_admins)",
+											"pm.collectionVariables.set('seismic_default_viewers', seismic_default_viewers)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{legal_dafault_tag}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"admin\": \"{{entitlement_user}}\",\n    \"access_policy\": \"dataset\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Get All Subprojects",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Status description - OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{seismic_project}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Check Subproject Path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Status description - OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"description": "Legal tag of the dataset",
+										"key": "ltag",
+										"type": "text",
+										"value": "opendes-public-usa-dataset-1",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/ls?sdpath=sd://{{seismic_project}}/{{seismic_subproject}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"ls"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{seismic_project}}/{{seismic_subproject}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Patch Subproject with Legal Tag Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{legal_dafault_tag}}",
+										"type": "text"
+									},
+									{
+										"key": "recursive",
+										"value": "true",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Register Dataset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let json = pm.response.json();",
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var gcsurl = pm.response.json().gcsurl;",
+											"pm.variables.set(\"gcs_url\", gcsurl);",
+											"pm.variables.set(\"dataset_bucket\", gcsurl.split(\"/\")[1]);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}/dataset/{{seismic_segy_file_name}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}",
+										"dataset",
+										"{{seismic_segy_file_name}}"
+									]
+								},
+								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Get Upload URL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"let sas_url = pm.response.json().access_token;",
+											"pm.variables.set('upload_sas_url', sas_url);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/gcs-access-token?sdpath=sd://{{seismic_project}}/{{seismic_subproject}}/{{seismic_segy_file_name}}&readonly=false",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"gcs-access-token"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{seismic_project}}/{{seismic_subproject}}/{{seismic_segy_file_name}}",
+											"description": "full path for the subproject in the seismic store"
+										},
+										{
+											"key": "readonly",
+											"value": "false"
+										}
+									]
+								},
+								"description": "Create a BLOB SAS URL with write permissions so that the SEGY file can be uploaded directly to the subproject in the seismic storage."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": [
+						{
+							"name": "Seismic DDMS - Delete Dataset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}/dataset/{{seismic_segy_file_name}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}",
+										"dataset",
+										"{{seismic_segy_file_name}}"
+									]
+								},
+								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Delete Subproject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{legal_dafault_tag}}"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Well Delivery",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Well Delivery DDMS - Get Info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Status description - OK\", function () {",
+											"    pm.response.to.have.status(\"OK\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{well_delivery_ddms_host}}/info",
+									"host": [
+										"{{well_delivery_ddms_host}}"
+									],
+									"path": [
+										"info"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "ZGY Conversion",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Workflow -  Find Workflow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Found ZGY Conversion DAG ID\", function () {",
+											"    let workflows = pm.response.json();",
+											"    let dag = workflows.find((workflow) => workflow.description===\"segy-to-zgy-conversion-dag\")",
+											"    pm.expect(dag).to.exist;",
+											"",
+											"    pm.variables.set('zgy_dag_id', dag.workflowId);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Workflow - Get Workflow Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json).to.be.not.empty",
+											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('zgy_dag_id'))",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow/{{zgy_dag_id}}",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow",
+										"{{zgy_dag_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "VDS Conversion",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Workflow -  Find Workflow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Found VDS Conversion DAG ID\", function () {",
+											"    let workflows = pm.response.json();",
+											"    let dag = workflows.find((workflow) => workflow.description===\"segy-to-vds-conversion-dag\")",
+											"    pm.expect(dag).to.exist;",
+											"",
+											"    pm.variables.set('vds_dag_id', dag.workflowId);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Workflow - Get Workflow Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json).to.be.not.empty",
+											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('vds_dag_id'))",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow/{{vds_dag_id}}",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow",
+										"{{vds_dag_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": "<Autopopulated by 'Refresh Token\">"
+		},
+		{
+			"key": "id_token",
+			"value": "<Autopopulated by 'Refresh Token\">"
+		},
+		{
+			"key": "legal_host",
+			"value": "{{HOSTNAME}}/api/legal/v1"
+		},
+		{
+			"key": "indexer_host",
+			"value": "{{HOSTNAME}}/api/indexer/v2"
+		},
+		{
+			"key": "storage_host",
+			"value": "{{HOSTNAME}}/api/storage/v2"
+		},
+		{
+			"key": "search_host",
+			"value": "{{HOSTNAME}}/api/search/v2"
+		},
+		{
+			"key": "entitlements_host",
+			"value": "{{HOSTNAME}}/api/entitlements/v2"
+		},
+		{
+			"key": "schema_host",
+			"value": "{{HOSTNAME}}"
+		},
+		{
+			"key": "delivery_host",
+			"value": "{{HOSTNAME}}/api/delivery/v2"
+		},
+		{
+			"key": "partition_host",
+			"value": "{{HOSTNAME}}/api/partition/v1"
+		},
+		{
+			"key": "notification_host",
+			"value": "{{HOSTNAME}}/api/notification/v1"
+		},
+		{
+			"key": "registration_host",
+			"value": "{{HOSTNAME}}/api/register/v1"
+		},
+		{
+			"key": "crs_conversion_host",
+			"value": "{{HOSTNAME}}/api/crs/converter/v2"
+		},
+		{
+			"key": "file_host",
+			"value": "{{HOSTNAME}}/api/file/v2"
+		},
+		{
+			"key": "unit_host",
+			"value": "{{HOSTNAME}}/api/unit/v3"
+		},
+		{
+			"key": "workflow_host",
+			"value": "{{HOSTNAME}}/api/workflow/v1"
+		},
+		{
+			"key": "seismic_ddms_host",
+			"value": "{{HOSTNAME}}/seistore-svc/api/v3"
+		},
+		{
+			"key": "wellbore_ddms_host",
+			"value": "{{HOSTNAME}}/api/os-wellbore-ddms"
+		},
+		{
+			"key": "policy_host",
+			"value": "{{HOSTNAME}}/api/policy/v1"
+		},
+		{
+			"key": "well_delivery_ddms_host",
+			"value": "{{HOSTNAME}}/api/well-delivery",
+			"type": "string"
+		},
+		{
+			"key": "osdu_release",
+			"value": "0.11.0"
+		},
+		{
+			"key": "entitlement_user",
+			"value": ""
+		},
+		{
+			"key": "entitlement_domain",
+			"value": ""
+		},
+		{
+			"key": "legal_dafault_tag",
+			"value": ""
+		},
+		{
+			"key": "wellbore_well_name",
+			"value": ""
+		},
+		{
+			"key": "wellbore_well_id",
+			"value": ""
+		},
+		{
+			"key": "wellbore_wellbore_name",
+			"value": ""
+		},
+		{
+			"key": "wellbore_wellbore_id",
+			"value": ""
+		},
+		{
+			"key": "seismic_project",
+			"value": ""
+		},
+		{
+			"key": "seismic_subproject",
+			"value": ""
+		},
+		{
+			"key": "seismic_segy_file_name",
+			"value": ""
+		},
+		{
+			"key": "seismic_default_admins",
+			"value": ""
+		},
+		{
+			"key": "seismic_default_viewers",
+			"value": ""
+		}
+	]
+}
