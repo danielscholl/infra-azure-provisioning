@@ -6,6 +6,8 @@
 @login_base = login.microsoftonline.com/{{TENANT_ID}}
 @oauth_token_host = {{login_base}}/oauth2/v2.0/token
 
+@data_partition_service_bus_namespace = {{DATA_PARTITION_SERVICE_BUS_NAME}}
+
 # -----------------------
 # OAUTH  authorization_code
 # -----------------------
@@ -84,8 +86,8 @@ data-partition-id: {{data_partition_id}}
             "value": "sb-connection"
         },
         "sb-namespace": {
-            "sensitive": true,
-            "value": "sb-namespace"
+            "sensitive": false,
+            "value": "{{data_partition_service_bus_namespace}}"
         },
         "storage-account-key": {
             "sensitive": true,

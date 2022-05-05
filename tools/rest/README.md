@@ -14,6 +14,7 @@ az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $A
 
 GROUP=$(az group list --query "[?contains(name, 'cr${UNIQUE}')].name" -otsv)
 ENV_VAULT=$(az keyvault list --resource-group $GROUP --query [].name -otsv)
+PARTITION_NAME=<partition_name> # Replace with name of the data partition
 
 CLIENT_SECRET=$(az ad app credential reset --id $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/aad-client-id --query value -otsv) --query password -otsv)
 ```
@@ -35,7 +36,8 @@ cat  << EOF
       "ES_HOST": "$(echo $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-endpoint --query value -otsv) \
                    | sed 's/^.\{8\}//g' | sed 's/.\{5\}$//')",
       "ES_AUTH_TOKEN": "$(echo $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-username --query value -otsv):$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/opendes-elastic-password --query value -otsv) | base64)",
-      "INITIAL_TOKEN": "<put refresh token here from auth_token.http authorize request>"
+      "INITIAL_TOKEN": "<put refresh token here from auth_token.http authorize request>",
+      "DATA_PARTITION_SERVICE_BUS_NAME": "$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${PARTITION_NAME}-sb-namespace --query value -otsv)"
     }
 }
 EOF
