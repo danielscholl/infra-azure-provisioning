@@ -36,8 +36,8 @@
             "value": "sb-connection"
         },
         "sb-namespace": {
-            "sensitive": true,
-            "value": "sb-namespace"
+            "sensitive": false,
+            "value": "<service_bus_namespace>"
         },
         "storage-account-key": {
             "sensitive": true,
