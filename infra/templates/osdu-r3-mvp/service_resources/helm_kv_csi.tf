@@ -18,17 +18,9 @@
 #-------------------------------
 locals {
   helm_kv_csi_name    = "kvsecrets"
-  helm_kv_csi_ns      = "kvsecrets"
+  helm_kv_csi_ns      = "kube-system"
   helm_kv_csi_repo    = "https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts"
-  helm_kv_csi_version = "0.0.15"
-}
-
-resource "kubernetes_namespace" "kvsecrets" {
-  metadata {
-    name = local.helm_kv_csi_ns
-  }
-
-  depends_on = [module.aks]
+  helm_kv_csi_version = "1.0.1"
 }
 
 resource "helm_release" "kvsecrets" {
@@ -43,5 +35,8 @@ resource "helm_release" "kvsecrets" {
     value = ":8081"
   }
 
-  depends_on = [kubernetes_namespace.kvsecrets]
+  set {
+    name  = "secrets-store-csi-driver.syncSecret.enabled"
+    value = "true"
+  }
 }

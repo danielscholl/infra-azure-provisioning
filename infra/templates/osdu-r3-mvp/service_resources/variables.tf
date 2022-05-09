@@ -431,3 +431,15 @@ variable "aks_dns_host" {
   type        = string
   default     = ""
 }
+
+variable "aks_authorized_ip_ranges" {
+  description = "(Optional) The IP ranges to allow for incoming traffic to the server nodes."
+  type        = list(string)
+  default     = []
+}
+
+variable "disable_airflow1" {
+  description = "Enable this flag to decomission airflow 1 resources"
+  type        = bool
+  default     = false
+}

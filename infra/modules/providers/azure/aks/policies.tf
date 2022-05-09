@@ -57,7 +57,7 @@ resource "azurerm_resource_policy_assignment" "deny_privileged_containers" {
   name                 = format("%s-not-allow-privileged", var.name)
   display_name         = format("%s - Kubernetes cluster should not allow privileged containers", var.name)
   policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/95edb821-ddaf-4404-9732-666045e056b4"
-  description          = "Do not allow privileged containers creation in a Kubernetes cluster BUT ISTIO. This recommendation is part of CIS 5.2.1 which is intended to improve the security of your Kubernetes environments. This policy is generally available for Kubernetes Service (AKS), and preview for AKS Engine and Azure Arc enabled Kubernetes. For more information, see https://aka.ms/kubepolicydoc."
+  description          = "Do not allow privileged containers creation in a Kubernetes cluster. This recommendation is part of CIS 5.2.1 which is intended to improve the security of your Kubernetes environments. This policy is generally available for Kubernetes Service (AKS), and preview for AKS Engine and Azure Arc enabled Kubernetes. For more information, see https://aka.ms/kubepolicydoc."
 
   resource_id = azurerm_kubernetes_cluster.main.id
   enforce     = true
@@ -65,14 +65,14 @@ resource "azurerm_resource_policy_assignment" "deny_privileged_containers" {
   parameters = <<EOF
   {
     "effect": { "value": "deny"},
-    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]},
-    "excludedContainers": {"value": ["istio-init", "secrets-store"]}
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]}
   }
   EOF
 }
 
 # AKS should not allow container privilege escalation
-# TODO: Remove istio-system and airflow2 namespaces and fix the helm charts values to comply with this policy
+# TODO: Make airflow2 compliant
+# Discussion: https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/merge_requests/278#note_117611
 resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
   count                = var.azure_policy_enabled ? 1 : 0
   name                 = format("%s-deny-privilege-escalation", var.name)
@@ -86,7 +86,8 @@ resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
   parameters = <<EOF
   {
     "effect": { "value": "deny"},
-    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "airflow2", "istio-system"]}
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "airflow2"]},
+    "excludedContainers": {"value": ["discovery"]}
   }
   EOF
 }
@@ -114,7 +115,8 @@ resource "azurerm_resource_policy_assignment" "allow_volume_types" {
 }
 
 # Kubernetes cluster pod hostPath volumes should only use allowed host path
-# kvsecrets CSI controller needs this privilege and podidentity as well
+# kvsecrets CSI controller needs this privilege and podidentity as well (moved to kube-system ns)
+# EPAM: Only
 resource "azurerm_resource_policy_assignment" "allowed_host_paths" {
   count                = var.azure_policy_enabled ? 1 : 0
   name                 = format("%s-allowed-host-paths", var.name)
@@ -128,8 +130,7 @@ resource "azurerm_resource_policy_assignment" "allowed_host_paths" {
   parameters = <<EOF
   {
     "effect": { "value": "deny"},
-    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "kvsecrets", "podidentity", "agic"]},
-    "allowedHostPaths": {"value": { "paths": [] }}
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "agic"]}
   }
   EOF
 }
@@ -148,7 +149,7 @@ resource "azurerm_resource_policy_assignment" "allowed_host_net_port" {
   parameters = <<EOF
   {
     "effect": { "value": "deny"},
-    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "kvsecrets", "podidentity"]},
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]},
     "allowHostNetwork": {"value": false},
     "minPort": {"value": 0},
     "maxPort": {"value": 0}
