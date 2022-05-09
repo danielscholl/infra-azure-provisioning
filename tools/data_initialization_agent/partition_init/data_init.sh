@@ -30,6 +30,16 @@ else
   
   partition_count=0
   partition_initialized_count=0
+
+  az login --identity --username $OSDU_IDENTITY_ID
+  if [ $? -eq 0 ]; then
+      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
+        az account set --subscription $SUBSCRIPTION
+      fi
+  fi
+
+  KEY_VAULT=$(az keyvault list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
+  
   
   for index in "${!partitions_array[@]}"
   do
@@ -40,8 +50,18 @@ else
     echo "Partition Initialization Endpoint: ${OSDU_PARTITION_INIT_URI}"
   
     i=0
+    partition_info_payload_content=`cat partition_init_api_payload.json`
     while [[ $i -lt 3 ]]; do
       i=$(expr $i + 1)
+      dp_service_bus_namespace=$(az keyvault secret show --id https://${KEY_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-sb-namespace --query value -otsv)
+      if [ -z "$dp_service_bus_namespace" -a "$dp_service_bus_namespace"==" " ]; then
+        echo "Getting service bus namespace Failed, Empty Reponse. Iteration $i."
+        continue
+      fi
+      partition_info_payload_content_current=$partition_info_payload_content
+      partition_info_payload_content_current=$(echo "$partition_info_payload_content_current" | sed "s/<service_bus_namespace>/$dp_service_bus_namespace/")
+      echo -n "" > partition_init_api_payload.json
+      echo "$partition_info_payload_content_current" >> partition_init_api_payload.json
   
       init_response=$(curl -s -w " Http_Status_Code:%{http_code} " \
         -X POST \
@@ -51,6 +71,8 @@ else
         -d "@partition_init_api_payload.json" \
         $OSDU_PARTITION_INIT_URI)
     
+      echo -n "" > partition_init_api_payload.json
+      echo "$partition_info_payload_content" >> partition_init_api_payload.json
       echo "Init Reponse: $init_response"
   
       if [ -z "$init_response" -a "$init_response"==" " ]; then
@@ -122,12 +144,6 @@ echo "Current Status: ${currentStatus}"
 echo "Current Message: ${currentMessage}"
 
 if [ ! -z "$CONFIG_MAP_NAME" -a "$CONFIG_MAP_NAME" != " " ]; then
-  az login --identity --username $OSDU_IDENTITY_ID
-  if [ $? -eq 0 ]; then
-      if [ ! -z "$SUBSCRIPTION" -a "$SUBSCRIPTION" != " " ]; then
-        az account set --subscription $SUBSCRIPTION
-      fi
-  fi
   
   ENV_AKS=$(az aks list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
   az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $ENV_AKS

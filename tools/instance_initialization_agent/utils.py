@@ -1,4 +1,9 @@
+from operator import contains
 import requests
+import json
+from azure.identity import AzureCliCredential, DefaultAzureCredential
+from azure.mgmt.resource import ResourceManagementClient
+from azure.keyvault import secrets
 import json
 
 def convertToInt(code):
@@ -102,3 +107,36 @@ def terminateIstioSidecar():
             print("Terminating Istio side-car returned status code {code}".format(code=response.status_code))
     except Exception as ex:
         print("Terminating Istio Side-car threw exception: {exception}".format(exception=json.dumps(ex)))
+
+
+def getKeyVaultName(subscription, resourceGroup):
+    credential = DefaultAzureCredential()
+
+    resourceClient = ResourceManagementClient(credential, subscription)
+    keyvaultProvider = "Microsoft.KeyVault"
+
+    resourceList = resourceClient.resources.list_by_resource_group(resourceGroup)
+
+    for resource in list(resourceList):
+        if resource.id.find(keyvaultProvider) != -1:
+            print("successfully fetched keyvault name: {0}".format(resource.name))
+            return resource.name
+
+def getKeyVaultSecretValue(secretName, keyvaultName):
+    credential = DefaultAzureCredential()
+    vaultUri = "https://{0}.vault.azure.net/".format(keyvaultName)
+    client = secrets.SecretClient(vaultUri, credential=credential)
+    secretValue = client.get_secret(secretName).value
+    if not secretValue:
+        raise Exception("failed to fetch value for secret: {0}".format(secretName))
+    print("successfully fetched value for secret: {0}".format(secretName))
+    return secretValue
+
+def replacePlaceholderWithSecretValue(body, keyvaultName, partition):
+    with open('keyvault_secret_placeholders.json', 'r') as requestBodyFile:
+        placeholders = json.loads(requestBodyFile.read())
+        for item in placeholders:
+            secretName = "{0}-{1}".format(partition, item["keyvaultsecret"])
+            secretValue = getKeyVaultSecretValue(secretName, keyvaultName)
+            body = body.replace(item["placeholder"], secretValue)
+        return body
