@@ -7,7 +7,7 @@ import requests
 import json
 from json.decoder import JSONDecodeError
 from pprint import pprint
-from utils import getAccessToken, isSuccessStatusCode, isRetryableFailureStatusCode, isNonRetryableFailureStatusCode, terminateIstioSidecar
+from utils import getAccessToken, isSuccessStatusCode, isRetryableFailureStatusCode, isNonRetryableFailureStatusCode, terminateIstioSidecar, getKeyVaultName, replacePlaceholderWithSecretValue
 from configmap_utils import writeOutputToConfigMap
 
 ## Environment Variables ##
@@ -21,6 +21,7 @@ Partitions = os.environ['PARTITIONS'].strip().split(',')
 Partitions = [env_partition.strip() for env_partition in Partitions]
 ConfigMapName = os.environ['CONFIG_MAP_NAME']
 Namespace = os.environ['NAMESPACE']
+KeyVaultName = getKeyVaultName(AzureSubscription, AzureResourceGroup)
 
 ## Global Props ##
 toInitPartition = True
@@ -198,19 +199,22 @@ async def initializePartition(partition):
         return
     
     partitionInitApi = partitionInitApiFormat.format(partitionHost=partitionHost, partition=partition)
-    
+
     with open('partition_init_payload.json', 'r') as requestBodyFile:
         requestBody = requestBodyFile.read()
-        
-        logPartitionAsync(partition, "Initializing partition {partition}, using URL {url}".format(partition=partition, url=partitionInitApi))
-        
-        response = await aio.create_task(servicePostApiCall(url=partitionInitApi, partition=partition, data=requestBody))
-        
-        if response["isSuccess"]:
-            logPartitionAsync(partition, "Partition Initialization for {partition} SUCCESSFUL with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=response["statusCode"], response=response["data"]))
-        else:
-            logPartitionAsync(partition, "Partition Initialization for {partition} FAILED with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=response["statusCode"], response=response["data"]))
+        try:
+            requestBody = replacePlaceholderWithSecretValue(requestBody, KeyVaultName, partition)
+            logPartitionAsync(partition, "Initializing partition {partition}, using URL {url}".format(partition=partition, url=partitionInitApi))
+            response = await aio.create_task(servicePostApiCall(url=partitionInitApi, partition=partition, data=requestBody))
+            if response["isSuccess"]:
+                logPartitionAsync(partition, "Partition Initialization for {partition} SUCCESSFUL with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=response["statusCode"], response=response["data"]))
+            else:
+                logPartitionAsync(partition, "Partition Initialization for {partition} FAILED with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=response["statusCode"], response=response["data"]))
+                status[partition] = False
+        except Exception as e:
+            logPartitionAsync(partition, e)
             status[partition] = False
+
     return
 
 """ [Entitlements Initialization]
