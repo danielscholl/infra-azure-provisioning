@@ -39,7 +39,7 @@ var istioEnabled = os.Getenv("AUTOSCALING_ENABLED")
 var disableAirflow1 = getEnv("TF_VAR_disable_airflow1", "false")
 
 var istioResourses = 14
-var totalResources = 160
+var totalResources = 158
 var resourcesToRemoveForAirflow1 = 6
 
 func TestTemplate(t *testing.T) {

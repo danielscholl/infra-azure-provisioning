@@ -422,6 +422,8 @@ module "aks" {
   kubeconfig_to_disk        = false
   azure_policy_enabled      = true
 
+  api_server_authorized_ip_ranges = var.aks_authorized_ip_ranges
+
   resource_tags = var.resource_tags
 }
 
