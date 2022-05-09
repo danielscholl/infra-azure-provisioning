@@ -168,3 +168,9 @@ variable "azure_policy_enabled" {
   type        = bool
   default     = false
 }
+
+variable "api_server_authorized_ip_ranges" {
+  description = "(Optional) The IP ranges to allow for incoming traffic to the server nodes."
+  type        = list(string)
+  default     = []
+}

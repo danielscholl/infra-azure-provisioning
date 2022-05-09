@@ -97,6 +97,8 @@ resource "azurerm_kubernetes_cluster" "main" {
   dns_prefix         = var.dns_prefix
   kubernetes_version = var.kubernetes_version
 
+  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
+
   linux_profile {
     admin_username = var.admin_user
 
@@ -113,7 +115,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     vnet_subnet_id       = var.vnet_subnet_id
     enable_auto_scaling  = var.auto_scaling_default_node
     max_pods             = var.max_pods
-    max_count            = "2"
+    max_count            = "3"
     min_count            = "2"
     orchestrator_version = var.kubernetes_version
   }

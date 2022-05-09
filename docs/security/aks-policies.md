@@ -17,7 +17,7 @@ Applied changes:
 
 ## Optional policy installation
 
-In terraform state [service_resources/main.tf](../../infra/templates/osdu-r3-mvp/service_resources/main.tf), you can enable or disable policy installation in aks module:
+In __service resources__ terraform stage [service_resources/main.tf](../../infra/templates/osdu-r3-mvp/service_resources/main.tf), you can enable or disable policy installation in aks module:
 
 ```terraform
 module "aks" {
@@ -66,11 +66,54 @@ spec:
       allowPrivilegeEscalation: true
 ```
 
-```
-# kubectl apply -f not-allowed.yaml 
+```shell
+kubectl apply -f not-allowed.yaml 
+
 Error from server ([azurepolicy-psp-container-no-privilege-esc-e6a74aee95507167737f] Privilege escalation container is not allowed: nginx): error when creating "not-allowed.yaml": admission webhook "validation.gatekeeper.sh" denied the request: [azurepolicy-psp-container-no-privilege-esc-e6a74aee95507167737f] Privilege escalation container is not allowed: nginx
 ```
 
-__NOTE__: Since network policy was applied, you might notice that external traffic is now prohibited.
+## How to fix policies (2022/04)
 
-__TODO__: Remove istio-system and airflow2 namespaces and fix the helm charts values to comply with the __deny_privilege_escalation__ policy __"Kubernetes clusters should not allow container privilege escalation"__, as for now those namespaces are not compliant, therefore the policy is configured to exclude those.
+Most of the policies introduced are already compliant, by using recommended parameters for `flux`, `kvsecrets`, `podidentity`, those policies are being checked with gatewaykeeper built-in AKS plugin.
+
+Nevertheless, we have 2 remaining policies which will be checked at Azure resource level, and those can be fixed easily, however you may need to find another approach to install and connect to your AKS cluster [Options to connect](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster).
+
+* AKS private clusters should be enabled (audit)
+  1. [Disable AKS Public FQDN](https://docs.microsoft.com/en-us/azure/aks/private-clusters#disable-public-fqdn)
+  2. [Configure Private DNS ZONE](https://docs.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone)
+  * [Options to connect](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster)
+* Authorized IP ranges should be defined on Kubernetes (audit)
+  * Use the parameter `aks_authorized_ip_ranges` in the [terraform.tfvars](../../infra/templates/osdu-r3-mvp/service_resources/terraform.tfvars) on `service resources` stage, I.E:
+  * Also you can change this manually in Azure console in `AKS > Networking > Security > Set authorized IP ranges`
+
+Example in [terraform.tfvars](../../infra/templates/osdu-r3-mvp/service_resources/terraform.tfvars) on `service resources` (EOF).
+
+```terraform
+aks_authorized_ip_ranges = ["192.168.0.1/24", "192.168.2.1/24" ...]
+```
+
+## Policy exceptions
+
+* __Namespaces__
+  * __Kube System__: Installation of kvsecrets, csi provider and podidentity helm charts will be done here.
+  * __Gatekeeper system__: Policy add-on requires privileges,therefore we need to add exception for this namespace.
+  * __agic__: AGIC controller does requires hostPath:
+
+```yaml
+  - hostPath:
+        path: /etc/kubernetes/
+        type: Directory
+```
+
+* __Containers__
+  * __discovery__: `istiod` container does not have current options to put `allowPrivilegeEscalation: false`.
+  * __configure-sysctl__: Can be removed if Elastic is not installed in current AKS, just needed in case EKS cluster will be installed in AKS.
+
+## Subscription level policies
+
+We are using built-in AKS policies which are customized to work with OSDU components:
+
+* __deny_privilege_escalation__ policy __"Kubernetes clusters should not allow container privilege escalation"__.
+  * We are excluding potential containers which may need these privileges (`configure-sysctl`, `discovery`), unfortunately there is deep configuration to do in these containers which will broke functionality, therefore those should be excluded as well at policy subscription level as well.
+* __deny_privileged_containers__
+  * (`configure-sysctl`, `discovery`), can be excluded by setting this in the parameters policy at subscription level.
