@@ -98,6 +98,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   kubernetes_version = var.kubernetes_version
 
   api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
+  private_cluster_enabled         = var.private_cluster_enabled
 
   linux_profile {
     admin_username = var.admin_user

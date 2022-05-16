@@ -71,7 +71,6 @@ resource "azurerm_resource_policy_assignment" "deny_privileged_containers" {
 }
 
 # AKS should not allow container privilege escalation
-# TODO: Make airflow2 compliant
 # Discussion: https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/-/merge_requests/278#note_117611
 resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
   count                = var.azure_policy_enabled ? 1 : 0
@@ -86,7 +85,7 @@ resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
   parameters = <<EOF
   {
     "effect": { "value": "deny"},
-    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "airflow2"]},
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]},
     "excludedContainers": {"value": ["discovery"]}
   }
   EOF
@@ -116,7 +115,6 @@ resource "azurerm_resource_policy_assignment" "allow_volume_types" {
 
 # Kubernetes cluster pod hostPath volumes should only use allowed host path
 # kvsecrets CSI controller needs this privilege and podidentity as well (moved to kube-system ns)
-# EPAM: Only
 resource "azurerm_resource_policy_assignment" "allowed_host_paths" {
   count                = var.azure_policy_enabled ? 1 : 0
   name                 = format("%s-allowed-host-paths", var.name)
