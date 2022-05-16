@@ -1,4 +1,4 @@
-CHANGELOG.md
+(.*/)?CHANGELOG.md$
 (.*/)?\.envoy-airflow-authentication$
 .*\.http$
 charts/airflow/charts/CHANGELOG.md
