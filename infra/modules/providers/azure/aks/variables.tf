@@ -174,3 +174,9 @@ variable "api_server_authorized_ip_ranges" {
   type        = list(string)
   default     = []
 }
+
+variable "private_cluster_enabled" {
+  description = "(Optional) Should this Kubernetes Cluster have its API server only exposed on internal IP addresses? This provides a Private IP Address for the Kubernetes API on the Virtual Network where the Kubernetes Cluster is located. Defaults to false. Changing this forces a new resource to be created."
+  type        = bool
+  default     = false
+}
