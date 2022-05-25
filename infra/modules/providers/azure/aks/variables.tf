@@ -157,14 +157,26 @@ variable "msi_enabled" {
   default = true
 }
 
-variable "enable_kube_dashboard" {
-  type    = bool
-  default = true
-}
-
 variable "availability_zones" {
   description = "Availability zones for the aks nodepools"
   type        = list(string)
   default     = null
 }
 
+variable "azure_policy_enabled" {
+  description = "Enable azure policy for pods"
+  type        = bool
+  default     = false
+}
+
+variable "api_server_authorized_ip_ranges" {
+  description = "(Optional) The IP ranges to allow for incoming traffic to the server nodes."
+  type        = list(string)
+  default     = []
+}
+
+variable "private_cluster_enabled" {
+  description = "(Optional) Should this Kubernetes Cluster have its API server only exposed on internal IP addresses? This provides a Private IP Address for the Kubernetes API on the Virtual Network where the Kubernetes Cluster is located. Defaults to false. Changing this forces a new resource to be created."
+  type        = bool
+  default     = false
+}
