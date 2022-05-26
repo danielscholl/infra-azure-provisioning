@@ -437,7 +437,7 @@ variable "aks_dns_host" {
 variable "aks_authorized_ip_ranges" {
   description = "(Optional) The IP ranges to allow for incoming traffic to the server nodes."
   type        = list(string)
-  default     = []
+  default     = ["0.0.0.0/0"]
 }
 
 variable "disable_airflow1" {

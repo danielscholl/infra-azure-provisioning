@@ -21,10 +21,10 @@ spec:
   profile: default
   addonComponents:
     grafana:
-      enabled: true
+      enabled: false
     kiali:
       # Enable the Kiali deployment for a service mesh observability dashboard
-      enabled: true
+      enabled: false
     tracing:
       # Enable the Jaeger deployment for tracing
       enabled: true
