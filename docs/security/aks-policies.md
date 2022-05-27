@@ -75,11 +75,11 @@ kubectl apply -f not-allowed.yaml
 Error from server ([azurepolicy-psp-container-no-privilege-esc-e6a74aee95507167737f] Privilege escalation container is not allowed: nginx): error when creating "not-allowed.yaml": admission webhook "validation.gatekeeper.sh" denied the request: [azurepolicy-psp-container-no-privilege-esc-e6a74aee95507167737f] Privilege escalation container is not allowed: nginx
 ```
 
-## How to fix policies (2022/04)
+## How to fix policies (2022/05)
 
 Most of the policies introduced are already compliant, by using recommended parameters for `flux`, `kvsecrets`, `podidentity`, those policies are being checked with gatewaykeeper built-in AKS plugin.
 
-Nevertheless, we have 2 remaining policies which will be checked at Azure resource level, and those can be fixed easily, however you may need to find another approach to install and connect to your AKS cluster [Options to connect](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster).
+Nevertheless, we have 1 remaining policy (Disable public AKS controlplane) which will be checked at Azure resource level, however you may need to find another approach to install and connect to your AKS cluster [Options to connect](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster).
 
 * AKS private clusters should be enabled (audit)
   1. [Disable AKS Public FQDN](https://docs.microsoft.com/en-us/azure/aks/private-clusters#disable-public-fqdn)
@@ -89,9 +89,10 @@ Nevertheless, we have 2 remaining policies which will be checked at Azure resour
   2. [Configure Private DNS ZONE](https://docs.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone)
   * [Options to connect](https://docs.microsoft.com/en-us/azure/aks/private-clusters#options-for-connecting-to-the-private-cluster)
   * __WARN__: This is an experimental feature, not yet fully supported, you need to plan accordingly to enable this feature, if you're installing terraform code outside of AKS internal network, you'll end up with broken helm chart installation, unfortunately, there will not be recovery until you get access to the internal AKS endpoint either with solution for connection options described above.
-* Authorized IP ranges should be defined on Kubernetes (audit)
+* __Fixed__ Authorized IP ranges should be defined on Kubernetes (audit)
   * Use the parameter `aks_authorized_ip_ranges` in the [terraform.tfvars](../../infra/templates/osdu-r3-mvp/service_resources/terraform.tfvars) on `service resources` stage, I.E:
   * Also you can change this manually in Azure console in `AKS > Networking > Security > Set authorized IP ranges`
+  * By default this parameter is set to `0.0.0.0/0` (allow all)
 
 Example in [terraform.tfvars](../../infra/templates/osdu-r3-mvp/service_resources/terraform.tfvars) on `service resources` (EOF).
 
