@@ -190,7 +190,7 @@ resource "azurerm_key_vault_certificate" "istio_ssl_certificate" {
         dns_names = [var.dns_name, "${local.base_name}-istio-gw.${azurerm_resource_group.main.location}.cloudapp.azure.com"]
       }
 
-      subject            = "CN=*.contoso.com"
+      subject            = "CN=${var.aks_dns_host}"
       validity_in_months = 12
     }
   }
