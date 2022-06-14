@@ -333,7 +333,7 @@ module "appgateway" {
   vnet_name                       = module.network.name
   vnet_subnet_id                  = module.network.subnets.0
   keyvault_id                     = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.secret_id
+  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.versionless_secret_id
   ssl_certificate_name            = local.ssl_cert_name
   ssl_policy_type                 = var.ssl_policy_type
   ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
@@ -358,8 +358,8 @@ module "istio_appgateway" {
   vnet_name                       = module.network.name
   vnet_subnet_id                  = module.network.subnets.0
   keyvault_id                     = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.secret_id
-  ssl_certificate_name            = local.ssl_cert_name
+  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.versionless_secret_id
+  ssl_certificate_name            = local.istio_ssl_cert_name
   ssl_policy_type                 = var.ssl_policy_type
   ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
   ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
