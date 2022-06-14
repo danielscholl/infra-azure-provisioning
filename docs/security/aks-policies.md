@@ -116,12 +116,169 @@ aks_authorized_ip_ranges = ["192.168.0.1/24", "192.168.2.1/24" ...]
 * __Containers__
   * __discovery__: `istiod` container does not have current options to put `allowPrivilegeEscalation: false`.
   * __configure-sysctl__: Can be removed if Elastic is not installed in current AKS, just needed in case EKS cluster will be installed in AKS.
+  * __istio-init__: Recently we found out that sidecar does needs privilege escalation in some automated pipeline installation scenarios, still, with manual installation it is working fine.
+    * Inconsistencies [this repo](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/blob/cd9c94e68026bd56044df26ee984453d216f64aa/charts/osdu-istio/templates/istio-operator-install.yaml#L240) vs [helm-manual-install](https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure/blob/6f1ecd7a8bc6c49252b1923587c30959950e8bdb/osdu-istio/istio-operator/files/gen-operator.yaml#L178), need further testing to figure this issue out.
 
-## Subscription level policies
+* __Kubernetes cluster pods should only use allowed volume types__: We are using kvsecrets mount, which is csi provider, this will mutate the pod definition, disallowing the creation of the osdu pods which will use the volume type, most of the OSDU services are using following volume spec:
 
-We are using built-in AKS policies which are customized to work with OSDU components:
+```yaml
+        - name: azure-keyvault
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-keyvault
+```
+
+Unfortunately, this is no working with the current policy, therefore, we needed to use policy exeption for this policy:
+
+```json
+{
+  "effect": { "value": "audit"},
+  "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]},
+  "allowedVolumeTypes": {"value": ["*"]}
+}
+```
+
+__NOTE__: We already tried several combinations, plus configmaps, secrets, csi, keyvault, both, and none of those have worked for us, we are planning to follow up to comply with least privilege principle. [issue 227](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/227)
+
+### Adopt exemptions for each policy
+
+If for some reason you need custom exeption in a policy, you will need to modify the policy depending on the level on which the policy is applied, if the policy is applied at AKS resource level (how it is recommended to be configured by azure providers), you need to modify the policy in the AKS module [policies.tf](../../infra/modules/providers/azure/aks/policies.tf)
+
+Take as an example the policy "[Kubernetes should not allow privilege escalation](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyDetailBlade/definitionId/%2Fproviders%2FMicrosoft.Authorization%2FpolicyDefinitions%2F1c6e92c9-99f0-4e55-9cf2-0c234dc48f99)"
+
+Policy looks like this:
+
+```json
+{
+  "properties": {
+   --- CUT OUTPUT ---
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "'audit' allows a non-compliant resource to be created or updated, but flags it as non-compliant. 'deny' blocks the non-compliant resource creation or update. 'disabled' turns off the policy."
+        },
+        "allowedValues": [
+          "audit",
+          "Audit",
+          "deny",
+          "Deny",
+          "disabled",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "excludedNamespaces": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Namespace exclusions",
+          "description": "List of Kubernetes namespaces to exclude from policy evaluation. System namespaces \"kube-system\", \"gatekeeper-system\" and \"azure-arc\" are always excluded by design."
+        },
+        "defaultValue": [
+          "kube-system",
+          "gatekeeper-system",
+          "azure-arc"
+        ]
+      },
+      "namespaces": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Namespace inclusions",
+          "description": "List of Kubernetes namespaces to only include in policy evaluation. An empty list means the policy is applied to all resources in all namespaces."
+        },
+        "defaultValue": []
+      },
+      "labelSelector": {
+        "type": "Object",
+        "metadata": {
+          "displayName": "Kubernetes label selector",
+          "description": "Label query to select Kubernetes resources for policy evaluation. An empty label selector matches all Kubernetes resources."
+        },
+        "defaultValue": {},
+      },
+      "excludedContainers": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Containers exclusions",
+          "description": "The list of InitContainers and Containers to exclude from policy evaluation. The identify is the name of container. Use an empty list to apply this policy to all containers in all namespaces."
+        },
+        "defaultValue": []
+      },
+      "excludedImages": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Image exclusions",
+          "description": "The list of InitContainers and Containers to exclude from policy evaluation. The identifier is the image of container. Prefix-matching can be signified with `*`. For example: `myregistry.azurecr.io/istio:*`. It is recommended that users use the fully-qualified Docker image name (e.g. start with a domain name) in order to avoid unexpectedly exempting images from an untrusted repository."
+        },
+        "defaultValue": []
+      }
+    },
+    === CUT OUTPUT ===
+  },
+  "id": "/providers/Microsoft.Authorization/policyDefinitions/1c6e92c9-99f0-4e55-9cf2-0c234dc48f99",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "1c6e92c9-99f0-4e55-9cf2-0c234dc48f99"
+}
+```
+
+As noticed about the exeption can be configured at parameter level, depending on each policy parameter, this can be reviewed in the azure console in the parameters section.
+
+As an example, we will provide a use case for __elasticsearch__ installed in the AKS in the elasticsearch namespace, which does needs the `configure-sysctl` container to have privilege escalation enabled:
+
+In this case if we need to exclude a namespace (I.E __elasticsearch__), we would need to modify in the [policies.tf](../../infra/modules/providers/azure/aks/policies.tf) file:
+
+```terraform
+resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
+  count                = var.azure_policy_enabled ? 1 : 0
+  name                 = format("%s-deny-privilege-escalation", var.name)
+  display_name         = format("%s - Kubernetes clusters should not allow container privilege escalation", var.name)
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/1c6e92c9-99f0-4e55-9cf2-0c234dc48f99"
+  description          = "Do not allow containers to run with privilege escalation to root in a Kubernetes cluster. This recommendation is part of CIS 5.2.5 which is intended to improve the security of your Kubernetes environments. This policy is generally available for Kubernetes Service (AKS), and preview for AKS Engine and Azure Arc enabled Kubernetes. For more information, see https://aka.ms/kubepolicydoc."
+
+  resource_id = azurerm_kubernetes_cluster.main.id
+  enforce     = true
+
+  parameters = <<EOF
+  {
+    "effect": { "value": "deny"},
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc", "elasticsearch"]},
+    "excludedContainers": {"value": ["discovery"]}
+  }
+  EOF
+}
+```
+
+However if we would like to follow the least privilege principle, we would need to configure either with `labelSelector`, `excludedImages`, `excludedContainers` in this specific case (this will depend on the policy definition), in this example we can take a look [store-policy-core.windows.net](https://store.policy.core.windows.net/kubernetes/container-no-privilege-escalation/v3/template.yaml):
+
+```terraform
+resource "azurerm_resource_policy_assignment" "deny_privilege_escalation" {
+  /* 
+  Reduced lines
+  */
+  parameters = <<EOF
+  {
+    "effect": { "value": "deny"},
+    "excludedNamespaces": {"value": ["kube-system", "gatekeeper-system", "azure-arc"]},
+    "excludedContainers": {"value": ["discovery", "configure-sysctl"]}
+    "excludedImages": {"value": ["msosdu.azurecr.io/configure-sysctl*"]}
+  }
+  EOF
+}
+```
+
+__NOTE 1__: `namespace` + `excludedContainers` will apply the policy only in the specified namespace, and exclude the containers in that namespace, leaving all namespaces with no policy enforcement.
+
+#### Subscription level policies
+
+We are using built-in AKS policies which are customized to work with OSDU components, nevertheless, if you have already policies in place at subscription level, you will need to ask administrator, to allow exemptions at least for the following policies:
 
 * __deny_privilege_escalation__ policy __"Kubernetes clusters should not allow container privilege escalation"__.
-  * We are excluding potential containers which may need these privileges (`configure-sysctl`, `discovery`), unfortunately there is deep configuration to do in these containers which will broke functionality, therefore those should be excluded as well at policy subscription level as well.
-* __deny_privileged_containers__
-  * (`configure-sysctl`, `discovery`), can be excluded by setting this in the parameters policy at subscription level.
+  * We are excluding potential containers which may need these privileges for istio-mesh to control ip table rules and redirect traffic `"excludedContainers" : ["discovery", "istio-init"]`, unfortunately there is deep configuration to do in these containers which will broke functionality, and will not allow any container to boot up if this is not allowed, as mentioned above this can be configured in the azure console under `policy settings > parameters`.
+* __allowed_host_paths__
+  * `"excludedNamespaces" : ["kube-system", "gatekeeper-system", "agic"]`, additionally to the system namespaces if AGIC controller is meant to be installed, you will need to exclude that namespace as well, can be excluded by setting this in the parameters policy at subscription level.
+* __Kubernetes cluster pods should only use allowed volume types__
+  * Motivation: We are using kvsecrets mount, which is csi provider, however, this approach is mutating the pod definition, disallowing the creation of the osdu pods which will use the volume type, most of the OSDU services are using this approach plus airflow pods as well.
+  * `"allowedVolumeTypes": {"value": ["*"]}`
