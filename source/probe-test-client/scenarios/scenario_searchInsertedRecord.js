@@ -39,10 +39,10 @@ const sampleRecord = [
                "kind": `${kind}`,
                "acl": {
                  "viewers": [
-                   `data.default.viewers@${testUtils.partition}.contoso.com`
+                   `data.default.viewers@${testUtils.partition}.${testUtils.domain}`
                  ],
                  "owners": [
-                   `data.default.owners@${testUtils.partition}.contoso.com`
+                   `data.default.owners@${testUtils.partition}.${testUtils.domain}`
                  ]
                },
                "legal": {

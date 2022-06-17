@@ -4,10 +4,10 @@
     "kind": "##PARTITION##:wks:dataset--File.Generic:1.0.0",
     "acl": {
       "viewers": [
-        "data.default.viewers@##PARTITION##.contoso.com"
+        "data.default.viewers@##PARTITION##.##DOMAIN##"
       ],
       "owners": [
-        "data.default.viewers@##PARTITION##.contoso.com"
+        "data.default.viewers@##PARTITION##.##DOMAIN##"
       ]
     },
     "legal": {

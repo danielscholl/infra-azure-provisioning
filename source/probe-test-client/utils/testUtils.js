@@ -559,6 +559,11 @@ if (process.env.DATA_PARTITION !== undefined) {
   partition = process.env.DATA_PARTITION;
 }
 
+let domain = 'contoso.com';
+if (process.env.DOMAIN_NAME !== undefined) {
+    domain = process.env.DOMAIN_NAME;
+}
+
 // OAUTH2.0
 let oAuth = request(config.api_host.auth + "/oauth2");
 
@@ -568,4 +573,5 @@ module.exports = {
     services: services,
     partition: partition,
     oAuth: oAuth,
+    domain: domain
 };  

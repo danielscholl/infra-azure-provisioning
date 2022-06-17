@@ -64,6 +64,7 @@ let recordId1 = ''
 let recordId2 = ''
 
 sampleCsvIngestSchema = JSON.parse(JSON.stringify(sampleCsvIngestSchema).replace(/##PARTITION##/g, `${testUtils.partition}`));
+sampleCsvIngestSchema = JSON.parse(JSON.stringify(sampleCsvIngestSchema).replace(/##DOMAIN##/g, `${testUtils.domain}`));
 sampleCsvIngestSchema = JSON.parse(JSON.stringify(sampleCsvIngestSchema).replace(/##KIND##/g, `${kind}`));
 
 // Test Scenario
@@ -327,6 +328,7 @@ describe(scenario, (done) => {
               test.expectedResponse = test.api.expectedResponse;
 
               sampleCsvIngestMetadata = JSON.parse(JSON.stringify(sampleCsvIngestMetadata).replace(/##PARTITION##/g, `${testUtils.partition}`));
+              sampleCsvIngestMetadata = JSON.parse(JSON.stringify(sampleCsvIngestMetadata).replace(/##DOMAIN##/g, `${testUtils.domain}`));
               sampleCsvIngestMetadata = JSON.parse(JSON.stringify(sampleCsvIngestMetadata).replace(/##KIND##/g, `${kind}`));
               sampleCsvIngestMetadata = JSON.parse(JSON.stringify(sampleCsvIngestMetadata).replace(/##TAG##/g, `${tag}`));
               sampleCsvIngestMetadata = JSON.parse(JSON.stringify(sampleCsvIngestMetadata).replace(/##FILE_SOURCE##/g, `${file_source}`));

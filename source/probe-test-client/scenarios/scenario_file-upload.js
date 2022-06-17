@@ -291,6 +291,7 @@ describe(scenario, (done) => {
                     test.expectedResponse = test.api.expectedResponse;
       
                     sampleFileMetadata = JSON.parse(JSON.stringify(sampleFileMetadata).replace(/##PARTITION##/g, `${testUtils.partition}`));
+                    sampleFileMetadata = JSON.parse(JSON.stringify(sampleFileMetadata).replace(/##DOMAIN##/g, `${testUtils.domain}`));
                     sampleFileMetadata = JSON.parse(JSON.stringify(sampleFileMetadata).replace(/##KIND##/g, `${kind}`));
                     sampleFileMetadata = JSON.parse(JSON.stringify(sampleFileMetadata).replace(/##TAG##/g, `${tag}`));
                     sampleFileMetadata = JSON.parse(JSON.stringify(sampleFileMetadata).replace(/##FILE_SOURCE##/g, `${file_source}`));

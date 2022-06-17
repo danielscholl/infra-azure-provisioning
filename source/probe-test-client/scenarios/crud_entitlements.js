@@ -39,17 +39,16 @@ let editors_group_type= `users.datalake.editors`
 let admins_group_type= `users.datalake.admins`
 let ops_group_type= `users.datalake.ops`
 
-let domain = 'contoso.com'
 let member_email = `myuser@email.com`
 sampleUser.email = member_email;
-let user_group = `users@${testUtils.partition}.${domain}`
-let admin_group_type_email = `${group_name}@${testUtils.partition}.${domain}`
-let group_type_email = `${admins_group_type}@${testUtils.partition}.${domain}`
+let user_group = `users@${testUtils.partition}.${testUtils.domain}`
+let admin_group_type_email = `${group_name}@${testUtils.partition}.${testUtils.domain}`
+let group_type_email = `${admins_group_type}@${testUtils.partition}.${testUtils.domain}`
 
-let viewer_group = `${viewers_group_type}@${testUtils.partition}.${domain}`
-let editor_group = `${editors_group_type}@${testUtils.partition}.${domain}`
-let admin_group = `${admins_group_type}@${testUtils.partition}.${domain}`
-let ops_group = `${ops_group_type}@${testUtils.partition}.${domain}`
+let viewer_group = `${viewers_group_type}@${testUtils.partition}.${testUtils.domain}`
+let editor_group = `${editors_group_type}@${testUtils.partition}.${testUtils.domain}`
+let admin_group = `${admins_group_type}@${testUtils.partition}.${testUtils.domain}`
+let ops_group = `${ops_group_type}@${testUtils.partition}.${testUtils.domain}`
 
 // Test Scenario
 describe(scenario, (done) => {

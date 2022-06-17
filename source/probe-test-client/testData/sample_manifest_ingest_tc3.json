@@ -12,10 +12,10 @@
             "kind": "##AUTHORITY##:##SOURCE##:master-data--Well:1.0.0",
             "acl": {
               "viewers": [
-                "data.default.viewers@##PARTITION##.contoso.com"
+                "data.default.viewers@##PARTITION##.##DOMAIN##"
               ],
               "owners": [
-                "data.default.owners@##PARTITION##.contoso.com"
+                "data.default.owners@##PARTITION##.##DOMAIN##"
               ]
             },
             "legal": {
