@@ -117,7 +117,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     enable_auto_scaling  = var.auto_scaling_default_node
     max_pods             = var.max_pods
     max_count            = "3"
-    min_count            = "2"
+    min_count            = "1"
     orchestrator_version = var.kubernetes_version
   }
 
