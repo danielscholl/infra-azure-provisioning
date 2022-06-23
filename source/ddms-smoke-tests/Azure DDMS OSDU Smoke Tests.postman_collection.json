@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "20303344-9ba7-4b55-beb6-d0d56ec2ad1a",
+		"_postman_id": "e5557fa0-e7b4-44c8-8555-18881b0e609d",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1876,24 +1876,25 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"let json = pm.response.json();",
-											"",
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
 											"",
 											"pm.test(\"Subproject created\", function () {",
+											"    let json = pm.response.json();",
 											"    var child = Object.keys(json);",
 											"    pm.expect(json.name).to.eql(pm.variables.get(\"seismic_subproject\"));",
 											"    pm.expect(json.tenant).to.eql(pm.variables.get(\"seismic_project\"));",
 											"    pm.expect(json.ltag).to.eql(pm.variables.get(\"legal_dafault_tag\"));",
 											"    pm.expect(json.gcs_bucket).to.exist;",
+											"",
+											"    let seismic_default_admins = json.acls.admins[0];",
+											"    let seismic_default_viewers = json.acls.viewers[0];",
+											"    pm.collectionVariables.set('seismic_default_admins', seismic_default_admins)",
+											"    pm.collectionVariables.set('seismic_default_viewers', seismic_default_viewers)",
 											"});",
 											"",
-											"let seismic_default_admins = json.acls.admins[0];",
-											"let seismic_default_viewers = json.acls.viewers[0];",
-											"pm.collectionVariables.set('seismic_default_admins', seismic_default_admins)",
-											"pm.collectionVariables.set('seismic_default_viewers', seismic_default_viewers)"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -2122,15 +2123,24 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"let json = pm.response.json();",
+											"",
 											"",
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
 											"",
-											"var gcsurl = pm.response.json().gcsurl;",
-											"pm.variables.set(\"gcs_url\", gcsurl);",
-											"pm.variables.set(\"dataset_bucket\", gcsurl.split(\"/\")[1]);"
+											"pm.test(\"Verify dataset Created\", function () {",
+											"    let json = pm.response.json();",
+											"    var gcsurl = pm.response.json().gcsurl;",
+											"    ",
+											"    pm.response.to.have.status(200);",
+											"    pm.expect(gcsurl).to.exist",
+											"    ",
+											"    pm.variables.set(\"gcs_url\", gcsurl);",
+											"    pm.variables.set(\"dataset_bucket\", gcsurl.split(\"/\")[1]);",
+											"    ",
+											"});",
+											""
 										],
 										"type": "text/javascript"
 									}
