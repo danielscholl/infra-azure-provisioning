@@ -2388,7 +2388,7 @@
 					"name": "Tests",
 					"item": [
 						{
-							"name": "Well Delivery DDMS - Get Info Copy",
+							"name": "Well Delivery DDMS - Get Info",
 							"event": [
 								{
 									"listen": "test",
@@ -2987,10 +2987,10 @@
 											"",
 											"pm.test(\"Found ZGY Conversion DAG ID\", function () {",
 											"    let workflows = pm.response.json();",
-											"    let dag = workflows.find((workflow) => workflow.description===\"segy-to-zgy-conversion-dag\")",
+											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-zgy-conversion\"))",
 											"    pm.expect(dag).to.exist;",
 											"",
-											"    pm.variables.set('zgy_dag_id', dag.workflowId);",
+											"    pm.collectionVariables.set('zgy_dag_id', dag.workflowId);",
 											"});",
 											""
 										],
@@ -3105,10 +3105,10 @@
 											"",
 											"pm.test(\"Found VDS Conversion DAG ID\", function () {",
 											"    let workflows = pm.response.json();",
-											"    let dag = workflows.find((workflow) => workflow.description===\"segy-to-vds-conversion-dag\")",
+											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-vds-conversion\"))",
 											"    pm.expect(dag).to.exist;",
 											"",
-											"    pm.variables.set('vds_dag_id', dag.workflowId);",
+											"    pm.collectionVariables.set('vds_dag_id', dag.workflowId);",
 											"});",
 											""
 										],
@@ -3374,6 +3374,14 @@
 		},
 		{
 			"key": "wellbore_trajectory_name",
+			"value": ""
+		},
+		{
+			"key": "zgy_dag_id",
+			"value": ""
+		},
+		{
+			"key": "vds_dag_id",
 			"value": ""
 		}
 	]
