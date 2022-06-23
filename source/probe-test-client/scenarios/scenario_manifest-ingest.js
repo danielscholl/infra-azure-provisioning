@@ -21,6 +21,7 @@ const majorVersion = testUtils.between(1, 100000);
 const minorVersion = testUtils.between(1, 100000);
 let runId = `${majorVersion}.${minorVersion}`;
 console.log(`run ID: ${runId}`);
+let referenceId = '';
 
 let test = {
     runId: runId,
@@ -259,8 +260,6 @@ describe(scenario, (done) => {
                 payload = JSON.parse(JSON.stringify(payload).replace(/##TAG##/g, `${tag}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##AUTHORITY##/g, `${authority}`));
 
-                let referenceId = '';
-
                 it("Trigger Workflow Run", done => {
                     test.service = testUtils.services.workflow;
                     test.api = test.service.api.runWorkflow;
@@ -283,6 +282,13 @@ describe(scenario, (done) => {
                             telemetryUtils.failApiRequest(test, err);
                             done(err);
                         });
+                });
+            });
+
+            describe('Manifest Ingest #TC-1: GET Workflow Run Status', (done) => {
+
+                before((done) => {
+                    setTimeout(done, 5000)
                 });
 
                 it("Get Workflow Reference Data Run", done => {
@@ -431,6 +437,13 @@ describe(scenario, (done) => {
                             done(err);
                         });
                 });
+            });
+
+            describe('Manifest Ingest #TC-2: GET Workflow Run Status', (done) => {
+
+                before((done) => {
+                    setTimeout(done, 5000)
+                });
 
                 it("Get Workflow Reference Data Run", done => {
                     test.service = testUtils.services.workflow;
@@ -574,6 +587,13 @@ describe(scenario, (done) => {
                             done(err);
                         });
                 });
+            });
+
+            describe('Manifest Ingest #TC-3: GET Workflow Run Status', (done) => {
+
+                before((done) => {
+                    setTimeout(done, 5000)
+                });
 
                 it("Get Workflow Reference Data Run", done => {
                     test.service = testUtils.services.workflow;
@@ -586,7 +606,7 @@ describe(scenario, (done) => {
                         .set('Content-Type', 'application/json')
                         .set('data-partition-id', testUtils.partition)
                         .expect(test.expectedResponse)
-                        .then(() => {
+                        .then(res => {
                             telemetryUtils.passApiRequest(test);
                             done();
                         })
@@ -596,7 +616,6 @@ describe(scenario, (done) => {
                         });
                 });
             });
-
 
             describe('Manifest Ingest #TC-3: Search & cleanup for Master data ingestion (Well)', (done) => {
 
@@ -715,6 +734,14 @@ describe(scenario, (done) => {
                             telemetryUtils.failApiRequest(test, err);
                             done(err);
                         });
+                });
+
+            });
+
+            describe('Manifest Ingest #TC-4: GET Workflow Run Status', (done) => {
+
+                before((done) => {
+                    setTimeout(done, 5000)
                 });
 
                 it("Get Workflow Reference Data Run", done => {
