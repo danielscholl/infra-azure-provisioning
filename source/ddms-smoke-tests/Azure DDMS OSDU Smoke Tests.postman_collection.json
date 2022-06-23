@@ -2003,6 +2003,7 @@
 											"pm.test(\"Status code is 200\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
 											"});\r",
+											"\r",
 											"pm.test(\"Status description - OK\", function () {\r",
 											"    pm.response.to.have.status(\"OK\");\r",
 											"});"
@@ -2123,8 +2124,6 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"",
-											"",
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
@@ -2186,10 +2185,12 @@
 										"exec": [
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
+											"",
+											"    let sas_url = pm.response.json().access_token;",
+											"    pm.variables.set('upload_sas_url', sas_url);",
 											"});",
 											"",
-											"let sas_url = pm.response.json().access_token;",
-											"pm.variables.set('upload_sas_url', sas_url);"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -2337,9 +2338,11 @@
 										"exec": [
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
+											"",
+											"    pm.variables.set(\"welldelivery_well_id\", \"welldemo\")",
 											"});",
 											"",
-											"pm.variables.set(\"welldelivery_well_id\", \"welldemo\")",
+											"",
 											""
 										],
 										"type": "text/javascript"
@@ -2394,6 +2397,7 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
+											"",
 											"pm.test(\"Status description - OK\", function () {",
 											"    pm.response.to.have.status(\"OK\");",
 											"});"
@@ -2442,7 +2446,13 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);"
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);",
+											"});",
+											"",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -2608,7 +2618,13 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);"
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);",
+											"});",
+											"",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -2776,7 +2792,13 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);"
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    pm.collectionVariables.set(\"wellVersion\", pm.response.json().version);",
+											"});",
+											"",
+											""
 										],
 										"type": "text/javascript"
 									}
