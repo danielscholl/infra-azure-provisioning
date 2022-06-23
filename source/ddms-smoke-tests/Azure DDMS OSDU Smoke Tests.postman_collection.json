@@ -2324,6 +2324,386 @@
 			]
 		},
 		{
+			"name": "Seismic DDMS: File Metadata",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Seismic File Metadata - Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json.status).to.be.equal(\"ok\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{DATA_PARTITION_ID}}-default"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_file_metadata_host}}/service-status",
+									"host": [
+										"{{seismic_file_metadata_host}}"
+									],
+									"path": [
+										"service-status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": [
+						{
+							"name": "Seismic DDMS - Delete Dataset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}/dataset/{{seismic_segy_file_name}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}",
+										"dataset",
+										"{{seismic_segy_file_name}}"
+									]
+								},
+								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Seismic DDMS - Delete Subproject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{legal_dafault_tag}}"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{seismic_project}}",
+										"subproject",
+										"{{seismic_subproject}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Seismic DDMS: ZGY Conversion",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Workflow -  Find Workflow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Found ZGY Conversion DAG ID\", function () {",
+											"    let workflows = pm.response.json();",
+											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-zgy-conversion\"))",
+											"    pm.expect(dag).to.exist;",
+											"",
+											"    pm.collectionVariables.set('zgy_dag_id', dag.workflowId);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Workflow - Get Workflow Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json).to.be.not.empty",
+											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('zgy_dag_id'))",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow/{{zgy_dag_id}}",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow",
+										"{{zgy_dag_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "Seismic DDMS: VDS Conversion",
+			"item": [
+				{
+					"name": "Before Tests",
+					"item": []
+				},
+				{
+					"name": "Tests",
+					"item": [
+						{
+							"name": "Workflow -  Find Workflow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Found VDS Conversion DAG ID\", function () {",
+											"    let workflows = pm.response.json();",
+											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-vds-conversion\"))",
+											"    pm.expect(dag).to.exist;",
+											"",
+											"    pm.collectionVariables.set('vds_dag_id', dag.workflowId);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Workflow - Get Workflow Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Have valid body\", function () {",
+											"    let json = pm.response.json();",
+											"    pm.expect(json).to.be.not.empty",
+											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('vds_dag_id'))",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Data-Partition-Id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{workflow_host}}/workflow/{{vds_dag_id}}",
+									"host": [
+										"{{workflow_host}}"
+									],
+									"path": [
+										"workflow",
+										"{{vds_dag_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Tests",
+					"item": []
+				}
+			]
+		},
+		{
 			"name": "Well Delivery",
 			"item": [
 				{
@@ -2962,242 +3342,6 @@
 					"item": []
 				}
 			]
-		},
-		{
-			"name": "ZGY Conversion",
-			"item": [
-				{
-					"name": "Before Tests",
-					"item": []
-				},
-				{
-					"name": "Tests",
-					"item": [
-						{
-							"name": "Workflow -  Find Workflow",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200 OK\", function () {",
-											"    pm.response.to.have.status(200);",
-											"    pm.response.to.have.status(\"OK\");",
-											"});",
-											"",
-											"pm.test(\"Found ZGY Conversion DAG ID\", function () {",
-											"    let workflows = pm.response.json();",
-											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-zgy-conversion\"))",
-											"    pm.expect(dag).to.exist;",
-											"",
-											"    pm.collectionVariables.set('zgy_dag_id', dag.workflowId);",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Data-Partition-Id",
-										"value": "{{DATA_PARTITION_ID}}",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{workflow_host}}/workflow",
-									"host": [
-										"{{workflow_host}}"
-									],
-									"path": [
-										"workflow"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Workflow - Get Workflow Details",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200 OK\", function () {",
-											"    pm.response.to.have.status(200);",
-											"    pm.response.to.have.status(\"OK\");",
-											"});",
-											"",
-											"pm.test(\"Have valid body\", function () {",
-											"    let json = pm.response.json();",
-											"    pm.expect(json).to.be.not.empty",
-											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('zgy_dag_id'))",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Data-Partition-Id",
-										"value": "{{DATA_PARTITION_ID}}",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{workflow_host}}/workflow/{{zgy_dag_id}}",
-									"host": [
-										"{{workflow_host}}"
-									],
-									"path": [
-										"workflow",
-										"{{zgy_dag_id}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "After Tests",
-					"item": []
-				}
-			]
-		},
-		{
-			"name": "VDS Conversion",
-			"item": [
-				{
-					"name": "Before Tests",
-					"item": []
-				},
-				{
-					"name": "Tests",
-					"item": [
-						{
-							"name": "Workflow -  Find Workflow",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200 OK\", function () {",
-											"    pm.response.to.have.status(200);",
-											"    pm.response.to.have.status(\"OK\");",
-											"});",
-											"",
-											"pm.test(\"Found VDS Conversion DAG ID\", function () {",
-											"    let workflows = pm.response.json();",
-											"    let dag = workflows.find((workflow) => workflow.workflowId.includes(\"segy-to-vds-conversion\"))",
-											"    pm.expect(dag).to.exist;",
-											"",
-											"    pm.collectionVariables.set('vds_dag_id', dag.workflowId);",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Data-Partition-Id",
-										"value": "{{DATA_PARTITION_ID}}",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{workflow_host}}/workflow",
-									"host": [
-										"{{workflow_host}}"
-									],
-									"path": [
-										"workflow"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Workflow - Get Workflow Details",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200 OK\", function () {",
-											"    pm.response.to.have.status(200);",
-											"    pm.response.to.have.status(\"OK\");",
-											"});",
-											"",
-											"pm.test(\"Have valid body\", function () {",
-											"    let json = pm.response.json();",
-											"    pm.expect(json).to.be.not.empty",
-											"    pm.expect(json.workflowId).to.be.equal(pm.variables.get('vds_dag_id'))",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Data-Partition-Id",
-										"value": "{{DATA_PARTITION_ID}}",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{workflow_host}}/workflow/{{vds_dag_id}}",
-									"host": [
-										"{{workflow_host}}"
-									],
-									"path": [
-										"workflow",
-										"{{vds_dag_id}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "After Tests",
-					"item": []
-				}
-			]
 		}
 	],
 	"auth": {
@@ -3298,6 +3442,11 @@
 		{
 			"key": "seismic_ddms_host",
 			"value": "{{HOSTNAME}}/seistore-svc/api/v3"
+		},
+		{
+			"key": "seismic_file_metadata_host",
+			"value": "{{HOSTNAME}}/seismic-file-metadata/api/v1",
+			"type": "string"
 		},
 		{
 			"key": "wellbore_ddms_host",
