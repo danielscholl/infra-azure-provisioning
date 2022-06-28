@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e83c8d12-eddd-4d80-b869-dfea6cbef712",
+		"_postman_id": "13d4e922-661c-430d-8f0d-a48401c3ed6b",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1475,12 +1475,7 @@
 							],
 							"request": {
 								"method": "GET",
-								"header": [
-									{
-										"key": "ltag",
-										"value": "{{DATA_PARTITION_ID}}-default"
-									}
-								],
+								"header": [],
 								"url": {
 									"raw": "{{seismic_ddms_host}}/svcstatus/readiness",
 									"host": [
@@ -2297,12 +2292,7 @@
 							],
 							"request": {
 								"method": "DELETE",
-								"header": [
-									{
-										"key": "ltag",
-										"value": "{{legal_dafault_tag}}"
-									}
-								],
+								"header": [],
 								"url": {
 									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
 									"host": [
