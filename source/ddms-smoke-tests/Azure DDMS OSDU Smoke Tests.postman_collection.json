@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e5557fa0-e7b4-44c8-8555-18881b0e609d",
+		"_postman_id": "e83c8d12-eddd-4d80-b869-dfea6cbef712",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -2386,84 +2386,7 @@
 				},
 				{
 					"name": "After Tests",
-					"item": [
-						{
-							"name": "Seismic DDMS - Delete Dataset",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"    pm.response.to.have.status(200);",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}/dataset/{{seismic_segy_file_name}}",
-									"host": [
-										"{{seismic_ddms_host}}"
-									],
-									"path": [
-										"dataset",
-										"tenant",
-										"{{seismic_project}}",
-										"subproject",
-										"{{seismic_subproject}}",
-										"dataset",
-										"{{seismic_segy_file_name}}"
-									]
-								},
-								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
-							},
-							"response": []
-						},
-						{
-							"name": "Seismic DDMS - Delete Subproject",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"    pm.response.to.have.status(200);",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "ltag",
-										"value": "{{legal_dafault_tag}}"
-									}
-								],
-								"url": {
-									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{seismic_project}}/subproject/{{seismic_subproject}}",
-									"host": [
-										"{{seismic_ddms_host}}"
-									],
-									"path": [
-										"subproject",
-										"tenant",
-										"{{seismic_project}}",
-										"subproject",
-										"{{seismic_subproject}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
+					"item": []
 				}
 			]
 		},
