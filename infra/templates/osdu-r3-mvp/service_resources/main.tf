@@ -205,6 +205,8 @@ resource "azurerm_user_assigned_identity" "podidentity" {
   name                = local.aks_identity_name
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
+
+  tags = var.resource_tags
 }
 
 // Create and Identity for AGIC
@@ -212,6 +214,8 @@ resource "azurerm_user_assigned_identity" "agicidentity" {
   name                = local.appgw_identity_name
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
+
+  tags = var.resource_tags
 }
 
 
