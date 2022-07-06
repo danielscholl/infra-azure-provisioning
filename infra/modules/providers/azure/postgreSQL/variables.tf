@@ -88,6 +88,12 @@ variable "ssl_enforcement_enabled" {
   default     = true
 }
 
+variable "ssl_minimal_tls_version_enforced" {
+  description = "The minimum TLS version to support on the server"
+  type        = string
+  default     = "TLS1_2"
+}
+
 variable "public_network_access" {
   description = "Enable or Disable public network access to the VM"
   type        = bool

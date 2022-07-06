@@ -75,6 +75,7 @@ module "postgreSQL" {
 | `geo_redundant_backup_enabled`    | _bool_     | Enable geo-redundancy. Default: true. |
 | `auto_grow_enabled`               | _bool_     | Enable auto grow. Default: true. |
 | `ssl_enforcement_enabled`         | _bool_     | Enable SSL enforcement. Default: true. |
+| `ssl_minimal_tls_version_enforced`| _string_   | The minimum TLS version to support on the sever. Default: "TLS1_2". |
 | `public_network_access`           | _bool_     | Enable or Disable public network access to the VM. Default: true. |
 | `db_charset`                      | _string_   | Specifies the Charset for the PostgreSQL Database, which needs to be a valid PostgreSQL Charset. Changing this forces a new resource to be created. Default: "UTF8". |
 | `db_collation`                    | _string_   | Specifies the Collation for the PostgreSQL Database, which needs to be a valid PostgreSQL Collation. Note that Microsoft uses different notation - en-US instead of en_US. Changing this forces a new resource to be created. Default: "English_United States.1252". |

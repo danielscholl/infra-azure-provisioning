@@ -50,7 +50,7 @@ func TestTemplate(t *testing.T) {
 		"geo_redundant_backup_enabled" : true,
 		"public_network_access_enabled" : false,
 		"ssl_enforcement_enabled" : true,
-		"ssl_minimal_tls_version_enforced" : "TLSEnforcementDisabled",
+		"ssl_minimal_tls_version_enforced" : "TLS1_2",
 		"version" : "10.0",
 		"storage_mb" : 5120
 	}`)
