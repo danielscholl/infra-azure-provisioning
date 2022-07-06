@@ -299,12 +299,13 @@ module "postgreSQL" {
   sku                       = var.postgres_sku
   postgresql_configurations = var.postgres_configurations
 
-  storage_mb                   = 5120
-  server_version               = "10.0"
-  backup_retention_days        = 7
-  geo_redundant_backup_enabled = true
-  auto_grow_enabled            = true
-  ssl_enforcement_enabled      = true
+  storage_mb                       = 5120
+  server_version                   = "10.0"
+  backup_retention_days            = 7
+  geo_redundant_backup_enabled     = true
+  auto_grow_enabled                = true
+  ssl_enforcement_enabled          = true
+  ssl_minimal_tls_version_enforced = "TLS1_2"
 
   public_network_access = true
   firewall_rules = [{
