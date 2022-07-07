@@ -1236,3 +1236,34 @@ az pipelines create \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
+
+26. (Optional) Add a Pipelines for __Reservoir DDMS__  Service.
+
+__WARN__: To deploy Reservoir DDMS service it is needed to enable feature flag at data partition resources stage deployment [terraform.tfvars](../infra/templates/osdu-r3-mvp/data_partition/terraform.tfvars)
+
+```terraform
+# To enable reservoir_ddmsreservoir_ddms_enabled
+reservoir_ddms_enabled = true
+```
+
+```shell
+# Pipeline for open etp server
+az pipelines create \
+  --name 'reservoir-open-etp-server'  \
+  --repository open-etp-server  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  --skip-first-run false \
+  -ojson
+
+# Pipeline for open etp client
+az pipelines create \
+  --name 'reservoir-open-etp-client'  \
+  --repository open-etp-client  \
+  --branch feature/azure-devops  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  --skip-first-run false \
+  -ojson
+```

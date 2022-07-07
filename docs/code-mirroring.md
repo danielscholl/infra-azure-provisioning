@@ -31,6 +31,9 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | dataset                   | https://community.opengroup.org/osdu/platform/system/dataset.git |
 | policy                    | https://community.opengroup.org/osdu/platform/security-and-compliance/policy.git |
 | helm-charts-azure         | https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure.git |
+| open-etp-server           | https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-server |
+| open-etp-client           | https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-client |
+
 ```bash
 export ADO_ORGANIZATION=<organization_name>
 export ADO_PROJECT=osdu-mvp
@@ -62,6 +65,8 @@ SERVICE_LIST="infra-azure-provisioning \
               ingestion-service \
               dataset \
               helm-charts-azure \
+              open-etp-server \
+              open-etp-client \
               policy"
 
 
@@ -106,11 +111,11 @@ Variable Group Name:  `Mirror Variables`
 | DATASET_REPO | https://dev.azure.com/osdu-demo/osdu/_git/dataset |
 | POLICY_REPO | https://dev.azure.com/osdu-demo/osdu/_git/policy |
 | HELM_CHARTS_AZURE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/helm-charts-azure |
+| OETP_SERVER_REPO | https://dev.azure.com/osdu-demo/osdu_git/open-etp-server |
+| OETP_CLIENT_REPO | https://dev.azure.com/osdu-demo/osdu/_git/open-etp-client |
 | ACCESS_TOKEN | <your_personal_access_token> |
 
-
 Manually create a Personal Access Token following the [documentation](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page) and add a Variable called `ACCESS_TOKEN` with the value being the PAT created.
-
 
 ```bash
 ACCESS_TOKEN=<your_access_token>
@@ -144,15 +149,15 @@ az pipelines variable-group create \
   DATASET_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/dataset \
   POLICY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/policy \
   HELM_CHARTS_AZURE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/helm-charts-azure \
+  OETP_SERVER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/open-etp-server\
+  OETP_CLIENT_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/open-etp-client \
   ACCESS_TOKEN=$ACCESS_TOKEN \
   -ojson
 ```
 
-
 __Create Mirror Pipeline__
 
 Clone the Project Repository `osdu-mvp`, and add the pipeline.
-
 
 ```bash
 GIT_SSH_COMMAND="ssh -i ${TF_VAR_gitops_ssh_key_file}"  \
@@ -367,6 +372,19 @@ jobs:
         destinationGitRepositoryUri: '$(HELM_CHARTS_AZURE_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'secret-service'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-server.git'
+        destinationGitRepositoryUri: '$(OETP_SERVER_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+    
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'external-proxy-dataset-service'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-client.git'
+        destinationGitRepositoryUri: '$(OETP_CLIENT_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
 EOF
 
@@ -382,5 +400,3 @@ az pipelines create \
   --yaml-path /pipeline.yml  \
   -ojson
 ```
-
-
