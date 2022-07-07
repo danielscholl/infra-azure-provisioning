@@ -14,7 +14,7 @@ from configmap_utils import writeOutputToConfigMap
 AzureSubscription = os.environ['SUBSCRIPTION']
 AzureResourceGroup = os.environ['RESOURCE_GROUP_NAME']
 AzureIdentityId = os.environ['OSDU_IDENTITY_ID']
-CustomerAdminId = os.environ['ADMIN_ID']
+CustomerAdminIds = os.environ['ADMIN_IDS']
 ServiceDomain = os.environ['SERVICE_DOMAIN']
 OsduHost = os.environ['OSDU_HOST']
 Partitions = os.environ['PARTITIONS'].strip().split(',')
@@ -46,8 +46,6 @@ entitlementsInitApiFormat = config_json["services"]["entitlements"]["api"]["tena
 entitlementsAddUserApiFormat = config_json["services"]["entitlements"]["api"]["add-user"]
 entitlementsAddOpsUserApiFormat = config_json["services"]["entitlements"]["api"]["add-ops-user"]
 entitlementsAddRootUserApiFormat = config_json["services"]["entitlements"]["api"]["add-root-user"]
-
-entitlementsAddUsersRequestBody = {"email": CustomerAdminId, "role": "OWNER"}
 
 """ [Logging Functions]
 These will format the logs, print the log to the console, as well as append logs to appropriate section in the message to be written to the configmap for tracking. 
@@ -230,7 +228,7 @@ async def initializeEntitlements(partition):
     global entitlementsAddRootUserApiFormat
     global entitlementsAddUsersRequestBody
     global ServiceDomain
-    global CustomerAdminId
+    global CustomerAdminIds
     
     logEntitlementsAsync(partition, "Entilements Host: ", entitlementsHost)
     
@@ -248,38 +246,41 @@ async def initializeEntitlements(partition):
         logEntitlementsAsync(partition, "Tenant Provisioning for {partition} SUCCESSFUL with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=init_response["statusCode"], response=init_response["data"]))
         
         admin_entitlements_tasks = []
+
+        for CustomerAdminId in CustomerAdminIds.split(','):
+            entitlementsAddUsersRequestBody = {"email": CustomerAdminId, "role": "OWNER"}
         
-        entitlementsUserApi = entitlementsAddUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
+            entitlementsUserApi = entitlementsAddUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
         
-        logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as a USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsUserApi))
+            logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as a USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsUserApi))
         
-        admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsUserApi, partition=partition, data=entitlementsAddUsersRequestBody)))
+            admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsUserApi, partition=partition, data=entitlementsAddUsersRequestBody)))
         
-        entitlementsOpsApi = entitlementsAddOpsUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
+            entitlementsOpsApi = entitlementsAddOpsUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
         
-        logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as an OPS USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsOpsApi))
+            logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as an OPS USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsOpsApi))
         
-        admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsOpsApi, partition=partition, data=entitlementsAddUsersRequestBody)))
+            admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsOpsApi, partition=partition, data=entitlementsAddUsersRequestBody)))
         
-        entitlementsRootApi = entitlementsAddRootUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
+            entitlementsRootApi = entitlementsAddRootUserApiFormat.format(entitlementsHost=entitlementsHost, partition=partition, serviceDomain=ServiceDomain)
         
-        logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as a ROOT USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsRootApi))
+            logEntitlementsAsync(partition, "Adding Entitlements for Customer Admin as a ROOT USER for partition {partition}; URL:{url}".format(partition=partition, url=entitlementsRootApi))
         
-        admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsRootApi, partition=partition, data=entitlementsAddUsersRequestBody)))
+            admin_entitlements_tasks.append(aio.create_task(servicePostApiCall(url=entitlementsRootApi, partition=partition, data=entitlementsAddUsersRequestBody)))
         
         logEntitlementsAsync(partition, "Collecting Entitlement Group Addition Calls")
         while True:
             finished, unfinished = await aio.wait(admin_entitlements_tasks, return_when=aio.FIRST_COMPLETED)
-            
+
             for finished_task in finished:
                 admin_response = finished_task.result()
                 if admin_response["isSuccess"]:
                     logEntitlementsAsync(partition, "An Entitlements Group Addition call for {partition} SUCCESSFUL with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=admin_response["statusCode"], response=admin_response["data"]))
                 else:
                     status[partition] = False
-                    
+                
                     logEntitlementsAsync(partition, "An Entitlements Group Addition call for {partition} FAILED with status code {statusCode}, and returned response \"{response}\"".format(partition=partition, statusCode=admin_response["statusCode"], response=admin_response["data"]))
-            
+
             if len(unfinished) == 0:
                 break
             admin_entitlements_tasks = unfinished
@@ -362,10 +363,8 @@ def main():
         status["ops"] = False
         log("Catastrophic Unhandled Exception encountered: {exception}".format(exception=json.dumps(ex)))
     finally:
-        finalStatus = writeOutputToConfigMap(status=status, message=message, ConfigMapName=ConfigMapName, Namespace=Namespace, Partitions=Partitions)
+        writeOutputToConfigMap(status=status, message=message, ConfigMapName=ConfigMapName, Namespace=Namespace, Partitions=Partitions)
         terminateIstioSidecar()
-        if not finalStatus:
-            sys.exit(1);
 
 if __name__ == '__main__':
     main()

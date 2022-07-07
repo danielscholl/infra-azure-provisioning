@@ -118,6 +118,14 @@
          "eventgrid-schemachangedtopic-accesskey": {
             "sensitive": true,
             "value": "eventgrid-schemachangedtopic-accesskey"
+        },
+        "pds-storage": {
+            "sensitive": true,
+            "value": "pds-storage"
+        },
+        "pds-storage-key": {
+            "sensitive": true,
+            "value": "pds-storage-key"
         }
     }
 }
