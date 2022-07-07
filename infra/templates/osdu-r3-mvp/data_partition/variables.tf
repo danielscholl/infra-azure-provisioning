@@ -248,3 +248,14 @@ variable "cosmos_primary_loc" {
   default     = null
 }
 
+variable "reservoir_ddms" {
+  description = "Reservoir DDMS properties and enable flag"
+  type = object({
+    enabled = bool
+    sku     = string
+  })
+  default = {
+    enabled = false
+    sku     = "GP_Gen5_4"
+  }
+}
