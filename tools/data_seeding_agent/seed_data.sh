@@ -62,8 +62,6 @@ while [[ $retryCount -lt $maxRetry ]]; do
         
         STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage --query value -otsv)
         echo "STORAGE_ACCOUNT_NAME: ${STORAGE_ACCOUNT_NAME}"
-
-        STORAGE_ACCOUNT_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-storage-key --query value -otsv)
         FILE_NAME=Legal_COO.json
     
         if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME"==" " ]; then
@@ -112,8 +110,6 @@ while [[ $retryCount -lt $maxRetry ]]; do
     
         export COSMOS_ENDPOINT=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-cosmos-endpoint --query value -otsv)
         echo "COSMOS_ENDPOINT: ${COSMOS_ENDPOINT}"
-
-        export COSMOS_KEY=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/${partitions_array[index]}-cosmos-primary-key --query value -otsv)
 
         if [ -z "$COSMOS_ENDPOINT" -a "$COSMOS_ENDPOINT"==" " ]; then
             currentStatus="failure"

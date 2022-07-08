@@ -9,11 +9,6 @@ cleanup() {
 
 trap cleanup EXIT
 
-mkdir -p tmp
-cd tmp
-wget -O azcopy_v10.tar.gz https://aka.ms/downloadazcopy-v10-linux && tar -xf azcopy_v10.tar.gz --strip-components=1
-cp ./azcopy /usr/bin/
-cd ..
 currentStatus=""
 currentMessage=""
 
