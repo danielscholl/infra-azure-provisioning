@@ -129,3 +129,11 @@ spec:
               serviceName: seismic-dms-file-metadata-service
               servicePort: 80
             path: /seismic-file-metadata/api/v1/*   
+          - backend:
+              serviceName: secret
+              servicePort: 80
+            path: /api/secret/v1/*   
+          - backend:
+              serviceName: eds-dms
+              servicePort: 80
+            path: /api/eds/v1/*   

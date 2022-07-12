@@ -31,6 +31,8 @@ Empty repositories need to be created that will be used by a pipeline to mirror 
 | dataset                   | https://community.opengroup.org/osdu/platform/system/dataset.git |
 | policy                    | https://community.opengroup.org/osdu/platform/security-and-compliance/policy.git |
 | helm-charts-azure         | https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure.git |
+| secret                    | https://community.opengroup.org/osdu/platform/security-and-compliance/secret |
+| eds-dms                   | https://community.opengroup.org/osdu/platform/data-flow/ingestion/external-data-sources/eds-dms |
 | open-etp-server           | https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-server |
 | open-etp-client           | https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/reservoir/open-etp-client |
 
@@ -65,6 +67,8 @@ SERVICE_LIST="infra-azure-provisioning \
               ingestion-service \
               dataset \
               helm-charts-azure \
+              secret \
+              eds-dms \
               open-etp-server \
               open-etp-client \
               policy"
@@ -111,6 +115,8 @@ Variable Group Name:  `Mirror Variables`
 | DATASET_REPO | https://dev.azure.com/osdu-demo/osdu/_git/dataset |
 | POLICY_REPO | https://dev.azure.com/osdu-demo/osdu/_git/policy |
 | HELM_CHARTS_AZURE_REPO | https://dev.azure.com/osdu-demo/osdu/_git/helm-charts-azure |
+| EDS_DMS_REPO | https://dev.azure.com/osdu-demo/osdu/_git/eds-dms |
+| SECRET_REPO | https://dev.azure.com/osdu-demo/osdu/_git/secret |
 | OETP_SERVER_REPO | https://dev.azure.com/osdu-demo/osdu_git/open-etp-server |
 | OETP_CLIENT_REPO | https://dev.azure.com/osdu-demo/osdu/_git/open-etp-client |
 | ACCESS_TOKEN | <your_personal_access_token> |
@@ -149,6 +155,8 @@ az pipelines variable-group create \
   DATASET_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/dataset \
   POLICY_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/policy \
   HELM_CHARTS_AZURE_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/helm-charts-azure \
+  EDS_DMS_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/helm-charts-azure \
+  SECRET_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/helm-charts-azure \
   OETP_SERVER_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/open-etp-server\
   OETP_CLIENT_REPO=https://dev.azure.com/${ADO_ORGANIZATION}/$ADO_PROJECT/_git/open-etp-client \
   ACCESS_TOKEN=$ACCESS_TOKEN \
@@ -370,6 +378,20 @@ jobs:
       inputs:
         sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/deployment-and-operations/helm-charts-azure.git'
         destinationGitRepositoryUri: '$(HELM_CHARTS_AZURE_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+    
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'secret-service'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/security-and-compliance/secret.git'
+        destinationGitRepositoryUri: '$(SECRET_REPO)'
+        destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
+    
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: 'eds-dms'
+      inputs:
+        sourceGitRepositoryUri: 'https://community.opengroup.org/osdu/platform/data-flow/ingestion/external-data-sources/eds-dms.git'
+        destinationGitRepositoryUri: '$(EDS_DMS_REPO)'
         destinationGitRepositoryPersonalAccessToken: $(ACCESS_TOKEN)
 
     - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1

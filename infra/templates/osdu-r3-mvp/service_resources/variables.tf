@@ -445,3 +445,9 @@ variable "disable_airflow1" {
   type        = bool
   default     = false
 }
+
+variable "secret_kv_enabled" {
+  description = "Flag to indicate if secret kv should be provisioned"
+  type        = bool
+  default     = false
+}

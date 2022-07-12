@@ -696,6 +696,7 @@ az pipelines variable-group create \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/dataset-test-azure" \
   SERVICE_RESOURCE_NAME='$(AZURE_DATASET_NAME)' \
   -ojson
+```
 
 __Setup and Configure the ADO Library `Azure Service Release - seismic-store-service`__
 
@@ -771,6 +772,56 @@ az pipelines variable-group create \
   MAVEN_INTEGRATION_TEST_OPTIONS=`-DargLine=""` \
   MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/ingest-test-azurepom.xml" \
   SERVICE_RESOURCE_NAME='$(AZURE_INGESTION_SERVICE_NAME)' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - eds-dms`__
+
+This variable group is the service specific variables necessary for testing and deploying the `eds-dms` service.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/eds-dms-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DEDSDMS_BASE_URL=https://$(DNS_HOST)/api/eds/v1 -DEXTERNAL_DATASET_CLIENT_ID=$(AZURE_CLIENT_ID) -DEXTERNAL_DATASET_CLIENT_SECRET_VALUE=$(AZURE_CLIENT_SECRET) -DEXTERNAL_DATASET_CLIENT_SECRET_KEY=clientSecretKey -DEXTERNAL_DATASET_SCOPES_KEY=scopesKey -DEXTERNAL_DATASET_SCOPES_VALUE="openid $(MY_TENANT)/.default" -DEXTERNAL_DATASET_TOKEN_URL="https://login.microsoftonline.com/$(AZURE_TENANT_ID)/oauth2/v2.0/token" -DCONTAINER_NAME=file-persistent-area -DSECRET_BASE_URL="https://$(DNS_HOST)/api/secret/v1/" -DSTORAGE_HOST=$(STORAGE_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `deploy/testing/eds-dms-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `eds-dms` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - eds-dms" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/eds-dms-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DEDSDMS_BASE_URL=https://$(DNS_HOST)/api/eds/v1 -DEXTERNAL_DATASET_CLIENT_ID=$(AZURE_CLIENT_ID) -DEXTERNAL_DATASET_CLIENT_SECRET_VALUE=$(AZURE_CLIENT_SECRET) -DEXTERNAL_DATASET_CLIENT_SECRET_KEY=clientSecretKey -DEXTERNAL_DATASET_SCOPES_KEY=scopesKey -DEXTERNAL_DATASET_SCOPES_VALUE="openid $(MY_TENANT)/.default" -DEXTERNAL_DATASET_TOKEN_URL="https://login.microsoftonline.com/$(AZURE_TENANT_ID)/oauth2/v2.0/token" -DCONTAINER_NAME=file-persistent-area -DSECRET_BASE_URL="https://$(DNS_HOST)/api/secret/v1/" -DSTORAGE_HOST=$(STORAGE_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DDEFAULT_DATA_PARTITION_ID_TENANT2=othertenant2' \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/eds-dms-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='eds-dms' \
+  -ojson
+```
+
+__Setup and Configure the ADO Library `Azure Service Release - secret`__
+
+This variable group is the service specific variables necessary for testing and deploying the `secret` service.
+
+__WARN__: To deploy Secret service it is needed to enable feature flag at services resources stage deployment `export TF_VAR_secret_kv_enabled="true"`, then get value from azure portal.
+
+| Variable | Value |
+|----------|-------|
+| MAVEN_DEPLOY_POM_FILE_PATH | `drop/provider/eds-dms-azure` |
+| MAVEN_INTEGRATION_TEST_OPTIONS | `-DSTORAGE_HOST=$(STORAGE_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DENTITLEMENTS_DOMAIN=$(DOMAIN)` |
+| MAVEN_INTEGRATION_TEST_POM_FILE_PATH | `drop/deploy/testing/secret-test-azure/pom.xml` |
+| SERVICE_RESOURCE_NAME | `secret` |
+| SECRET_KEYVAULT_URL | `secret service keyvault url (can be obtained from azure portal in sr)` |
+
+```bash
+az pipelines variable-group create \
+  --name "Azure Service Release - secret" \
+  --authorize true \
+  --variables \
+  MAVEN_DEPLOY_POM_FILE_PATH="drop/provider/secret-azure" \
+  MAVEN_INTEGRATION_TEST_OPTIONS='-DSECRET_BASE_URL="https://$(DNS_HOST)/api/secret/v1/ -DSTORAGE_HOST=$(STORAGE_URL) -DDEFAULT_DATA_PARTITION_ID_TENANT1=$(MY_TENANT) -DENTITLEMENTS_DOMAIN=$(DOMAIN)' \
+  MAVEN_INTEGRATION_TEST_POM_FILE_PATH="drop/deploy/testing/secret-test-azure/pom.xml" \
+  SERVICE_RESOURCE_NAME='secret' \
+  SECRET_KEYVAULT_URL='https://osdu-secretkv-sr:443' \
   -ojson
 ```
 
@@ -1174,6 +1225,7 @@ az pipelines create \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
+
 20. Add a Pipeline for __wellbore-domain-services__  to deploy the Wellbore Domain Services.
 
     _Repo:_ `wellbore-domain-services`
@@ -1205,6 +1257,7 @@ az pipelines create \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
 ```
+
 22. Add a Pipeline for __dataset__  to deploy the Dataset Service.
 
    _Repo:_ `dataset`
@@ -1235,6 +1288,44 @@ az pipelines create \
   --repository-type tfsgit  \
   --yaml-path /devops/azure/pipeline.yml  \
   -ojson
+```
+
+24. (Optional) Add a Pipeline for __EDS (External DS) Service__  to deploy the EDS-DMS.
+
+    _Repo:_ `eds-dms`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/eds-dms/v1/swagger-ui.html is alive.
+
+```bash
+az pipelines create \
+  --name 'eds-dms'  \
+  --repository eds-dms  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
+  -ojson
+```
+
+25. (Optional) Add a Pipeline for __secret__  to deploy the Secret Service.
+
+__WARN__: To deploy secret service it is needed to enable feature flag at service resources stage deployment [terraform.tfvars](../infra/templates/osdu-r3-mvp/service_resources/terraform.tfvars)
+
+```terraform
+# Secret service kv deploy
+secret_kv_enabled = true
+```
+
+    _Repo:_ `secret`
+    _Path:_ `/devops/azure/pipeline.yml`
+    _Validate:_ https://<your_dns_name>/api/secret/v1/swagger-ui/index.html is alive.
+
+```bash
+az pipelines create \
+  --name 'secret'  \
+  --repository secret  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/azure/pipeline.yml  \
 ```
 
 26. (Optional) Add a Pipelines for __Reservoir DDMS__  Service.
