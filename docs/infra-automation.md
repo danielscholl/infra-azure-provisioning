@@ -74,6 +74,8 @@ This variable group will be used to hold the common values for a specific infras
   | TF_VAR_principal_password | <your_principal_password> |
   | TF_VAR_resource_group_location | centralus |
   | TF_VAR_deploy_dp_airflow | false |
+  | TF_VAR_secret_kv_enabled | false |
+  
 
 ```bash
 ENVIRONMENT="demo"
@@ -106,6 +108,7 @@ az pipelines variable-group create \
   TF_VAR_resource_group_location="${REGION}" \
   TF_VAR_deploy_dp_airflow="false" \
   TF_VAR_aad_client_id="$TF_VAR_application_clientid" \
+  TF_VAR_secret_kv_enabled="false" \
   -ojson
 ```
 
