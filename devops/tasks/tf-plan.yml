@@ -63,6 +63,10 @@ steps:
         TF_VAR_ssl_challenge_required: $(TF_VAR_ssl_challenge_required)
       ${{ if ne(variables['TF_VAR_disable_airflow1'], '') }}:
         TF_VAR_disable_airflow1: $(TF_VAR_disable_airflow1)
+      ${{ if ne(variables['TF_VAR_secret_kv_enabled'], '') }}:
+        TF_VAR_secret_kv_enabled: $(TF_VAR_secret_kv_enabled)
+      ${{ if ne(variables['TF_VAR_reservoir_ddms'], '') }}:
+        TF_VAR_reservoir_ddms: $(TF_VAR_reservoir_ddms)
 
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
