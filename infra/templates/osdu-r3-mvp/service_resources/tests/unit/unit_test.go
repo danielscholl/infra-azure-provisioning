@@ -37,10 +37,12 @@ var tfOptions = &terraform.Options{
 
 var istioEnabled = os.Getenv("AUTOSCALING_ENABLED")
 var disableAirflow1 = getEnv("TF_VAR_disable_airflow1", "false")
+var secretKvEnabled = getEnv("TF_VAR_secret_kv_enabled", "false")
 
 var istioResourses = 14
 var totalResources = 158
 var resourcesToRemoveForAirflow1 = 6
+var secretKvResources = 9
 
 func TestTemplate(t *testing.T) {
 	expectedAppDevResourceGroup := asMap(t, `{
@@ -58,6 +60,10 @@ func TestTemplate(t *testing.T) {
 
 	if disableAirflow1 == "true" {
 		expectedResourceCount = expectedResourceCount - resourcesToRemoveForAirflow1
+	}
+
+	if secretKvEnabled == "true" {
+		expectedResourceCount = expectedResourceCount + secretKvResources
 	}
 
 	testFixture := infratests.UnitTestFixture{
