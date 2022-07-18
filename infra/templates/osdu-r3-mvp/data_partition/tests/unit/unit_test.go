@@ -16,6 +16,7 @@ package test
 
 import (
 	"os"
+	"regexp"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -36,7 +37,9 @@ var tfOptions = &terraform.Options{
 }
 
 var deploy_dp_airflow = os.Getenv("TF_VAR_deploy_dp_airflow")
-var airflow_dp_resource_count = 88
+var airflow_dp_resource_count = 94
+var deploy_rddms_resources = os.Getenv("TF_VAR_reservoir_ddms")
+var rddms_resource_count = 8
 var expected_resource_count = 149
 
 func TestTemplate(t *testing.T) {
@@ -51,6 +54,14 @@ func TestTemplate(t *testing.T) {
 
 	if deploy_dp_airflow == "true" {
 		expected_resource_count = expected_resource_count + airflow_dp_resource_count
+	}
+
+	// Condition check for rddms object if enabled is set to true
+	if len(deploy_rddms_resources) > 0 {
+		res, _ := regexp.MatchString(string("true"), string(deploy_rddms_resources))
+		if res {
+			expected_resource_count = expected_resource_count + rddms_resource_count
+		}
 	}
 
 	testFixture := infratests.UnitTestFixture{
