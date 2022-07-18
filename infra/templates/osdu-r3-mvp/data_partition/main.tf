@@ -548,3 +548,26 @@ resource "azurerm_storage_management_policy" "main" {
     }
   }
 }
+
+#-------------------------------
+# Reservoir DDMS DB feature
+#-------------------------------
+
+module "reservoir" {
+  source = "./reservoir"
+  count  = var.reservoir_ddms.enabled ? 1 : 0
+
+  resource_group_name = azurerm_resource_group.main.name
+  cr_keyvault_id      = data.terraform_remote_state.central_resources.outputs.keyvault_id
+  data_partition_name = var.data_partition_name
+  postgres_sku        = var.reservoir_ddms.sku
+  postgres_rbac_principals = [
+    // OSDU Identity
+    data.terraform_remote_state.central_resources.outputs.osdu_identity_principal_id,
+
+    // Service Principal
+    data.terraform_remote_state.central_resources.outputs.principal_objectId
+  ]
+
+  resource_tags = var.resource_tags
+}

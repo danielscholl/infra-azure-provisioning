@@ -74,7 +74,8 @@ This variable group will be used to hold the common values for a specific infras
   | TF_VAR_principal_password | <your_principal_password> |
   | TF_VAR_resource_group_location | centralus |
   | TF_VAR_deploy_dp_airflow | false |
-  | TF_VAR_secret_kv_enabled | false |
+  | (optional) TF_VAR_secret_kv_enabled | false |
+  | (optional) TF_VAR_reservoir_ddms | {enabled=false,sku="B_Gen5_1"} |
   
 
 ```bash
