@@ -260,14 +260,6 @@ resource "azurerm_role_assignment" "airflow_log_queue_processor_roles" {
   scope                = module.storage_account.id
 }
 
-resource "azurerm_role_assignment" "storage_blob_contributor" {
-  count = length(local.rbac_principals)
-
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = local.rbac_principals[count.index]
-  scope                = module.storage_account.id
-}
-
 module "system_storage_account" {
   source = "../../../modules/providers/azure/storage-account"
 

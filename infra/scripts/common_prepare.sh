@@ -173,8 +173,6 @@ function CreatePrincipal() {
         --query [].objectId -otsv)
 
       MS_GRAPH_API_GUID="00000003-0000-0000-c000-000000000000"
-      AZURE_STORAGE_API_GUID="e406a681-f3d4-42a8-90b6-c2b029497af1"
-
 
       # MS Graph API Directory.Read.All
       PERMISSION_1=$(az ad app permission add \
@@ -182,13 +180,6 @@ function CreatePrincipal() {
         --api $MS_GRAPH_API_GUID \
         --api-permissions 7ab1d382-f21e-4acd-a863-ba3e13f7da61=Role \
         -ojsonc)
-
-       # AzureStorage API user_impersonation scope
-        PERMISSION_2=$(az ad app permission add \
-                --id $PRINCIPAL_ID \
-                --api $AZURE_STORAGE_API_GUID \
-                --api-permissions 03e0da56-190b-40ad-a80c-ea378c433f7f=Scope \
-                -ojsonc)
 
       tput setaf 2; echo "Adding Information to Vault..." ; tput sgr0
       AddKeyToVault $2 "${1}-id" $PRINCIPAL_ID

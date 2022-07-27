@@ -51,8 +51,7 @@ subnet_aks_prefix           = "10.10.2.0/23"
 # Storage Settings
 storage_replication_type = "LRS"
 storage_containers = [
-  "azure-webjobs-hosts",
-  "policy-bundles"
+  "azure-webjobs-hosts"
 ]
 
 system_storage_containers = [
