@@ -18,3 +18,9 @@ newman run "Azure DDMS OSDU Smoke Tests.postman_collection.json" \
 --env-var "OIDC_CLIENT_SECRET=$OIDC_CLIENT_SECRET"
 
 ```
+
+**Note:** Running the ZGY and/or VDS Smoke Tests locally will require the *sample-ST10010ZC11_PZ_PSDM_KIRCH_FULL_T.MIG_FIN.POST_STACK.3D.JS-017536.segy* file in the directory. This file is write-locked to preserve integrity and you must use [Large File  Storage](https://docs.gitlab.com/ee/topics/git/lfs/) (LFS) to fetch the file with the following git command:
+
+```sh
+git lfs fetch origin <branchname>
+```
