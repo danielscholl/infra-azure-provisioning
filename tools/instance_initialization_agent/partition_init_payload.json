@@ -119,6 +119,14 @@
             "sensitive": true,
             "value": "eventgrid-schemachangedtopic-accesskey"
         },
+        "hierarchical-storage-account-name": {
+            "sensitive": true,
+            "value": "hierarchical-storage"
+        },
+        "hierarchical-storage-account-key": {
+            "sensitive": true,
+            "value": "hierarchical-storage-key"
+        },
         "pds-storage": {
             "sensitive": true,
             "value": "pds-storage"
