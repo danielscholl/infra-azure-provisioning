@@ -84,8 +84,7 @@ stages:
       skipCheck: true
       providers:
         - name: Azure
-          environments: ["dev"]
-          #environments: ["dev", "glab"]
+          environments: ["dev", "glab"]
       migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
       namespace: "istio-system"
   
@@ -105,15 +104,14 @@ stages:
       namespace: "istio-system"
       providers:
         - name: Azure
-          environments: ["dev"]
-          #environments: ["dev", "glab"]
+          environments: ["dev", "glab"]
       migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
 
   # EnvoyFilters along with entitlements service
   - template: /devops/chart-stages-helm.yml
     parameters:
       checkoutRepo: helm-charts-azure
-      serviceName: entitlements
+      serviceName: security-services
       chartPath: osdu-azure/entitlements
       valuesFile: 'osdu-azure/entitlements/values.yaml'
       infraValuesFile: ''
@@ -125,5 +123,5 @@ stages:
       namespace: "osdu"
       providers:
         - name: Azure
-          environments: ["dev", "glab"]
+          environments: ["dev"]
       migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
