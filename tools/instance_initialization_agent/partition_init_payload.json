@@ -47,13 +47,9 @@
             "sensitive": true,
             "value": "storage"
         },
-        "ingest-storage-account-name": {
+        "storage-account-blob-endpoint": {
             "sensitive": true,
-            "value": "ingest-storage"
-        },
-        "ingest-storage-account-key": {
-            "sensitive": true,
-            "value": "ingest-storage-key"
+            "value": "storage-account-blob-endpoint"
         },
         "eventgrid-recordstopic": {
             "sensitive": true,
