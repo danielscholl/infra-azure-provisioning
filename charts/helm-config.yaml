@@ -4,7 +4,7 @@ global:
   # Set to 'true' if you'd like to enable autoscaling. Details in 'autoscaling.md'
   isAutoscalingEnabled: false
   # Service(s) Replica Count
-  replicaCount: 2
+  replicaCount: 1
 
   ################################################################################
   # Specify the azure environment specific values
@@ -17,6 +17,16 @@ global:
     identity_id: #{osdu-identity-id}#
     keyvault: #{base-name-cr}#-kv
     appid: #{aad-client-id}#
+    podIdentityAuthEnabled: false
+    includePartitionSecrets: true
+    mountRedisSecrets: true
+    oidAuthEnabled: false # set this to true if you want to use oid instead of unique_name and upn
+    corsEnabled: false # set this to true if you want to enable CORS.
+    suthEnabled: false # set this to true if you want to use SAuth identity envoy
+    # Not implemented yet in the terraform code
+    #common_identity_id: #{osdu-identity-id}#
+    #common_resource_id: #{base-name-cr}#-rg
+
 
   ################################################################################
   # Specify the Ingress Settings
@@ -30,15 +40,20 @@ global:
     hostname: #{DNS_HOST}#
     admin: #{ADMIN_EMAIL}#
     sslServer: https://acme-v02.api.letsencrypt.org/directory  # Production
+    # For compatibility with helm-charts-azure
+    issuer: letsencrypt-prod-dns
+    dns: #{DNS_HOST}#
     enableKeyvaultCert: #{ENABLE_KEYVAULT_CERT}#
 
   ################################################################################
   # Specify the istio specific values
   # based64 encoded username and password
   #
+  namespace: osdu
+
   istio:
-    minReplicaCount: 10
-    maxReplicaCount: 30
+    minReplicaCount: 2
+    maxReplicaCount: 5
     username: #{istio-username}#
     password: #{istio-password}#
     loadBalancerIP: #{istio-int-load-balancer-ip}#
@@ -50,9 +65,9 @@ global:
   # Specify the resource limits
   #
   resourceLimits:
-    defaultCpuRequests: "0.5"
-    defaultMemoryRequests: "4Gi"
-    defaultCpuLimits: "1"
+    defaultCpuRequests: "0.3"
+    defaultMemoryRequests: "2Gi"
+    defaultCpuLimits: "2"
     defaultMemoryLimits: "4Gi"
 
   job:
@@ -60,3 +75,43 @@ global:
     image: mcr.microsoft.com/azure-cli 
     appgw_configmap_name: osdu-istio-appgw-cert
     osdu_configmap_name: osdu-svc-properties  
+
+################################################################################
+# Specify the OSDU Services to Load
+#
+configuration:
+
+  ######################
+  ##  DEFAULT SERVICE
+  #
+  - service: default
+    repository: msosdu.azurecr.io/neilpeterson/aks-helloworld
+    tag: v1
+    path: /*
+    probe: /
+    replicaCount: 1
+    readinessProbe: /actuator/health
+    readinessPort: 8081
+    livenessProbe: /actuator/health
+    livenessPort: 8081
+    probeInitialDelaySeconds: 100
+    livenessPeriodSeconds: 10
+    keyvault: true
+    podDisruptionBudget:
+      enabled: false
+    env:
+      - name: TITLE
+        value: "Azure OSDU Platform - (AKS)"
+    podIdentityEnvs:
+      - name: AZURE_CLIENT_ID
+        secret:
+          name: active-directory
+          key: principal-clientid
+      - name: AZURE_CLIENT_SECRET
+        secret:
+          name: active-directory
+          key: principal-clientpassword
+      - name: AZURE_TENANT_ID
+        secret:
+          name: active-directory
+          key: tenantid

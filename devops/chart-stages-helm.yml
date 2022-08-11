@@ -21,6 +21,9 @@ parameters:
   DPName: ""
   namespace: ""
   addDPNameToService: false
+  migrationCleanup: true
+  infraValuesFile: ""
+  skipCheck: false
 
 stages:
   - ${{ each provider in parameters.providers }}:
@@ -55,3 +58,6 @@ stages:
                     checkoutRepo: ${{ parameters.checkoutRepo }}
                     namespace: ${{ parameters.namespace }}
                     baseResourceGroupName: ${{ parameters.baseResourceGroupName }}
+                    migrationCleanup: ${{parameters.migrationCleanup}}
+                    infraValuesFile: ${{ parameters.infraValuesFile }}
+                    skipCheck: ${{ parameters.skipCheck }}
