@@ -20,27 +20,41 @@ parameters:
   checkoutRepo: self
   namespace: ""
   baseResourceGroupName: ""
+  migrationCleanup: true
+  infraValuesFile: ""
+  skipCheck: false
 
 steps:
+  - checkout: self
+    path: s/$(Build.Repository.Name)
+    persistCredentials: true
+    condition: ne('${{ parameters.infraValuesFile }}', '')
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+    displayName: 'Helm Values - Build Repo'
+    inputs:
+      targetFiles: |
+        $(Agent.BuildDirectory)/s/$(Build.Repository.Name)/${{parameters.infraValuesFile}} => $(Agent.BuildDirectory)/s/values.yaml
+    condition: ne('${{ parameters.infraValuesFile }}', '')
+
   - checkout: ${{ parameters.checkoutRepo }}
     path: s/$(Build.Repository.Name)
     persistCredentials: true
   - task: "HelmInstaller@1"
     displayName: 'Download Helm'
     inputs:
-      helmVersionToInstall: 3.3.0
+      helmVersionToInstall: 3.9.1
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
     displayName: 'Helm Values - Build Repo'
     inputs:
       targetFiles: |
-        $(Agent.BuildDirectory)/s/$(Build.Repository.Name)/${{parameters.valuesFile}} => $(Agent.BuildDirectory)/s/$(Build.Repository.Name)/${{parameters.chartPath}}/values.yaml
-    condition: eq(variables['HELM_SOURCE'], '')
+        $(Agent.BuildDirectory)/s/$(Build.Repository.Name)/${{parameters.valuesFile}} => $(Agent.BuildDirectory)/s/values.yaml
+    condition: and(eq(variables['HELM_SOURCE'], ''), eq('${{ parameters.infraValuesFile }}', ''))
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
     displayName: 'Helm Values - Helm Source Repo'
     inputs:
       targetFiles: |
-        $(Agent.BuildDirectory)/s/$(HELM_SOURCE)/${{parameters.valuesFile}} => $(Agent.BuildDirectory)/s/$(HELM_SOURCE)/${{parameters.chartPath}}/values.yaml
-    condition: ne(variables['HELM_SOURCE'], '')
+        $(Agent.BuildDirectory)/s/$(HELM_SOURCE)/${{parameters.valuesFile}} => $(Agent.BuildDirectory)/s/values.yaml
+    condition: and(ne(variables['HELM_SOURCE'], ''), eq('${{ parameters.infraValuesFile }}', ''))
   - template: helm-install.yml
     parameters:
       serviceName: ${{parameters.serviceName}}
@@ -48,3 +62,5 @@ steps:
       valuesFile: ${{ parameters.valuesFile }}
       baseResourceGroupName: ${{ parameters.baseResourceGroupName }}
       namespace: ${{ parameters.namespace }}
+      migrationCleanup: ${{parameters.migrationCleanup}}
+      skipCheck: ${{ parameters.skipCheck }}

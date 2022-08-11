@@ -24,6 +24,7 @@ parameters:
   checkoutRepo: self
   chartModificationScript: ""
   extractedChartFolder: "templates"
+  migrationCleanup: "false"
 
 steps:
   - checkout: FluxRepo
@@ -86,3 +87,4 @@ steps:
       hldRegPath: ${{parameters.hldRegPath}}
       skipDeploy: ${{parameters.skipDeploy}}
       extractedChartFolder: ${{parameters.extractedChartFolder}}
+      migrationCleanup: ${{parameters.migrationCleanup}}

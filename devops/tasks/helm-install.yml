@@ -15,13 +15,16 @@
 # This template is responsible for detecting a service being alive.
 steps:
   - task: AzureCLI@1
+    retryCountOnTaskFailure: 1
     displayName: 'Helm Install ${{parameters.serviceName}}'
+    condition: eq('${{ parameters.migrationCleanup }}', 'true')
     env:
       SERVICE_NAME: ${{parameters.serviceName}}
       BASE_NAME_RG: ${{parameters.baseResourceGroupName}}
       VALUES_FILE: ${{parameters.valuesFile}}
       CHART_PATH: ${{parameters.chartPath}}
       NAMESPACE: ${{parameters.namespace}}
+      SKIP_CHECK: ${{parameters.skipCheck}}
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -49,13 +52,35 @@ steps:
         echo "Helm Source Name: $HELM_SOURCE_NAME"
         cd $(Agent.BuildDirectory)/s/$HELM_SOURCE_NAME
 
-        cat $(Agent.BuildDirectory)/s/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml
+        cat $(Agent.BuildDirectory)/s/values.yaml
+
+        echo "Building dependencies for chart"
+        helm dependency build $CHART_PATH || echo "[WARN] Dependency build failed"
+
+        echo "[INFO] Validating existing helm resources"
+        if ! helm get notes $SERVICE_NAME --namespace $NAMESPACE; then
+          echo "[WARNING] Release not found, migrating to helm install"
+          echo "[WARNING] Deleting resources that will be created"
+          helm template $SERVICE_NAME $CHART_PATH --namespace $NAMESPACE -f $(Agent.BuildDirectory)/s/values.yaml --output-dir /tmp/generated/ 
+          for k8sman in $( find /tmp/generated/ -name "*.yml" -o -name "*.yaml"); do            
+            kubectl delete -f $k8sman -n $NAMESPACE || echo "[INFO] Not found"
+          done
+        fi
 
         echo "Installing through helm"
+
+        if [[ $SKIP_CHECK == true ]]
+        then
+            echo "***********************"
+            echo "DEPLOY CHECK SKIPPED"
+            echo "***********************"
+            helm upgrade $SERVICE_NAME $CHART_PATH -f $(Agent.BuildDirectory)/s/values.yaml --namespace $NAMESPACE --install --create-namespace --debug --timeout 10m
+            exit 0
+        fi
         
         if [[ "$NAMESPACE" != "" ]]
         then
-            helm upgrade $SERVICE_NAME $CHART_PATH -f $(Agent.BuildDirectory)/s/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml --namespace $NAMESPACE --install --create-namespace --wait --timeout 10m0s
+            helm upgrade $SERVICE_NAME $CHART_PATH -f $(Agent.BuildDirectory)/s/values.yaml --namespace $NAMESPACE --install --create-namespace --debug --wait --timeout 10m
         else
-            helm upgrade $SERVICE_NAME $CHART_PATH -f $(Agent.BuildDirectory)/s/$HELM_SOURCE_NAME/${{parameters.chartPath}}/values.yaml --install --create-namespace --wait --timeout 10m0s
+            helm upgrade $SERVICE_NAME $CHART_PATH -f $(Agent.BuildDirectory)/s/values.yaml --install --create-namespace --wait --debug --timeout 10m
         fi

@@ -20,16 +20,20 @@ parameters:
   hldRegPath: "providers/azure/hld-registry"
   checkoutRepo: self
   extractedChartFolder: "templates"
+  migrationCleanup: false
+  namespace: default
 
 stages:
   - ${{ each provider in parameters.providers }}:
     - ${{ each environment in provider.environments }}:
-      - stage: 'Deploy_${{ provider.name }}_${{ environment }}'
+      - stage: "Deploy_${{ provider.name }}_${{ environment }}_${{ replace(parameters.serviceName, '-', '_') }}"
 
         variables:
           - group: '${{ provider.name }} Target Env Secrets - ${{ environment }}'
           - group: '${{ provider.name }} Target Env - ${{ environment }}'
 
+          - name: templates_dir
+            value: ''
 
         jobs:
         - deployment: Deploy
@@ -55,6 +59,7 @@ stages:
                     checkoutRepo: ${{ parameters.checkoutRepo }}
                     chartModificationScript: ${{ parameters.chartModificationScript }}
                     extractedChartFolder: ${{ parameters.extractedChartFolder }}
+                    migrationCleanup: ${{parameters.migrationCleanup}}
 
                 - template: tasks/flux-chart-wait.yml
                   parameters:
@@ -62,3 +67,5 @@ stages:
                     skipCheck: ${{ parameters.skipCheck }}
                     environment: ${{ environment }}
                     imageRepoName: '${{ parameters.serviceName }}'
+                    migrationCleanup: ${{ parameters.migrationCleanup }}
+                    namespace: ${{ parameters.namespace }}
