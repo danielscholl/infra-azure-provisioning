@@ -2,6 +2,10 @@
 
 # Current Master
 
+__Infra Changes__
+- [[Breaking Change] AKS upgrade to 1.24.0](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/232) - [Infra doc](./docs/upgrades/aks-upgrade-0-24.md)
+- [Mandatory Keda Upgrade to 2.x](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/128) - Follow this Documentation to do it: [Keda Upgrade](docs/keda-upgrade.md)
+
 # v0.12.0 (2021-11-30)
 
 __Branch__ https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/release/0.12
