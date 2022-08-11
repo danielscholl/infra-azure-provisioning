@@ -27,6 +27,7 @@ steps:
       HLD_REG_PATH: ${{parameters.hldRegPath}}
       GENERATION_PATH: ${{parameters.generationPath}}
       CHART_FOLDERS: ${{parameters.extractedChartFolder}}
+      MIGRATION_CLEANUP: ${{parameters.migrationCleanup}}
 
     inputs:
       targetType: "inline"
@@ -77,8 +78,23 @@ steps:
               rm -rf ./$HLD_REG_PATH/$SERVICE_NAME/*
 
               IFS="|"; for folder in $CHART_FOLDERS; do
-                echo "COPYING YAML FILES OF EXTRACTED CHARTS FOLDER $folder"
-                cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder/* ./$HLD_REG_PATH/$SERVICE_NAME
+                if [[ $MIGRATION_CLEANUP == "true" ]]; then
+                  echo "[WARNING] Migration Cleanup set to true"
+                  echo "[WARNING] This will remove manifests from flux for cleanup"
+                  echo "[WARNING] This logic changed in OSDU v0.16.0 M13"
+                  echo "[WARNING] Gradually moving to helm install/flux deprecation"
+                  echo "[WARNING] Potential files to delete from FluxRepo:"
+                  find  $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder/ -name '*.yaml' -o -name '*.yml'
+
+                  echo "REMOVING YAML FILES OF EXTRACTED CHARTS FOLDER $folder"
+                  find ./$HLD_REG_PATH/$SERVICE_NAME -name '*.yaml' -o -name '*.yml' -exec rm -vf {} \;
+                  rm -rfv ./$HLD_REG_PATH/$SERVICE_NAME
+                  find ./$HLD_REG_PATH/../../../generated/$SERVICE_NAME -name '*.yaml' -o -name '*.yml' -exec rm -vf {} \; || echo "[WARN] No directory anymore in flux repo"
+                  rm -rfv ./$HLD_REG_PATH/../../../generated/$SERVICE_NAME || echo "[WARN] No directory anymore in flux repo"
+                else
+                  echo "COPY YAML FILES OF EXTRACTED CHARTS FOLDER $folder"
+                  cp -rf $GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder/* ./$HLD_REG_PATH/$SERVICE_NAME
+                fi
               done
           fi
 
@@ -108,3 +124,8 @@ steps:
         git_commit
         git_pull
         git_push
+
+        TEMPLATES_DIR="$GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder/"
+
+        echo "##vso[task.setvariable variable=templates_dir]${TEMPLATES_DIR}"
+        echo "[INFO] Gitops manifest templates directory: ${TEMPLATES_DIR}"

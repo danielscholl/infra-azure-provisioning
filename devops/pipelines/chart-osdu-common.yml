@@ -28,6 +28,9 @@ resources:
   - repository: FluxRepo
     type: git
     name: k8-gitops-manifests
+  - repository: helm-charts-azure
+    name: helm-charts-azure
+    type: git
 
 variables:
   - group: 'Azure - OSDU'
@@ -41,6 +44,10 @@ variables:
     value: "charts/helm-config.yaml"
   - name: 'MANIFEST_REPO'
     value: $[ resources.repositories['FluxRepo'].name ]
+  # Condition to deprecate flux and use helm-charts-azure
+  - name: 'MIGRATION_CLEANUP'
+    value: true
+
 
 stages:
   - template: /devops/chart-stages.yml
@@ -52,3 +59,43 @@ stages:
       providers:
         - name: Azure
           environments: ["demo"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+      namespace: "default"
+
+  # installation of osdu-base
+  - template: /devops/chart-stages-helm.yml
+    parameters:
+      checkoutRepo: helm-charts-azure
+      serviceName: osdu-base
+      chartPath: osdu-base
+      valuesFile: "osdu-base/values.yaml"
+      infraValuesFile: ""
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: false
+      # Add multiple chart folder paths with pipe(|) seperated
+      extractedChartFolder: "templates|charts/osdu-base/templates"
+      baseResourceGroupName: $(base-name-sr)
+      namespace: "default"
+      providers:
+        - name: Azure
+          environments: ["demo"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+  
+    # installation of osdu-common
+  - template: /devops/chart-stages-helm.yml
+    parameters:
+      checkoutRepo: helm-charts-azure
+      serviceName: common-base
+      chartPath: osdu-azure/common-base
+      valuesFile: ''
+      infraValuesFile: '${{ variables.valuesFile }}'
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: false
+      # Add multiple chart folder paths with pipe(|) seperated
+      extractedChartFolder: "templates|charts/osdu-base/templates"
+      baseResourceGroupName: $(base-name-sr)
+      namespace: "osdu"
+      providers:
+        - name: Azure
+          environments: ["demo"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}

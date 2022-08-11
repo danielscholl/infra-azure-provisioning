@@ -20,6 +20,9 @@ steps:
       SERVICE_NAME: ${{parameters.serviceName}}
       BASE_NAME_SR: $(base-name-sr)
       SKIP_CHECK: ${{parameters.skipCheck}}
+      MIGRATION_CLEANUP: ${{ parameters.migrationCleanup }}
+      GITOPS_MANIFEST_DIRECTORY: $(templates_dir)
+      NAMESPACE: ${{ parameters.namespace }}
     inputs:
       azureSubscription: '$(SERVICE_CONNECTION_NAME)'
       addSpnToEnvironment: true
@@ -28,6 +31,28 @@ steps:
         #!/usr/bin/env bash
         set -euo pipefail
 
+        echo "Logging in to AKS"
+        echo "------------------------------------"
+        sudo az aks install-cli
+        az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
+
+        if [[ $MIGRATION_CLEANUP == "true" ]]; then
+          echo "[WARNING] Migration Cleanup set to true"
+          echo "[WARNING] This will remove manifests from flux for cleanup"
+          echo "[WARNING] This logic changed in OSDU v0.16.0 M13"
+          echo "[WARNING] Gradually moving to helm install/flux deprecation"
+
+          echo "[INFO] Cleaning up resources in $GITOPS_MANIFEST_DIRECTORY | $(templates_dir)"
+          if helm get notes ${SERVICE_NAME} -n ${NAMESPACE} ; then 
+            echo "[INFO] Helm release already found, skiping cleanup"
+            exit 0
+          fi
+          for k8sman in $(find $GITOPS_MANIFEST_DIRECTORY -name '*.yaml' -o -name '*.yml'); do
+            kubectl delete -f $k8sman || echo "[WARN] Not found $k8sman --- good"
+          done
+          exit 0
+        fi
+
         if [[ $SKIP_CHECK == true ]]
         then
             echo "***********************"
@@ -35,11 +60,6 @@ steps:
             echo "***********************"
             exit 0
         fi
-
-        echo "Logging in to AKS"
-        echo "------------------------------------"
-        sudo az aks install-cli
-        az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
 
         echo "Checking Deployment $SERVICE_NAME Available"
         echo "------------------------------------"

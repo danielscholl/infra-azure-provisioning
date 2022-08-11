@@ -13,69 +13,117 @@
 #  limitations under the License.
 
 # Required Group Variables - `Azure - OSDU`
-  # AGENT_IMAGE
-  # AZURE_TENANT_ID
-  # ENV_SUBSCRIPTION_ID
-  # ENV_APP_ID
-  # ENV_BASE_NAME_21
-  # ENV_IDENTITY_ID
-  # ENV_HOST
-  # ADMIN_EMAIL
-  # ENV_REGISTRY
-  # ISTIO_USERNAME
-  # ISTIO_PASSWORD
+# AGENT_IMAGE
+# AZURE_TENANT_ID
+# ENV_SUBSCRIPTION_ID
+# ENV_APP_ID
+# ENV_BASE_NAME_21
+# ENV_IDENTITY_ID
+# ENV_HOST
+# ADMIN_EMAIL
+# ENV_REGISTRY
+# ISTIO_USERNAME
+# ISTIO_PASSWORD
 
-  trigger:
-    batch: true
-    branches:
-      include:
-        - master
-    paths:
-      include:
-        - /charts/osdu-istio-auth/*
-      exclude:
-        - /**/*.md
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - /charts/osdu-istio-auth/*
+    exclude:
+      - /**/*.md
 
-  pr:
-    autoCancel: false
-    branches:
-      include:
-        - "*"
-      exclude:
-        - master
-    paths:
-      include:
-        - /charts/osdu-istio-auth/*
-      exclude:
-        - /**/*.md
+pr:
+  autoCancel: false
+  branches:
+    include:
+      - "*"
+    exclude:
+      - master
+  paths:
+    include:
+      - /charts/osdu-istio-auth/*
+    exclude:
+      - /**/*.md
 
-  resources:
-    repositories:
-    - repository: FluxRepo
-      type: git
-      name: k8-gitops-manifests
+resources:
+  repositories:
+  - repository: FluxRepo
+    type: git
+    name: k8-gitops-manifests
+  - repository: helm-charts-azure
+    name: helm-charts-azure
+    type: git
 
-  variables:
-    - group: 'Azure - OSDU'
-    - group: 'Azure - OSDU secrets'
+variables:
+  - group: 'Azure - OSDU'
+  - group: 'Azure - OSDU secrets'
 
-    - name: serviceName
-      value: "osdu-istio-auth"
-    - name: chartPath
-      value: "charts/osdu-istio-auth"
-    - name: valuesFile
-      value: "charts/helm-config.yaml"
-    - name: 'MANIFEST_REPO'
-      value: $[ resources.repositories['FluxRepo'].name ]
+  - name: serviceName
+    value: "osdu-istio-auth"
+  - name: chartPath
+    value: "charts/osdu-istio-auth"
+  - name: valuesFile
+    value: "charts/helm-config.yaml"
+  - name: 'MANIFEST_REPO'
+    value: $[ resources.repositories['FluxRepo'].name ]
+  # Condition to deprecate flux and use helm-charts-azure
+  - name: 'MIGRATION_CLEANUP'
+    value: true
 
-  stages:
-    - template: /devops/chart-stages.yml
-      parameters:
-        serviceName: ${{ variables.serviceName }}
-        chartPath: ${{ variables.chartPath }}
-        valuesFile: ${{ variables.valuesFile }}
-        skipDeploy: ${{ variables.SKIP_DEPLOY }}
-        skipCheck: true
-        providers:
-          - name: Azure
-            environments: ["dev", "glab"]
+stages:
+  - template: /devops/chart-stages.yml
+    parameters:
+      serviceName: ${{ variables.serviceName }}
+      chartPath: ${{ variables.chartPath }}
+      valuesFile: ${{ variables.valuesFile }}
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: true
+      providers:
+        - name: Azure
+          environments: ["dev"]
+          #environments: ["dev", "glab"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+      namespace: "istio-system"
+  
+# Installation of osdu-istio - operator
+  - template: /devops/chart-stages-helm.yml
+    parameters:
+      checkoutRepo: helm-charts-azure
+      serviceName: osdu-istio
+      chartPath: osdu-istio
+      valuesFile: ''
+      infraValuesFile: '${{ variables.valuesFile }}'
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: false
+      # Add multiple chart folder paths with pipe(|) seperated
+      extractedChartFolder: "templates|charts/osdu-istio/templates"
+      baseResourceGroupName: $(base-name-sr)
+      namespace: "istio-system"
+      providers:
+        - name: Azure
+          environments: ["dev"]
+          #environments: ["dev", "glab"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+
+  # EnvoyFilters along with entitlements service
+  - template: /devops/chart-stages-helm.yml
+    parameters:
+      checkoutRepo: helm-charts-azure
+      serviceName: entitlements
+      chartPath: osdu-azure/entitlements
+      valuesFile: 'osdu-azure/entitlements/values.yaml'
+      infraValuesFile: ''
+      skipDeploy: ${{ variables.SKIP_DEPLOY }}
+      skipCheck: true
+      # Add multiple chart folder paths with pipe(|) seperated
+      extractedChartFolder: "templates|charts/entitlements/templates"
+      baseResourceGroupName: $(base-name-sr)
+      namespace: "osdu"
+      providers:
+        - name: Azure
+          environments: ["dev", "glab"]
+      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
