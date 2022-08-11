@@ -276,10 +276,25 @@ __Steps to load TNO Data__
 
 https://community.opengroup.org/osdu/platform/data-flow/data-loading/open-test-data/-/blob/master/rc--3.0.0/6-data-load-scripts/README.md
 
-__AKS Upgrade Steps__
+## AKS Versions
+
+We recommend to use latest stable infra version as does include latest supported AKS version as well, if you choose previous infra version would be convenient to have a supported AKS version in your terraform custom-values.tf file.
+
+| [Release]  | [infra-version]   | [AKS-Version]        |
+| ---------- | ----------------- | -------------------- |
+|  M13       |  0.16.0           | 1.24.0               |
+|  M12       |  0.15.0           | 1.21.7 (unsupported) |
+|  M11       |  0.14.0           | 1.18.x (unsupported) |
+
+- __NOTE__: Keda 1 is deprecated in v0.16.0 (M13)
+
+### AKS Upgrade Steps
+
+[AKS Upgrade guide 0.15.0 -> 0.16.0](./docs/upgrades/aks-upgrade-0-24.md)
 
 AKS supports upgrade to only one major version i.e. 1.20 to 1.21
 For checking the compatible upgrade use the following command:
+
 ```bash
 az aks get-versions --location centralus --output table
 ```

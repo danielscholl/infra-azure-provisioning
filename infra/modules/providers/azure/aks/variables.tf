@@ -59,7 +59,7 @@ variable "max_pods" {
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.21.7"
+  default = "1.24.0"
 }
 
 variable "admin_user" {
