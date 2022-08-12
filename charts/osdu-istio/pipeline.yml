@@ -84,8 +84,7 @@ stages:
       skipCheck: true
       providers:
         - name: Azure
-          environments: ["dev"]
-          #environments: ["dev", "glab"]
+          environments: ["dev", "glab"]
       migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
       namespace: "istio-system"
 
@@ -123,6 +122,5 @@ stages:
       namespace: "istio-system"
       providers:
         - name: Azure
-          environments: ["dev"]
-          #environments: ["dev", "glab"]
+          environments: ["dev", "glab"]
       migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
