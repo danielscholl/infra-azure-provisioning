@@ -36,3 +36,7 @@ After filling `docker-compose.yaml` with the appropriate values, the tests can b
 ```bash
 docker-compose up --build
 ```
+
+### Running DDMS BVTs
+
+In order to run tests for specific DDMS', please use the [Azure DDMS OSDU Smoke Tests collection](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/source/ddms-smoke-tests/Azure%20DDMS%20OSDU%20Smoke%20Tests.postman_collection.json) instead.
