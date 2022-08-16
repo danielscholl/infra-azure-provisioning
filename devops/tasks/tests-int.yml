@@ -16,6 +16,17 @@ parameters:
   skip: false
 
 steps:
+  - task: Cache@2
+    condition:  and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skip }})))
+    inputs:
+      key: 'go | "$(Agent.OS)"'
+      restoreKeys: |
+          go | "$(Agent.OS)"
+          go
+      path: $(Pipeline.Workspace)/go
+      cacheHitVar: CACHE_RESTORED
+    displayName: Go cache
+
   - task: AzureCLI@1
     displayName: 'Run Integration Tests'
     env:

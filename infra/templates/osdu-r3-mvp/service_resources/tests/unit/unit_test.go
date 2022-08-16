@@ -40,7 +40,7 @@ var disableAirflow1 = getEnv("TF_VAR_disable_airflow1", "false")
 var secretKvEnabled = getEnv("TF_VAR_secret_kv_enabled", "false")
 
 var istioResourses = 14
-var totalResources = 158
+var totalResources = 169
 var resourcesToRemoveForAirflow1 = 6
 var secretKvResources = 9
 
