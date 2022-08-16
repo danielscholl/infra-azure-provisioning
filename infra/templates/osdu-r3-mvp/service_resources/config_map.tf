@@ -56,8 +56,6 @@ resource "kubernetes_config_map" "osduconfigmap" {
 }
 
 resource "kubernetes_config_map" "appgw_configmap" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   metadata {
     name      = "osdu-istio-appgw-cert"
     namespace = local.osdu_ns
@@ -66,7 +64,7 @@ resource "kubernetes_config_map" "appgw_configmap" {
     ENV_SR_GROUP_NAME = azurerm_resource_group.main.name
     ENV_KEYVAULT_NAME = data.terraform_remote_state.central_resources.outputs.keyvault_name
     ENV_CLUSTER_NAME  = module.aks.name
-    ENV_APPGW_NAME    = module.istio_appgateway[count.index].name
+    ENV_APPGW_NAME    = module.istio_appgateway.name
   }
   depends_on = [kubernetes_namespace.osdu, module.istio_appgateway]
 }

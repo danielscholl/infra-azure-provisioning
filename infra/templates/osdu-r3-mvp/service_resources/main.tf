@@ -46,11 +46,11 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 1.13.3"
+      version = "~> 2.12.1"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "=2.0.1"
+      version = "=2.6.0"
     }
   }
 }
@@ -65,7 +65,6 @@ provider "azurerm" {
 
 // Hook-up kubectl Provider for Terraform
 provider "kubernetes" {
-  load_config_file       = false
   host                   = module.aks.kube_config_block.0.host
   username               = module.aks.kube_config_block.0.username
   password               = module.aks.kube_config_block.0.password
@@ -148,6 +147,8 @@ locals {
     // Service Principal
     data.terraform_remote_state.central_resources.outputs.principal_objectId
   ]
+
+  istio_int_load_balancer_ip = data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer == null ? var.istio_int_load_balancer_ip : data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer.0.ingress.0.ip
 }
 
 
@@ -166,6 +167,15 @@ data "terraform_remote_state" "central_resources" {
     container_name       = var.remote_state_container
     key                  = format("terraform.tfstateenv:%s", var.central_resources_workspace_name)
   }
+}
+
+data "kubernetes_service" "istio_int_load_balancer_ip" {
+  metadata {
+    name      = "istio-ingressgateway"
+    namespace = "istio-system"
+  }
+
+  depends_on = [module.aks]
 }
 
 resource "random_string" "workspace_scope" {
@@ -352,8 +362,6 @@ module "appgateway" {
 }
 
 module "istio_appgateway" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   source = "../../../modules/providers/azure/appgw"
 
   name                = local.istio_app_gw_name
@@ -367,7 +375,7 @@ module "istio_appgateway" {
   ssl_policy_type                 = var.ssl_policy_type
   ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
   ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
-  backend_address_pool_ips        = var.istio_int_load_balancer_ip == "" ? null : [var.istio_int_load_balancer_ip]
+  backend_address_pool_ips        = local.istio_int_load_balancer_ip == "" ? null : [local.istio_int_load_balancer_ip]
 
   gateway_zones = local.gateway_zones
 
@@ -419,6 +427,7 @@ module "aks" {
   ssh_public_key     = file(var.ssh_public_key_file)
   kubernetes_version = var.kubernetes_version
   log_analytics_id   = data.terraform_remote_state.central_resources.outputs.log_analytics_id
+  max_pods           = var.max_pods
 
   msi_enabled               = true
   oms_agent_enabled         = true
@@ -457,10 +466,8 @@ data "azurerm_resource_group" "aks_node_resource_group" {
 
 // Give AD Principal Access rights to Change the Istio Application Gateway
 resource "azurerm_role_assignment" "agic_istio_appgw_contributor" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway[count.index].id
+  scope                = module.istio_appgateway.id
   role_definition_name = "Contributor"
 
   depends_on = [module.istio_appgateway]
@@ -468,10 +475,8 @@ resource "azurerm_role_assignment" "agic_istio_appgw_contributor" {
 
 // Give AD Principal Access rights to Operate the Istio Application Gateway Identity
 resource "azurerm_role_assignment" "agic_istio_app_gw_contributor_for_adsp" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway[count.index].managed_identity_resource_id
+  scope                = module.istio_appgateway.managed_identity_resource_id
   role_definition_name = "Managed Identity Operator"
 
   depends_on = [module.istio_appgateway]
@@ -479,8 +484,6 @@ resource "azurerm_role_assignment" "agic_istio_app_gw_contributor_for_adsp" {
 
 // Give AD Principal the rights to look at the Resource Group
 resource "azurerm_role_assignment" "agic_istio_resourcegroup_reader" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
   scope                = azurerm_resource_group.main.id
   role_definition_name = "Reader"
@@ -504,8 +507,6 @@ resource "azurerm_role_assignment" "vm_contributor" {
 
 // Give AKS Access to Operate the Network
 resource "azurerm_role_assignment" "subnet_contributor" {
-  count = var.feature_flag.autoscaling ? 1 : 0
-
   principal_id         = module.aks.principal_id
   scope                = module.network.subnets.1
   role_definition_name = "Contributor"

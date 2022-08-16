@@ -45,8 +45,8 @@ This variable group will be used to hold the common values for the services to b
 | NOTIFICATION_BASE_URL                         | `https://<your_fqdn>/api/notification/v1/`  |
 | REGISTER_CUSTOM_PUSH_URL_HMAC                 | `https://<your_fqdn>/api/register/v1/test/challenge/1`|
 | AGENT_IMAGE                                   | `ubuntu-latest`                             |
-| PROVIDER_NAME                                 | `azure`
-| ENABLE_KEYVAULT_CERT                          | `false`              Set this variable to `true` if you want to use your own certificate from Keyvault certificate - appgw-ssl-cert
+| PROVIDER_NAME                                 | `azure`                                     |
+| ENABLE_KEYVAULT_CERT                          | `false`              Set this variable to `true` if you want to use your own certificate from Keyvault certificate - appgw-ssl-cert |
 
 
 ```bash
@@ -158,6 +158,10 @@ This variable group will be used to hold the specific environment values necessa
 | AZURE_COSMOS_KEY                              | `$(opendes-cosmos-primary-key)`   This variable will not be required after the data partition changes|
 | AZURE_COSMOS_URL                              | `$(opendes-cosmos-endpoint)`      This variable will not be required after the data partition changes|
 | SIS_DATA                                      | `$(Pipeline.Workspace)/s/apachesis_setup/SIS_DATA`      This variable should point to your SIS_DATA setup|
+| ENABLE_KEYVAULT_CERT                          | false                             |
+| ENABLE_ISTIO_mTLS                             | false                             |
+| ENABLE_ISTIO_KEYVAULT_CERT                    | false                             |
+| ISTIO_DNS_HOST                                | <your_FQDN>                       |
 
 ```bash
 DATA_PARTITION_NAME=opendes
@@ -199,6 +203,10 @@ az pipelines variable-group create \
   AZURE_MAPPINGS_STORAGE_CONTAINER="osdu-wks-mappings" \
   AZURE_COSMOS_KEY='$(opendes-cosmos-primary-key)' \
   AZURE_COSMOS_URL='$(opendes-cosmos-endpoint)' \
+  ENABLE_KEYVAULT_CERT=false \
+  ENABLE_ISTIO_mTLS=false \
+  ENABLE_ISTIO_KEYVAULT_CERT=false \
+  ISTIO_DNS_HOST="$DNS_HOST"
   -ojson
 ```
 

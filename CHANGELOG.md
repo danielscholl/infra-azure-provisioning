@@ -3,6 +3,13 @@
 # Current Master
 
 __Infra Changes__
+
+- [[Breaking Change] Move to IstioGw instead of AGIC controller](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236) - [Guide](./docs/upgrades/appgw-istiogw-migration.md)
+
+# v0.16.0 (2022-08) - M13
+
+__Infra Changes__
+
 - [[Breaking Change] AKS upgrade to 1.24.0](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/232) - [Infra doc](./docs/upgrades/aks-upgrade-0-24.md)
 - [Mandatory Keda Upgrade to 2.x](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/128) - Follow this Documentation to do it: [Keda Upgrade](docs/keda-upgrade.md)
 
