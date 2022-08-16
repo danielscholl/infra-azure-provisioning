@@ -148,7 +148,7 @@ locals {
     data.terraform_remote_state.central_resources.outputs.principal_objectId
   ]
 
-  istio_int_load_balancer_ip = data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer == null ? var.istio_int_load_balancer_ip : data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer.0.ingress.0.ip
+  istio_int_load_balancer_ip = length(data.kubernetes_service.istio_int_load_balancer_ip.status[0].load_balancer[0].ingress) > 0 ? data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer.0.ingress.0.ip : var.istio_int_load_balancer_ip
 }
 
 
