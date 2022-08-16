@@ -75,9 +75,6 @@ feature_flag = {
   flux_disableScanning = true
 }
 
-# Feature flag for keda v2
-keda_v2_enabled = false
-
 # cosmos DB SQL collections
 cosmos_sql_collections = [
   {
