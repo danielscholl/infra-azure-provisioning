@@ -98,8 +98,9 @@ helm upgrade agic ingress-azure --install --repo https://appgwingress.blob.core.
   --namespace agic --version 1.5.2 \
   --set appgw.subscriptionId=<subscriptionid> \
   --set appgw.applicationGatewayID=<appgwid> \
+  --set appgw.resourceGroup=<resourceGroup>
   --set appgw.name=<appgwname> \
-  --set armAuth.identityResourceID=<value> \ 
+  --set armAuth.identityResourceID=<value> \
   --set armAuth.identityClientID=<value> \
   --set armAuth.type=aadPodIdentity \
   --set appgw.shared=false \
@@ -116,7 +117,7 @@ helm upgrade jetstack cert-manager --install --repo https://charts.jetstack.io \
 ##### The next helm charts may be already upgraded
 
 # CSI for keyvault (Check first if already upgraded)
-helm upgrade kvsecrets csi-secrets-store-provider-azure -n kube-system --install --repo https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts \
+helm upgrade kvsecrets csi-secrets-store-provider-azure -n kube-system --install --repo  https://azure.github.io/secrets-store-csi-driver-provider-azure/charts \
   --version 1.0.1 --wait \
   --set secrets-store-csi-driver.linux.metricsAddr=":8081" \
   --set secrets-store-csi-driver.syncSecret.enabled=true
