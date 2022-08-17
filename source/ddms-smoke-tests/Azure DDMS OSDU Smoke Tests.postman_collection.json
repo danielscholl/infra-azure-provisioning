@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e92f756f-b8cc-4870-a843-a94c4ba43869",
+		"_postman_id": "e893e5d3-1dbd-4e14-a8ac-9ca51c7739d1",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15970706"
+		"_exporter_id": "21510184"
 	},
 	"item": [
 		{
@@ -104,11 +104,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const partition = pm.environment.get('DATA_PARTITION_ID')",
-									"const user = pm.environment.get('OIDC_CLIENT_ID')",
-									"pm.collectionVariables.set('entitlement_user', user)",
-									"pm.collectionVariables.set('entitlement_domain', `${partition}.contoso.com`)",
-									"pm.collectionVariables.set(\"legal_dafault_tag\", `${partition}-default`)"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -8338,11 +8334,11 @@
 		},
 		{
 			"key": "entitlement_user",
-			"value": ""
+			"value": "{{OIDC_CLIENT_ID}}"
 		},
 		{
 			"key": "entitlement_domain",
-			"value": ""
+			"value": "{{DATA_PARTITION_ID}}.contoso.com"
 		},
 		{
 			"key": "entitlement_adminGroupName",
@@ -8351,7 +8347,7 @@
 		},
 		{
 			"key": "legal_dafault_tag",
-			"value": ""
+			"value": "{{DATA_PARTITION_ID}}-default"
 		},
 		{
 			"key": "wellbore_well_name",
