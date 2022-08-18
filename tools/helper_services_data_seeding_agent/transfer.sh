@@ -54,30 +54,33 @@ if [[ ${loginStatus} -ne 0 ]]; then
 fi
 
 ENV_VAULT=$(az keyvault list --resource-group $RESOURCE_GROUP_NAME --query [].name -otsv)
-STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/airflow-storage --query value -otsv)
+STORAGE_ACCOUNT_NAME=$(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/system-storage --query value -otsv)
 if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME" == " " ]; then
   currentStatus="failure"
   currentMessage="${currentMessage}. Storage Account Name Not Found. "
 fi
 
+echo "Fetch Connection String to connect to File Share"
+STORAGE_ACCOUNT_CONNECTION_STRING=$(az storage account show-connection-string --name ${STORAGE_ACCOUNT_NAME} --query connectionString -otsv)
+
 cd crs-conversion-service
 mkdir tmp 
 mv apachesis_setup tmp 
 cd tmp
-az storage file upload-batch --account-name $STORAGE_ACCOUNT_NAME --destination crs-conversion --source .
+az storage file upload-batch --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING --destination crs-conversion --source .
 if [[ $? -gt 0 ]]; then
   currentStatus="failure"
   currentMessage="${currentMessage}. Failed to copy data to crs-conversion file share"
 fi
 cd ../..
 
-az storage file upload --account-name $STORAGE_ACCOUNT_NAME --share-name crs --source $CRS_CATALOG_SOURCE_FOLDER
+az storage file upload --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING --share-name crs --source $CRS_CATALOG_SOURCE_FOLDER
 if [[ $? -gt 0 ]]; then
   currentStatus="failure"
   currentMessage="${currentMessage}. Failed to copy data to crs file share"
 fi
 
-az storage file upload --account-name $STORAGE_ACCOUNT_NAME --share-name unit --source $UNIT_SOURCE_FOLDER
+az storage file upload --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING --share-name unit --source $UNIT_SOURCE_FOLDER
 if [[ $? -gt 0 ]]; then
   currentStatus="failure"
   currentMessage="${currentMessage}. Failed to copy data to unit file share"
