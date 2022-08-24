@@ -67,41 +67,48 @@ while [[ $retryCount -lt $maxRetry ]]; do
         if [ -z "$STORAGE_ACCOUNT_NAME" -a "$STORAGE_ACCOUNT_NAME"==" " ]; then
             currentStatus="failure"
             currentMessage="${currentMessage}. Storage Account Name Not Found, Partition ${partitions_array[index]}. "
-        else 
-            az storage blob upload \
-                --account-name $STORAGE_ACCOUNT_NAME \
-                --file ./test_data/Legal_COO.json \
-                --container-name legal-service-azure-configuration \
-                --name $FILE_NAME
+        else
+            STORAGE_ACCOUNT_CONNECTION_STRING=$(az storage account show-connection-string --name ${STORAGE_ACCOUNT_NAME} --query connectionString -otsv)
 
-            BLOB_LIST=$(az storage blob list \
-                --account-name $STORAGE_ACCOUNT_NAME \
-                --container-name legal-service-azure-configuration \
-                --query "[].{name:name}" -otsv)
-
-            if [[ ! " ${BLOB_LIST[@]} " =~ " ${FILE_NAME} " ]]; then
-            
-                sleep 1m
-
+            if [ -z "$STORAGE_ACCOUNT_CONNECTION_STRING" -a "$STORAGE_ACCOUNT_CONNECTION_STRING"==" " ]; then
+                currentStatus="failure"
+                currentMessage="${currentMessage}. Error fetching connection string for Partition ${partitions_array[index]}. "
+            else
                 az storage blob upload \
-                    --account-name $STORAGE_ACCOUNT_NAME \
+                    --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING \
                     --file ./test_data/Legal_COO.json \
                     --container-name legal-service-azure-configuration \
                     --name $FILE_NAME
 
                 BLOB_LIST=$(az storage blob list \
-                    --account-name $STORAGE_ACCOUNT_NAME \
+                    --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING \
                     --container-name legal-service-azure-configuration \
                     --query "[].{name:name}" -otsv)
 
                 if [[ ! " ${BLOB_LIST[@]} " =~ " ${FILE_NAME} " ]]; then
-                    currentStatus="failure"
-                    currentMessage="${currentMessage}. Legal_COO.json File ingestion FAILED, Partition ${partitions_array[index]}. "
+                
+                    sleep 1m
+
+                    az storage blob upload \
+                        --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING \
+                        --file ./test_data/Legal_COO.json \
+                        --container-name legal-service-azure-configuration \
+                        --name $FILE_NAME
+
+                    BLOB_LIST=$(az storage blob list \
+                        --connection-string $STORAGE_ACCOUNT_CONNECTION_STRING \
+                        --container-name legal-service-azure-configuration \
+                        --query "[].{name:name}" -otsv)
+
+                    if [[ ! " ${BLOB_LIST[@]} " =~ " ${FILE_NAME} " ]]; then
+                        currentStatus="failure"
+                        currentMessage="${currentMessage}. Legal_COO.json File ingestion FAILED, Partition ${partitions_array[index]}. "
+                    else
+                        currentMessage="${currentMessage}. Legal_COO.json File ingested, Partition: ${partitions_array[index]}. "
+                    fi
                 else
                     currentMessage="${currentMessage}. Legal_COO.json File ingested, Partition: ${partitions_array[index]}. "
                 fi
-            else
-                currentMessage="${currentMessage}. Legal_COO.json File ingested, Partition: ${partitions_array[index]}. "
             fi
         fi
         

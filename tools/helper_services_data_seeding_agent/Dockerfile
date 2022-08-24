@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/azure-cli
+FROM mcr.microsoft.com/azure-cli:2.39.0
 
 RUN apk update
 RUN apk add ca-certificates wget && update-ca-certificates
