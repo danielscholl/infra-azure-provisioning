@@ -131,6 +131,10 @@
             "sensitive": true,
             "value": "hierarchical-storage-key"
         },
+        "hierarchical-storage-blob-endpoint": {
+            "sensitive": true,
+            "value": "hierarchical-storage-blob-endpoint"
+        },
         "pds-storage": {
             "sensitive": true,
             "value": "pds-storage"
