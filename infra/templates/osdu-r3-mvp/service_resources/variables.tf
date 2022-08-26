@@ -413,7 +413,7 @@ variable "cosmos_sql_collections" {
 
 variable "max_pods" {
   type    = string
-  default = 20
+  default = 30
 }
 
 variable "istio_int_load_balancer_ip" {
