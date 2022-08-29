@@ -14,10 +14,10 @@
             "kind": "##AUTHORITY##:##SOURCE##:work-product--WorkProduct:1.0.0",
             "acl": {
               "viewers": [
-                "data.default.viewers@##PARTITION##.contoso.com"
+                "data.default.viewers@##PARTITION##.##DOMAIN##"
               ],
               "owners": [
-                "data.default.owners@##PARTITION##.contoso.com"
+                "data.default.owners@##PARTITION##.##DOMAIN##"
               ]
             },
             "legal": {
@@ -42,10 +42,10 @@
               "kind": "##AUTHORITY##:##SOURCE##:work-product-component--WellboreMarkerSet:1.0.0",
               "acl": {
                 "viewers": [
-                  "data.default.viewers@##PARTITION##.contoso.com"
+                  "data.default.viewers@##PARTITION##.##DOMAIN##"
                 ],
                 "owners": [
-                  "data.default.owners@##PARTITION##.contoso.com"
+                  "data.default.owners@##PARTITION##.##DOMAIN##"
                 ]
               },
               "legal": {
@@ -173,10 +173,10 @@
               "kind": "##AUTHORITY##:##SOURCE##:dataset--File.Generic:1.0.0",
               "acl": {
                 "viewers": [
-                  "data.default.viewers@##PARTITION##.contoso.com"
+                  "data.default.viewers@##PARTITION##.##DOMAIN##"
                 ],
                 "owners": [
-                  "data.default.owners@##PARTITION##.contoso.com"
+                  "data.default.owners@##PARTITION##.##DOMAIN##"
                 ]
               },
               "legal": {

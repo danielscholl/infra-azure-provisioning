@@ -2,10 +2,10 @@
     "kind": "##KIND##",
     "acl": {
         "viewers": [
-            "data.default.viewers@##PARTITION##.contoso.com"
+            "data.default.viewers@##PARTITION##.##DOMAIN##"
         ],
         "owners": [
-            "data.default.viewers@##PARTITION##.contoso.com"
+            "data.default.viewers@##PARTITION##.##DOMAIN##"
         ]
     },
     "legal": {

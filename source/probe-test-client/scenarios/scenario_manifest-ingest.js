@@ -255,6 +255,7 @@ describe(scenario, (done) => {
                 let payload = require(`${__dirname}/../testData/sample_manifest_ingest_tc1.json`);
 
                 payload = JSON.parse(JSON.stringify(payload).replace(/##PARTITION##/g, `${testUtils.partition}`));
+                payload = JSON.parse(JSON.stringify(payload).replace(/##DOMAIN##/g, `${testUtils.domain}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##SOURCE##/g, `${source}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##KIND##/g, `${kind}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##TAG##/g, `${tag}`));
@@ -407,6 +408,7 @@ describe(scenario, (done) => {
                 let payload = require(`${__dirname}/../testData/sample_manifest_ingest_tc2.json`);
 
                 payload = JSON.parse(JSON.stringify(payload).replace(/##PARTITION##/g, `${testUtils.partition}`));
+                payload = JSON.parse(JSON.stringify(payload).replace(/##DOMAIN##/g, `${testUtils.domain}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##SOURCE##/g, `${source}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##KIND##/g, `${kind}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##TAG##/g, `${tag}`));
@@ -557,6 +559,7 @@ describe(scenario, (done) => {
 
                 let payload = require(`${__dirname}/../testData/sample_manifest_ingest_tc3.json`);
                 payload = JSON.parse(JSON.stringify(payload).replace(/##PARTITION##/g, `${testUtils.partition}`));
+                payload = JSON.parse(JSON.stringify(payload).replace(/##DOMAIN##/g, `${testUtils.domain}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##SOURCE##/g, `${source}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##KIND##/g, `${kind}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##TAG##/g, `${tag}`));
@@ -705,6 +708,7 @@ describe(scenario, (done) => {
 
                 let payload = require(`${__dirname}/../testData/sample_manifest_ingest_tc4.json`);
                 payload = JSON.parse(JSON.stringify(payload).replace(/##PARTITION##/g, `${testUtils.partition}`));
+                payload = JSON.parse(JSON.stringify(payload).replace(/##DOMAIN##/g, `${testUtils.domain}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##SOURCE##/g, `${source}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##KIND##/g, `${kind}`));
                 payload = JSON.parse(JSON.stringify(payload).replace(/##TAG##/g, `${tag}`));
