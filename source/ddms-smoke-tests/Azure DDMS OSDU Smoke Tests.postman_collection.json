@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e92f756f-b8cc-4870-a843-a94c4ba43869",
+		"_postman_id": "1ed37035-779f-4f76-8597-a90f5054767a",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1650,11 +1650,10 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"let DATA_PARTITION_ID = pm.environment.get('DATA_PARTITION_ID')",
+											"let DATA_PARTITION_ID = pm.environment.replaceIn('{{DATA_PARTITION_ID}}')",
 											"pm.collectionVariables.set('seismic_project', DATA_PARTITION_ID)",
 											"pm.collectionVariables.set('seismic_subproject', \"test123\")",
 											"pm.collectionVariables.set('seismic_segy_file_name', \"test.sgy\")",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -1883,10 +1882,9 @@
 											"",
 											"pm.test(\"Subproject created\", function () {",
 											"    let json = pm.response.json();",
-											"    var child = Object.keys(json);",
 											"    pm.expect(json.name).to.eql(pm.variables.get(\"seismic_subproject\"));",
-											"    pm.expect(json.tenant).to.eql(pm.variables.get(\"seismic_project\"));",
-											"    pm.expect(json.ltag).to.eql(pm.variables.get(\"legal_dafault_tag\"));",
+											"    pm.expect(json.tenant).to.eql(pm.variables.replaceIn(\"{{seismic_project}}\"));",
+											"    pm.expect(json.ltag).to.eql(pm.variables.replaceIn(\"{{legal_dafault_tag}}\"));",
 											"    pm.expect(json.gcs_bucket).to.exist;",
 											"",
 											"    let seismic_default_admins = json.acls.admins[0];",
@@ -2359,7 +2357,7 @@
 								"header": [
 									{
 										"key": "ltag",
-										"value": "{{DATA_PARTITION_ID}}-default"
+										"value": "{{legal_dafault_tag}}"
 									}
 								],
 								"url": {
@@ -2370,7 +2368,8 @@
 									"path": [
 										"service-status"
 									]
-								}
+								},
+								"description": "Verify the status of the File Metadata service."
 							},
 							"response": []
 						}
@@ -2378,15 +2377,1079 @@
 				},
 				{
 					"name": "Seismic DDMS File Metadata: Setup",
-					"item": []
+					"item": [
+						{
+							"name": "Check If User Is In Admin Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();",
+											"",
+											"setUserEmailDomain();",
+											"setAclsEmails();",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"User is in datalake admin group\", function () {",
+											"    var adminGroupName = pm.variables.get(\"entitlement_adminGroupName\");",
+											"    var userIsInAdminGroup = _contains(response.groups, \"name\" ,adminGroupName);",
+											"",
+											"    pm.expect(userIsInAdminGroup).to.be.true;",
+											"",
+											"    if(userIsInAdminGroup) {",
+											"        postman.setNextRequest(\"Register Datapartition in Seismic Store for File Metadata\");",
+											"    }",
+											"});",
+											"",
+											"function setUserEmailDomain() {",
+											"    var email = response.groups[0].email;",
+											"    var emailSplit = email.split(\"@\");",
+											"",
+											"    pm.collectionVariables.set(\"entitlement_email_domain\", emailSplit[1]);",
+											"}",
+											"",
+											"function setAclsEmails() {",
+											"    let adminGroups = response.groups.filter(group => (group.name.includes(\"admin\")));",
+											"    let editorGroups = response.groups.filter(group => (group.description.includes(\"editor\")));",
+											"",
+											"    pm.collectionVariables.set(\"entitlement_admin_email\", adminGroups[0].email);",
+											"    pm.collectionVariables.set(\"entitlement_editor_email\", editorGroups[0].email);",
+											"}",
+											"",
+											"function _contains(json, keyname, value) {",
+											"    return Object.keys(json).some(key => {",
+											"            return typeof json[key] === 'object' ? ",
+											"            _contains(json[key], keyname, value) : key === keyname && json[key] === value;",
+											"    });",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "data-partition-id",
+										"value": "{{DATA_PARTITION_ID}}",
+										"description": "the datapartition ID"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{entitlements_host}}/groups",
+									"host": [
+										"{{entitlements_host}}"
+									],
+									"path": [
+										"groups"
+									]
+								},
+								"description": "In order to run certain requests, the user/application must have certain entitlements and this request will check for those entitlements. If the use/application does not have the proper entitlements, the following request will establish the entitlements and the rest of the tests should pass."
+							},
+							"response": []
+						},
+						{
+							"name": "Add User To Admin Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"User was added to admin group\", function () {",
+											"    var userGroupEmail = pm.variables.get(\"testEmail\");",
+											"",
+											"    switch(pm.response.code) {",
+											"        case 200:",
+											"            pm.expect(pm.response.email).to.equal(userGroupEmail);",
+											"            break;",
+											"        case 409:",
+											"            var response = pm.response.json();",
+											"            let adminGroupName = pm.variables.get(\"entitlement_adminGroupName\");",
+											"            let emailDomain = pm.environment.get(\"entitlement_email_domain\");",
+											"            let adminEmail = adminGroupName + \"@\" + emailDomain;",
+											"",
+											"            pm.expect(response.message).to.contain(adminEmail);",
+											"            break;",
+											"        default:",
+											"            console.log(\"Unexpected server code\");",
+											"    }",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"description": "the datapartition ID",
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\" : \"{{OIDC_CLIENT_ID}}\",\r\n  \"role\" : \"OWNER\"\r\n}"
+								},
+								"url": {
+									"raw": "{{entitlements_host}}/groups/:group_email/members",
+									"host": [
+										"{{entitlements_host}}"
+									],
+									"path": [
+										"groups",
+										":group_email",
+										"members"
+									],
+									"variable": [
+										{
+											"key": "group_email",
+											"value": "{{entitlement_adminGroupName}}@{{entitlement_email_domain}}",
+											"description": "group_email must be data group which has prefix 'data.'"
+										}
+									]
+								},
+								"description": "This request only needs to be run if the authorized user/application does not have the proper entitlements to run the subsequent tests."
+							},
+							"response": []
+						},
+						{
+							"name": "Register Datapartition in Seismic Store for File Metadata",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"Data Partition is Registered\", function () {",
+											"    let dataPartitionID = pm.environment.replaceIn('{{DATA_PARTITION_ID}}');",
+											"",
+											"    switch(pm.response.code) {",
+											"        case 200:",
+											"            var response = pm.response.json();",
+											"            pm.expect(response.name).to.equal(dataPartitionID);",
+											"            break;",
+											"        case 409:",
+											"            var response = pm.response.text();",
+											"            pm.expect(response).to.contain(dataPartitionID);",
+											"            break;",
+											"        default:",
+											"            console.log (\"Unexpected server code\");",
+											"    }",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"esd\": \"{{entitlement_email_domain}}\",\r\n    \"gcpid\": \"{{DATA_PARTITION_ID}}\",\r\n    \"default_acl\": \"users.datalake.admins@{{entitlement_email_domain}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/tenant/{{DATA_PARTITION_ID}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"tenant",
+										"{{DATA_PARTITION_ID}}"
+									]
+								},
+								"description": "Register the datapartition with the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Create Legal Tag",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();",
+											"",
+											"pm.test(\"Status code is 201 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+											"});",
+											"",
+											"pm.test(\"Legal Tag is Created\", function() {",
+											"    var createdLegaltagId = '';",
+											"",
+											"    switch(pm.response.code) {",
+											"        case 201:",
+											"            createdLegaltagId = response.name;",
+											"            break;",
+											"        case 409:",
+											"            var splits = response.message.split(' ');",
+											"            createdLegaltagId = splits.pop();",
+											"            pm.expect(response.message).contains(\"already exists\");",
+											"            break;",
+											"        default:",
+											"            console.log('Unexpected server code');",
+											"    }",
+											"    ",
+											"    pm.expect(createdLegaltagId.length > 1);",
+											"",
+											"    if (createdLegaltagId.length > 1) {",
+											"        pm.collectionVariables.set(\"file_metadata_legal_tag_id\", createdLegaltagId);",
+											"    }",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}",
+										"description": "the datapartition ID"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"testlegaltag01010\",\n    \"description\": \"Legal Tag added for File Metadata testing\",\n    \"properties\": {\n        \"contractId\": \"123456\",\n        \"countryOfOrigin\": [\n            \"US\",\n            \"CA\"\n        ],\n        \"dataType\": \"Public Domain Data\",\n        \"exportClassification\": \"EAR99\",\n        \"originator\": \"MSFT\",\n        \"personalData\": \"No Personal Data\",\n        \"securityClassification\": \"Private\",\n        \"expirationDate\": \"2025-12-25\"\n    }\n}"
+								},
+								"url": {
+									"raw": "{{legal_host}}/legaltags",
+									"host": [
+										"{{legal_host}}"
+									],
+									"path": [
+										"legaltags"
+									]
+								},
+								"description": "Create a legal tag to connect data, storage, and processes for conversion."
+							},
+							"response": []
+						},
+						{
+							"name": "Create Subproject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let oneMinute = 60000; // in milliseconds",
+											"",
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"Subproject is Created\", function() {",
+											"    var createdSubprojectName = '';",
+											"    let testSubprojectName = pm.variables.get(\"fileMetadataTestSubprojectName\");",
+											"",
+											"    switch(pm.response.code) {",
+											"        case 200:",
+											"            var response = pm.response.json();",
+											"            createdSubprojectName = response.name;",
+											"            break;",
+											"        case 409:",
+											"            var response = pm.response.text();",
+											"            var splits = response.split(' ');",
+											"            createdSubprojectName = splits[3];",
+											"            pm.expect(response).contains(\"already exists\");",
+											"            break;",
+											"        default:",
+											"            console.log('Unexpected server code');",
+											"    }",
+											"    ",
+											"    pm.expect(createdSubprojectName).equals(testSubprojectName);",
+											"});",
+											"",
+											"pauseUntilSubprojectIsCreated();",
+											"",
+											"function pauseUntilSubprojectIsCreated() {",
+											"    setTimeout(function(){}, [oneMinute]);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{file_metadata_legal_tag_id}}",
+										"description": "the legal tag ID",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{DATA_PARTITION_ID}}",
+										"subproject",
+										"{{fileMetadataTestSubprojectName}}"
+									]
+								},
+								"description": "Create a subproject to store the SEGY file."
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Data Store Availability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"checkIfSegyFileExists();",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"function checkIfSegyFileExists() {",
+											"    let segyFileName = pm.variables.get(\"segyTestFileNameForFileMetadata\");",
+											"    var response = pm.response.json();",
+											"    let segyFileExists = (response.indexOf(segyFileName) > -1) ? true : false;",
+											"    pm.collectionVariables.set(\"file_metadata_segy_file_exists\", segyFileExists.toString());",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/ls?sdpath=sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"ls"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}",
+											"description": "full path for the subproject in the seismic store"
+										}
+									]
+								},
+								"description": "Verify that the subproject has been created and is ready."
+							},
+							"response": []
+						},
+						{
+							"name": "Register Dataset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"setNextRequestIfSegyFileExists();",
+											"",
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"Dataset is Registered\", function() {",
+											"    var registeredDatasetName = '';",
+											"    let datasetName = pm.variables.get(\"segyTestFileNameForFileMetadata\");",
+											"",
+											"    switch(pm.response.code) {",
+											"        case 200:",
+											"            var response = pm.response.json();",
+											"            registeredDatasetName = response.name;",
+											"            setGcsUrl();",
+											"            break;",
+											"        case 409:",
+											"            var response = pm.response.text();",
+											"            var splits = response.split(' ');",
+											"            let datasetPath = splits[3];",
+											"            splits = datasetPath.split('/');",
+											"            registeredDatasetName = splits.pop();",
+											"            pm.expect(response).contains(\"already exists\");",
+											"            break;",
+											"        default:",
+											"            console.log('Unexpected server code');",
+											"    }",
+											"    ",
+											"    pm.expect(registeredDatasetName).equals(datasetName);",
+											"});",
+											"",
+											"function setGcsUrl() {",
+											"    var gcsurl = pm.response.json().gcsurl;",
+											"    pm.collectionVariables.set(\"file_metadata_gcs_url\", gcsurl);",
+											"}",
+											"",
+											"function setNextRequestIfSegyFileExists() {",
+											"    let segyFileExists = JSON.parse(pm.variables.get(\"file_metadata_segy_file_exists\"));",
+											"",
+											"    if (segyFileExists) {",
+											"        console.log(\"Test SEGY file exists. The next request is GET Textual Header.\");",
+											"        postman.setNextRequest(\"GET Textual Header\");",
+											"    }",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{file_metadata_legal_tag_id}}",
+										"description": "the legal tag ID",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}/dataset/{{segyTestFileNameForFileMetadata}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{DATA_PARTITION_ID}}",
+										"subproject",
+										"{{fileMetadataTestSubprojectName}}",
+										"dataset",
+										"{{segyTestFileNameForFileMetadata}}"
+									]
+								},
+								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "BLOB SAS URL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Retrieved SAS URL\", function () {",
+											"  pm.expect(response).to.have.property('access_token');",
+											"});",
+											"",
+											"setSasUrl();",
+											"",
+											"function setSasUrl() {",
+											"    var gcsurl = pm.variables.get(\"file_metadata_gcs_url\");",
+											"    var containerID = gcsurl.split(\"/\")[0];",
+											"    let filePath = gcsurl + \"/0\";",
+											"    var sasUrl = response.access_token.replace(containerID, filePath);",
+											"",
+											"    pm.collectionVariables.set(\"file_metadata_sas_url\", sasUrl);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/gcs-access-token?sdpath=sd%3A%2F%2F{{DATA_PARTITION_ID}}%2F{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}&readonly=false",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"gcs-access-token"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd%3A%2F%2F{{DATA_PARTITION_ID}}%2F{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}",
+											"description": "full path for the subproject in the seismic store"
+										},
+										{
+											"key": "readonly",
+											"value": "false",
+											"description": "false, since we need to upload a file"
+										}
+									]
+								},
+								"description": "Create a BLOB SAS URL with write permissions so that the SEGY file can be uploaded directly to the subproject in the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Upload SEGY File to Storage",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201 Created\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.have.status(\"Created\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "BlockBlob",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "x-ms-blob-type",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "octet-stream",
+										"type": "text",
+										"description": "octet-stream since we'll be uploading a file"
+									},
+									{
+										"key": "Content-Length",
+										"value": "{{segyTestFileSize}}",
+										"description": "acknowledge file size to keep the stream open",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "sample-ST10010ZC11_PZ_PSDM_KIRCH_FULL_T.MIG_FIN.POST_STACK.3D.JS-017536.segy"
+									}
+								},
+								"url": {
+									"raw": "{{file_metadata_sas_url}}",
+									"host": [
+										"{{file_metadata_sas_url}}"
+									]
+								},
+								"description": "Upload the SEGY file to the seismic storage. This request may take some time considering the internet upload speed."
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH Metadata for File Metadata Test File",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Filemetadata has test file size\", function() {",
+											"    let segyTestFileSize = parseInt(pm.variables.get(\"segyTestFileSize\"));",
+											"    let fileSize = response.filemetadata.size;",
+											"    pm.expect(fileSize).to.equal(segyTestFileSize);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filemetadata\": {\n        \"type\": \"GENERIC\",\n        \"size\":  {{segyTestFileSize}},\n        \"nobjects\": 1\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}/dataset/{{segyTestFileNameForFileMetadata}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{DATA_PARTITION_ID}}",
+										"subproject",
+										"{{fileMetadataTestSubprojectName}}",
+										"dataset",
+										"{{segyTestFileNameForFileMetadata}}"
+									]
+								},
+								"description": "We need to add some metadata to the file so that ZGY conversion can better identify it."
+							},
+							"response": []
+						},
+						{
+							"name": "Verify That SEGY File Is Uploaded",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let segyFileName = pm.variables.get(\"segyTestFileNameForFileMetadata\");",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Test SEGY file is in subproject\", function () {",
+											"    var response = pm.response.json();",
+											"",
+											"    if (response.indexOf(segyFileName) > -1) {",
+											"        addSEGYfileToDeleteList();",
+											"    }",
+											"",
+											"    pm.expect(response.includes(segyFileName));",
+											"});",
+											"",
+											"function addSEGYfileToDeleteList() {",
+											"    pm.collectionVariables.set(\"file_metadata_file_names_to_delete\", segyFileName);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{seismic_ddms_host}}/utility/ls?sdpath=sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"utility",
+										"ls"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}",
+											"description": "full path for the subproject in the seismic store"
+										}
+									]
+								},
+								"description": "Verify that the SEGY file successfully finished uploading to the seismic storage."
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "Seismic DDMS File Metadata: Smoke Tests",
-					"item": []
+					"item": [
+						{
+							"name": "Textual Header",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Subproject is Created\", function() {",
+											"    var response = pm.response.json();",
+											"    pm.expect(response.header).contains(\"C01\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "appkey",
+										"value": "something",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_file_metadata_host}}/segy/textualHeader?sdpath=sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}",
+									"host": [
+										"{{seismic_file_metadata_host}}"
+									],
+									"path": [
+										"segy",
+										"textualHeader"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}"
+										}
+									]
+								},
+								"description": "Extract the textual header from the SEGY file."
+							},
+							"response": []
+						},
+						{
+							"name": "Binary Header",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											"",
+											"pm.test(\"Subproject is Created\", function() {",
+											"    var response = pm.response.json();",
+											"    pm.expect(response.header).contains(\"BinaryHeaders\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "appkey",
+										"value": "something"
+									}
+								],
+								"url": {
+									"raw": "{{seismic_file_metadata_host}}/segy/binaryHeader?sdpath=sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}",
+									"host": [
+										"{{seismic_file_metadata_host}}"
+									],
+									"path": [
+										"segy",
+										"binaryHeader"
+									],
+									"query": [
+										{
+											"key": "sdpath",
+											"value": "sd://{{DATA_PARTITION_ID}}/{{fileMetadataTestSubprojectName}}/{{segyTestFileNameForFileMetadata}}"
+										}
+									]
+								},
+								"description": "Extract the binary header from the SEGY file."
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "Seismic DDMS File Metadata: Teardown",
-					"item": []
+					"item": [
+						{
+							"name": "Remove Dataset",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let dataSetsToDelete = pm.variables.get(\"file_metadata_file_names_to_delete\");",
+											"",
+											"if (dataSetsToDelete) {",
+											"    postman.setNextRequest(\"Remove Dataset\");",
+											"} else {",
+											"    pm.collectionVariables.unset(\"fileMetadataDataSetToDelete\");",
+											"}",
+											"",
+											"pm.test(\"Status code is 200 OK\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.have.status(\"OK\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let dataSetsToDeleteString = pm.variables.get(\"file_metadata_file_names_to_delete\");",
+											"",
+											"if (dataSetsToDeleteString) {",
+											"    var dataSetsToDelete = dataSetsToDeleteString.split(',');",
+											"    let dataSetToDelete = dataSetsToDelete.pop();",
+											"    pm.collectionVariables.set(\"fileMetadataDataSetToDelete\", dataSetToDelete);",
+											"",
+											"    if (dataSetsToDelete.length > 0) {",
+											"        pm.collectionVariables.set(\"file_metadata_file_names_to_delete\", dataSetsToDelete.toString())",
+											"    } else {",
+											"        pm.collectionVariables.unset(\"file_metadata_file_names_to_delete\");",
+											"    }",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{zgy_legal_tag_id}}",
+										"description": "the legal tag ID",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}/dataset/{{fileMetadataDataSetToDelete}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"dataset",
+										"tenant",
+										"{{DATA_PARTITION_ID}}",
+										"subproject",
+										"{{fileMetadataTestSubprojectName}}",
+										"dataset",
+										"{{fileMetadataDataSetToDelete}}"
+									]
+								},
+								"description": "After testing the File Metadata service, we must remove the SEGY file that was added to the seismic storage."
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Test Legal Tag",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "This value should be the desired data partition id.",
+										"key": "data-partition-id",
+										"type": "text",
+										"value": "{{DATA_PARTITION_ID}}"
+									}
+								],
+								"url": {
+									"raw": "{{legal_host}}/legaltags/:name",
+									"host": [
+										"{{legal_host}}"
+									],
+									"path": [
+										"legaltags",
+										":name"
+									],
+									"variable": [
+										{
+											"key": "name",
+											"value": "{{file_metadata_legal_tag_id}}",
+											"description": "the legal tag ID"
+										}
+									]
+								},
+								"description": "We remove the test legal tag after the service is verified since it is no longer needed."
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Test Subproject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 404\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "ltag",
+										"value": "{{file_metadata_legal_tag_id}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"subproject",
+										"tenant",
+										"{{DATA_PARTITION_ID}}",
+										"subproject",
+										"{{fileMetadataTestSubprojectName}}"
+									]
+								},
+								"description": "We remove the test subproject that was created in the seismic storage since it is no longer needed."
+							},
+							"response": []
+						}
+					],
+					"description": "Remove all artifacts created for tests. If any request in this folder did not complete successfully, you should retry running the entire folder to ensure a total teardown."
 				}
 			]
 		},
@@ -5604,7 +6667,8 @@
 											"",
 											"pm.test(\"Status description - OK\", function () {",
 											"    pm.response.to.have.status(\"OK\");",
-											"});"
+											"});",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -5673,7 +6737,8 @@
 											"pm.collectionVariables.set(\"welldelivery_wellbore_id\", \"test_wellbore_id\")",
 											"pm.collectionVariables.set(\"welldelivery_wellplaning_id\", \"test_wellplaning_id\")",
 											"pm.collectionVariables.set(\"welldelivery_activityplan_id\", \"test_activityplan_id\")",
-											"pm.collectionVariables.set(\"welldelivery_activityprogram_id\", \"test_activityprogram_id\")"
+											"pm.collectionVariables.set(\"welldelivery_activityprogram_id\", \"test_activityprogram_id\")",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -5718,7 +6783,7 @@
 					"name": "Well Delivery: Smoke Tests",
 					"item": [
 						{
-							"name": "Well Delivert DDMS - Create Well",
+							"name": "Well Delivery DDMS - Create Well",
 							"event": [
 								{
 									"listen": "test",
@@ -5729,7 +6794,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_well_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -5890,7 +6954,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Wellbore",
+							"name": "Well Delivery DDMS - Create Wellbore",
 							"event": [
 								{
 									"listen": "test",
@@ -5901,7 +6965,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_wellbore_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6062,7 +7125,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Planning",
+							"name": "Well Delivery DDMS - Create Well Planning",
 							"event": [
 								{
 									"listen": "test",
@@ -6073,7 +7136,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_wellplaning_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6234,7 +7296,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Activity Plan",
+							"name": "Well Delivery DDMS - Create Activity Plan",
 							"event": [
 								{
 									"listen": "test",
@@ -6245,7 +7307,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_activityplan_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6406,7 +7467,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Activity Program",
+							"name": "Well Delivery DDMS - Create Well Activity Program",
 							"event": [
 								{
 									"listen": "test",
@@ -6417,7 +7478,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_activityprogram_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6578,7 +7638,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program By Well",
+							"name": "Well Delivery DDMS - Activity Program By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -6587,7 +7647,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6740,7 +7799,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program Versions By Well",
+							"name": "Well Delivery DDMS - Activity Program Versions By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -6903,7 +7962,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program Specific Version",
+							"name": "Well Delivery DDMS - Activity Program Specific Version",
 							"event": [
 								{
 									"listen": "test",
@@ -6912,7 +7971,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7066,7 +8124,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Plans By Well",
+							"name": "Well Delivery DDMS - Activity Plans By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -7075,7 +8133,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7228,7 +8285,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Programs Reference Tree",
+							"name": "Well Delivery DDMS - Activity Programs Reference Tree",
 							"event": [
 								{
 									"listen": "test",
@@ -7237,7 +8294,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7397,7 +8453,7 @@
 					"name": "Well Delivery: Teardown",
 					"item": [
 						{
-							"name": "Well Delivert DDMS - Create Well Activity Program Copy",
+							"name": "Well Delivery DDMS - Create Well Activity Program Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -7559,7 +8615,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Activity Plan Copy",
+							"name": "Well Delivery DDMS - Create Activity Plan Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -7568,7 +8624,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7721,7 +8776,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Planning Copy",
+							"name": "Well Delivery DDMS - Create Well Planning Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -7730,7 +8785,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7883,7 +8937,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Wellbore Copy",
+							"name": "Well Delivery DDMS - Create Wellbore Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -7892,7 +8946,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8045,7 +9098,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Copy",
+							"name": "Well Delivery DDMS - Create Well Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -8054,7 +9107,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8244,7 +9296,7 @@
 	"variable": [
 		{
 			"key": "access_token",
-			"value": "<Autopopulated by 'Refresh Token\">"
+			"value": "<Autopopulated by Get Token>"
 		},
 		{
 			"key": "id_token",
@@ -8350,102 +9402,6 @@
 			"value": "{{DATA_PARTITION_ID}}-default"
 		},
 		{
-			"key": "wellbore_well_name",
-			"value": ""
-		},
-		{
-			"key": "wellbore_well_id",
-			"value": ""
-		},
-		{
-			"key": "wellbore_wellbore_name",
-			"value": ""
-		},
-		{
-			"key": "wellbore_wellbore_id",
-			"value": ""
-		},
-		{
-			"key": "seismic_project",
-			"value": ""
-		},
-		{
-			"key": "seismic_subproject",
-			"value": ""
-		},
-		{
-			"key": "seismic_segy_file_name",
-			"value": ""
-		},
-		{
-			"key": "seismic_default_admins",
-			"value": ""
-		},
-		{
-			"key": "seismic_default_viewers",
-			"value": ""
-		},
-		{
-			"key": "wellVersion",
-			"value": ""
-		},
-		{
-			"key": "wellbore_trajectory_id",
-			"value": ""
-		},
-		{
-			"key": "wellbore_trajectory_name",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_well_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_wellbore_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_well_version",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_full_well_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_wellplaning_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_activityprogram_id ",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_wellbore_version",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_wellplaning_version",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_activityplan_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_activityprogram_id",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_activityplan_version",
-			"value": ""
-		},
-		{
-			"key": "welldelivery_activityprogram_version",
-			"value": ""
-		},
-		{
 			"key": "testEmail",
 			"value": "testing-converters@contoso.com",
 			"type": "string"
@@ -8461,6 +9417,11 @@
 			"type": "string"
 		},
 		{
+			"key": "fileMetadataTestSubprojectName",
+			"value": "filemetadatatestsubproject",
+			"type": "string"
+		},
+		{
 			"key": "segyTestFileNameForVds",
 			"value": "example-ST10010ZC11_PZ_PSDM_KIRCH_FULL_T.MIG_FIN.POST_STACK.3D.JS-017536.segy",
 			"type": "string"
@@ -8468,6 +9429,11 @@
 		{
 			"key": "segyTestFileNameForZgy",
 			"value": "sample-ST10010ZC11_PZ_PSDM_KIRCH_FULL_T.MIG_FIN.POST_STACK.3D.JS-017536.segy",
+			"type": "string"
+		},
+		{
+			"key": "segyTestFileNameForFileMetadata",
+			"value": "model-ST10010ZC11_PZ_PSDM_KIRCH_FULL_T.MIG_FIN.POST_STACK.3D.JS-017536.segy",
 			"type": "string"
 		},
 		{
@@ -8484,58 +9450,6 @@
 			"key": "zgy_iteration",
 			"value": "0",
 			"type": "string"
-		},
-		{
-			"key": "vds_dag_id",
-			"value": ""
-		},
-		{
-			"key": "entitlement_email_domain",
-			"value": ""
-		},
-		{
-			"key": "entitlement_admin_email",
-			"value": ""
-		},
-		{
-			"key": "entitlement_editor_email",
-			"value": ""
-		},
-		{
-			"key": "vds_legal_tag_id",
-			"value": ""
-		},
-		{
-			"key": "vds_segy_file_exists",
-			"value": ""
-		},
-		{
-			"key": "vds_recordID_FileCollectionSEGY",
-			"value": ""
-		},
-		{
-			"key": "vds_recordID_WorkProduct",
-			"value": ""
-		},
-		{
-			"key": "vds_gcs_url",
-			"value": ""
-		},
-		{
-			"key": "vds_sas_url",
-			"value": ""
-		},
-		{
-			"key": "persistent_id",
-			"value": ""
-		},
-		{
-			"key": "vds_run_id",
-			"value": ""
-		},
-		{
-			"key": "vds_filename",
-			"value": ""
 		}
 	]
 }
