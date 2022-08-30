@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ed91e5be-b3cf-4797-8045-d474fc17531f",
+		"_postman_id": "1ed37035-779f-4f76-8597-a90f5054767a",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1650,11 +1650,10 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"let DATA_PARTITION_ID = pm.environment.get('DATA_PARTITION_ID')",
+											"let DATA_PARTITION_ID = pm.environment.replaceIn('{{DATA_PARTITION_ID}}')",
 											"pm.collectionVariables.set('seismic_project', DATA_PARTITION_ID)",
 											"pm.collectionVariables.set('seismic_subproject', \"test123\")",
 											"pm.collectionVariables.set('seismic_segy_file_name', \"test.sgy\")",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -1883,10 +1882,9 @@
 											"",
 											"pm.test(\"Subproject created\", function () {",
 											"    let json = pm.response.json();",
-											"    var child = Object.keys(json);",
 											"    pm.expect(json.name).to.eql(pm.variables.get(\"seismic_subproject\"));",
-											"    pm.expect(json.tenant).to.eql(pm.variables.get(\"seismic_project\"));",
-											"    pm.expect(json.ltag).to.eql(pm.variables.get(\"legal_dafault_tag\"));",
+											"    pm.expect(json.tenant).to.eql(pm.variables.replaceIn(\"{{seismic_project}}\"));",
+											"    pm.expect(json.ltag).to.eql(pm.variables.replaceIn(\"{{legal_dafault_tag}}\"));",
 											"    pm.expect(json.gcs_bucket).to.exist;",
 											"",
 											"    let seismic_default_admins = json.acls.admins[0];",
@@ -6669,7 +6667,8 @@
 											"",
 											"pm.test(\"Status description - OK\", function () {",
 											"    pm.response.to.have.status(\"OK\");",
-											"});"
+											"});",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -6738,7 +6737,8 @@
 											"pm.collectionVariables.set(\"welldelivery_wellbore_id\", \"test_wellbore_id\")",
 											"pm.collectionVariables.set(\"welldelivery_wellplaning_id\", \"test_wellplaning_id\")",
 											"pm.collectionVariables.set(\"welldelivery_activityplan_id\", \"test_activityplan_id\")",
-											"pm.collectionVariables.set(\"welldelivery_activityprogram_id\", \"test_activityprogram_id\")"
+											"pm.collectionVariables.set(\"welldelivery_activityprogram_id\", \"test_activityprogram_id\")",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -6783,7 +6783,7 @@
 					"name": "Well Delivery: Smoke Tests",
 					"item": [
 						{
-							"name": "Well Delivert DDMS - Create Well",
+							"name": "Well Delivery DDMS - Create Well",
 							"event": [
 								{
 									"listen": "test",
@@ -6794,7 +6794,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_well_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -6955,7 +6954,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Wellbore",
+							"name": "Well Delivery DDMS - Create Wellbore",
 							"event": [
 								{
 									"listen": "test",
@@ -6966,7 +6965,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_wellbore_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7127,7 +7125,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Planning",
+							"name": "Well Delivery DDMS - Create Well Planning",
 							"event": [
 								{
 									"listen": "test",
@@ -7138,7 +7136,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_wellplaning_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7299,7 +7296,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Activity Plan",
+							"name": "Well Delivery DDMS - Create Activity Plan",
 							"event": [
 								{
 									"listen": "test",
@@ -7310,7 +7307,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_activityplan_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7471,7 +7467,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Activity Program",
+							"name": "Well Delivery DDMS - Create Well Activity Program",
 							"event": [
 								{
 									"listen": "test",
@@ -7482,7 +7478,6 @@
 											"",
 											"    pm.collectionVariables.set(\"welldelivery_activityprogram_version\", pm.response.json().version);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7643,7 +7638,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program By Well",
+							"name": "Well Delivery DDMS - Activity Program By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -7652,7 +7647,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -7805,7 +7799,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program Versions By Well",
+							"name": "Well Delivery DDMS - Activity Program Versions By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -7968,7 +7962,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Program Specific Version",
+							"name": "Well Delivery DDMS - Activity Program Specific Version",
 							"event": [
 								{
 									"listen": "test",
@@ -7977,7 +7971,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8131,7 +8124,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Plans By Well",
+							"name": "Well Delivery DDMS - Activity Plans By Well",
 							"event": [
 								{
 									"listen": "test",
@@ -8140,7 +8133,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8293,7 +8285,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Activity Programs Reference Tree",
+							"name": "Well Delivery DDMS - Activity Programs Reference Tree",
 							"event": [
 								{
 									"listen": "test",
@@ -8302,7 +8294,6 @@
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8462,7 +8453,7 @@
 					"name": "Well Delivery: Teardown",
 					"item": [
 						{
-							"name": "Well Delivert DDMS - Create Well Activity Program Copy",
+							"name": "Well Delivery DDMS - Create Well Activity Program Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -8624,7 +8615,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Activity Plan Copy",
+							"name": "Well Delivery DDMS - Create Activity Plan Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -8633,7 +8624,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8786,7 +8776,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Planning Copy",
+							"name": "Well Delivery DDMS - Create Well Planning Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -8795,7 +8785,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -8948,7 +8937,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Wellbore Copy",
+							"name": "Well Delivery DDMS - Create Wellbore Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -8957,7 +8946,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -9110,7 +9098,7 @@
 							]
 						},
 						{
-							"name": "Well Delivert DDMS - Create Well Copy",
+							"name": "Well Delivery DDMS - Create Well Copy",
 							"event": [
 								{
 									"listen": "test",
@@ -9119,7 +9107,6 @@
 											"pm.test(\"Status code is 204\", function () {",
 											"    pm.response.to.have.status(204);",
 											"});",
-											"",
 											""
 										],
 										"type": "text/javascript"
@@ -9463,6 +9450,26 @@
 			"key": "zgy_iteration",
 			"value": "0",
 			"type": "string"
+		},
+		{
+			"key": "welldelivery_well_id",
+			"value": ""
+		},
+		{
+			"key": "welldelivery_wellbore_id",
+			"value": ""
+		},
+		{
+			"key": "welldelivery_wellplaning_id",
+			"value": ""
+		},
+		{
+			"key": "welldelivery_activityplan_id",
+			"value": ""
+		},
+		{
+			"key": "welldelivery_activityprogram_id",
+			"value": ""
 		}
 	]
 }
