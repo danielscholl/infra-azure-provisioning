@@ -9,7 +9,6 @@
       "active": true,
       "concurrentWorkflowRun": 5,
       "concurrentTaskRun": 5,
-      "workflowDetailContent": "",
-      "dagType": "private"
+      "workflowDetailContent": ""
     }
   }
