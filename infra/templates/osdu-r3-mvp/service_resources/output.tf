@@ -61,7 +61,7 @@ output "storage_queues" {
 // Network Output Items for Integration Tests
 output "appgw_name" {
   description = "Application gateway's name"
-  value       = module.appgateway.name
+  value       = module.istio_appgateway.name
 }
 
 output "keyvault_secret_id" {

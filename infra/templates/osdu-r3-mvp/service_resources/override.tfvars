@@ -28,8 +28,6 @@ feature_flag = {
   autoscaling    = false
 }
 
-keda_v2_enabled = false
-
 prefix = "osdu-mvp"
 
 resource_tags = {
