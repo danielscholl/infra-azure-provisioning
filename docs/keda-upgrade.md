@@ -1,3 +1,38 @@
+## Upgade keda version from <=2.2.0 to >=2.2.1 (in osdu case 2.2.0 to 2.7.2)
+Documentation: [keda-docs/troubleshooting/helm-upgrade-crd.md](https://github.com/tomkerkhove/keda-docs/blob/main/content/troubleshooting/helm-upgrade-crd.md)  
+When terraform is trying to upgrade keda
+```
+  # helm_release.keda will be updated in-place
+  ~ resource "helm_release" "keda" {
+        id                         = "keda"
+        name                       = "keda"
+      ~ version                    = "2.2.0" -> "2.7.2"
+```
+it might fail with the next error:
+```
+helm_release.keda: Still modifying... [id=keda, 20s elapsed]
+Error: rendered manifests contain a resource that already exists. Unable to continue with update: CustomResourceDefinition "scaledjobs.keda.sh" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.kubernetes.io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.helm.sh/release-name": must be set to "keda"; annotation validation error: missing key "meta.helm.sh/release-namespace": must be set to "keda"
+  on helm_keda.tf line 34, in resource "helm_release" "keda":
+  34: resource "helm_release" "keda" {
+```
+As per documentation link above - it is known keda upgrade issue. To fix it - run the next command (once for each environment) to apply the lables required to for keda upgrade.  
+Command is idempotent so can be added to pipeline as well:
+```shell
+for ii in $(kubectl get crd --no-headers -o custom-columns=":metadata.name" | grep ".keda.sh"); do
+  kubectl patch crd ${ii} --patch '{
+                                      "metadata": {
+                                        "annotations": {
+                                          "meta.helm.sh/release-name": "keda",
+                                          "meta.helm.sh/release-namespace": "keda"
+                                        },
+                                        "labels": {
+                                          "app.kubernetes.io/managed-by": "Helm"
+                                        }
+                                      }
+                                    }';
+done
+```
+
 ## Upgade keda version from 1.5 to 2.x
 
 ### [Outdated] Infra deployment steps 
