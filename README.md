@@ -34,7 +34,7 @@ Currently the versions in use are [Terraform 0.14.4](https://releases.hashicorp.
 
 ### Install the Azure CLI
 
-For information specific to your operating system, see the [Azure CLI install guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). You can also use the single command install if running on a Unix based machine.
+Currently the version in use are Azure CLI 2.37.0. For information specific to your operating system, see the [Azure CLI install guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). You can also use the single command install if running on a Unix based machine.
 
 ```bash
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash

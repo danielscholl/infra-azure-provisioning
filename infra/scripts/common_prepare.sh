@@ -118,7 +118,7 @@ function CreateTfPrincipal() {
 
       PRINCIPAL_OID=$(az ad app list \
         --display-name $1 \
-        --query [].objectId -otsv)
+        --query [].id -otsv)
 
       AD_GRAPH_API_GUID="00000002-0000-0000-c000-000000000000"
 
@@ -135,7 +135,7 @@ function CreateTfPrincipal() {
 
       tput setaf 2; echo "Adding Access Policy..." ; tput sgr0
       ACCESS_POLICY=$(az keyvault set-policy --name $AZURE_VAULT \
-        --object-id $(az ad sp list --display-name $1 --query [].objectId -otsv) \
+        --object-id $(az ad sp list --display-name $1 --query [].id -otsv) \
         --secret-permissions list get \
         -ojson 2>/dev/null)
 
@@ -161,7 +161,7 @@ function CreatePrincipal() {
         --name $1 \
         --skip-assignment \
         --role owner \
-        --scopes subscription/${ARM_SUBSCRIPTION_ID} \
+        --scopes /subscriptions/${ARM_SUBSCRIPTION_ID} \
         --query password -otsv)
 
       PRINCIPAL_ID=$(az ad sp list \
@@ -170,7 +170,7 @@ function CreatePrincipal() {
 
       PRINCIPAL_OID=$(az ad sp list \
         --display-name $1 \
-        --query [].objectId -otsv)
+        --query [].id -otsv)
 
       MS_GRAPH_API_GUID="00000003-0000-0000-c000-000000000000"
       AZURE_STORAGE_API_GUID="e406a681-f3d4-42a8-90b6-c2b029497af1"
@@ -223,7 +223,7 @@ function CreateADApplication() {
 
       APP_OID=$(az ad sp list \
         --display-name $1 \
-        --query [].objectId -otsv)
+        --query [].id -otsv)
 
       tput setaf 2; echo "Adding AD Application to Vault..." ; tput sgr0
       AddKeyToVault $2 "${1}-clientid" $APP_ID
@@ -471,7 +471,7 @@ function CreateADUser() {
     exit 1;
   fi
 
-  local _result=$(az ad user list --display-name $1 --query [].objectId -otsv)
+  local _result=$(az ad user list --display-name $1 --query [].id -otsv)
     if [ "$_result"  == "" ]
     then
       USER_PASSWORD=$(echo $((RANDOM%200000000000000+1000000000000000))TESTER\!)
@@ -482,7 +482,7 @@ function CreateADUser() {
         --display-name "${1} ${2}" \
         --password $USER_PASSWORD \
         --user-principal-name $EMAIL \
-        --query objectId
+        --query Id
       )
 
       AddKeyToVault $AZURE_VAULT "ad-user-email" $EMAIL
