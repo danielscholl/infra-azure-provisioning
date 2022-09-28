@@ -177,23 +177,7 @@ az pipelines create \
   -ojson
 ```
 
-2. `infrastructure-data-partition`
-
-  > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
-
-```bash
-# Create and Deploy the Pipeline
-az pipelines create \
-  --name 'infrastructure-data-partition'  \
-  --repository infra-azure-provisioning  \
-  --branch master  \
-  --repository-type tfsgit  \
-  --yaml-path /devops/pipelines/infrastructure-data-partition.yml  \
-  -ojson
-```
-
-
-3. `azure-pipeline-service.yml`
+3. `infrastructure-service-resources`
 
   > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
 
@@ -205,5 +189,20 @@ az pipelines create \
   --branch master  \
   --repository-type tfsgit  \
   --yaml-path /devops/pipelines/infrastructure-service-resources.yml  \
+  -ojson
+```
+
+3. `infrastructure-data-partition`
+
+  > For the first run of the pipeline approvals will need to be made for the 2 secure files and the Service Connection.
+
+```bash
+# Create and Deploy the Pipeline
+az pipelines create \
+  --name 'infrastructure-data-partition'  \
+  --repository infra-azure-provisioning  \
+  --branch master  \
+  --repository-type tfsgit  \
+  --yaml-path /devops/pipelines/infrastructure-data-partition.yml  \
   -ojson
 ```
