@@ -75,52 +75,67 @@ variables:
     value: "true"
 
 stages:
-  - template: /devops/chart-stages.yml
-    parameters:
-      serviceName: ${{ variables.serviceName }}
-      chartPath: ${{ variables.chartPath }}
-      valuesFile: ${{ variables.valuesFile }}
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: true
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
-      namespace: "istio-system"
+  - ${{ if ne(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: true
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "istio-system"
 
-  # Installation of osdu-istio - base
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: istio-base
-      chartPath: osdu-istio/istio-base
-      valuesFile: "osdu-istio/istio-base/values.yaml"
-      infraValuesFile: ""
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: false
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/osdu-istio/istio-base/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "istio-system"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
-  # Installation of osdu-istio - operator
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: istio-operator
-      chartPath: osdu-istio/istio-operator
-      valuesFile: "osdu-istio/istio-operator/values.yaml"
-      infraValuesFile: ""
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: false
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/osdu-istio/istio-operator/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "istio-system"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+  # Still needed /chart-stages to be able to cleanup properly, keeping duplicated for documentation purposes
+  - ${{ if eq(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: true
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "istio-system"
+    # Installation of osdu-istio - base
+    - template: /devops/chart-stages-helm.yml
+      parameters:
+        checkoutRepo: helm-charts-azure
+        serviceName: istio-base
+        chartPath: osdu-istio/istio-base
+        valuesFile: "osdu-istio/istio-base/values.yaml"
+        infraValuesFile: ""
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: false
+        # Add multiple chart folder paths with pipe(|) seperated
+        extractedChartFolder: "templates|charts/osdu-istio/istio-base/templates"
+        baseResourceGroupName: $(base-name-sr)
+        namespace: "istio-system"
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+    # Installation of osdu-istio - operator
+    - template: /devops/chart-stages-helm.yml
+      parameters:
+        checkoutRepo: helm-charts-azure
+        serviceName: istio-operator
+        chartPath: osdu-istio/istio-operator
+        valuesFile: "osdu-istio/istio-operator/values.yaml"
+        infraValuesFile: ""
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: false
+        # Add multiple chart folder paths with pipe(|) seperated
+        extractedChartFolder: "templates|charts/osdu-istio/istio-operator/templates"
+        baseResourceGroupName: $(base-name-sr)
+        namespace: "istio-system"
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}

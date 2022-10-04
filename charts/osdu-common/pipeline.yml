@@ -76,52 +76,66 @@ variables:
 
 
 stages:
-  - template: /devops/chart-stages.yml
-    parameters:
-      serviceName: ${{ variables.serviceName }}
-      chartPath: ${{ variables.chartPath }}
-      valuesFile: ${{ variables.valuesFile }}
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
-      namespace: "default"
+  - ${{ if ne(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "default"
 
-  # installation of osdu-base
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: osdu-base
-      chartPath: osdu-base
-      valuesFile: "osdu-base/values.yaml"
-      infraValuesFile: ""
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: false
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/osdu-base/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "default"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
-  
-    # installation of osdu-common
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: common-base
-      chartPath: osdu-azure/common-base
-      valuesFile: ''
-      infraValuesFile: '${{ variables.valuesFile }}'
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: false
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/osdu-base/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "osdu"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+  # Still needed /chart-stages to be able to cleanup properly, keeping duplicated for documentation purposes
+  - ${{ if eq(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "default"
+    # installation of osdu-base
+    - template: /devops/chart-stages-helm.yml
+      parameters:
+        checkoutRepo: helm-charts-azure
+        serviceName: osdu-base
+        chartPath: osdu-base
+        valuesFile: "osdu-base/values.yaml"
+        infraValuesFile: ""
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: false
+        # Add multiple chart folder paths with pipe(|) seperated
+        extractedChartFolder: "templates|charts/osdu-base/templates"
+        baseResourceGroupName: $(base-name-sr)
+        namespace: "default"
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+    
+      # installation of osdu-common
+    - template: /devops/chart-stages-helm.yml
+      parameters:
+        checkoutRepo: helm-charts-azure
+        serviceName: common-base
+        chartPath: osdu-azure/common-base
+        valuesFile: ''
+        infraValuesFile: '${{ variables.valuesFile }}'
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: false
+        # Add multiple chart folder paths with pipe(|) seperated
+        extractedChartFolder: "templates|charts/osdu-base/templates"
+        baseResourceGroupName: $(base-name-sr)
+        namespace: "osdu"
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
