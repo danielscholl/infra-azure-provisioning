@@ -75,53 +75,51 @@ variables:
     value: true
 
 stages:
-  - template: /devops/chart-stages.yml
-    parameters:
-      serviceName: ${{ variables.serviceName }}
-      chartPath: ${{ variables.chartPath }}
-      valuesFile: ${{ variables.valuesFile }}
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: true
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
-      namespace: "istio-system"
+  - ${{ if ne(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: true
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "istio-system"
   
-# Installation of osdu-istio - operator
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: osdu-istio
-      chartPath: osdu-istio
-      valuesFile: ''
-      infraValuesFile: '${{ variables.valuesFile }}'
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: false
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/osdu-istio/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "istio-system"
-      providers:
-        - name: Azure
-          environments: ["dev", "glab"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+  # Still needed /chart-stages to be able to cleanup properly, keeping duplicated for documentation purposes
+  - ${{ if eq(variables.MIGRATION_CLEANUP, 'true') }}:
+    - template: /devops/chart-stages.yml
+      parameters:
+        serviceName: ${{ variables.serviceName }}
+        chartPath: ${{ variables.chartPath }}
+        valuesFile: ${{ variables.valuesFile }}
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: true
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+        namespace: "istio-system"
+    # Installation of osdu-istio - operator
+    - template: /devops/chart-stages-helm.yml
+      parameters:
+        checkoutRepo: helm-charts-azure
+        serviceName: osdu-istio
+        chartPath: osdu-istio
+        valuesFile: ''
+        infraValuesFile: '${{ variables.valuesFile }}'
+        skipDeploy: ${{ variables.SKIP_DEPLOY }}
+        skipCheck: false
+        # Add multiple chart folder paths with pipe(|) seperated
+        extractedChartFolder: "templates|charts/osdu-istio/templates"
+        baseResourceGroupName: $(base-name-sr)
+        namespace: "istio-system"
+        providers:
+          - name: Azure
+            environments: ["dev", "glab"]
+        migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
 
-  # EnvoyFilters along with entitlements service
-  - template: /devops/chart-stages-helm.yml
-    parameters:
-      checkoutRepo: helm-charts-azure
-      serviceName: security-services
-      chartPath: osdu-azure/entitlements
-      valuesFile: 'osdu-azure/entitlements/values.yaml'
-      infraValuesFile: ''
-      skipDeploy: ${{ variables.SKIP_DEPLOY }}
-      skipCheck: true
-      # Add multiple chart folder paths with pipe(|) seperated
-      extractedChartFolder: "templates|charts/entitlements/templates"
-      baseResourceGroupName: $(base-name-sr)
-      namespace: "osdu"
-      providers:
-        - name: Azure
-          environments: ["dev"]
-      migrationCleanup: ${{ variables.MIGRATION_CLEANUP }}
+    # EnvoyFilters along with entitlements helm-chart or osdu-security group

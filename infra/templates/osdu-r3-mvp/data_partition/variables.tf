@@ -263,5 +263,5 @@ variable "reservoir_ddms" {
 variable "dp_airflow_aks_version" {
   description = "(Optional) AKS version for the AKS airflow2 resources, ignored if deploy_dp_airflow is disabled"
   type        = string
-  default     = "1.21.9"
+  default     = "1.24.0"
 }

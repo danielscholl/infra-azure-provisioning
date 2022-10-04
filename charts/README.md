@@ -19,8 +19,6 @@ Create the helm chart values file necessary to install charts.
 
 - Edit the newly downloaded [config.yaml](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/raw/master/charts/helm-config.yaml) and fill out the required sections `azure`, `ingress` and `istio`.
 
-
-
 ```bash
 # Setup Variables
 ADMIN_EMAIL="<your_cert_admin>"     # ie: admin@email.com
@@ -571,3 +569,12 @@ helm template $SERVICE ${SRC_DIR}/$SERVICE/devops/azure/chart \
   && git commit -m "Adding OSDU Services" \
   && git push origin $UNIQUE)
 ```
+
+## chart/osdu-***/pipeline.yaml
+
+Ignore files in `chart/osdu-***/pipeline.yaml`, these are merely for development purposes in MSFT environments.
+
+### Features introduced (Experimental not ready yet for implementation)
+
+- `MIGRATION_CLEANUP` - Initiative to start migrating from flux to helm-charts-azure and helm install.
+  - This logic will remove flux commited changes, be aware this has few tests in brownfield environments, therefore, it can break logic of services, as there are lot of inconsistencies as for now (09/2022) between pipeline/flux instalation approach and helm-charts-azure approach.
