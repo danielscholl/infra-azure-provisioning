@@ -22,6 +22,7 @@ When initializing the tenant 4 Groups _(Roles)_ are created that have entitlemen
   - users.datalake.editors - This can be thought of as a Contributor Role.
   - users.datalake.admins - This can be thought of as an Administrator Role without data delete.
   - users.datalake.ops - This can be thought of as an Owner Role.
+  - users.data.root - This can be thought of as a Data Level Owner Role, any member which is part of this group will get access to all the data (storage records) in a data partition.
 
 
 The following chart can prove to be useful to see the different levels of access that exist for the different groups.
