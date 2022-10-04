@@ -2093,7 +2093,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2149,7 +2149,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_user}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{seismic_default_admins}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{seismic_default_viewers}}\"\r\n    ]\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "text"
@@ -2748,7 +2748,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}",
@@ -2886,7 +2886,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "text"
@@ -3335,7 +3335,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{fileMetadataTestSubprojectName}}/dataset/{{fileMetadataDataSetToDelete}}",
@@ -3938,7 +3938,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{DATA_PARTITION_ID}}/subproject/{{zgyTestSubprojectName}}",
@@ -4187,7 +4187,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "text"
@@ -4859,7 +4859,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{zgyTestSubprojectName}}/dataset/{{zgyDataSetToDelete}}",
@@ -5537,7 +5537,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/subproject/tenant/{{DATA_PARTITION_ID}}/subproject/{{vdsTestSubprojectName}}",
@@ -5786,7 +5786,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "text"
@@ -6455,7 +6455,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
+									"raw": "{\r\n  \"admin\": \"{{entitlement_admin_email}}\",\r\n  \"storage_class\": \"MULTI_REGIONAL\",\r\n  \"storage_location\": \"US\",\r\n  \"access_policy\": \"dataset\",\r\n  \"acls\": {\r\n    \"admins\": [\r\n      \"{{entitlement_admin_email}}\",\r\n    ],\r\n    \"viewers\": [\r\n      \"{{entitlement_editor_email}}\"\r\n    ]\r\n  }\r\n}"
 								},
 								"url": {
 									"raw": "{{seismic_ddms_host}}/dataset/tenant/{{DATA_PARTITION_ID}}/subproject/{{vdsTestSubprojectName}}/dataset/{{vdsDataSetToDelete}}",
