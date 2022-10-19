@@ -295,9 +295,12 @@ resource "azurerm_key_vault_secret" "cosmos_key" {
 #-------------------------------
 # Istio
 #-------------------------------
+locals {
+  istio_int_lb_ip_name = "istio-int-load-balancer-ip"
+}
+
 resource "azurerm_key_vault_secret" "istio_int_load_balancer_ip" {
-  count        = var.feature_flag.autoscaling ? 1 : 0
-  name         = "istio-int-load-balancer-ip"
-  value        = var.istio_int_load_balancer_ip == "" ? null : var.istio_int_load_balancer_ip
+  name         = local.istio_int_lb_ip_name
+  value        = local.istio_int_load_balancer_ip
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }

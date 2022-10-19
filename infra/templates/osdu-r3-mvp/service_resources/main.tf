@@ -148,7 +148,7 @@ locals {
     data.terraform_remote_state.central_resources.outputs.principal_objectId
   ]
 
-  istio_int_load_balancer_ip = length(data.kubernetes_service.istio_int_load_balancer_ip.status[0].load_balancer[0].ingress) > 0 ? data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer.0.ingress.0.ip : var.istio_int_load_balancer_ip
+  istio_int_load_balancer_ip = var.istio_int_load_balancer_ip != null ? var.istio_int_load_balancer_ip : data.kubernetes_service.istio_int_load_balancer_ip.status.0.load_balancer.0.ingress.0.ip
 }
 
 
@@ -361,31 +361,6 @@ module "appgateway" {
   depends_on = [azurerm_key_vault_certificate.default]
 }
 
-module "istio_appgateway" {
-  source = "../../../modules/providers/azure/appgw"
-
-  name                = local.istio_app_gw_name
-  resource_group_name = azurerm_resource_group.main.name
-
-  vnet_name                       = module.network.name
-  vnet_subnet_id                  = module.network.subnets.0
-  keyvault_id                     = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.versionless_secret_id
-  ssl_certificate_name            = local.istio_ssl_cert_name
-  ssl_policy_type                 = var.ssl_policy_type
-  ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
-  ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
-  backend_address_pool_ips        = local.istio_int_load_balancer_ip == "" ? null : [local.istio_int_load_balancer_ip]
-
-  gateway_zones = local.gateway_zones
-
-  resource_tags   = var.resource_tags
-  min_capacity    = var.istio_appgw_min_capacity
-  max_capacity    = var.istio_appgw_max_capacity
-  host_name       = var.aks_dns_host
-  request_timeout = 300
-}
-
 // Give AGIC Identity Access rights to Change the Application Gateway
 resource "azurerm_role_assignment" "appgwcontributor" {
   principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
@@ -462,33 +437,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "services" {
 
 data "azurerm_resource_group" "aks_node_resource_group" {
   name = module.aks.node_resource_group
-}
-
-// Give AD Principal Access rights to Change the Istio Application Gateway
-resource "azurerm_role_assignment" "agic_istio_appgw_contributor" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway.id
-  role_definition_name = "Contributor"
-
-  depends_on = [module.istio_appgateway]
-}
-
-// Give AD Principal Access rights to Operate the Istio Application Gateway Identity
-resource "azurerm_role_assignment" "agic_istio_app_gw_contributor_for_adsp" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = module.istio_appgateway.managed_identity_resource_id
-  role_definition_name = "Managed Identity Operator"
-
-  depends_on = [module.istio_appgateway]
-}
-
-// Give AD Principal the rights to look at the Resource Group
-resource "azurerm_role_assignment" "agic_istio_resourcegroup_reader" {
-  principal_id         = data.terraform_remote_state.central_resources.outputs.osdu_service_principal_id
-  scope                = azurerm_resource_group.main.id
-  role_definition_name = "Reader"
-
-  depends_on = [module.istio_appgateway]
 }
 
 // Give AKS Access rights to Operate the Node Resource Group
