@@ -419,7 +419,7 @@ variable "max_pods" {
 variable "istio_int_load_balancer_ip" {
   description = "A IP addresse of an internal istio LB"
   type        = string
-  default     = ""
+  default     = "10.10.255.253"
 }
 
 variable "aks_dns_host" {

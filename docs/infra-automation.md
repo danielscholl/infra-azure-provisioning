@@ -25,7 +25,7 @@ This variable group will be used to hold the common values for infrastructure to
 
   | Variable | Value |
   |----------|-------|
-  | AGENT_IMAGE | ubuntu-18.04 |
+  | AGENT_IMAGE | ubuntu-20.04 |
   | BUILD_ARTIFACT_NAME | infra-templates |
   | SERVICE_CONNECTION_NAME | <your_service_connection_name> |
   | TF_VAR_elasticsearch_secrets_keyvault_name | osducommon<your_unique>-kv |
@@ -38,7 +38,7 @@ az pipelines variable-group create \
   --name "Infrastructure Pipeline Variables" \
   --authorize true \
   --variables \
-  AGENT_IMAGE="ubuntu-18.04" \
+  AGENT_IMAGE="ubuntu-20.04" \
   BUILD_ARTIFACT_NAME="infra-templates" \
   TF_VAR_elasticsearch_secrets_keyvault_name=$COMMON_VAULT  \
   TF_VAR_elasticsearch_secrets_keyvault_resource_group=osdu-common-${UNIQUE} \
@@ -52,6 +52,8 @@ az pipelines variable-group create \
 __Setup and Configure the ADO Library `Infrastructure Pipeline Variables - demo`__
 
 This variable group will be used to hold the common values for a specific infrastructure environment to be built. There is an implied naming convention to this Variable group `demo` relates to the environment name.  Additionally you can specify and override the region locations here.
+
+__TF_VAR_istio_int_load_balancer_ip__ has been set by default in terraform code, however, if you are on brownfield deployments, to avoid downtime, you may want to setup this in the Variable Group as env var or in your `terraform.tfvars` file to match your environment setup.
 
 
   | Variable | Value |
@@ -74,6 +76,8 @@ This variable group will be used to hold the common values for a specific infras
   | TF_VAR_principal_password | <your_principal_password> |
   | TF_VAR_resource_group_location | centralus |
   | TF_VAR_deploy_dp_airflow | false |
+  | TF_VAR_aks_dns_host  | <your_dns_host> |
+  | (Optional) TF_VAR_istio_int_load_balancer_ip  | 10.10.255.253 |
   | (optional) TF_VAR_secret_kv_enabled | false |
   | (optional) TF_VAR_reservoir_ddms | {enabled=false,sku="B_Gen5_1"} |
   
@@ -85,6 +89,7 @@ REGION_PAIR="eastus2"
 PARTITION_NAME="opendes"
 ELASTIC_VERSION="7.11.1"
 GIT_REPO=git@ssh.dev.azure.com:v3/${ADO_ORGANIZATION}/${ADO_PROJECT}/k8-gitops-manifests
+DNS_HOSTNAME=myhostname.contoso.com # Replace for your hostname to be used
 
 az pipelines variable-group create \
   --name "Infrastructure Pipeline Variables - ${ENVIRONMENT}" \
@@ -110,6 +115,7 @@ az pipelines variable-group create \
   TF_VAR_deploy_dp_airflow="false" \
   TF_VAR_aad_client_id="$TF_VAR_application_clientid" \
   TF_VAR_secret_kv_enabled="false" \
+  TF_VAR_aks_dns_host=$DNS_HOSTNAME \
   -ojson
 ```
 
