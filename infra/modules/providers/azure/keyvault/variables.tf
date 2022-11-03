@@ -47,6 +47,12 @@ variable "keyvault_certificate_permissions" {
   default     = ["create", "get", "list", "delete", "recover", "restore", "purge"]
 }
 
+variable "keyvault_purge_protection_enabled" {
+  description = "Vault or an object in the deleted state cannot be purged until the retention period has passed. Once Purge Protection has been Enabled it's not possible to Disable it"
+  type        = bool
+  default     = true
+}
+
 variable "resource_tags" {
   description = "Map of tags to apply to taggable resources in this module.  By default the taggable resources are tagged with the name defined above and this map is merged in"
   type        = map(string)

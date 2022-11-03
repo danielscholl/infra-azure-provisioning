@@ -334,7 +334,7 @@ function CreateKeyVault() {
   local _vault=$(az keyvault list --resource-group $2 --query [].name -otsv 2>/dev/null)
   if [ "$_vault"  == "" ]
     then
-      OUTPUT=$(az keyvault create --name $1 --resource-group $2 --location $3 --query [].name -otsv)
+      OUTPUT=$(az keyvault create --name $1 --resource-group $2 --location $3 --enable-purge-protection true --query [].name -otsv)
     else
       tput setaf 3;  echo "Key Vault $1 already exists."; tput sgr0
     fi
