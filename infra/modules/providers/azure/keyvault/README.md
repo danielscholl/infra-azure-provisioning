@@ -8,6 +8,7 @@ A terraform module to provide key vaults in Azure with the following characteris
 - Key Vault SKU is configurable: `keyvault_sku`. Defaults to `standard`.
 - Access policy permissions for the deployment's service principal are configurable: `keyvault_key_permissions`, `keyvault_secret_permissions` and `keyvault_certificate_permissions`.
 - Specified resource tags are updated to the targeted vault: `resource_tags`.
+- Specified keyvault purge protection: `keyvault_purge_protection_enabled`. Once purge protection has been enabled it's not possible to disable it. Default is true(enabled).
 
 ## Usage
 
@@ -32,14 +33,14 @@ The following attributes are exported:
 
 ## Argument Reference
 
-Supported arguments for this module are available in [variables.tf](./variables.tf). 
+Supported arguments for this module are available in [variables.tf](./variables.tf).
 
 ## License
 Copyright © Microsoft Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at 
+You may obtain a copy of the License at
 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
