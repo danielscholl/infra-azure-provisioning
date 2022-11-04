@@ -39,4 +39,9 @@ resource "helm_release" "kvsecrets" {
     name  = "secrets-store-csi-driver.syncSecret.enabled"
     value = "true"
   }
+
+  set {
+    name  = "secrets-store-csi-driver.enableSecretRotation"
+    value = "true"
+  }
 }
