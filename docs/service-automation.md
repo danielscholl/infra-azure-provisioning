@@ -150,6 +150,7 @@ This variable group will be used to hold the specific environment values necessa
 | REDIS_PORT                                    | `6380`                            |
 | STORAGE_ACCOUNT                               | `$(opendes-storage)`              |
 | STORAGE_ACCOUNT_KEY                           | `$(opendes-storage-key)`          |
+| STORAGE_ACCOUNT_BLOB_ENDPOINT                 | `$(opendes-storage-account-blob-endpoint)`          |
 | AZURE_EVENT_SUBSCRIBER_SECRET                 | Subscriber Secret used while performing handshake, the value to be used can be referenced from [here](https://community.opengroup.org/osdu/platform/system/register/-/blob/master/provider/register-azure/src/main/resources/application.properties#L64)                      |
 | AZURE_EVENT_SUBSCRIPTION_ID                   | Subscription ID created by Base64 encoding a string formed by concatenating (no spaces) GET /test/challenge/{} endpoint in register service and topic name i.e. recordstopic<br/>  For eg. BASE64(recordstopic + https://{DNS}/api/register/v1/test/challenge/1           |
 | AZURE_EVENT_TOPIC_NAME                        | `recordstopic`          |
@@ -196,6 +197,7 @@ az pipelines variable-group create \
   REDIS_PORT="$REDIS_PORT" \
   STORAGE_ACCOUNT='$('${DATA_PARTITION_NAME}'-storage)' \
   STORAGE_ACCOUNT_KEY='$('${DATA_PARTITION_NAME}'-storage-key)' \
+  STORAGE_ACCOUNT_BLOB_ENDPOINT='$('${DATA_PARTITION_NAME}'-storage-account-blob-endpoint)' \
   AZURE_EVENT_SUBSCRIBER_SECRET="secret" \
   AZURE_EVENT_SUBSCRIPTION_ID="subscriptionId" \
   AZURE_EVENT_TOPIC_NAME="topic name" \
@@ -231,6 +233,7 @@ This variable group is a linked variable group that links to the Environment Key
 - {partition-name}-elastic-username
 - {partition-name}-storage
 - {partition-name}-storage-key
+- {partition-name}-storage-account-blob-endpoint
 - {partition-name}-sb-connection
 - {partition-name}-sb-namespace
 - osdu-identity-id

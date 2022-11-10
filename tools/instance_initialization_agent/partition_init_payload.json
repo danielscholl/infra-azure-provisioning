@@ -47,6 +47,10 @@
             "sensitive": true,
             "value": "storage"
         },
+        "storage-account-blob-endpoint": {
+            "sensitive": true,
+            "value": "storage-account-blob-endpoint"
+        },
         "ingest-storage-account-name": {
             "sensitive": true,
             "value": "ingest-storage"
