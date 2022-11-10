@@ -29,6 +29,7 @@ locals {
 
   storage_account_name = format("%s-storage", var.data_partition_name)
   storage_key_name     = format("%s-key", local.storage_account_name)
+  storage_account_blob_endpoint = format("%s-storage-account-blob-endpoint", var.data_partition_name)
 
   sdms_storage_account_name = format("%s-sdms-storage", var.data_partition_name)
   sdms_storage_key_name     = format("%s-key", local.sdms_storage_account_name)
@@ -94,6 +95,12 @@ resource "azurerm_key_vault_secret" "storage_name" {
 resource "azurerm_key_vault_secret" "storage_key" {
   name         = local.storage_key_name
   value        = module.storage_account.primary_access_key
+  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
+}
+
+resource "azurerm_key_vault_secret" "sstorage_account_blob_endpoint" {
+  name         = local.storage_account_blob_endpoint
+  value        = module.storage_account.endpoint
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
