@@ -27,6 +27,15 @@ spec:
       labels:
         app: osdu-common
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: agentpool
+                operator: NotIn
+                values:
+                - services
       containers:
         - name: osdu-common
           image: neilpeterson/aks-helloworld:v1
