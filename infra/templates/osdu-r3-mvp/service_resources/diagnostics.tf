@@ -149,6 +149,46 @@ resource "azurerm_monitor_diagnostic_setting" "aks_diagnostics" {
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
   log {
+    category = "cloud-controller-manager"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-azuredisk-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-azurefile-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-snapshot-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
     category = "cluster-autoscaler"
 
     retention_policy {
@@ -277,6 +317,15 @@ resource "azurerm_monitor_diagnostic_setting" "redis_diagnostics" {
   target_resource_id         = module.redis_cache.id
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
+  log {
+    category = "ConnectedClientList"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
 
   metric {
     category = "AllMetrics"
@@ -293,6 +342,15 @@ resource "azurerm_monitor_diagnostic_setting" "redis_queue_diagnostics" {
   target_resource_id         = module.redis_queue.id
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
+  log {
+    category = "ConnectedClientList"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
 
   metric {
     category = "AllMetrics"
@@ -313,7 +371,19 @@ resource "azurerm_monitor_diagnostic_setting" "db_diagnostics" {
   target_resource_id         = module.cosmosdb_account.account_id
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
+  log_analytics_destination_type = "AzureDiagnostics"
+
   // This one always off.
+  log {
+    category = "TableApiRequests"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
   log {
     category = "CassandraRequests"
     enabled  = false
