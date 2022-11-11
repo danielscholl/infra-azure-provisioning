@@ -61,6 +61,46 @@ resource "azurerm_monitor_diagnostic_setting" "aks_diagnostics" {
   log_analytics_workspace_id = var.log_analytics_id
 
   log {
+    category = "cloud-controller-manager"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-azuredisk-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-azurefile-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "csi-snapshot-controller"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
     category = "cluster-autoscaler"
 
     retention_policy {

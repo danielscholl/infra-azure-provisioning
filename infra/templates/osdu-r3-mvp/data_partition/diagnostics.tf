@@ -130,6 +130,36 @@ resource "azurerm_monitor_diagnostic_setting" "sb_diagnostics" {
   log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
 
   log {
+    category = "ApplicationMetricsLogs"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "RuntimeAuditLogs"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "VNetAndIPFilteringLogs"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
     category = "OperationalLogs"
 
     retention_policy {

@@ -32,6 +32,17 @@ resource "azurerm_monitor_diagnostic_setting" "kv_diagnostics" {
     category = "AuditEvent"
 
     retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
+  log {
+    category = "AzurePolicyEvaluationDetails"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
       enabled = false
     }
   }
@@ -93,7 +104,19 @@ resource "azurerm_monitor_diagnostic_setting" "graph_diagnostics" {
   target_resource_id         = module.graph_account.account_id
   log_analytics_workspace_id = module.log_analytics.id
 
+  log_analytics_destination_type = "AzureDiagnostics"
+
   // This one always off.
+  log {
+    category = "TableApiRequests"
+    enabled  = false
+
+    retention_policy {
+      days    = 0
+      enabled = false
+    }
+  }
+
   log {
     category = "CassandraRequests"
     enabled  = false
