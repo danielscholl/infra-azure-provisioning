@@ -27,9 +27,9 @@
       "sensitive": true,
       "value": "##partition##-storage"
     },
-    "storage-account-key-endpoint": {
+    "storage-account-blob-endpoint": {
       "sensitive": true,
-      "value": "##partition##-storage-account-key-endpoint"
+      "value": "##partition##-storage-account-blob-endpoint"
     },
     "sdms-storage-account-key": {
       "sensitive": true,
