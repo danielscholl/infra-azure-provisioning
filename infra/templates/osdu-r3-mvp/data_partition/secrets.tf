@@ -98,7 +98,7 @@ resource "azurerm_key_vault_secret" "storage_key" {
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
-resource "azurerm_key_vault_secret" "sstorage_account_blob_endpoint" {
+resource "azurerm_key_vault_secret" "storage_account_blob_endpoint" {
   name         = local.storage_account_blob_endpoint
   value        = module.storage_account.endpoint
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
