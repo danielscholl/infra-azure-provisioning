@@ -180,6 +180,14 @@ data-partition-id: {{data_partition_id}}
          "eventgrid-schemachangedtopic-accesskey": {
             "sensitive": true,
             "value": "eventgrid-schemachangedtopic-accesskey"
+        },
+        "reservoir-connection": {
+            "sensitive": true,
+            "value": "reservoir-conn"
+        },
+        "indexer-decimation-enabled": {
+            "sensitive": false,
+            "value": "true"
         }
     }
 }

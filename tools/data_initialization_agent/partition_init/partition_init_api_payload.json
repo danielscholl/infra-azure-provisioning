@@ -126,6 +126,10 @@
         "reservoir-connection": {
             "sensitive": true,
             "value": "reservoir-conn"
+        },
+        "indexer-decimation-enabled": {
+            "sensitive": false,
+            "value": "true"
         }
     }
 }
