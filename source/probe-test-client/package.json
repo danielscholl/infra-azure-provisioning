@@ -4,7 +4,7 @@
   "description": "Test client used to run automated or manual probe tests on an OSDU environment",
   "main": "index.js",
   "scripts": {
-    "test": "mocha scenarios"
+    "test": "mocha scenarios --reporter mocha-trx-reporter"
   },
   "author": "Microsoft",
   "license": "APACHE",
@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "json-stringify-pretty-compact": "^2.0.0",
     "mocha": "^7.1.1",
+    "mocha-trx-reporter": "^3.3.1",
     "supertest": "^4.0.2"
   },
   "mocha": {
