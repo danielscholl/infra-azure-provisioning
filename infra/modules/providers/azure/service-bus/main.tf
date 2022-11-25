@@ -59,7 +59,7 @@ locals {
   ])
 
   topic_subscriptions = flatten([
-    for topic in local.topics : [
+    for topic_index, topic in local.topics : [
       for subscription in topic.subscriptions :
       merge({
         name                      = ""
@@ -75,12 +75,13 @@ locals {
         enable_dead_lettering_on_message_expiration = null
         }, subscription, {
         topic_name = topic.name
+        topic_id   = azurerm_servicebus_topic.main[topic_index].id
       })
     ]
   ])
 
   topic_subscription_rules = flatten([
-    for subscription in local.topic_subscriptions : [
+    for sub_index, subscription in local.topic_subscriptions : [
       for rule in subscription.rules : merge({
         name       = ""
         sql_filter = ""
@@ -88,6 +89,7 @@ locals {
         }, rule, {
         topic_name        = subscription.topic_name
         subscription_name = subscription.name
+        subscription_id   = azurerm_servicebus_subscription.main[sub_index].id
       })
     ]
   ])
@@ -112,12 +114,13 @@ locals {
   ]
 
   queue_authorization_rules = flatten([
-    for queue in local.queues : [
+    for q_index, queue in local.queues : [
       for rule in queue.authorization_rules : merge({
         name   = ""
         rights = []
         }, rule, {
         queue_name = queue.name
+        queue_id   = azurerm_servicebus_queue.main[q_index].id
       })
     ]
   ])
@@ -140,9 +143,8 @@ resource "azurerm_servicebus_namespace" "main" {
 resource "azurerm_servicebus_namespace_authorization_rule" "main" {
   count = length(local.authorization_rules)
 
-  name                = local.authorization_rules[count.index].name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  resource_group_name = data.azurerm_resource_group.main.name
+  name         = local.authorization_rules[count.index].name
+  namespace_id = azurerm_servicebus_namespace.main.id
 
   listen = contains(local.authorization_rules[count.index].rights, "listen") ? true : false
   send   = contains(local.authorization_rules[count.index].rights, "send") ? true : false
@@ -152,9 +154,8 @@ resource "azurerm_servicebus_namespace_authorization_rule" "main" {
 resource "azurerm_servicebus_topic" "main" {
   count = length(local.topics)
 
-  name                = local.topics[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
+  name         = local.topics[count.index].name
+  namespace_id = azurerm_servicebus_namespace.main.id
 
   status                       = local.topics[count.index].status
   auto_delete_on_idle          = local.topics[count.index].auto_delete_on_idle
@@ -172,10 +173,8 @@ resource "azurerm_servicebus_topic" "main" {
 resource "azurerm_servicebus_topic_authorization_rule" "main" {
   count = length(local.topic_authorization_rules)
 
-  name                = local.topic_authorization_rules[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  topic_name          = local.topic_authorization_rules[count.index].topic_name
+  name     = local.topic_authorization_rules[count.index].name
+  topic_id = azurerm_servicebus_topic.main[count.index].id
 
   listen = contains(local.topic_authorization_rules[count.index].rights, "listen") ? true : false
   send   = contains(local.topic_authorization_rules[count.index].rights, "send") ? true : false
@@ -187,10 +186,8 @@ resource "azurerm_servicebus_topic_authorization_rule" "main" {
 resource "azurerm_servicebus_subscription" "main" {
   count = length(local.topic_subscriptions)
 
-  name                = local.topic_subscriptions[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  topic_name          = local.topic_subscriptions[count.index].topic_name
+  name     = local.topic_subscriptions[count.index].name
+  topic_id = local.topic_subscriptions[count.index].topic_id
 
   max_delivery_count        = local.topic_subscriptions[count.index].max_delivery_count
   auto_delete_on_idle       = local.topic_subscriptions[count.index].auto_delete_on_idle
@@ -208,14 +205,11 @@ resource "azurerm_servicebus_subscription" "main" {
 resource "azurerm_servicebus_subscription_rule" "main" {
   count = length(local.topic_subscription_rules)
 
-  name                = local.topic_subscription_rules[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  topic_name          = local.topic_subscription_rules[count.index].topic_name
-  subscription_name   = local.topic_subscription_rules[count.index].subscription_name
-  filter_type         = local.topic_subscription_rules[count.index].sql_filter != "" ? "SqlFilter" : null
-  sql_filter          = local.topic_subscription_rules[count.index].sql_filter
-  action              = local.topic_subscription_rules[count.index].action
+  name            = local.topic_subscription_rules[count.index].name
+  subscription_id = local.topic_subscription_rules[count.index].subscription_id
+  filter_type     = local.topic_subscription_rules[count.index].sql_filter != "" ? "SqlFilter" : null
+  sql_filter      = local.topic_subscription_rules[count.index].sql_filter
+  action          = local.topic_subscription_rules[count.index].action
 
   depends_on = [azurerm_servicebus_subscription.main]
 }
@@ -223,9 +217,8 @@ resource "azurerm_servicebus_subscription_rule" "main" {
 resource "azurerm_servicebus_queue" "main" {
   count = length(local.queues)
 
-  name                = local.queues[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
+  name         = local.queues[count.index].name
+  namespace_id = azurerm_servicebus_namespace.main.id
 
   auto_delete_on_idle                  = local.queues[count.index].auto_delete_on_idle
   default_message_ttl                  = local.queues[count.index].default_message_ttl
@@ -244,10 +237,8 @@ resource "azurerm_servicebus_queue" "main" {
 resource "azurerm_servicebus_queue_authorization_rule" "main" {
   count = length(local.queue_authorization_rules)
 
-  name                = local.queue_authorization_rules[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  queue_name          = local.queue_authorization_rules[count.index].queue_name
+  name     = local.queue_authorization_rules[count.index].name
+  queue_id = local.queue_authorization_rules[count.index].queue_id
 
   listen = contains(local.queue_authorization_rules[count.index].rights, "listen") ? true : false
   send   = contains(local.queue_authorization_rules[count.index].rights, "send") ? true : false
