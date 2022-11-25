@@ -28,6 +28,12 @@ output "primary_access_key" {
   sensitive   = true
 }
 
+output "primary_blob_endpoint" {
+  description = "The endpoint URL for blob storage in the primary location."
+  value       = azurerm_storage_account.main.primary_blob_endpoint
+  sensitive   = true
+}
+
 output "containers" {
   description = "Map of containers."
   value = {

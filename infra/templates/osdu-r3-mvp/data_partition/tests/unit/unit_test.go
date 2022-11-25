@@ -40,7 +40,7 @@ var deploy_dp_airflow = os.Getenv("TF_VAR_deploy_dp_airflow")
 var airflow_dp_resource_count = 94
 var deploy_rddms_resources = os.Getenv("TF_VAR_reservoir_ddms")
 var rddms_resource_count = 8
-var expected_resource_count = 149
+var expected_resource_count = 150
 
 func TestTemplate(t *testing.T) {
 
