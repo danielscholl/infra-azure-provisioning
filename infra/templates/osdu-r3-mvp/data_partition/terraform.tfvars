@@ -377,6 +377,18 @@ sb_topics = [
         forward_to         = ""
       }
     ]
+  },
+  {
+    name                = "recordsevent"
+    enable_partitioning = true
+    subscriptions = [
+      {
+        name               = "recordsevent"
+        max_delivery_count = 5
+        lock_duration      = "PT5M"
+        forward_to         = ""
+      }
+    ]
   }
 
 ]
