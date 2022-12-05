@@ -1,4 +1,4 @@
-FROM node:16.11.0
+FROM node:lts-buster
 
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/appinsights-statsd
@@ -32,7 +32,14 @@ RUN cd appinsights-statsd\
     >> ./config.js
 
 RUN cp -r ./statsd/node_modules/appinsights-statsd/node_modules/* ./statsd/node_modules/
-
+USER root
+RUN apt-get update && apt-get install -y --only-upgrade libdjvulibre21 \
+        libpq-dev \
+        libpq5 \
+        libicu63 \
+        libtiff-dev \
+        libtiffxx5 \
+        libtiff5
 # Expose required ports
 EXPOSE 8125/udp
 EXPOSE 8126

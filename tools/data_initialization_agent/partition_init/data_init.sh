@@ -12,11 +12,11 @@ trap cleanup EXIT
 currentStatus=""
 currentMessage=""
 
-OSDU_URI=${OSDU_HOST}
-
-if [[ ${OSDU_HOST} != "https://"* ]] || [[ ${OSDU_HOST} != "http://"* ]]; then
-  OSDU_URI="https://${OSDU_HOST}"
+if [[ -z "${NAMESPACE}" ]]; then
+  NAMESPACE="osdu-azure"
 fi
+
+PARTITION_HOST="http://partition.${NAMESPACE}.svc.cluster.local"
 
 echo "Trying to Fetch Access Token"
 ACCESS_TOKEN=$(sh ./get_access_token.sh)
@@ -46,7 +46,7 @@ else
     partition_count=$(expr $partition_count + 1)
     echo "Intitializing Partition: ${partitions_array[index]}"
   
-    OSDU_PARTITION_INIT_URI=${OSDU_URI}/api/partition/v1/partitions/${partitions_array[index]}
+    OSDU_PARTITION_INIT_URI=${PARTITION_HOST}/api/partition/v1/partitions/${partitions_array[index]}
     echo "Partition Initialization Endpoint: ${OSDU_PARTITION_INIT_URI}"
   
     i=0

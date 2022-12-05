@@ -12,11 +12,11 @@ trap cleanup EXIT
 currentStatus=""
 currentMessage=""
 
-OSDU_URI=${OSDU_HOST}
-
-if [[ ${OSDU_HOST} != "https://"* ]] || [[ ${OSDU_HOST} != "http://"* ]]; then
-  OSDU_URI="https://${OSDU_HOST}"
+if [[ -z "${NAMESPACE}" ]]; then
+  NAMESPACE="osdu-azure"
 fi
+
+ENTITLEMENT_HOST="http://entitlements.${NAMESPACE}.svc.cluster.local"
 
 echo "Trying to Fetch Access Token"
 ACCESS_TOKEN=$(sh ./get_access_token.sh)
@@ -39,7 +39,7 @@ else
     partition_count=$(expr $partition_count + 1)
     echo "Intitializing Entitlements for Partition: ${partitions_array[index]}"
   
-    OSDU_ENTITLEMENTS_INIT_URI=${OSDU_URI}/api/entitlements/v2/tenant-provisioning
+    OSDU_ENTITLEMENTS_INIT_URI=${ENTITLEMENT_HOST}/api/entitlements/v2/tenant-provisioning
     echo "Entitlements Partition Initialization Endpoint: ${OSDU_ENTITLEMENTS_INIT_URI}"
   
     i=0
@@ -113,7 +113,7 @@ else
 
     echo "Creating User Entitlements for Partition: ${partitions_array[index]}"  
     
-    OSDU_ENTITLEMENTS_CREATE_USER_URI=${OSDU_URI}/api/entitlements/v2/groups/users@${partitions_array[index]}.$SERVICE_DOMAIN/members
+    OSDU_ENTITLEMENTS_CREATE_USER_URI=${ENTITLEMENT_HOST}/api/entitlements/v2/groups/users@${partitions_array[index]}.$SERVICE_DOMAIN/members
     echo "Entitlements Partition Create User Endpoint: ${OSDU_ENTITLEMENTS_CREATE_USER_URI}"
   
     i=0
@@ -183,7 +183,7 @@ else
 
     echo "Adding Admin User Entitlements for Partition: ${partitions_array[index]}"  
     
-    OSDU_ENTITLEMENTS_ADD_OPS_URI=${OSDU_URI}/api/entitlements/v2/groups/users.datalake.ops@${partitions_array[index]}.$SERVICE_DOMAIN/members
+    OSDU_ENTITLEMENTS_ADD_OPS_URI=${ENTITLEMENT_HOST}/api/entitlements/v2/groups/users.datalake.ops@${partitions_array[index]}.$SERVICE_DOMAIN/members
     echo "Entitlements Partition Add Ops Endpoint: ${OSDU_ENTITLEMENTS_ADD_OPS_URI}"
   
     i=0
@@ -253,7 +253,7 @@ else
 
     echo "Adding User to Root for Partition: ${partitions_array[index]}"
 
-    OSDU_ENTITLEMENTS_ADD_ROOT_URI=${OSDU_URI}/api/entitlements/v2/groups/users.data.root@${partitions_array[index]}.$SERVICE_DOMAIN/members
+    OSDU_ENTITLEMENTS_ADD_ROOT_URI=${ENTITLEMENT_HOST}/api/entitlements/v2/groups/users.data.root@${partitions_array[index]}.$SERVICE_DOMAIN/members
     echo "Entitlements Partition Add Root Endpoint: ${OSDU_ENTITLEMENTS_ADD_ROOT_URI}"
 
     i=0
