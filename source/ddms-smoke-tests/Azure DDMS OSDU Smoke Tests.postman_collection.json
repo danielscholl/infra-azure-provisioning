@@ -1681,6 +1681,57 @@
 				{
 					"name": "Seismic DDMS: Smoke Tests",
 					"item": [
+												{
+							"name": "Seismic DDMS - Register Tenant",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 409\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+											"});",
+											"",
+											"pm.test(\"Project created or exists\", function () {",
+											"    if(pm.response.status == 409) {",
+											"        let text = pm.response.text();",
+											"        pm.expect(text).contains(\"has been registered already\");",
+											"",
+											"    } else if(pm.response.status == 200) {",
+											"        let json = pm.response.json();",
+											"        // TODO",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"gcpid\": \"{{seismic_project}}\",\n\t\"esd\": \"{{entitlement_domain}}\",\n    \"default_acl\": \"users.datalake.admins@{{entitlement_domain}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{seismic_ddms_host}}/tenant/{{seismic_project}}",
+									"host": [
+										"{{seismic_ddms_host}}"
+									],
+									"path": [
+										"tenant",
+										"{{seismic_project}}"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "Seismic DDMS - Check Path",
 							"event": [
@@ -1748,57 +1799,6 @@
 											"key": "cursor",
 											"value": "0"
 										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Seismic DDMS - Register Tenant",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200 or 409\", function () {",
-											"    pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
-											"});",
-											"",
-											"pm.test(\"Project created or exists\", function () {",
-											"    if(pm.response.status == 409) {",
-											"        let text = pm.response.text();",
-											"        pm.expect(text).contains(\"has been registered already\");",
-											"",
-											"    } else if(pm.response.status == 200) {",
-											"        let json = pm.response.json();",
-											"        // TODO",
-											"    }",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"gcpid\": \"{{seismic_project}}\",\n\t\"esd\": \"{{entitlement_domain}}\",\n    \"default_acl\": \"users.datalake.admins@{{entitlement_domain}}\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{seismic_ddms_host}}/tenant/{{seismic_project}}",
-									"host": [
-										"{{seismic_ddms_host}}"
-									],
-									"path": [
-										"tenant",
-										"{{seismic_project}}"
 									]
 								}
 							},
@@ -3174,7 +3174,7 @@
 											"    pm.response.to.have.status(\"OK\");",
 											"});",
 											"",
-											"pm.test(\"Subproject is Created\", function() {",
+											"pm.test(\"Textual Header exists\", function() {",
 											"    var response = pm.response.json();",
 											"    pm.expect(response.header).contains(\"C01\");",
 											"});",
@@ -3229,7 +3229,7 @@
 											"    pm.response.to.have.status(\"OK\");",
 											"});",
 											"",
-											"pm.test(\"Subproject is Created\", function() {",
+											"pm.test(\"Binary Header exists\", function() {",
 											"    var response = pm.response.json();",
 											"    pm.expect(response.header).contains(\"BinaryHeaders\");",
 											"});",

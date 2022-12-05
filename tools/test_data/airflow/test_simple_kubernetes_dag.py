@@ -4,9 +4,7 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.operators.dummy_operator import DummyOperator
 from airflow import configuration as conf
 from airflow.utils.dates import days_ago
-
 import json
-
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -16,13 +14,12 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=1)
 }
-
 dag = DAG(
     'test_simple_kubernetes_dag',
     schedule_interval=None,
     default_args=default_args,
     start_date=days_ago(2))
-
+operator_kwargs = {"annotations": {"sidecar.istio.io/inject": "false"}}
 start = DummyOperator(task_id='run_this_first', dag=dag)
 passing = KubernetesPodOperator(namespace="airflow",
                           image="python:3.6",
@@ -34,7 +31,7 @@ passing = KubernetesPodOperator(namespace="airflow",
                           get_logs=True,
                           in_cluster=True,
                           is_delete_operator_pod=False,
-                          dag=dag
+                          dag=dag,
+                          **operator_kwargs
                           )
-
 start >> passing
