@@ -379,16 +379,8 @@ sb_topics = [
     ]
   },
   {
-    name                = "recordsevent"
+    name                = "recordstopic-v2"
     enable_partitioning = true
-    subscriptions = [
-      {
-        name               = "recordsevent"
-        max_delivery_count = 5
-        lock_duration      = "PT5M"
-        forward_to         = ""
-      }
-    ]
   }
 
 ]
