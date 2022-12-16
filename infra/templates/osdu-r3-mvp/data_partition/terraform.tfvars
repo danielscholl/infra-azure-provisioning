@@ -381,6 +381,14 @@ sb_topics = [
   {
     name                = "recordstopic-v2"
     enable_partitioning = true
+    subscriptions = [
+      {
+        name               = "recordstopic-v2-subscription"
+        max_delivery_count = 5
+        lock_duration      = "PT5M"
+        forward_to         = ""
+      }
+    ]
   }
 
 ]
