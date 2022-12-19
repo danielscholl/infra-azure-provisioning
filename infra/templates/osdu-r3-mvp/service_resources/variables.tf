@@ -231,13 +231,19 @@ variable "subnet_fe_prefix" {
 variable "subnet_aks_prefix" {
   description = "The address prefix to use for the aks subnet."
   type        = string
-  default     = "10.10.2.0/24"
+  default     = "10.10.2.0/22"
 }
 
 variable "subnet_be_prefix" {
   description = "The address prefix to use for the backend subnet."
   type        = string
-  default     = "10.10.3.0/28"
+  default     = "10.10.6.0/28"
+}
+
+variable "istio_int_load_balancer_ip" {
+  description = "A IP addresse of an internal istio LB (Must be within subnet_aks_prefix ip range)"
+  type        = string
+  default     = "10.10.5.253"
 }
 
 variable "ssl_certificate_file" {
@@ -414,12 +420,6 @@ variable "cosmos_sql_collections" {
 variable "max_pods" {
   type    = string
   default = 30
-}
-
-variable "istio_int_load_balancer_ip" {
-  description = "A IP addresse of an internal istio LB"
-  type        = string
-  default     = "10.10.255.253"
 }
 
 variable "aks_dns_host" {
