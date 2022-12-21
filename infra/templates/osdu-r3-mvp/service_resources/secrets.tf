@@ -141,57 +141,66 @@ resource "azurerm_key_vault_certificate" "default" {
 }
 
 resource "azurerm_key_vault_certificate" "istio_ssl_certificate" {
-  count = var.ssl_certificate_file == "" ? 1 : 0
-
   name         = local.istio_ssl_cert_name
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 
-  certificate_policy {
-    issuer_parameters {
-      name = "Self"
+  dynamic "certificate" {
+    for_each = var.ssl_certificate_file != "" ? [0] : []
+    content {
+      contents = filebase64(var.ssl_certificate_file)
+      password = ""
     }
+  }
 
-    key_properties {
-      exportable = true
-      key_size   = 2048
-      key_type   = "RSA"
-      reuse_key  = true
-    }
-
-    lifetime_action {
-      action {
-        action_type = "AutoRenew"
+  dynamic "certificate_policy" {
+    for_each = var.ssl_certificate_file == "" ? [0] : []
+    content {
+      issuer_parameters {
+        name = "Self"
       }
 
-      trigger {
-        days_before_expiry = 30
-      }
-    }
-
-    secret_properties {
-      content_type = "application/x-pkcs12"
-    }
-
-    x509_certificate_properties {
-      # Server Authentication = 1.3.6.1.5.5.7.3.1
-      # Client Authentication = 1.3.6.1.5.5.7.3.2
-      extended_key_usage = ["1.3.6.1.5.5.7.3.1"]
-
-      key_usage = [
-        "cRLSign",
-        "dataEncipherment",
-        "digitalSignature",
-        "keyAgreement",
-        "keyCertSign",
-        "keyEncipherment",
-      ]
-
-      subject_alternative_names {
-        dns_names = [var.dns_name, "${local.base_name}-istio-gw.${azurerm_resource_group.main.location}.cloudapp.azure.com"]
+      key_properties {
+        exportable = true
+        key_size   = 2048
+        key_type   = "RSA"
+        reuse_key  = true
       }
 
-      subject            = "CN=${var.aks_dns_host}"
-      validity_in_months = 12
+      lifetime_action {
+        action {
+          action_type = "AutoRenew"
+        }
+
+        trigger {
+          days_before_expiry = 30
+        }
+      }
+
+      secret_properties {
+        content_type = "application/x-pkcs12"
+      }
+
+      x509_certificate_properties {
+        # Server Authentication = 1.3.6.1.5.5.7.3.1
+        # Client Authentication = 1.3.6.1.5.5.7.3.2
+        extended_key_usage = ["1.3.6.1.5.5.7.3.1"]
+
+        key_usage = [
+          "cRLSign",
+          "dataEncipherment",
+          "digitalSignature",
+          "keyAgreement",
+          "keyCertSign",
+          "keyEncipherment",
+        ]
+
+        subject_alternative_names {
+          dns_names = [var.dns_name, "${local.base_name}-istio-gw.${azurerm_resource_group.main.location}.cloudapp.azure.com"]
+        }
+
+        subject            = "CN=${var.aks_dns_host}"
+        validity_in_months = 12
+      }
     }
   }
 
