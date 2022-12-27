@@ -9296,7 +9296,7 @@
 	"variable": [
 		{
 			"key": "access_token",
-			"value": "<Autopopulated by Get Token>"
+			"value": "{{TOKEN}}"
 		},
 		{
 			"key": "id_token",
