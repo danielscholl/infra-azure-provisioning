@@ -19,7 +19,6 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	containerRegistryIntegTests "github.com/microsoft/cobalt/infra/modules/providers/azure/container-registry/tests/integration"
 	"github.com/microsoft/cobalt/test-harness/infratests"
 )
 
@@ -39,9 +38,6 @@ func TestDataEnvironment(t *testing.T) {
 		GoTest:                t,
 		TfOptions:             tfOptions,
 		ExpectedTfOutputCount: 12,
-		TfOutputAssertions: []infratests.TerraformOutputValidation{
-			containerRegistryIntegTests.InspectContainerRegistryOutputs(subscription, "central_resource_group_name", "container_registry_name"),
-		},
 	}
 	infratests.RunIntegrationTests(&testFixture)
 }

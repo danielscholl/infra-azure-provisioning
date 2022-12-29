@@ -19,7 +19,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/microsoft/cobalt/infra/modules/providers/azure/container-registry/tests"
+	"github.com/microsoft/cobalt/infra/modules/providers/azure/storage-account/tests"
 	"github.com/microsoft/cobalt/test-harness/infratests"
 )
 

@@ -24,7 +24,7 @@ read -p "Automated Pipeline deployment (only yes is accepted as true. Any other 
 
 read -p "Application namespace (Leave empty for default value - osdu. You'll need to edit this script if applications are running in different namespaces): " namespace
 
-export TF_VERSION="0.14.4"
+export TF_VERSION="1.3.5"
 export TF_VAR_gitops_ssh_url="$gitopsSshUrl"
 export TF_VAR_gitops_path="$gitopsPath"
 export TF_VAR_gitops_branch="$gitopsBranch"

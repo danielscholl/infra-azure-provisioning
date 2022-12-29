@@ -1,4 +1,5 @@
-//+build mage
+//go:build mage
+// +build mage
 
 // osdu-infrastructure task runner.
 package main

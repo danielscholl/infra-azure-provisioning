@@ -3,3 +3,5 @@
 .*\.http$
 charts/airflow/charts/CHANGELOG.md
 docs/security/aks-policies.md
+go.mod
+go.sum

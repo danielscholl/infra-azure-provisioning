@@ -26,8 +26,7 @@ Azure environment cost ballpark [estimate](https://tinyurl.com/y4e9s7rf). This i
 
 This document assumes one is running a current version of Ubuntu. Windows users can install the Ubuntu Terminal from the Microsoft Store. The Ubuntu Terminal enables Linux command-line utilities, including bash, ssh, and git that will be useful for the following deployment. _Note: You will need the Windows Subsystem for Linux installed to use the Ubuntu Terminal on Windows_.
 
-
-Currently the versions in use are [Terraform 0.14.4](https://releases.hashicorp.com/terraform/0.14.4/) and [GO 1.12.14](https://golang.org/dl/).
+Currently the versions in use are [Terraform 1.3.5](https://releases.hashicorp.com/terraform/1.3.5/) and [GO 1.18.8](https://golang.org/dl/).
 
 > Note: Terraform and Go are recommended to be installed using a [Terraform Version Manager](https://github.com/tfutils/tfenv) and a [Go Version Manager](https://github.com/stefanmaric/g)
 
