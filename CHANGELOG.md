@@ -4,7 +4,15 @@
 
 __Infra Changes__
 
-- [[Breaking Change] Move to IstioGw instead of AGIC controller](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236) - [Guide](./docs/upgrades/appgw-istiogw-migration.md)
+- [Terraform version upgrade 1.3.4](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
+  - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md)
+
+# v0.17.0 (2022-10) - M14
+
+__Infra Changes__
+
+- [[Breaking Change] Move to IstioGw instead of AGIC controller](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236)
+  - [Guide](./docs/upgrades/appgw-istiogw-migration.md)
 
 # v0.16.0 (2022-08) - M13
 

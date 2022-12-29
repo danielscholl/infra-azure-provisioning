@@ -13,7 +13,7 @@
 //  limitations under the License.
 
 terraform {
-  required_version = ">= 0.14"
+  required_version = ">= 1.3"
 
   backend "azurerm" {
     key = "terraform.tfstate"
