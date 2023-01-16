@@ -49,6 +49,9 @@ storage_shares = [
   "crs",
   "crs-conversion"]
 storage_queues = [ "airflowlogqueue" ]
+
+# (Optional) It can be commented if prefer to use the appgw default dns host
+aks_dns_host = <your.own.domain.name.org>
 ```
 
 __Provision__

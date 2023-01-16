@@ -66,7 +66,7 @@ output "appgw_name" {
 
 output "keyvault_secret_id" {
   description = "The keyvault certificate keyvault resource id used to setup ssl termination on the app gateway."
-  value       = azurerm_key_vault_certificate.default.0.secret_id
+  value       = azurerm_key_vault_certificate.istio_ssl_certificate.secret_id
 }
 
 

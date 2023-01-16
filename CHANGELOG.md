@@ -4,6 +4,7 @@
 
 __Infra Changes__
 
+- [[Breaking Change] AppGW AGIC Removal](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236)
 - [Terraform version upgrade 1.3.4](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
   - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md)
 

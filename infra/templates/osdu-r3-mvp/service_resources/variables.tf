@@ -210,12 +210,6 @@ variable "airflow_admin_password" {
   default     = ""
 }
 
-variable "dns_name" {
-  description = "Default DNS Name for the Public IP"
-  type        = string
-  default     = "osdu.contoso.com"
-}
-
 variable "address_space" {
   description = "The address space that is used by the virtual network."
   type        = string
@@ -356,18 +350,6 @@ variable "ssl_policy_min_protocol_version" {
   default     = "TLSv1_2"
 }
 
-variable "appgw_min_capacity" {
-  description = "Minimum number of instances to run in the App Gateway"
-  type        = number
-  default     = 2
-}
-
-variable "appgw_max_capacity" {
-  description = "Maximum number of instances to run in the App Gateway"
-  type        = number
-  default     = 10
-}
-
 variable "istio_appgw_min_capacity" {
   description = "Minimum number of instances to run in the Istio App Gateway"
   type        = number
@@ -425,7 +407,7 @@ variable "max_pods" {
 variable "aks_dns_host" {
   description = "A DNS name which will be used for APPGW backend http setting"
   type        = string
-  default     = "contoso.com"
+  default     = null
 }
 
 variable "aks_authorized_ip_ranges" {
