@@ -33,7 +33,7 @@ module "istio_appgateway" {
   resource_tags   = var.resource_tags
   min_capacity    = var.istio_appgw_min_capacity
   max_capacity    = var.istio_appgw_max_capacity
-  host_name       = var.aks_dns_host
+  host_name       = var.aks_dns_host == null ? local.default_istio_dns_hostname : var.aks_dns_host
   request_timeout = 300
 }
 

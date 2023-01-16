@@ -123,3 +123,7 @@ cosmos_databases = [
 ]
 
 disable_airflow1 = false
+
+# (Optional) It can be commented or null if prefer to use the appgw default dns host
+# More details in docs/dns-setup.md
+# aks_dns_host = null

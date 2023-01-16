@@ -85,4 +85,5 @@ blob_cors_rule = [
   }
 ]
 
+aks_dns_host = <your.own.domain.name.org>
 */

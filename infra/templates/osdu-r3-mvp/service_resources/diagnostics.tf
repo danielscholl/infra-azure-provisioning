@@ -51,49 +51,6 @@ resource "azurerm_monitor_diagnostic_setting" "vnet_diagnostics" {
   }
 }
 
-resource "azurerm_monitor_diagnostic_setting" "gw_diagnostics" {
-  name                       = "gw_diagnostics"
-  target_resource_id         = module.appgateway.id
-  log_analytics_workspace_id = data.terraform_remote_state.central_resources.outputs.log_analytics_id
-
-
-  log {
-    category = "ApplicationGatewayAccessLog"
-
-    retention_policy {
-      days    = var.log_retention_days
-      enabled = local.retention_policy
-    }
-  }
-
-  log {
-    category = "ApplicationGatewayPerformanceLog"
-
-    retention_policy {
-      days    = var.log_retention_days
-      enabled = local.retention_policy
-    }
-  }
-
-  log {
-    category = "ApplicationGatewayFirewallLog"
-
-    retention_policy {
-      days    = var.log_retention_days
-      enabled = local.retention_policy
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-
-    retention_policy {
-      days    = var.log_retention_days
-      enabled = local.retention_policy
-    }
-  }
-}
-
 resource "azurerm_monitor_diagnostic_setting" "istio_gw_diagnostics" {
 
   name                       = "istio_gw_diagnostics"

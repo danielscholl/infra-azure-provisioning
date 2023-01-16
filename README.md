@@ -287,6 +287,12 @@ We recommend to use latest stable infra version as does include latest supported
 
 - __NOTE__: Keda 1 is deprecated in v0.16.0 (M13)
 
+### Release/0.19 (M16) AGIC DNS update
+
+__Breaking Change__: In release/0.17 we introduced as mandatory the istio+appgw for ingress/services exposure, we will stop supporting AGIC ingress in `release/0.19 - M16`, therefore, you need to change the ip address registered in the AAA record your DNS provider to the istio appgw new ip address.
+
+Optionally, you can use the ip address label or hostname for ALIAS DNS record shown in azure portal (I.E: `osdu-mvp-srxxx-xxxx-istio-gw.<region>.cloudapp.azure.com)`)
+
 ### AKS Upgrade Steps
 
 [AKS Upgrade guide 0.15.0 -> 0.16.0](./docs/upgrades/aks-upgrade-0-24.md)

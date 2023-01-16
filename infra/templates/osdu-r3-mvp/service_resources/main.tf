@@ -115,14 +115,12 @@ locals {
   redis_queue_name = "${local.base_name}-queue"
   postgresql_name  = "${local.base_name}-pg"
 
-  vnet_name           = "${local.base_name_60}-vnet"
-  fe_subnet_name      = "${local.base_name_21}-fe-subnet"
-  aks_subnet_name     = "${local.base_name_21}-aks-subnet"
-  be_subnet_name      = "${local.base_name_21}-be-subnet"
-  app_gw_name         = "${local.base_name_60}-gw"
-  istio_app_gw_name   = "${local.base_name_21}-istio-gw"
-  appgw_identity_name = format("%s-agic-identity", local.app_gw_name)
-
+  vnet_name         = "${local.base_name_60}-vnet"
+  fe_subnet_name    = "${local.base_name_21}-fe-subnet"
+  aks_subnet_name   = "${local.base_name_21}-aks-subnet"
+  be_subnet_name    = "${local.base_name_21}-be-subnet"
+  app_gw_name       = "${local.base_name_60}-gw"
+  istio_app_gw_name = "${local.base_name_21}-istio-gw"
 
   aks_cluster_name  = "${local.base_name_60}-aks"
   aks_identity_name = format("%s-pod-identity", local.aks_cluster_name)
@@ -218,17 +216,6 @@ resource "azurerm_user_assigned_identity" "podidentity" {
 
   tags = var.resource_tags
 }
-
-// Create and Identity for AGIC
-resource "azurerm_user_assigned_identity" "agicidentity" {
-  name                = local.appgw_identity_name
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-
-  tags = var.resource_tags
-}
-
-
 
 #-------------------------------
 # Storage
@@ -338,51 +325,6 @@ module "network" {
   resource_tags = var.resource_tags
 }
 
-module "appgateway" {
-  source = "../../../modules/providers/azure/appgw"
-
-  name                = local.app_gw_name
-  resource_group_name = azurerm_resource_group.main.name
-
-  vnet_name                       = module.network.name
-  vnet_subnet_id                  = module.network.subnets.0
-  keyvault_id                     = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  keyvault_secret_id              = azurerm_key_vault_certificate.default.0.versionless_secret_id
-  ssl_certificate_name            = local.ssl_cert_name
-  ssl_policy_type                 = var.ssl_policy_type
-  ssl_policy_cipher_suites        = var.ssl_policy_cipher_suites
-  ssl_policy_min_protocol_version = var.ssl_policy_min_protocol_version
-
-  resource_tags = var.resource_tags
-  min_capacity  = var.appgw_min_capacity
-  max_capacity  = var.appgw_max_capacity
-  http_enabled  = true
-
-  depends_on = [azurerm_key_vault_certificate.default]
-}
-
-// Give AGIC Identity Access rights to Change the Application Gateway
-resource "azurerm_role_assignment" "appgwcontributor" {
-  principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
-  scope                = module.appgateway.id
-  role_definition_name = "Contributor"
-
-}
-
-// Give AGIC Identity the rights to look at the Resource Group
-resource "azurerm_role_assignment" "agic_resourcegroup_reader" {
-  principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
-  scope                = azurerm_resource_group.main.id
-  role_definition_name = "Reader"
-}
-
-// Give AGIC Identity rights to Operate the Gateway Identity
-resource "azurerm_role_assignment" "agic_app_gw_mi" {
-  principal_id         = azurerm_user_assigned_identity.agicidentity.principal_id
-  scope                = module.appgateway.managed_identity_resource_id
-  role_definition_name = "Managed Identity Operator"
-}
-
 #-------------------------------
 # Azure AKS
 #-------------------------------
@@ -465,13 +407,6 @@ resource "azurerm_role_assignment" "acr_reader" {
   principal_id         = module.aks.kubelet_object_id
   scope                = data.terraform_remote_state.central_resources.outputs.container_registry_id
   role_definition_name = "AcrPull"
-}
-
-// Give AKS Rights to operate the AGIC Identity
-resource "azurerm_role_assignment" "mi_ag_operator" {
-  principal_id         = module.aks.kubelet_object_id
-  scope                = azurerm_user_assigned_identity.agicidentity.id
-  role_definition_name = "Managed Identity Operator"
 }
 
 // Give AKS Access Rights to operate the Pod Identity

@@ -76,68 +76,8 @@ resource "azurerm_key_vault_secret" "system_storage_key" {
 # Network
 #-------------------------------
 locals {
-  ssl_cert_name       = "appgw-ssl-cert"
-  istio_ssl_cert_name = "istio-appgw-ssl-cert"
-}
-
-resource "azurerm_key_vault_certificate" "default" {
-  count = var.ssl_certificate_file == "" ? 1 : 0
-
-  name         = local.ssl_cert_name
-  key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
-
-  certificate_policy {
-    issuer_parameters {
-      name = "Self"
-    }
-
-    key_properties {
-      exportable = true
-      key_size   = 2048
-      key_type   = "RSA"
-      reuse_key  = true
-    }
-
-    lifetime_action {
-      action {
-        action_type = "AutoRenew"
-      }
-
-      trigger {
-        days_before_expiry = 30
-      }
-    }
-
-    secret_properties {
-      content_type = "application/x-pkcs12"
-    }
-
-    x509_certificate_properties {
-      # Server Authentication = 1.3.6.1.5.5.7.3.1
-      # Client Authentication = 1.3.6.1.5.5.7.3.2
-      extended_key_usage = ["1.3.6.1.5.5.7.3.1"]
-
-      key_usage = [
-        "cRLSign",
-        "dataEncipherment",
-        "digitalSignature",
-        "keyAgreement",
-        "keyCertSign",
-        "keyEncipherment",
-      ]
-
-      subject_alternative_names {
-        dns_names = [var.dns_name, "${local.base_name}-gw.${azurerm_resource_group.main.location}.cloudapp.azure.com"]
-      }
-
-      subject            = "CN=*.contoso.com"
-      validity_in_months = 12
-    }
-  }
-
-  lifecycle {
-    ignore_changes = all
-  }
+  istio_ssl_cert_name        = "istio-appgw-ssl-cert"
+  default_istio_dns_hostname = format("%s-istio-gw.%s.cloudapp.azure.com", local.base_name, azurerm_resource_group.main.location)
 }
 
 resource "azurerm_key_vault_certificate" "istio_ssl_certificate" {
@@ -195,10 +135,10 @@ resource "azurerm_key_vault_certificate" "istio_ssl_certificate" {
         ]
 
         subject_alternative_names {
-          dns_names = [var.dns_name, "${local.base_name}-istio-gw.${azurerm_resource_group.main.location}.cloudapp.azure.com"]
+          dns_names = var.aks_dns_host == null ? [local.default_istio_dns_hostname] : [var.aks_dns_host, local.default_istio_dns_hostname]
         }
 
-        subject            = "CN=${var.aks_dns_host}"
+        subject            = var.aks_dns_host == null ? format("CN=%s", local.default_istio_dns_hostname) : format("CN=%s", var.aks_dns_host)
         validity_in_months = 12
       }
     }
@@ -245,7 +185,6 @@ locals {
   redis_password_name       = "redis-password"
   redis_queue_hostname      = "redis-queue-hostname"
   redis_queue_password_name = "redis-queue-password"
-
 }
 
 resource "azurerm_key_vault_secret" "redis_host" {
