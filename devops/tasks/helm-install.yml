@@ -35,7 +35,7 @@ steps:
 
         echo "Logging in to AKS"
         echo "------------------------------------"
-        sudo az aks install-cli
+        which kubectl || sudo az aks install-cli
         AKS_NAME=$(az aks list --resource-group $BASE_NAME_RG-rg --query '[].{name:name}' -otsv)
         az aks get-credentials -g $BASE_NAME_RG-rg -n $AKS_NAME
 
