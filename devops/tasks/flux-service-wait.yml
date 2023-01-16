@@ -33,7 +33,7 @@ steps:
 
         echo "Logging in to AKS"
         echo "------------------------------------"
-        sudo az aks install-cli
+        which kubectl || sudo az aks install-cli
         az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks
 
         if [[ $MIGRATION_CLEANUP == "true" ]]; then
@@ -47,7 +47,7 @@ steps:
             echo "[INFO] Helm release already found, skiping cleanup"
             exit 0
           fi
-          sudo az aks install-cli
+          which kubectl || sudo az aks install-cli
           for k8sman in $(find $GITOPS_MANIFEST_DIRECTORY -name '*.yaml' -o -name '*.yml'); do
             kubectl delete -f $k8sman || echo "[WARN] Not found $k8sman --- good"
           done
