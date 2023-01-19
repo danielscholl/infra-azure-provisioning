@@ -18,8 +18,8 @@ Referenced issues:
 * __Istio internall LB in pending state__
   * Most likely AKS control plane don't have access yet to the network, therefore you need to apply changes in the latest terraform code.
 * __AppGw Certificate issues__
-  * Check logs for cert-checker job in istio-system namespace, you can as well modify the value in the settings of the https of the appgw and configure it manually if needed or if you're using BYOC.
-  * We had see that sometimes the job will not be able to get the lets-encrypt certificate from the osdu namespace to the istio-system namespace, would need to update that accordingly or figure out error with the job.
+  * Check logs for cert-checker cronjob in osdu namespace. Alternatively, you can as well modify the value in the settings of the https of the appgw and configure it manually if needed or if you're using BYOC.
+  * We had see that sometimes the cronjob will not be able to get the lets-encrypt certificate from the osdu namespace to the istio-system namespace, would need to update that accordingly or figure out error with the cronjob.
   * When you try to generate new certificate from the ACME and cert manager, you may notice that ingress it will be created but not able to expose the http response from the certificate generator, you can overcome this by adding in istiogw:
   * As well to create service to expose that cert-manager endpoint, I.E:
 
