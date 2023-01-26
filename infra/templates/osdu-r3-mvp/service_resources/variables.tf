@@ -124,6 +124,12 @@ variable "storage_queues" {
   type        = list(string)
 }
 
+variable "storage_allow_nested_items_to_be_public" {
+  description = "(Optional) Allow or disallow nested items within this Account to opt into being public."
+  type        = bool
+  default     = false
+}
+
 variable "redis_config_schedule" {
   description = "Configures the weekly schedule for server patching (Patch Window lasts for 5 hours). Also enables a single cluster for premium tier and when enabled, the true cache capacity of a redis cluster is capacity * cache_shard_count. 10 is the maximum number of shards/nodes allowed."
   type = object({

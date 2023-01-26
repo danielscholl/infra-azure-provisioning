@@ -32,19 +32,19 @@ variable "resource_group_name" {
 variable "keyvault_key_permissions" {
   description = "Permissions that the service principal has for accessing keys from KeyVault"
   type        = list(string)
-  default     = ["create", "get", "list", "delete", "encrypt", "decrypt", "recover", "restore", "purge"]
+  default     = ["Create", "Get", "List", "Delete", "Encrypt", "Decrypt", "Recover", "Restore", "Purge"]
 }
 
 variable "keyvault_secret_permissions" {
   description = "Permissions that the service principal has for accessing secrets from KeyVault"
   type        = list(string)
-  default     = ["set", "get", "list", "delete", "recover", "restore", "purge"]
+  default     = ["Set", "Get", "List", "Delete", "Recover", "Restore", "Purge"]
 }
 
 variable "keyvault_certificate_permissions" {
   description = "Permissions that the service principal has for accessing certificates from KeyVault"
   type        = list(string)
-  default     = ["create", "get", "list", "delete", "recover", "restore", "purge"]
+  default     = ["Create", "Get", "List", "Delete", "Recover", "Restore", "Purge"]
 }
 
 variable "keyvault_purge_protection_enabled" {
@@ -75,4 +75,12 @@ variable "secrets" {
   type        = map(string)
   description = "A map of secrets for the Key Vault."
   default     = {}
+}
+
+locals {
+  keyvault_key_permissions = [for s in var.keyvault_key_permissions : title(s)]
+
+  keyvault_secret_permissions = [for s in var.keyvault_secret_permissions : title(s)]
+
+  keyvault_certificate_permissions = [for s in var.keyvault_certificate_permissions : title(s)]
 }

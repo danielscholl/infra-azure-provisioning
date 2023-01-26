@@ -76,7 +76,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "internal" {
   max_pods              = var.max_pods
   max_count             = var.auto_scaling_default_node == true ? var.max_node_count : null
   min_count             = var.auto_scaling_default_node == true ? var.agent_vm_count : null
-  availability_zones    = var.availability_zones
+  zones                 = var.zones
   mode                  = "System"
   orchestrator_version  = var.kubernetes_version
 
@@ -99,6 +99,8 @@ resource "azurerm_kubernetes_cluster" "main" {
 
   api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
   private_cluster_enabled         = var.private_cluster_enabled
+
+  role_based_access_control_enabled = true
 
   linux_profile {
     admin_username = var.admin_user
@@ -127,10 +129,6 @@ resource "azurerm_kubernetes_cluster" "main" {
     service_cidr       = var.service_cidr
     dns_service_ip     = var.dns_ip
     docker_bridge_cidr = var.docker_cidr
-  }
-
-  role_based_access_control {
-    enabled = true
   }
 
   dynamic "service_principal" {
@@ -166,7 +164,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   lifecycle {
     ignore_changes = [
       default_node_pool[0].node_count,
-      addon_profile[0].oms_agent[0].log_analytics_workspace_id
+      oms_agent[0].log_analytics_workspace_id
     ]
   }
 }

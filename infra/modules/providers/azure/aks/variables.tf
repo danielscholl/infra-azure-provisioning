@@ -157,7 +157,7 @@ variable "msi_enabled" {
   default = true
 }
 
-variable "availability_zones" {
+variable "zones" {
   description = "Availability zones for the aks nodepools"
   type        = list(string)
   default     = null

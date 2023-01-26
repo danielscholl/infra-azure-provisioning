@@ -30,7 +30,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "= 2.98.0"
+      version = "= 3.39.1"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -60,7 +60,13 @@ terraform {
 # Providers
 #-------------------------------
 provider "azurerm" {
-  features {}
+  features {
+    key_vault {
+      recover_soft_deleted_key_vaults = true
+      purge_soft_delete_on_destroy    = false
+      recover_soft_deleted_secrets    = true
+    }
+  }
 }
 
 // Hook-up kubectl Provider for Terraform
@@ -231,6 +237,8 @@ module "storage_account" {
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
 
+  allow_nested_items_to_be_public = var.storage_allow_nested_items_to_be_public
+
   resource_tags = var.resource_tags
 }
 
@@ -277,6 +285,8 @@ module "system_storage_account" {
   container_names     = var.system_storage_containers
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
+
+  allow_nested_items_to_be_public = var.storage_allow_nested_items_to_be_public
 
   resource_tags  = var.resource_tags
   blob_cors_rule = var.blob_cors_rule
@@ -335,7 +345,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.main.name
 
   dns_prefix         = local.aks_dns_prefix
-  availability_zones = local.nodepool_zones
+  zones              = local.nodepool_zones
   agent_vm_count     = var.aks_agent_vm_count
   agent_vm_size      = var.aks_agent_vm_size
   agent_vm_disk      = var.aks_agent_vm_disk
@@ -365,7 +375,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "services" {
   node_count            = var.aks_services_agent_vm_count
   min_count             = var.aks_services_agent_vm_count
   max_count             = var.aks_services_agent_vm_maxcount
-  availability_zones    = local.nodepool_zones
+  zones                 = local.nodepool_zones
   vnet_subnet_id        = module.network.subnets.1
   orchestrator_version  = var.kubernetes_version
   vm_size               = var.aks_services_agent_vm_size
