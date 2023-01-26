@@ -36,7 +36,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.98.0"
+      version = "=3.39.1"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -58,7 +58,13 @@ terraform {
 # Providers
 #-------------------------------
 provider "azurerm" {
-  features {}
+  features {
+    key_vault {
+      recover_soft_deleted_key_vaults = true
+      purge_soft_delete_on_destroy    = false
+      recover_soft_deleted_secrets    = true
+    }
+  }
 }
 
 
@@ -184,6 +190,8 @@ module "storage_account" {
   container_names     = []
   kind                = "StorageV2"
   replication_type    = var.storage_replication_type
+
+  allow_nested_items_to_be_public = var.storage_allow_nested_items_to_be_public
 
   resource_tags = var.resource_tags
 }

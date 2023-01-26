@@ -31,6 +31,8 @@ resource "azurerm_storage_account" "main" {
   min_tls_version           = var.min_tls_version
   is_hns_enabled            = var.is_hns_enabled
 
+  allow_nested_items_to_be_public = var.allow_nested_items_to_be_public
+
   # enrolls storage account into azure 'managed identities' authentication
   identity {
     type = "SystemAssigned"

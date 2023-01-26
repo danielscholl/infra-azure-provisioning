@@ -62,6 +62,11 @@ variable "replication_type" {
   default     = "LRS"
 }
 
+variable "allow_nested_items_to_be_public" {
+  description = "(Optional) Allow or disallow nested items within this Account to opt into being public. Defaults to true."
+  type        = bool
+  default     = true
+}
 
 # Configuration Items (optional)
 

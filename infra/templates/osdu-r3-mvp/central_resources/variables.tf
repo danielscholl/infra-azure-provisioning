@@ -101,6 +101,12 @@ variable "storage_replication_type" {
   default     = "LRS"
 }
 
+variable "storage_allow_nested_items_to_be_public" {
+  description = "(Optional) Allow or disallow nested items within this Account to opt into being public."
+  type        = bool
+  default     = false
+}
+
 variable "cosmosdb_replica_location" {
   description = "The name of the Azure region to host replicated data. i.e. 'East US' 'East US 2'. More locations can be found at https://azure.microsoft.com/en-us/global-infrastructure/locations/"
   type        = string

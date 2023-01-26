@@ -18,7 +18,7 @@ output "properties" {
     cosmosdb = {
       id                 = azurerm_cosmosdb_account.cosmosdb.id
       endpoint           = azurerm_cosmosdb_account.cosmosdb.endpoint
-      primary_master_key = azurerm_cosmosdb_account.cosmosdb.primary_master_key
+      primary_master_key = azurerm_cosmosdb_account.cosmosdb.primary_key
       connection_strings = azurerm_cosmosdb_account.cosmosdb.connection_strings
     }
   }
