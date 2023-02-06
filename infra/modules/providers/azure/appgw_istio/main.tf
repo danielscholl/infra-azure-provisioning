@@ -41,6 +41,8 @@ resource "azurerm_public_ip" "main" {
   domain_name_label = var.name
 
   tags = var.resource_tags
+
+  zones = var.gateway_zones
 }
 
 // This Identity is used for accessing Key Vault to retrieve SSL Certificate
@@ -135,6 +137,7 @@ resource "azurerm_application_gateway" "main" {
       http_listener_name         = format("http-%s", local.listener_name)
       backend_address_pool_name  = format("http-%s", local.backend_address_pool_name)
       backend_http_settings_name = format("http-%s", local.backend_http_settings)
+      priority                   = 20
     }
   }
 
@@ -186,6 +189,7 @@ resource "azurerm_application_gateway" "main" {
     http_listener_name         = format("https-%s", local.listener_name)
     backend_address_pool_name  = format("https-%s", local.backend_address_pool_name)
     backend_http_settings_name = format("https-%s", local.backend_http_settings)
+    priority                   = 10
   }
 
   backend_http_settings {
