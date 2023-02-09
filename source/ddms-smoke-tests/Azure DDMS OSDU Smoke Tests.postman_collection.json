@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "f6082455-2c83-44e7-8f29-fea763bf9142",
+		"_postman_id": "6f1e062c-0d73-4c3a-ad44-b240615bd472",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15970706"
+		"_exporter_id": "19314737"
 	},
 	"item": [
 		{
@@ -9266,6 +9266,67 @@
 			"name": "Simulation DDMS",
 			"item": [
 				{
+					"name": "Simulation DDMS: Build Verification",
+					"item": [
+						{
+							"name": "Health",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be valid\", function () {\r",
+											"     pm.response.to.be.ok;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/healthz",
+									"host": [
+										"{{simulation_ddms_host}}"
+									],
+									"path": [
+										"api",
+										"sim-dms",
+										"healthz"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Simulation DDMS: Setup",
 					"item": [
 						{
@@ -9512,12 +9573,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{simulation_ddms_host}}/api/simulations",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/simulations",
 									"host": [
 										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
+										"sim-dms",
+										"v1",
 										"simulations"
 									]
 								}
@@ -9525,7 +9588,7 @@
 							"response": []
 						},
 						{
-							"name": "Simulation",
+							"name": "Get Simulation",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -9580,14 +9643,165 @@
 									}
 								],
 								"url": {
-									"raw": "{{simulation_ddms_host}}/api/simulations/{{SimulationRecordID}}",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/simulations/{{SimulationRecordID}}",
 									"host": [
 										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
+										"sim-dms",
+										"v1",
 										"simulations",
 										"{{SimulationRecordID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Ensemble",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var uuid = require('uuid'); \r",
+											"var testUUID = uuid.v4();\r",
+											"\r",
+											"var dataPartition = pm.environment.get(\"data-partition-id\");\r",
+											"postman.setEnvironmentVariable(\"EnsembleRecordID\", testUUID);\r",
+											"var rand = _.random(999111111111, 999999999999);\r",
+											"pm.environment.set(\"ensembleName\", \"Ensemble-Name-Test\" + rand);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"status code is 201\", function () {\r",
+											"     pm.expect(pm.response.code).to.eql(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Location uuid is correctly set\", function () {\r",
+											"    pm.expect(pm.response.headers.get('Location')).to.eql(pm.environment.get('EnsembleRecordID'));\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "data-partition-id",
+										"value": "{{data-partition-id}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"acls\": {\r\n    \"owners\": [\r\n      \"{{New_OwnerDataGroup}}@{{data-partition-id}}.{{domain}}\"\r\n    ],\r\n    \"viewers\": [\r\n      \"{{New_ViewerDataGroup}}@{{data-partition-id}}.{{domain}}\"\r\n    ]\r\n  },\r\n  \"id\": \"{{EnsembleRecordID}}\",\r\n  \"legal\": {\r\n    \"legalTags\": [\r\n      \"{{tagName}}\"\r\n    ],\r\n    \"otherRelevantDataCountries\": [\r\n      \"BE\",\r\n      \"GB\"\r\n    ]\r\n  },\r\n  \"name\": \"{{ensembleName}}\",\r\n  \"realizations\": [\r\n      {\r\n          \"simulationId\": \"{{SimulationRecordID}}\"\r\n      }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/ensembles",
+									"host": [
+										"{{simulation_ddms_host}}"
+									],
+									"path": [
+										"api",
+										"sim-dms",
+										"v1",
+										"ensembles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Ensemble",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response must be valid\", function () {\r",
+											"     pm.response.to.be.ok;\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Record id is the correct uuid\", function () {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.id).to.equal(pm.environment.get('EnsembleRecordID'));\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "data-partition-id",
+										"value": "{{data-partition-id}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/ensembles/{{EnsembleRecordID}}",
+									"host": [
+										"{{simulation_ddms_host}}"
+									],
+									"path": [
+										"api",
+										"sim-dms",
+										"v1",
+										"ensembles",
+										"{{EnsembleRecordID}}"
 									]
 								}
 							},
