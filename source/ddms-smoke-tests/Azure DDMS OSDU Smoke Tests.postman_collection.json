@@ -9258,9 +9258,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/sim-dms/healthz",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/healthz",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9441,9 +9441,9 @@
 									"raw": "{\n    \"name\": \"{{tagName}}\",\n    \"description\": \"Legal Tag added for Simulation\",\n    \"properties\": {\n        \"contractId\": \"123456\",\n        \"countryOfOrigin\": [\n            \"US\",\n            \"GB\"\n        ],\n        \"dataType\": \"Public Domain Data\",\n        \"exportClassification\": \"EAR99\",\n        \"originator\": \"Schlumberger\",\n        \"personalData\": \"No Personal Data\",\n        \"securityClassification\": \"Private\",\n        \"expirationDate\": \"2025-12-25\"\n    }\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/{{legal}}/legaltags",
+									"raw": "{{simulation_ddms_host}}/{{legal}}/legaltags",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"{{legal}}",
@@ -9520,9 +9520,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/api/sim-dms/v1/simulations",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/simulations",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9590,9 +9590,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/sim-dms/v1/simulations/{{SimulationRecordID}}",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/simulations/{{SimulationRecordID}}",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9669,9 +9669,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/api/sim-dms/v1/ensembles",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/ensembles",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9739,9 +9739,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/sim-dms/v1/ensembles/{{EnsembleRecordID}}",
+									"raw": "{{simulation_ddms_host}}/api/sim-dms/v1/ensembles/{{EnsembleRecordID}}",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9794,9 +9794,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/storage/v2/records/{{data-partition-id}}:dre-experiment:{{SimulationRecordID}}",
+									"raw": "{{simulation_ddms_host}}/api/storage/v2/records/{{data-partition-id}}:dre-experiment:{{SimulationRecordID}}",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"api",
@@ -9847,9 +9847,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/{{legal}}/legaltags/:name",
+									"raw": "{{simulation_ddms_host}}/{{legal}}/legaltags/:name",
 									"host": [
-										"{{base_url}}"
+										"{{simulation_ddms_host}}"
 									],
 									"path": [
 										"{{legal}}",
