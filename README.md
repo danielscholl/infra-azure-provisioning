@@ -177,15 +177,14 @@ __Installed Azure Resources__
 5. A principal required by an OSDU environment deployment.
 6. An AD application to be leveraged that defines and controls access to the OSDU Environment for AD Identity.
 7. An AD application to be used for negative integration testing
-8. Assign "Azure Storage" "user_impersonation" api permission to the ad application
+8. Grant “admin consent” for API permissions is needed for the AD applications created.
 
 > Removal would require deletion of all AD elements `osdu-mvp-{UNIQUE}-*`, unlocking and deleting the resource group.
 
 ## Elastic Search Setup
 
-Infrastructure requires a bring your own Elastic Search Instance of a version of 7.x (ie: 7.11.1) with a valid https endpoint and the access information must now be stored in the Common KeyVault. The recommended method of Elastic Search is to use the [Elastic Cloud Managed Service from the Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/elastic.ec-azure?tab=Overview).
+Infrastructure requires a bring your own Elastic Search Instance of a version of 7.x (ie: 7.11.1) with a valid https endpoint and the access information must now be stored in the Common KeyVault. The recommended method of Elastic Search is to use the [Self managed Elastic Cloud Service from the Marketplace](https://azuremarketplace.microsoft.com/en-au/marketplace/apps/elastic.elasticsearch?exp=ubp8&tab=Overview).
 
-> Note: Elastic Cloud Managed Service requires a Credit Card to be associated to the subscription for billing purposes.
 
 ```bash
 ES_ENDPOINT=""

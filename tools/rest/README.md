@@ -18,6 +18,7 @@ PARTITION_NAME=<partition_name> # Replace with name of the data partition
 
 CLIENT_SECRET=$(az ad app credential reset --id $(az keyvault secret show --id https://${ENV_VAULT}.vault.azure.net/secrets/aad-client-id --query value -otsv) --query password -otsv)
 ```
+**Note:** Manually add client secret in azure portal if the above scripts fails.
 
 __Retrieve Environment Settings__
 
