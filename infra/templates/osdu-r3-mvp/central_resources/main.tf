@@ -211,13 +211,14 @@ resource "azurerm_role_assignment" "storage_access" {
 module "graph_account" {
   source = "../../../modules/providers/azure/cosmosdb"
 
-  name                     = local.graphdb_name
-  resource_group_name      = azurerm_resource_group.main.name
-  primary_replica_location = var.cosmosdb_replica_location
-  automatic_failover       = var.cosmosdb_automatic_failover
-  consistency_level        = var.cosmosdb_consistency_level
-  graph_databases          = var.cosmos_graph_databases
-  graphs                   = var.cosmos_graphs
+  name                       = local.graphdb_name
+  resource_group_name        = azurerm_resource_group.main.name
+  primary_replica_location   = var.cosmosdb_replica_location
+  automatic_failover         = var.cosmosdb_automatic_failover
+  consistency_level          = var.cosmosdb_consistency_level
+  graph_databases            = var.cosmos_graph_databases
+  graphs                     = var.cosmos_graphs
+  cosmosdb_backup_redundancy = var.cosmosdb_backup_redundancy
 
   resource_tags = var.resource_tags
 }

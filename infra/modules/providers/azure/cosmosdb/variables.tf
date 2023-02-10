@@ -94,3 +94,9 @@ variable "is_primary_loc_set" {
   type        = string
   default     = null
 }
+
+variable "cosmosdb_backup_redundancy" {
+  description = "The storage redundancy which is used to indicate type of backup residency. Possible values are 'Geo', 'Local' and 'Zone'."
+  type        = string
+  default     = "Geo"
+}

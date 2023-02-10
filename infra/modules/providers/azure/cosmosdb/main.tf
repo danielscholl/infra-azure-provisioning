@@ -46,6 +46,13 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
     location          = var.primary_replica_location
     failover_priority = var.is_primary_loc_set == null ? 0 : 1
   }
+
+  backup {
+    type                = "Periodic"
+    interval_in_minutes = 480
+    retention_in_hours  = 672
+    storage_redundancy  = var.cosmosdb_backup_redundancy
+  }
 }
 
 resource "azurerm_cosmosdb_sql_database" "cosmos_dbs" {
