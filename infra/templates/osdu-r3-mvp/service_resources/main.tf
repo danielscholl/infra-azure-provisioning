@@ -550,13 +550,14 @@ resource "azurerm_role_assignment" "redis_queue" {
 module "cosmosdb_account" {
   source = "../../../modules/providers/azure/cosmosdb"
 
-  name                     = local.cosmosdb_name
-  resource_group_name      = azurerm_resource_group.main.name
-  primary_replica_location = var.cosmosdb_replica_location
-  automatic_failover       = var.cosmosdb_automatic_failover
-  consistency_level        = var.cosmosdb_consistency_level
-  databases                = var.cosmos_databases
-  sql_collections          = var.cosmos_sql_collections
+  name                       = local.cosmosdb_name
+  resource_group_name        = azurerm_resource_group.main.name
+  primary_replica_location   = var.cosmosdb_replica_location
+  automatic_failover         = var.cosmosdb_automatic_failover
+  consistency_level          = var.cosmosdb_consistency_level
+  databases                  = var.cosmos_databases
+  sql_collections            = var.cosmos_sql_collections
+  cosmosdb_backup_redundancy = var.cosmosdb_backup_redundancy
 
   resource_tags = var.resource_tags
 }

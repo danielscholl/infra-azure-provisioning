@@ -143,3 +143,9 @@ variable "cosmos_graphs" {
   }))
   default = []
 }
+
+variable "cosmosdb_backup_redundancy" {
+  description = "The storage redundancy which is used to indicate type of backup residency."
+  type        = string
+  default     = "Geo"
+}
