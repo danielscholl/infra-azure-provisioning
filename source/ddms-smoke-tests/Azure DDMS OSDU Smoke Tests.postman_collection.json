@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5bdb8f3e-dcc0-494f-b487-445e19265375",
+		"_postman_id": "2305eadd-4e3f-4c1f-a7ea-b418cd583f84",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -9276,88 +9276,6 @@
 				{
 					"name": "Simulation DDMS: Setup",
 					"item": [
-						{
-							"name": "Get an SPN Token",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"// this snippet extracts the new access and id tokens\r",
-											"// and puts them to environment variables\r",
-											"cp = pm.environment.get(\"cloud_platform\");\r",
-											"\r",
-											"var data = JSON.parse(responseBody)\r",
-											"pm.environment.set(\"access_token\", data.access_token);\r",
-											"if (cp == \"AWS\" || cp == \"IBM\") {\r",
-											"   pm.environment.set(\"id_token\", data.id_token);\r",
-											"}\r",
-											"// Uncomment if server returns a new refresh_token,\r",
-											"// otherwise comment out to prevent overwriting it with null\r",
-											"if (cp == \"Azure\") {\r",
-											"    pm.environment.set(\"refresh_token\", data.refresh_token);\r",
-											"}\r",
-											"\r",
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "grant_type",
-											"value": "client_credentials",
-											"type": "text"
-										},
-										{
-											"key": "client_id",
-											"value": "{{CLIENT_ID}}",
-											"type": "text"
-										},
-										{
-											"key": "client_secret",
-											"value": "{{CLIENT_SECRET}}",
-											"type": "text"
-										},
-										{
-											"key": "scope",
-											"value": "{{SCOPE}}",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "https://login.microsoftonline.com/{{TENANT_ID}}/oauth2/v2.0/token",
-									"protocol": "https",
-									"host": [
-										"login",
-										"microsoftonline",
-										"com"
-									],
-									"path": [
-										"{{TENANT_ID}}",
-										"oauth2",
-										"v2.0",
-										"token"
-									]
-								}
-							},
-							"response": []
-						},
 						{
 							"name": "Create Legal Tag for SimDMS",
 							"event": [
