@@ -6,7 +6,7 @@ Clone the following repository and have them in the same file structure level as
 
 ```bash
 // you should be at one directory level above infra-azure-provisioning
-export BRANCH_NAME="release/0.10" // branch name for the release 0.10.0
+export BRANCH_NAME="release/0.10" // replace the branch name with latest release.
 
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-catalog-service.git
 git clone -b $BRANCH_NAME --single-branch https://community.opengroup.org/osdu/platform/system/reference/crs-conversion-service.git
@@ -91,7 +91,7 @@ Manifest Ingestion Dags have now support for Packaged dags therefore we will upl
 - Clone manifest ingestion repository from [here](https://community.opengroup.org/osdu/platform/data-flow/ingestion/ingestion-dags/-/tree/master)
 - Ensure python 3.8 or higher is installed
 - From root of the repository run the command
-``python deployments/scripts/azure/zip_dags.py``
+``python3 deployments/scripts/azure/zip_dags.py``
 - This will output a zipped file named as "manifest_ingestion_dags.zip"
 - Now execute the below script to upload the dag zip file to File share
 ```bash

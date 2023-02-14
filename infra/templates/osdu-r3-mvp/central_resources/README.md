@@ -131,6 +131,11 @@ terraform destroy
 
 Please confirm that you've completed the `terraform apply` step before running the integration tests as we're validating the active terraform workspace.
 
+**Note:** Install gcc step as a prerequisite before performing unit tests.
+
+Follow this link to install [GCC](https://gcc.gnu.org/install/index.html)
+
+
 Unit tests can be run using the following command:
 
 ```

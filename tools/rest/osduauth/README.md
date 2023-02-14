@@ -179,7 +179,7 @@ __Create a docker container__
 Bring up osdu auth and access the login page via http://localhost:8080
 
 ```
-docker-compose up
+sudo docker-compose up
 ```
 
 Without changing any of the settings, hit the "Authorize" button to create an authorization code. To generate a token using this code, you fill in this authorization code [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/blob/master/tools/rest/auth_token.http#L7). You can then use the "authorize" request to generate a refresh token. You then take this refresh token and enter is as the "INITIAL_TOKEN" in the VS code settings you created [here](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/rest). Once you have completed this step, you should be able to use any of the requests in the [rest](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/tree/master/tools/rest) directory.
