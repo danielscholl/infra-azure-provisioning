@@ -20,6 +20,12 @@ locals {
   log_analytics_id  = var.log_analytics_id == "" ? azurerm_log_analytics_workspace.main.0.id : var.log_analytics_id
 }
 
+data "azurerm_kubernetes_service_versions" "current" {
+  location        = data.azurerm_resource_group.main.location
+  version_prefix  = var.aks_version_prefix
+  include_preview = false
+}
+
 data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
@@ -78,7 +84,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "internal" {
   min_count             = var.auto_scaling_default_node == true ? var.agent_vm_count : null
   zones                 = var.zones
   mode                  = "System"
-  orchestrator_version  = var.kubernetes_version
+  orchestrator_version  = data.azurerm_kubernetes_service_versions.current.latest_version
 
   lifecycle {
     ignore_changes = [
@@ -95,7 +101,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   tags = var.resource_tags
 
   dns_prefix         = var.dns_prefix
-  kubernetes_version = var.kubernetes_version
+  kubernetes_version = data.azurerm_kubernetes_service_versions.current.latest_version
 
   api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
   private_cluster_enabled         = var.private_cluster_enabled
@@ -120,7 +126,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     max_pods             = var.max_pods
     max_count            = "3"
     min_count            = "1"
-    orchestrator_version = var.kubernetes_version
+    orchestrator_version = data.azurerm_kubernetes_service_versions.current.latest_version
   }
 
   network_profile {

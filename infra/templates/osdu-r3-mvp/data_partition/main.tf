@@ -533,7 +533,7 @@ module "airflow" {
   ssl_challenge_required   = var.ssl_challenge_required
   sr_aks_egress_ip_address = data.terraform_remote_state.service_resources.outputs.aks_egress_ip_address
   cr_keyvault_id           = data.terraform_remote_state.central_resources.outputs.keyvault_id
-  kubernetes_version       = var.dp_airflow_aks_version
+  aks_version_prefix       = var.dp_airflow_aks_version_prefix
 }
 
 

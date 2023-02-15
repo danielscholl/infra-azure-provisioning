@@ -260,10 +260,10 @@ variable "reservoir_ddms" {
   }
 }
 
-variable "dp_airflow_aks_version" {
+variable "dp_airflow_aks_version_prefix" {
   description = "(Optional) AKS version for the AKS airflow2 resources, ignored if deploy_dp_airflow is disabled"
   type        = string
-  default     = "1.24.0"
+  default     = "1.25"
 }
 
 variable "cosmosdb_backup_redundancy" {

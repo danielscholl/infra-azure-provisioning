@@ -69,6 +69,9 @@ jobs:
   - name: TF_VAR_DATA_PARTITION_NAME
     value: ${{ parameters.configuration.dataPartitionName }}
 
+  - name: GOPATH
+    value: '$(Pipeline.Workspace)/go'
+
   environment: ${{ parameters.environment }}
   strategy:
     runOnce:
@@ -84,7 +87,7 @@ jobs:
             downloadPath: '$(System.DefaultWorkingDirectory)'
 
         - task: GoTool@0
-          condition: and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skip }})))
+          condition: and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skipTests }})))
           displayName: 'Ensure Golang'
           inputs:
             version: '$(GO_VERSION)'

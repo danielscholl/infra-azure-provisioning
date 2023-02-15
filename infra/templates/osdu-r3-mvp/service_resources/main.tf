@@ -140,7 +140,8 @@ locals {
 
   gateway_zones = [
     "1",
-    "2"
+    "2",
+    "3"
   ]
 
   role = "Contributor"
@@ -352,7 +353,7 @@ module "aks" {
   max_node_count     = var.aks_agent_vm_maxcount
   vnet_subnet_id     = module.network.subnets.1
   ssh_public_key     = file(var.ssh_public_key_file)
-  kubernetes_version = var.kubernetes_version
+  aks_version_prefix = var.aks_version_prefix
   log_analytics_id   = data.terraform_remote_state.central_resources.outputs.log_analytics_id
   max_pods           = var.max_pods
 
@@ -377,7 +378,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "services" {
   max_count             = var.aks_services_agent_vm_maxcount
   zones                 = local.nodepool_zones
   vnet_subnet_id        = module.network.subnets.1
-  orchestrator_version  = var.kubernetes_version
+  orchestrator_version  = module.aks.kubernetes_version
   vm_size               = var.aks_services_agent_vm_size
   os_disk_size_gb       = var.aks_services_agent_vm_disk
   enable_auto_scaling   = true

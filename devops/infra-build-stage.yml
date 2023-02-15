@@ -83,7 +83,7 @@ jobs:
       downloadPath: '$(System.DefaultWorkingDirectory)'
 
   - task: GoTool@0
-    condition: and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skip }})))
+    condition: and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skipTests }})))
     displayName: 'Ensure Golang'
     inputs:
       version: '$(GO_VERSION)'

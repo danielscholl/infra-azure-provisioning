@@ -35,7 +35,7 @@ module "aks" {
   max_node_count     = var.aks_agent_vm_maxcount
   vnet_subnet_id     = module.network.subnets.1
   ssh_public_key     = file(var.ssh_public_key_file)
-  kubernetes_version = var.kubernetes_version
+  aks_version_prefix = var.aks_version_prefix
   log_analytics_id   = var.log_analytics_id
 
   msi_enabled               = true

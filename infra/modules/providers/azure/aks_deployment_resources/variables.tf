@@ -83,7 +83,7 @@ variable "aks_agent_vm_disk" {
   type        = number
 }
 
-variable "kubernetes_version" {
+variable "aks_version_prefix" {
   type = string
 }
 
