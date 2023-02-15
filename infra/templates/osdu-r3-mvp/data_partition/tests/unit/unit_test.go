@@ -37,7 +37,7 @@ var tfOptions = &terraform.Options{
 }
 
 var deploy_dp_airflow = os.Getenv("TF_VAR_deploy_dp_airflow")
-var airflow_dp_resource_count = 94
+var airflow_dp_resource_count = 95
 var deploy_rddms_resources = os.Getenv("TF_VAR_reservoir_ddms")
 var rddms_resource_count = 8
 var expected_resource_count = 152
