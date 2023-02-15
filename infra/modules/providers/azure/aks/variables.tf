@@ -57,10 +57,12 @@ variable "max_pods" {
   default = 20
 }
 
-variable "kubernetes_version" {
-  type    = string
-  default = "1.24.0"
+variable "aks_version_prefix" {
+  description = "major.minor version should be supplied to this variable so that it can be used to generate the most recent patch version."
+  type        = string
+  default     = "1.25"
 }
+
 
 variable "admin_user" {
   type    = string

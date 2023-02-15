@@ -16,20 +16,20 @@ parameters:
   skip: false
 
 steps:
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#golang
   - task: Cache@2
     condition: and(succeeded(), not(coalesce(variables.SKIP_TESTS, ${{ parameters.skip }})))
     inputs:
       key: 'go | "$(Agent.OS)"'
-      restoreKeys: |
-          go | "$(Agent.OS)"
-          go
-      path: $(Pipeline.Workspace)/go
-      cacheHitVar: CACHE_RESTORED
-    displayName: Go cache
+      restoreKeys: | 
+        go | "$(Agent.OS)"
+      path: $(GOPATH)/pkg
+    displayName: Cache GO Int
 
   - task: AzureCLI@1
     displayName: 'Run Integration Tests'
     env:
+      GOPATH: $(GOPATH)
       TF_VAR_remote_state_container: $(TF_VAR_remote_state_container)
       TF_VAR_remote_state_account: $(TF_VAR_remote_state_account)
       TF_VAR_elasticsearch_version: $(TF_VAR_elasticsearch_version)

@@ -18,3 +18,9 @@ terraform apply -auto-apprve /tmp/tf.out
 ## golang upgrade from 1.12 -> 1.18.8
 
 It should be straight forward step, no issues encountered during version upgrade.
+
+## AzureRM Upgrade "=2.98.0" -> "=3.39.1"
+
+Due introduction of azurerm `3.x` newer provider requires extra properties in the appgw as well as in the ip addresses, those were introduced in [MR777](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/777/diffs) to fix reported issues/bugs [254](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/254) and [253](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/253).
+
+

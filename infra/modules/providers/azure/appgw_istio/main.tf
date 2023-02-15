@@ -43,6 +43,11 @@ resource "azurerm_public_ip" "main" {
   tags = var.resource_tags
 
   zones = var.gateway_zones
+  lifecycle {
+    ignore_changes = [
+      zones
+    ]
+  }
 }
 
 // This Identity is used for accessing Key Vault to retrieve SSL Certificate
@@ -219,6 +224,7 @@ resource "azurerm_application_gateway" "main" {
     ignore_changes = [
       ssl_certificate,
       url_path_map,
+      zones
       # Properties that must be modified when using istio:
       # Possibly use only with -target flag
     ]

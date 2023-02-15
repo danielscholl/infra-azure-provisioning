@@ -2,11 +2,16 @@
 
 # Current Master
 
+# v0.19.0 (2023-02) - M16
+
 __Infra Changes__
 
 - [[Breaking Change] AppGW AGIC Removal](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236)
 - [Terraform version upgrade 1.3.4](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
   - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md)
+- [[Breaking Change] AzureRM upgrade/AppGW](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
+  - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md## AzureRM Upgrade "=2.98.0" -> "=3.39.1") 10-20m for AppGW unavailability.
+- [[Breaking Change] AKS upgrade to 1.25.5](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/252) - [Infra doc](./docs/upgrades/aks-upgrade-1-25-x.md)
 
 # v0.17.0 (2022-10) - M14
 
