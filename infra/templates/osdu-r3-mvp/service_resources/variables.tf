@@ -300,9 +300,9 @@ variable "aks_services_agent_vm_disk" {
   default     = 30
 }
 
-variable "kubernetes_version" {
+variable "aks_version_prefix" {
   type    = string
-  default = "1.24.0"
+  default = "1.25"
 }
 
 variable "ssh_public_key_file" {
