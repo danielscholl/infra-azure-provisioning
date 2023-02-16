@@ -391,7 +391,7 @@ module "aks_deployment_resources" {
   aks_agent_vm_disk                    = var.aks_agent_vm_disk
   aks_agent_vm_maxcount                = var.aks_agent_vm_maxcount
   ssh_public_key_file                  = var.ssh_public_key_file
-  kubernetes_version                   = var.kubernetes_version
+  aks_version_prefix                   = var.aks_version_prefix
   log_retention_days                   = var.log_retention_days
   log_analytics_id                     = data.terraform_remote_state.central_resources.outputs.log_analytics_id
   container_registry_id_central        = data.terraform_remote_state.central_resources.outputs.container_registry_id

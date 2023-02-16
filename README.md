@@ -280,6 +280,9 @@ We recommend to use latest stable infra version as does include latest supported
 
 | [Release]  | [infra-version]   | [AKS-Version]        |
 | ---------- | ----------------- | -------------------- |
+|  M16       |  0.19.0           | 1.25.x               |
+|  M15       |  0.18.0           | 1.24.0               |
+|  M14       |  0.17.0           | 1.24.0               |
 |  M13       |  0.16.0           | 1.24.0               |
 |  M12       |  0.15.0           | 1.21.7 (unsupported) |
 |  M11       |  0.14.0           | 1.18.x (unsupported) |

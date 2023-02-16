@@ -62,3 +62,7 @@ output "node_resource_group" {
 output "aks_egress_ip_address" {
   value = data.azurerm_public_ip.aks_egress_ip.ip_address
 }
+
+output "kubernetes_version" {
+  value = data.azurerm_kubernetes_service_versions.current.latest_version
+}

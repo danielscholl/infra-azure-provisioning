@@ -43,6 +43,11 @@ resource "azurerm_public_ip" "main" {
   tags = var.resource_tags
 
   zones = var.gateway_zones
+  lifecycle {
+    ignore_changes = [
+      zones
+    ]
+  }
 }
 
 // This Identity is used for accessing Key Vault to retrieve SSL Certificate
@@ -226,7 +231,8 @@ resource "azurerm_application_gateway" "main" {
       tags,
       frontend_port,
       redirect_configuration,
-      url_path_map
+      url_path_map,
+      zones
     ]
   }
 }
