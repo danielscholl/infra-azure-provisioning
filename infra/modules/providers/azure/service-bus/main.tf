@@ -32,8 +32,8 @@ locals {
     for topic in var.topics : merge({
       name                       = ""
       status                     = "Active"
-      auto_delete_on_idle        = "P5D"   # Auto delete or produce errors when max size gets reached
-      default_message_ttl        = "PT12H" # Message time to live
+      auto_delete_on_idle        = "P10675199DT2H48M5.4775807S" # Set to "never" value in console
+      default_message_ttl        = "PT12H"                      # Message time to live need to clean / produce errors when max size gets reached
       enable_batched_operations  = null
       enable_express             = null
       enable_partitioning        = null
