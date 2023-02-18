@@ -9412,12 +9412,12 @@
 									"raw": "{\n    \"name\": \"{{tagName}}\",\n    \"description\": \"Legal Tag added for Simulation\",\n    \"properties\": {\n        \"contractId\": \"123456\",\n        \"countryOfOrigin\": [\n            \"US\",\n            \"GB\"\n        ],\n        \"dataType\": \"Public Domain Data\",\n        \"exportClassification\": \"EAR99\",\n        \"originator\": \"Schlumberger\",\n        \"personalData\": \"No Personal Data\",\n        \"securityClassification\": \"Private\",\n        \"expirationDate\": \"2025-12-25\"\n    }\n}"
 								},
 								"url": {
-									"raw": "{{simulation_ddms_host}}/{{legal}}/legaltags",
+									"raw": "{{simulation_ddms_host}}/{{legal_host}}/legaltags",
 									"host": [
 										"{{simulation_ddms_host}}"
 									],
 									"path": [
-										"{{legal}}",
+										"{{legal_host}}",
 										"legaltags"
 									]
 								}
@@ -9818,12 +9818,12 @@
 									}
 								],
 								"url": {
-									"raw": "{{simulation_ddms_host}}/{{legal}}/legaltags/:name",
+									"raw": "{{simulation_ddms_host}}/{{legal_host}}/legaltags/:name",
 									"host": [
 										"{{simulation_ddms_host}}"
 									],
 									"path": [
-										"{{legal}}",
+										"{{legal_host}}",
 										"legaltags",
 										":name"
 									],
