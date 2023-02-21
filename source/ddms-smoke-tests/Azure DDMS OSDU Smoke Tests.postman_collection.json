@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1a6903a7-9347-4fc6-a74e-ec480cadf3b4",
+		"_postman_id": "b34a9463-9757-44f4-b2f4-91f172ca733d",
 		"name": "Azure DDMS OSDU Smoke Tests",
 		"description": "Exploring Authorization API in OSDU. This collection allows doing the following requests:\n\n1) Getting access and id tokens (aihtorization code flow)\n2) Discover OpenID Connect configuration\n3) Refreshing tokens\n4) Making secured User Info request (to validate the token)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -2124,68 +2124,6 @@
 									]
 								},
 								"description": "Before we upload the SEGY file, we must register it with the seismic storage."
-							},
-							"response": []
-						},
-						{
-							"name": "Seismic DDMS - Get Upload URL",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"    pm.response.to.have.status(200);",
-											"",
-											"    let sas_url = pm.response.json().access_token;",
-											"    pm.variables.set('upload_sas_url', sas_url);",
-											"});",
-											"",
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "{{seismic_ddms_host}}/utility/gcs-access-token?sdpath=sd://{{seismic_project}}/{{seismic_subproject}}/{{seismic_segy_file_name}}&readonly=false",
-									"host": [
-										"{{seismic_ddms_host}}"
-									],
-									"path": [
-										"utility",
-										"gcs-access-token"
-									],
-									"query": [
-										{
-											"key": "sdpath",
-											"value": "sd://{{seismic_project}}/{{seismic_subproject}}/{{seismic_segy_file_name}}",
-											"description": "full path for the subproject in the seismic store"
-										},
-										{
-											"key": "readonly",
-											"value": "false"
-										}
-									]
-								},
-								"description": "Create a BLOB SAS URL with write permissions so that the SEGY file can be uploaded directly to the subproject in the seismic storage."
 							},
 							"response": []
 						}
