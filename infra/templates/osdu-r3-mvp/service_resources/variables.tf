@@ -160,22 +160,32 @@ variable "redis_config_memory" {
   }
 }
 
-variable "redis_capacity" {
-  description = "The size of the Redis cache to deploy. When premium account is enabled with clusters, the true capacity of the account cache is capacity * cache_shard_count"
-  type        = number
-  default     = 1
+variable "redis_cache_tier" {
+  description = "Redis Cache capacity and sku_name set"
+  type = object({
+    capacity = number
+    sku_name = string
+    zones    = list(string)
+  })
+  default = {
+    capacity = 1
+    sku_name = "Standard"
+    zones    = []
+  }
 }
 
-variable "redis_queue_sku_name" {
-  description = "The Azure Cache for Redis pricing tier. Possible values are Basic, Standard and Premium. Azure currently charges by the minute for all pricing tiers."
-  type        = string
-  default     = "Premium"
-}
-
-variable "redis_queue_zones" {
-  description = "A list of a one or more Availability Zones, where the Redis Cache should be allocated."
-  type        = list(string)
-  default     = ["1", "2"]
+variable "redis_queue_tier" {
+  description = "Redis Queue capacity and sku_name set"
+  type = object({
+    capacity = number
+    sku_name = string
+    zones    = list(string)
+  })
+  default = {
+    capacity = 1
+    sku_name = "Premium"
+    zones    = ["1", "2"]
+  }
 }
 
 variable "postgres_databases" {

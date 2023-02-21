@@ -142,10 +142,18 @@ variable "redis_config_memory" {
   }
 }
 
-variable "redis_capacity" {
-  description = "The size of the Redis cache to deploy. When premium account is enabled with clusters, the true capacity of the account cache is capacity * cache_shard_count"
-  type        = number
-  default     = 1
+variable "redis_queue_tier" {
+  description = "Redis Queue capacity and sku_name set"
+  type = object({
+    capacity = number
+    sku_name = string
+    zones    = list(number)
+  })
+  default = {
+    capacity = 1
+    sku_name = "Premium"
+    zones    = [1, 2]
+  }
 }
 
 variable "aks_agent_vm_count" {
@@ -239,18 +247,6 @@ variable "ingest_storage_account_key" {
 
 variable "ingest_storage_account_name" {
   type = string
-}
-
-variable "redis_queue_sku_name" {
-  description = "The Azure Cache for Redis pricing tier. Possible values are Basic, Standard and Premium. Azure currently charges by the minute for all pricing tiers."
-  type        = string
-  default     = "Premium"
-}
-
-variable "redis_queue_zones" {
-  description = "A list of a one or more Availability Zones, where the Redis Cache should be allocated."
-  type        = list(number)
-  default     = [1, 2]
 }
 
 variable "cr_keyvault_id" {
