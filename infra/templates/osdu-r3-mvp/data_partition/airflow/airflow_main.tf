@@ -333,9 +333,9 @@ module "redis_queue" {
 
   name                = local.redis_queue_name
   resource_group_name = local.resource_group_name
-  capacity            = var.redis_capacity
-  sku_name            = var.redis_queue_sku_name
-  zones               = var.redis_queue_zones
+  capacity            = var.redis_queue_tier.capacity
+  sku_name            = var.redis_queue_tier.sku_name
+  zones               = var.redis_queue_tier.sku_name != "Premium" ? null : var.redis_queue_tier.zones
 
   memory_features     = var.redis_config_memory
   premium_tier_config = var.redis_config_schedule
