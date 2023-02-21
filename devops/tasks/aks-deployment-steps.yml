@@ -25,6 +25,7 @@ parameters:
   chartModificationScript: ""
   extractedChartFolder: "templates"
   migrationCleanup: "false"
+  skipDryRun: false
 
 steps:
   - checkout: FluxRepo
@@ -78,6 +79,25 @@ steps:
       valuesFile: ${{ parameters.valuesFile }}
       generationPath: ${{parameters.generationPath}}
       chartModificationScript: ${{parameters.chartModificationScript}}
+  # Commit only to generated, no deploy
+  - template: gitops.yml
+    parameters:
+      serviceName: ${{parameters.serviceName}}
+      chartPath: ${{ parameters.chartPath }}
+      generationPath: ${{parameters.generationPath}}
+      branchName: ${{parameters.environment}}
+      hldRegPath: ${{parameters.hldRegPath}}
+      skipDeploy: true
+      extractedChartFolder: ${{parameters.extractedChartFolder}}
+      migrationCleanup: ${{parameters.migrationCleanup}}
+  - template: dry-run-test.yml
+    parameters:
+      chartPath: ${{ parameters.chartPath }}
+      serviceName: ${{parameters.serviceName}}
+      generationPath: ${{parameters.generationPath}}
+      extractedChartFolder: ${{parameters.extractedChartFolder}}
+      skipDryRun: ${{parameters.skipDryRun}}
+  # Commit for deployment
   - template: gitops.yml
     parameters:
       serviceName: ${{parameters.serviceName}}

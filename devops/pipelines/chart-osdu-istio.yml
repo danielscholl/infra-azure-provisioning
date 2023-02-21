@@ -32,6 +32,12 @@ resources:
     name: helm-charts-azure
     type: git
 
+parameters:
+  - name: skipDryRun
+    displayName: 'Skip dry-run test, must skip on first deployment in new environment'
+    type: boolean
+    default: false
+
 variables:
   - group: 'Azure - OSDU'
   - group: 'Azure - OSDU secrets'
@@ -56,6 +62,7 @@ stages:
       valuesFile: ${{ variables.valuesFile }}
       skipDeploy: ${{ variables.SKIP_DEPLOY }}
       skipCheck: true
+      skipDryRun: ${{ parameters.skipDryRun }}
       providers:
         - name: Azure
           environments: ["demo"]
