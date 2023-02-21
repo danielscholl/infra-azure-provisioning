@@ -1,0 +1,90 @@
+#  Copyright © Microsoft Corporation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+#####################
+# README: Kubectl dru-run to test yaml templates.
+#####################
+parameters:
+  chartPath: ''
+  serviceName: ''
+  generationPath: ''
+  extractedChartFolder: ''
+  skipDryRun: false
+
+steps:
+  - task: AzureCLI@1
+    displayName: 'Kubectl Apply Dry-run'
+    condition: ne(${{ parameters.skipDryRun }}, true)
+    env:
+      CHART_PATH: ${{parameters.chartPath}}
+      SERVICE_NAME: ${{parameters.serviceName}}        
+      GENERATION_PATH: ${{parameters.generationPath}}
+      CHART_FOLDERS: ${{parameters.extractedChartFolder}}
+      BASE_NAME_SR: $(base-name-sr)
+    inputs:
+      azureSubscription: '$(SERVICE_CONNECTION_NAME)'
+      addSpnToEnvironment: true
+      scriptLocation: inlineScript
+      inlineScript: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        if [[ "$(HELM_SOURCE)" != "" ]]
+        then
+            HELM_SOURCE_NAME=$(HELM_SOURCE)
+        else
+            HELM_SOURCE_NAME=$(Build.Repository.Name)
+        fi
+        GITOPS_MANIFEST_DIRECTORY=$(Build.SourcesDirectory)/$HELM_SOURCE_NAME/$CHART_PATH/$GENERATION_PATH
+        
+        echo "Logging in to AKS"
+        echo "------------------------------------"
+        sudo az aks install-cli --only-show-errors
+        az aks get-credentials -g $BASE_NAME_SR-rg -n $BASE_NAME_SR-aks --overwrite-existing --only-show-errors
+        # In case multiple template folders 
+        IFS="|"; for folder in $CHART_FOLDERS; do
+          chart_folder=$GITOPS_MANIFEST_DIRECTORY/$SERVICE_NAME/$folder
+          if [ -d $chart_folder ]; then
+            pushd $chart_folder
+            IFS=' ' read -r -a yaml_files <<< $(find . -type f -name "*.yaml" -o -type f -name "*.yml" | tr '\n' ' ')
+            test_failed=0
+            pre_test_failed=$test_failed
+            for yaml_file in "${yaml_files[@]}"; do
+              if [ -f "$yaml_file" ]; then
+                if [[ $(grep "^kind: " $yaml_file) ]]; then
+                  echo "Test on $SERVICE_NAME/$folder/${yaml_file#.}:"
+                  if [[ $(grep "^kind: Job" $yaml_file) ]]; then
+                    echo "Dry-run is not compatible with kubernetes jobs by design, skipped."
+                  else
+                    kubectl apply -f $yaml_file --dry-run=server || test_failed=$(($test_failed+1))
+                    if [[ "$test_failed" -gt "$pre_test_failed" ]]; then
+                      cat -n $yaml_file
+                      pre_test_failed=$test_failed
+                    fi
+                  fi
+                fi
+              fi
+            done
+            if [[ $test_failed -gt 0 ]]; then
+              echo ""
+              echo "------------------------------------"
+              echo "[ERROR] Test Failed. Total failures: $test_failed"
+              echo "------------------------------------"
+              exit 1
+            fi
+            popd
+          else
+            echo "[WARNING] $chart_folder does not exist! Test skipped"
+          fi
+        done
