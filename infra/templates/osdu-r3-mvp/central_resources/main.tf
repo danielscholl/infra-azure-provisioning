@@ -40,7 +40,7 @@ terraform {
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "=1.1.1"
+      version = "=2.33.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -113,6 +113,8 @@ locals {
 # Common Resources
 #-------------------------------
 data "azurerm_client_config" "current" {}
+
+resource "random_uuid" "oauth2_permission_scopes_id" {}
 
 resource "random_string" "workspace_scope" {
   keepers = {
@@ -295,9 +297,9 @@ module "log_analytics" {
 module "service_principal" {
   source = "../../../modules/providers/azure/service-principal"
 
-  name   = var.principal_name
-  scopes = local.rbac_contributor_scopes
-  role   = "Contributor"
+  display_name = var.principal_name
+  scopes       = local.rbac_contributor_scopes
+  role         = "Contributor"
 
   create_for_rbac = false
   object_id       = var.principal_objectId
@@ -313,21 +315,33 @@ module "service_principal" {
 module "ad_application" {
   source = "../../../modules/providers/azure/ad-application"
 
-  name                       = local.ad_app_name
-  oauth2_allow_implicit_flow = true
-  group_membership_claims    = "None"
+  display_name                  = local.ad_app_name
+  access_token_issuance_enabled = true
+  group_membership_claims       = ["None"]
 
-  reply_urls = [
-    "http://localhost:8080",
+  redirect_uris = [
+    "http://localhost:8080/",
     "http://localhost:8080/auth/callback"
   ]
 
   api_permissions = [
     {
       name = "Microsoft Graph"
-      oauth2_permissions = [
+      oauth2_permission_scopes = [
         "User.Read"
       ]
+    }
+  ]
+
+  oauth2_permission_scopes = [{
+    admin_consent_description  = format("Allow the application to access %s on behalf of the signed-in user.", local.ad_app_name)
+    admin_consent_display_name = format("Access %s", local.ad_app_name)
+    enabled                    = true
+    id                         = random_uuid.oauth2_permission_scopes_id.result
+    type                       = "User"
+    user_consent_description   = format("Allow the application to access %s on your behalf.", local.ad_app_name)
+    user_consent_display_name  = format("Access %s", local.ad_app_name)
+    value                      = "user_impersonation"
     }
   ]
 

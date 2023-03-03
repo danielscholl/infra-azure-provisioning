@@ -236,7 +236,7 @@ resource "azurerm_key_vault_secret" "cosmos_endpoint" {
 
 resource "azurerm_key_vault_secret" "cosmos_key" {
   name         = local.cosmos_primary_key
-  value        = module.cosmosdb_account.properties.cosmosdb.primary_master_key
+  value        = module.cosmosdb_account.properties.cosmosdb.primary_key
   key_vault_id = data.terraform_remote_state.central_resources.outputs.keyvault_id
 }
 
