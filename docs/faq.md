@@ -177,7 +177,14 @@ This section will outline the process for upgrading infrastructure whenever we h
       ##[error]Script failed with error: Error: The process '/bin/bash' failed with exit code
 
     For release **0.8.0 and below** the cherry-pick the changes in the [MR](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/merge_requests/310) to fix the issue.
-    
+
+# Required permission for the terraform SPN
+After upgrading azuread to version 2.33.0 for terraform spn necessary provide new permission.
+Requires one of the following application roles: Application.ReadWrite.All or Directory.ReadWrite.All
+[Link](https://registry.terraform.io/providers/hashicorp/azuread/2.33.0/docs/resources/application#api-permissions) to official documentation.
+
+***Note: In the case of using these two approaches "BYO SP" and "BYO AD App" - no additional permission request required for new and existing environments.***
+
 ## Release 0.5.0 Upgrade (January 2021)
 These steps outline the process of upgrading infrastructure to version 0.5.0.
 1.	Disable any infrastructure pipelines.

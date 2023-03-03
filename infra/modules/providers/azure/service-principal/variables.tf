@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-variable "name" {
+variable "display_name" {
   type        = string
   description = "The name of the service principal."
 }

@@ -13,7 +13,7 @@
 //  limitations under the License.
 
 output "name" {
-  value       = var.aad_client_id != "" ? null : azuread_application.main[0].name
+  value       = var.aad_client_id != "" ? null : azuread_application.main[0].display_name
   description = "The display name of the application."
 }
 

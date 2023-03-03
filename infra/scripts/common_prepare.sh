@@ -120,13 +120,20 @@ function CreateTfPrincipal() {
         --display-name $1 \
         --query [].id -otsv)
 
-      AD_GRAPH_API_GUID="00000002-0000-0000-c000-000000000000"
+      MS_GRAPH_API_GUID="00000003-0000-0000-c000-000000000000"
 
       # Azure AD Graph API Access Application.ReadWrite.OwnedBy
-      AD_GRAPH_API=$(az ad app permission add \
+      PERMISSION_1=$(az ad app permission add \
         --id $PRINCIPAL_ID \
-        --api $AD_GRAPH_API_GUID \
+        --api $MS_GRAPH_API_GUID \
         --api-permissions 824c81eb-e3f8-4ee6-8f6d-de7f50d565b7=Role \
+        -ojsonc)
+      
+      # MS Graph API Directory.Read.All
+      PERMISSION_2=$(az ad app permission add \
+        --id $PRINCIPAL_ID \
+        --api $MS_GRAPH_API_GUID \
+        --api-permissions 7ab1d382-f21e-4acd-a863-ba3e13f7da61=Role \
         -ojsonc)
 
       tput setaf 2; echo "Adding Information to Vault..." ; tput sgr0

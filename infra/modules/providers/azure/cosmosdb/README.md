@@ -52,7 +52,7 @@ output "properties" {
     cosmosdb = object({
       id                     = string
       endpoint               = string
-      primary_master_key     = string
+      primary_key            = string
       connection_strings     = string
     })
   })

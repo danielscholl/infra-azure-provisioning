@@ -18,21 +18,21 @@ variable "aad_client_id" {
   default     = ""
 }
 
-variable "name" {
+variable "display_name" {
   type        = string
   description = "The display name of the application"
 }
 
-variable "homepage" {
+variable "homepage_url" {
   type        = string
   default     = ""
-  description = "The URL of the application's homepage."
+  description = "(Optional) Home page or landing page of the application."
 }
 
-variable "reply_urls" {
+variable "redirect_uris" {
   type        = list(string)
   default     = []
-  description = "List of URIs to which Azure AD will redirect in response to an OAuth 2.0 request."
+  description = "(Optional) A set of URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent. Must be a valid https or ms-appx-web URL."
 }
 
 variable "identifier_uris" {
@@ -41,21 +41,21 @@ variable "identifier_uris" {
   description = "List of unique URIs that Azure AD can use for the application."
 }
 
-variable "available_to_other_tenants" {
-  type        = bool
-  default     = false
-  description = "Whether the application can be used from any Azure AD tenants."
+variable "sign_in_audience" {
+  type        = string
+  default     = "AzureADMyOrg"
+  description = "(Optional) The Microsoft account types that are supported for the current application. Must be one of AzureADMyOrg, AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount or PersonalMicrosoftAccount. Defaults to AzureADMyOrg."
 }
 
-variable "oauth2_allow_implicit_flow" {
+variable "access_token_issuance_enabled" {
   type        = bool
   default     = false
-  description = "Whether to allow implicit grant flow for OAuth2."
+  description = "(Optional) Whether this web application can request an access token using OAuth 2.0 implicit flow."
 }
 
 variable "group_membership_claims" {
-  type        = string
-  default     = "SecurityGroup"
+  type        = list(string)
+  default     = ["SecurityGroup"]
   description = "Configures the groups claim issued in a user or OAuth 2.0 access token that the app expects."
 }
 
@@ -89,23 +89,35 @@ variable "native" {
   description = "Whether the application can be installed on a user's device or computer."
 }
 
+variable "known_client_applications" {
+  description = "(Optional) A set of application IDs (client IDs), used for bundling consent if you have a solution that contains two parts: a client app and a custom web API app."
+  type        = list(string)
+  default     = []
+}
+
+variable "oauth2_permission_scopes" {
+  type        = any
+  default     = []
+  description = "List of Oauth scope permissions."
+}
+
 locals {
-  homepage = format("https://%s", var.name)
+  homepage_url = format("https://%s", var.display_name)
 
   type = var.native ? "native" : "webapp/api"
 
-  public_client = var.native ? true : false
+  fallback_public_client_enabled = var.native ? true : false
 
-  default_identifier_uris = [format("api://%s", var.name)]
+  default_identifier_uris = [format("api://%s", var.display_name)]
 
   identifier_uris = var.native ? [] : coalescelist(var.identifier_uris, local.default_identifier_uris)
 
   api_permissions = [
     for p in var.api_permissions : merge({
-      id                 = ""
-      name               = ""
-      app_roles          = []
-      oauth2_permissions = []
+      id                       = ""
+      name                     = ""
+      app_roles                = []
+      oauth2_permission_scopes = []
     }, p)
   ]
 
@@ -113,10 +125,10 @@ locals {
 
   service_principals = {
     for s in data.azuread_service_principal.main : s.display_name => {
-      application_id     = s.application_id
-      display_name       = s.display_name
-      app_roles          = { for p in s.app_roles : p.value => p.id }
-      oauth2_permissions = { for p in s.oauth2_permissions : p.value => p.id }
+      application_id           = s.application_id
+      display_name             = s.display_name
+      app_roles                = { for p in s.app_roles : p.value => p.id }
+      oauth2_permission_scopes = { for p in s.oauth2_permission_scopes : p.value => p.id }
     }
   }
 
@@ -124,8 +136,8 @@ locals {
     for a in local.api_permissions : {
       resource_app_id = local.service_principals[a.name].application_id
       resource_access = concat(
-        [for p in a.oauth2_permissions : {
-          id   = local.service_principals[a.name].oauth2_permissions[p]
+        [for p in a.oauth2_permission_scopes : {
+          id   = local.service_principals[a.name].oauth2_permission_scopes[p]
           type = "Scope"
         }],
         [for p in a.app_roles : {
@@ -144,6 +156,19 @@ locals {
       enabled      = true
       value        = ""
     }, r)
+  ]
+
+  oauth2_permission_scopes = [
+    for p in var.oauth2_permission_scopes : merge({
+      admin_consent_description  = format("Allow the application to access %s on behalf of the signed-in user.", var.display_name)
+      admin_consent_display_name = format("Access %s", var.display_name)
+      enabled                    = true
+      id                         = ""
+      type                       = "User"
+      user_consent_description   = format("Allow the application to access %s on your behalf.", var.display_name)
+      user_consent_display_name  = format("Access %s", var.display_name)
+      value                      = "user_impersonation"
+    }, p)
   ]
 
   date = regexall("^(?:(\\d{4})-(\\d{2})-(\\d{2}))[Tt]?(?:(\\d{2}):(\\d{2})(?::(\\d{2}))?(?:\\.(\\d+))?)?([Zz]|[\\+|\\-]\\d{2}:\\d{2})?$", var.end_date)

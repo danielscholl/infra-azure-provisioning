@@ -102,7 +102,7 @@ resource "azurerm_key_vault_secret" "graph_endpoint" {
 
 resource "azurerm_key_vault_secret" "graph_key" {
   name         = local.graph_primary_key
-  value        = module.graph_account.properties.cosmosdb.primary_master_key
+  value        = module.graph_account.properties.cosmosdb.primary_key
   key_vault_id = module.keyvault.keyvault_id
 }
 
