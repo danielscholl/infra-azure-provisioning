@@ -62,6 +62,12 @@ variable "memory_features" {
   }
 }
 
+variable "public_network_access_enabled" {
+  description = "(Optional) Whether or not public network access is allowed for this Redis Cache. true means this resource could be accessed by both public and private endpoint. false means only private endpoint access is allowed. Defaults to true."
+  type        = bool
+  default     = true
+}
+
 # Distinct Premium Tier Inputs (optional)
 
 # We want to be explicit when enabling clustering due to its impact on pricing.

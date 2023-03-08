@@ -40,7 +40,7 @@ var disableAirflow1 = getEnv("TF_VAR_disable_airflow1", "false")
 var secretKvEnabled = getEnv("TF_VAR_secret_kv_enabled", "false")
 
 var autoscaleResourses = 2
-var totalResources = 143
+var totalResources = 147
 var resourcesToRemoveForAirflow1 = 6
 var secretKvResources = 9
 

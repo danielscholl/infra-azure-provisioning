@@ -449,3 +449,9 @@ variable "secret_kv_enabled" {
   type        = bool
   default     = false
 }
+
+variable "backend_network_access_enabled" {
+  description = "(Optional - dev purposes) Whether or not public network access is allowed for backend resources (redis)"
+  type        = bool
+  default     = true
+}
