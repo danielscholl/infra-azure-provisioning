@@ -28,6 +28,8 @@ resource "azurerm_redis_cache" "arc" {
   tags                = var.resource_tags
   zones               = var.zones
 
+  public_network_access_enabled = var.public_network_access_enabled
+
   redis_configuration {
     maxmemory_reserved              = var.memory_features.maxmemory_reserved
     maxmemory_delta                 = var.memory_features.maxmemory_delta

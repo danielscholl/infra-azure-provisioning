@@ -125,7 +125,6 @@ locals {
   fe_subnet_name    = "${local.base_name_21}-fe-subnet"
   aks_subnet_name   = "${local.base_name_21}-aks-subnet"
   be_subnet_name    = "${local.base_name_21}-be-subnet"
-  app_gw_name       = "${local.base_name_60}-gw"
   istio_app_gw_name = "${local.base_name_21}-istio-gw"
 
   aks_cluster_name  = "${local.base_name_60}-aks"
@@ -508,8 +507,9 @@ module "redis_cache" {
   sku_name            = var.redis_cache_tier.sku_name
   zones               = var.redis_cache_tier.sku_name != "Premium" ? null : var.redis_cache_tier.zones
 
-  memory_features     = var.redis_config_memory
-  premium_tier_config = var.redis_config_schedule
+  memory_features               = var.redis_config_memory
+  premium_tier_config           = var.redis_config_schedule
+  public_network_access_enabled = var.backend_network_access_enabled
 
   resource_tags = var.resource_tags
 }
@@ -532,8 +532,9 @@ module "redis_queue" {
   sku_name            = var.redis_queue_tier.sku_name
   zones               = var.redis_queue_tier.sku_name != "Premium" ? null : var.redis_queue_tier.zones
 
-  memory_features     = var.redis_config_memory
-  premium_tier_config = var.redis_config_schedule
+  memory_features               = var.redis_config_memory
+  premium_tier_config           = var.redis_config_schedule
+  public_network_access_enabled = var.backend_network_access_enabled
 
   resource_tags = var.resource_tags
 }

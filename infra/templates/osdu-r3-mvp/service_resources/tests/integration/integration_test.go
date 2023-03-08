@@ -25,6 +25,7 @@ import (
 )
 
 var subscription = os.Getenv("ARM_SUBSCRIPTION_ID")
+var backendNetworkAccessEnabled = os.Getenv("TF_VAR_public_network_access_enabled")
 var tfOptions = &terraform.Options{
 	TerraformDir: "../../",
 	BackendConfig: map[string]interface{}{
@@ -36,17 +37,33 @@ var tfOptions = &terraform.Options{
 // Runs a suite of test assertions to validate that a provisioned data source environment
 // is fully functional.
 func TestDataEnvironment(t *testing.T) {
-	testFixture := infratests.IntegrationTestFixture{
-		GoTest:                t,
-		TfOptions:             tfOptions,
-		ExpectedTfOutputCount: 18,
-		TfOutputAssertions: []infratests.TerraformOutputValidation{
-			redisIntegTests.InspectProvisionedCache("redis_name", "services_resource_group_name"),
-			redisIntegTests.InspectProvisionedCache("redis_queue_name", "services_resource_group_name"),
-			redisIntegTests.CheckRedisWriteOperations("redis_hostname", "redis_primary_access_key", "redis_ssl_port"),
-			redisIntegTests.CheckRedisWriteOperations("redis_queue_hostname", "redis_queue_primary_access_key", "redis_queue_ssl_port"),
-			appGatewayIntegTests.InspectAppGateway("services_resource_group_name", "appgw_name", "keyvault_secret_id"),
-		},
+	if len(backendNetworkAccessEnabled) == 0 {
+		backendNetworkAccessEnabled = "false"
 	}
+	var testFixture infratests.IntegrationTestFixture
+	if backendNetworkAccessEnabled == "true" {
+		testFixture = infratests.IntegrationTestFixture{
+			GoTest:                t,
+			TfOptions:             tfOptions,
+			ExpectedTfOutputCount: 18,
+			TfOutputAssertions: []infratests.TerraformOutputValidation{
+				redisIntegTests.InspectProvisionedCache("redis_name", "services_resource_group_name"),
+				redisIntegTests.InspectProvisionedCache("redis_queue_name", "services_resource_group_name"),
+				redisIntegTests.CheckRedisWriteOperations("redis_hostname", "redis_primary_access_key", "redis_ssl_port"),
+				redisIntegTests.CheckRedisWriteOperations("redis_queue_hostname", "redis_queue_primary_access_key", "redis_queue_ssl_port"),
+				appGatewayIntegTests.InspectAppGateway("services_resource_group_name", "appgw_name", "keyvault_secret_id"),
+			},
+		}
+	} else {
+		testFixture = infratests.IntegrationTestFixture{
+			GoTest:                t,
+			TfOptions:             tfOptions,
+			ExpectedTfOutputCount: 18,
+			TfOutputAssertions: []infratests.TerraformOutputValidation{
+				appGatewayIntegTests.InspectAppGateway("services_resource_group_name", "appgw_name", "keyvault_secret_id"),
+			},
+		}
+	}
+
 	infratests.RunIntegrationTests(&testFixture)
 }

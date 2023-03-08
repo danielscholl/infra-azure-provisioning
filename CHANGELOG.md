@@ -9,6 +9,9 @@ __Infra Changes__
 - [[Breaking Change] AppGW AGIC Removal](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/236)
 - [Terraform version upgrade 1.3.4](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
   - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md)
+  - [Azure RM Upgrade 3.39](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
+- [Network Security - Private Endpoints](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/246)
+  - [Guide](./docs/upgrades/private_endpoints.md)
 - [Required permission for the terraform SPN](https://registry.terraform.io/providers/hashicorp/azuread/2.33.0/docs/resources/application#api-permissions)
 - [[Breaking Change] AzureRM upgrade/AppGW](https://community.opengroup.org/osdu/platform/deployment-and-operations/infra-azure-provisioning/-/issues/247)
   - [Guide](./docs/upgrades/terraform_upgrade-1.3.4.md## AzureRM Upgrade "=2.98.0" -> "=3.39.1") 10-20m for AppGW unavailability.

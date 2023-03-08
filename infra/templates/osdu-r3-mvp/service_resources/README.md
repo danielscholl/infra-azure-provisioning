@@ -51,7 +51,12 @@ storage_shares = [
 storage_queues = [ "airflowlogqueue" ]
 
 # (Optional) It can be commented if prefer to use the appgw default dns host
-aks_dns_host = <your.own.domain.name.org>
+# More details in docs/dns-setup.md
+# aks_dns_host = <your.own.domain.name.org>
+
+# (Optional) For production systems it is recommended to use false more details in docs/upgrades/private_endpoints.md
+# Enabled by default for dev environments
+# backend_network_access_enabled = true
 ```
 
 __Provision__

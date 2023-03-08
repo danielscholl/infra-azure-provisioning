@@ -86,4 +86,8 @@ blob_cors_rule = [
 ]
 
 aks_dns_host = <your.own.domain.name.org>
+
+# For production systems it is recommended to use false
+# Enabled by default for dev environments
+backend_network_access_enabled = true
 */
